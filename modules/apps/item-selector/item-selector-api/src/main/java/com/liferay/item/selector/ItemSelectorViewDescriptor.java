@@ -50,6 +50,10 @@ public interface ItemSelectorViewDescriptor<T> {
 		return false;
 	}
 
+	public default String getDefaultDisplayStyle() {
+		return "icon";
+	}
+
 	public interface ItemDescriptor {
 
 		public String getIcon();
