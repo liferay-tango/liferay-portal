@@ -227,7 +227,7 @@ definition {
 
 			PageEditor.addFragment(
 				collectionName = "Layout Elements",
-				fragmentName = "Row");
+				fragmentName = "Grid");
 
 			AssertElementNotPresent(
 				key_elementType = "Container",
@@ -239,27 +239,27 @@ definition {
 			DragAndDrop.javaScriptDragAndDropToObject(
 				key_collectionName = "Layout Elements",
 				key_columnNumber = "1",
-				key_fragmentName = "Row",
+				key_fragmentName = "Grid",
 				key_position = "1",
 				locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_FRAGMENT",
-				locator2 = "PageEditor#ROW_COLUMN",
+				locator2 = "PageEditor#GRID_COLUMN",
 				value1 = "");
 
 			PageEditor.waitForAutoSave();
 
 			AssertElementPresent(
 				key_columnNumber = "1",
-				key_elementHeader = "/div[contains(@class,'page-editor__topper')][1]/div[contains(.,'Row')]//li[contains(@class,'title')]",
+				key_elementHeader = "/div[contains(@class,'page-editor__topper')][1]/div[contains(.,'Grid')]//li[contains(@class,'title')]",
 				key_position = "1",
-				locator1 = "PageEditor#ROW_COLUMN_NESTED_ELEMENT");
+				locator1 = "PageEditor#GRID_COLUMN_NESTED_ELEMENT");
 		}
 
 		task ("Assert add the third Row in column 1 of the first Row") {
 			DragAndDrop.javaScriptDragAndDropObjectToBottomOfNestedObject(
 				key_collectionName = "Layout Elements",
 				key_columnNumber = "1",
-				key_fragmentName = "Row",
-				key_targetFragmentName = "Row",
+				key_fragmentName = "Grid",
+				key_targetFragmentName = "Grid",
 				locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_FRAGMENT",
 				locator2 = "PageEditor#EMPTY_NESTED_FRAGMENT_DROP_TARGET",
 				value1 = "");
@@ -268,9 +268,9 @@ definition {
 
 			AssertElementPresent(
 				key_columnNumber = "1",
-				key_elementHeader = "/div[contains(@class,'page-editor__topper')][2]/div[contains(.,'Row')]//li[contains(@class,'title')]",
+				key_elementHeader = "/div[contains(@class,'page-editor__topper')][2]/div[contains(.,'Grid')]//li[contains(@class,'title')]",
 				key_position = "1",
-				locator1 = "PageEditor#ROW_COLUMN_NESTED_ELEMENT");
+				locator1 = "PageEditor#GRID_COLUMN_NESTED_ELEMENT");
 		}
 	}
 
@@ -283,32 +283,34 @@ definition {
 
 		PageEditor.addFragment(
 			collectionName = "Layout Elements",
-			fragmentName = "Row");
+			fragmentName = "Grid");
 
 		Click(
 			key_position = "3",
-			locator1 = "PageEditor#ROW_COLUMN_RESIZER");
+			locator1 = "PageEditor#GRID_COLUMN_RESIZER");
+
+		Pause(locator1 = "1000");
 
 		DragAndDrop.DragAndDropObject(
 			key_position = "3",
-			locator1 = "PageEditor#ROW_COLUMN_RESIZER",
+			locator1 = "PageEditor#GRID_COLUMN_RESIZER",
 			position = "530,0");
 
-		AssertVisible(locator1 = "PageEditor#ROW_COLUMN_FIRST_RESIZER");
+		AssertVisible(locator1 = "PageEditor#GRID_COLUMN_FIRST_RESIZER");
 
 		PageEditor.addElementToColumn(
 			collectionName = "Layout Elements",
 			columnNumber = "3",
-			fragmentName = "Row",
+			fragmentName = "Grid",
 			navTab = "Fragments");
 
 		PageEditor.waitForAutoSave();
 
 		AssertElementPresent(
 			key_columnNumber = "3",
-			key_elementHeader = "//div[contains(@class,'page-editor__topper')][1]/div[contains(.,'Row')]//li[contains(@class,'title')]",
+			key_elementHeader = "//div[contains(@class,'page-editor__topper')][1]/div[contains(.,'Grid')]//li[contains(@class,'title')]",
 			key_position = "1",
-			locator1 = "PageEditor#ROW_COLUMN_NESTED_ELEMENT");
+			locator1 = "PageEditor#GRID_COLUMN_NESTED_ELEMENT");
 	}
 
 	@description = "This is a test for LPS-102887. A user can access content in a web content display widget through content panel"
@@ -438,15 +440,16 @@ definition {
 
 			PageEditor.addFragment(
 				collectionName = "Layout Elements",
-				fragmentName = "Row");
+				fragmentName = "Grid");
 
-			PageEditor.editLayoutRow(
+			PageEditor.editLayoutGrid(
 				columnCount = "2",
+				panel = "Configuration",
 				spaceBetweenColumns = "true");
 		}
 
 		task ("Assert the Row has space between columns and 2 columns") {
-			PageEditor.viewRowStyle(
+			PageEditor.viewGridStyle(
 				columnCount = "3",
 				position = "1",
 				spaceBetweenColumns = "true");
@@ -456,7 +459,7 @@ definition {
 			PageEditor.addFragment(
 				collectionName = "Layout Elements",
 				fragmentName = "Container",
-				targetFragmentName = "Row");
+				targetFragmentName = "Grid");
 		}
 
 		task ("Assert the Container has Fluid, padding bottom 0, padding left 0, padding right 0 and padding top 0") {
@@ -470,8 +473,9 @@ definition {
 		}
 
 		task ("Edit the row's properties") {
-			PageEditor.editLayoutRow(
+			PageEditor.editLayoutGrid(
 				columnCount = "3",
+				panel = "Configuration",
 				spaceBetweenColumns = "false");
 		}
 
@@ -485,7 +489,7 @@ definition {
 		}
 
 		task ("Assert the Row has exactly 3 columns and no space between columns") {
-			PageEditor.viewRowStyle(
+			PageEditor.viewGridStyle(
 				columnCount = "3",
 				position = "1",
 				spaceBetweenColumns = "false");
@@ -820,25 +824,25 @@ definition {
 
 			DragAndDrop.javaScriptDragAndDropToObject(
 				key_collectionName = "Layout Elements",
-				key_fragmentName = "Row",
+				key_fragmentName = "Grid",
 				key_position = "1",
 				locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_FRAGMENT",
 				locator2 = "PageEditor#CONTAINER_CONTAINER",
 				value1 = "");
 
 			AssertElementPresent(
-				key_elementHeader = "/div[contains(@class,'page-editor__topper')][1]/div[contains(.,'Row')]//li[contains(@class,'title')]",
+				key_elementHeader = "/div[contains(@class,'page-editor__topper')][1]/div[contains(.,'Grid')]//li[contains(@class,'title')]",
 				key_position = "1",
 				locator1 = "PageEditor#CONTAINER_CONTAINER_NESTED_ELEMENT");
 		}
 
 		task ("Assert duplicate Row in the Section") {
-			PageEditor.gotoDuplicate(fragmentName = "Row");
+			PageEditor.gotoDuplicate(fragmentName = "Grid");
 
-			PageEditor.viewDuplicateFragment(fragmentName = "Row");
+			PageEditor.viewDuplicateFragment(fragmentName = "Grid");
 
 			AssertElementPresent(
-				key_elementHeader = "/div[contains(@class,'page-editor__topper')][2]/div[contains(.,'Row')]//li[contains(@class,'title')]",
+				key_elementHeader = "/div[contains(@class,'page-editor__topper')][2]/div[contains(.,'Grid')]//li[contains(@class,'title')]",
 				key_position = "1",
 				locator1 = "PageEditor#CONTAINER_CONTAINER_NESTED_ELEMENT");
 		}
@@ -854,7 +858,7 @@ definition {
 
 			PageEditor.addFragment(
 				collectionName = "Layout Elements",
-				fragmentName = "Row");
+				fragmentName = "Grid");
 		}
 
 		task ("Add a Web Content Display widget to column 1") {
@@ -869,7 +873,7 @@ definition {
 				key_portletName = "Web Content Display",
 				key_position = "1",
 				locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_WIDGET",
-				locator2 = "PageEditor#ROW_COLUMN",
+				locator2 = "PageEditor#GRID_COLUMN",
 				value1 = "Web Content Display");
 
 			Pause(locator1 = "5000");
@@ -878,7 +882,7 @@ definition {
 				key_columnNumber = "1",
 				key_elementHeader = "//div[contains(@class,'page-editor')]//li[contains(.,'Web Content Display')]",
 				key_position = "1",
-				locator1 = "PageEditor#ROW_COLUMN_NESTED_ELEMENT");
+				locator1 = "PageEditor#GRID_COLUMN_NESTED_ELEMENT");
 
 			PageEditor.gotoTab(tabName = "Contents");
 		}
@@ -894,7 +898,7 @@ definition {
 				key_fragmentName = "Heading",
 				key_position = "1",
 				locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_FRAGMENT",
-				locator2 = "PageEditor#ROW_COLUMN",
+				locator2 = "PageEditor#GRID_COLUMN",
 				value1 = "");
 
 			PageEditor.waitForAutoSave();
@@ -903,7 +907,7 @@ definition {
 				key_columnNumber = "2",
 				key_elementHeader = "//div[contains(@class,'page-editor')]//li[contains(.,'Heading')]",
 				key_position = "1",
-				locator1 = "PageEditor#ROW_COLUMN_NESTED_ELEMENT");
+				locator1 = "PageEditor#GRID_COLUMN_NESTED_ELEMENT");
 		}
 
 		task ("Add a Button fragment to column 3") {
@@ -915,7 +919,7 @@ definition {
 				key_fragmentName = "Button",
 				key_position = "1",
 				locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_FRAGMENT",
-				locator2 = "PageEditor#ROW_COLUMN",
+				locator2 = "PageEditor#GRID_COLUMN",
 				value1 = "");
 
 			PageEditor.waitForAutoSave();
@@ -924,31 +928,31 @@ definition {
 				key_columnNumber = "3",
 				key_elementHeader = "//div[contains(@class,'page-editor')]//li[contains(.,'Button')]",
 				key_position = "1",
-				locator1 = "PageEditor#ROW_COLUMN_NESTED_ELEMENT");
+				locator1 = "PageEditor#GRID_COLUMN_NESTED_ELEMENT");
 		}
 
 		task ("Assert nested elements duplicated with Row") {
-			PageEditor.gotoDuplicate(fragmentName = "Row");
+			PageEditor.gotoDuplicate(fragmentName = "Grid");
 
-			PageEditor.viewDuplicateFragment(fragmentName = "Row");
+			PageEditor.viewDuplicateFragment(fragmentName = "Grid");
 
 			AssertElementPresent(
 				key_columnNumber = "1",
 				key_elementHeader = "//div[contains(@class,'page-editor')]//li[contains(.,'Web Content Display')]",
 				key_position = "2",
-				locator1 = "PageEditor#ROW_COLUMN_NESTED_ELEMENT");
+				locator1 = "PageEditor#GRID_COLUMN_NESTED_ELEMENT");
 
 			AssertElementPresent(
 				key_columnNumber = "2",
 				key_elementHeader = "//div[contains(@class,'page-editor')]//li[contains(.,'Heading')]",
 				key_position = "2",
-				locator1 = "PageEditor#ROW_COLUMN_NESTED_ELEMENT");
+				locator1 = "PageEditor#GRID_COLUMN_NESTED_ELEMENT");
 
 			AssertElementPresent(
 				key_columnNumber = "3",
 				key_elementHeader = "//div[contains(@class,'page-editor')]//li[contains(.,'Button')]",
 				key_position = "2",
-				locator1 = "PageEditor#ROW_COLUMN_NESTED_ELEMENT");
+				locator1 = "PageEditor#GRID_COLUMN_NESTED_ELEMENT");
 		}
 	}
 
@@ -973,14 +977,14 @@ definition {
 
 			DragAndDrop.javaScriptDragAndDropToObject(
 				key_collectionName = "Layout Elements",
-				key_fragmentName = "Row",
+				key_fragmentName = "Grid",
 				key_position = "1",
 				locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_FRAGMENT",
 				locator2 = "PageEditor#CONTAINER_CONTAINER",
 				value1 = "");
 
 			AssertElementPresent(
-				key_elementHeader = "/div[contains(@class,'page-editor__topper')][1]/div[contains(.,'Row')]//li[contains(@class,'title')]",
+				key_elementHeader = "/div[contains(@class,'page-editor__topper')][1]/div[contains(.,'Grid')]//li[contains(@class,'title')]",
 				key_position = "1",
 				locator1 = "PageEditor#CONTAINER_CONTAINER_NESTED_ELEMENT");
 		}
@@ -991,7 +995,7 @@ definition {
 			PageEditor.viewDuplicateFragment(fragmentName = "Container");
 
 			AssertElementPresent(
-				key_elementHeader = "/div[contains(@class,'page-editor__topper')][1]/div[contains(.,'Row')]//li[contains(@class,'title')]",
+				key_elementHeader = "/div[contains(@class,'page-editor__topper')][1]/div[contains(.,'Grid')]//li[contains(@class,'title')]",
 				key_position = "2",
 				locator1 = "PageEditor#CONTAINER_CONTAINER_NESTED_ELEMENT");
 		}
@@ -1360,9 +1364,6 @@ definition {
 	@description = "This is a test for LPS-110707. Can resize the width of device viewport when edit content page."
 	@priority = "5"
 	test ResizeDeviceViewpoint {
-		property osgi.module.configuration.file.names = "com.liferay.layout.content.page.editor.web.internal.configuration.FFLayoutContentPageEditorConfiguration.config";
-		property osgi.module.configurations = "responsiveEnabled = true";
-
 		ContentPagesNavigator.openEditContentPage(
 			pageName = "Test Content Page Name",
 			siteName = "Test Site Name");
@@ -1371,35 +1372,35 @@ definition {
 			key_deviceType = "Desktop",
 			locator1 = "PageEditor#DEVICE_TYPE");
 
-		AssertElementNotPresent(locator1 = "PageEditor#VIEWPOINT_HANDLE");
+		AssertElementNotPresent(locator1 = "PageEditor#VIEWPORT_HANDLE");
 
 		Click.clickNoMouseOver(
 			key_deviceType = "Tablet",
 			locator1 = "PageEditor#DEVICE_TYPE");
 
-		AssertVisible(locator1 = "PageEditor#VIEWPOINT_HANDLE");
+		AssertVisible(locator1 = "PageEditor#VIEWPORT_HANDLE");
 
 		DragAndDrop.DragAndDropObject(
-			locator1 = "PageEditor#VIEWPOINT_HANDLE",
+			locator1 = "PageEditor#VIEWPORT_HANDLE",
 			position = "200,0");
 
 		AssertElementPresent(
 			key_style = "992px",
-			locator1 = "PageEditor#VIEWPOINT_RESIZER");
+			locator1 = "PageEditor#VIEWPORT_RESIZER");
 
 		Click(
 			key_deviceType = "Portrait Phone",
 			locator1 = "PageEditor#DEVICE_TYPE");
 
-		AssertVisible(locator1 = "PageEditor#VIEWPOINT_HANDLE");
+		AssertVisible(locator1 = "PageEditor#VIEWPORT_HANDLE");
 
 		DragAndDrop.DragAndDropObject(
-			locator1 = "PageEditor#VIEWPOINT_HANDLE",
+			locator1 = "PageEditor#VIEWPORT_HANDLE",
 			position = "200,0");
 
 		AssertElementPresent(
 			key_style = "576px",
-			locator1 = "PageEditor#VIEWPOINT_RESIZER");
+			locator1 = "PageEditor#VIEWPORT_RESIZER");
 	}
 
 	@description = "This is a test for LPS-107285. When the Container fragment is duplicated, the configuration of it and its components should also be duplicated."

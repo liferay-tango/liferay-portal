@@ -16,6 +16,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import RawDOM from '../../common/components/RawDOM';
+
 /**
  * DOM node which will be manually updated and injects
  * React.portals into it.
@@ -156,7 +158,10 @@ UnsafeHTML.defaultProps = {
 	className: '',
 	contentRef: null,
 	getPortals: () => [],
-	globalContext: window,
+	globalContext: {
+		document,
+		window,
+	},
 	markup: '',
 	onRender: () => {},
 };
@@ -169,32 +174,10 @@ UnsafeHTML.propTypes = {
 		PropTypes.shape({current: PropTypes.object}),
 	]),
 	getPortals: PropTypes.func,
-	globalContext: PropTypes.object,
+	globalContext: PropTypes.shape({
+		document: PropTypes.object,
+		window: PropTypes.object,
+	}),
 	markup: PropTypes.string,
 	onRender: PropTypes.func,
-};
-
-/**
- * Creates a DOM node that will be kept forever
- * to allow manipulating the DOM manually.
- */
-class RawDOM extends React.Component {
-	shouldComponentUpdate() {
-		return false;
-	}
-
-	render() {
-		const TagName = this.props.TagName;
-
-		return <TagName ref={this.props.elementRef} />;
-	}
-}
-
-RawDOM.defaultProps = {
-	TagName: 'div',
-};
-
-RawDOM.propTypes = {
-	TagName: PropTypes.string,
-	elementRef: PropTypes.func.isRequired,
 };

@@ -300,7 +300,7 @@ definition {
 
 		DragAndDrop.javaScriptDragAndDropToObject(
 			key_collectionName = "Layout Elements",
-			key_fragmentName = "Row",
+			key_fragmentName = "Grid",
 			key_position = "1",
 			locator1 = "PageEditor#FRAGMENTS_AND_WIDGETS_TAB_FRAGMENT",
 			locator2 = "PageEditor#CONTAINER_CONTAINER",
@@ -606,23 +606,27 @@ definition {
 
 		PageEditor.addFragment(
 			collectionName = "Layout Elements",
-			fragmentName = "Row");
+			fragmentName = "Grid");
 
-		PageEditor.viewRowStyle(
+		PageEditor.viewGridStyle(
 			columnCount = "3",
 			position = "1");
 
-		PageEditor.editLayoutRow(columnCount = "1");
+		PageEditor.editLayoutGrid(
+			columnCount = "1",
+			panel = "Configuration");
 
-		PageEditor.viewRowStyle(
+		PageEditor.viewGridStyle(
 			columnCount = "1",
 			position = "1");
 
 		Click(locator1 = "PageEditor#MANAGEMENT_BAR");
 
-		PageEditor.editLayoutRow(columnCount = "2");
+		PageEditor.editLayoutGrid(
+			columnCount = "2",
+			panel = "Configuration");
 
-		PageEditor.viewRowStyle(
+		PageEditor.viewGridStyle(
 			columnCount = "2",
 			position = "1");
 
@@ -630,7 +634,7 @@ definition {
 			key_text = "undo",
 			locator1 = "Icon#ANY");
 
-		PageEditor.viewRowStyle(
+		PageEditor.viewGridStyle(
 			columnCount = "1",
 			position = "1");
 
@@ -638,7 +642,7 @@ definition {
 			key_text = "undo",
 			locator1 = "Icon#ANY");
 
-		PageEditor.viewRowStyle(
+		PageEditor.viewGridStyle(
 			columnCount = "3",
 			position = "1");
 

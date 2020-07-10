@@ -12,13 +12,30 @@
  * details.
  */
 
-export const LAYOUT_DATA_ITEM_TYPE_LABELS = {
-	collection: Liferay.Language.get('collection-display'),
-	collectionItem: Liferay.Language.get('collection-item'),
-	column: Liferay.Language.get('module'),
-	container: Liferay.Language.get('container'),
-	dropZone: Liferay.Language.get('drop-zone'),
-	fragment: Liferay.Language.get('fragment'),
-	root: Liferay.Language.get('root'),
-	row: Liferay.Language.get('grid'),
+import PropTypes from 'prop-types';
+import React from 'react';
+
+/**
+ * Creates a DOM node that will be kept forever
+ * to allow manipulating the DOM manually.
+ */
+export default class RawDOM extends React.Component {
+	shouldComponentUpdate() {
+		return false;
+	}
+
+	render() {
+		const TagName = this.props.TagName;
+
+		return <TagName ref={this.props.elementRef} />;
+	}
+}
+
+RawDOM.defaultProps = {
+	TagName: 'div',
+};
+
+RawDOM.propTypes = {
+	TagName: PropTypes.string,
+	elementRef: PropTypes.func.isRequired,
 };

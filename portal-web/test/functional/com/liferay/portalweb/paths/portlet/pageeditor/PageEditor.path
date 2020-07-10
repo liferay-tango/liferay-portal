@@ -132,12 +132,12 @@
 	<td></td>
 </tr>
 <tr>
-	<td>VIEWPOINT_HANDLE</td>
+	<td>VIEWPORT_HANDLE</td>
 	<td>//div[contains(@class,'page-editor__layout-viewport__handle')]</td>
 	<td></td>
 </tr>
 <tr>
-	<td>VIEWPOINT_RESIZER</td>
+	<td>VIEWPORT_RESIZER</td>
 	<td>//div[contains(@class,'page-editor__layout-viewport__resizer')][contains(@style,'${key_style}')]</td>
 	<td></td>
 </tr>
@@ -194,6 +194,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>EDITABLE_FIELD_TOOLBAR_MAPPED_BUTTON</td>
+	<td>//div[contains(@class,'form-group') and contains(.,'${key_mappedField}')]//button[@*='Map' and contains(@class,'active')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>EDITABLE_FIELD_TOOLBAR_MAP_BUTTON_SPECIFIC</td>
 	<td>//div[contains(@class,'form-group') and contains(.,'${key_mappedField}')]//button[@*='Map']</td>
 	<td></td>
@@ -211,6 +216,11 @@
 <tr>
 	<td>EDITABLE_FIELD_TOOLBAR_LAYOUT_BACKGROUND_IMAGE_BUTTON</td>
 	<td>//button[@data-panel-id='layout_background_image']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>EDITABLE_FIELD_TOOLBAR_UNMAPPED_BUTTON</td>
+	<td>//div[contains(@class,'form-group') and contains(.,'${key_mappedField}')]//button[@*='Map' and not (contains(@class,'active'))]</td>
 	<td></td>
 </tr>
 <!--EXPERIENCE-->
@@ -461,36 +471,6 @@
 </tr>
 <!--LAYOUT ELEMENTS-->
 <tr>
-	<td>LAYOUT_ELEMENTS_HEADER</td>
-	<td>//div[contains(@class,'page-editor__root page-editor__topper')]/div[contains(.,'${key_elementType}')][${key_position}]//li[contains(@class,'title')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>ROW_COLUMN</td>
-	<td>//div[contains(@class,'page-editor__topper') and contains(.,'Row')][${key_position}]//div[contains(@class,'page-editor__col')][${key_columnNumber}]</td>
-	<td></td>
-</tr>
-<tr>
-  <td>ROW_COLUMN_EMPTY</td>
-  <td>//div[contains(@class,'page-editor__topper') and contains(.,'Row')][${key_position}]//div[contains(@class,'row empty')]</td>
-  <td></td>
-</tr>
-<tr>
-	<td>ROW_COLUMN_NESTED_ELEMENT</td>
-	<td>//div[contains(@class,'page-editor__topper') and contains(.,'Row')][${key_position}]//div[contains(@class,'page-editor__col')][${key_columnNumber}]${key_elementHeader}</td>
-	<td></td>
-</tr>
-<tr>
-	<td>ROW_COLUMN_FIRST_RESIZER</td>
-	<td>//button[contains(@class,'page-editor__col__resizer-first')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>ROW_COLUMN_RESIZER</td>
-	<td>//div[contains(@class,'page-editor__topper col')][${key_position}]//button[contains(@class,'page-editor__col__resizer')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>CONTAINER_CONTAINER</td>
 	<td>//div[contains(@class,'page-editor__topper') and contains(.,'Container')][${key_position}]//div[contains(@class,'page-editor__container')]</td>
 	<td></td>
@@ -505,12 +485,37 @@
 	<td>//div[contains(@class,'page-editor__topper')]/div[contains(.,'Container')][${key_position}]//div[contains(@class,'page-editor__container')]${key_elementHeader}</td>
 	<td></td>
 </tr>
-<!--LAYOUT_ELEMENTS_CONFIGURATION-->
 <tr>
-	<td>ROW_CONFIGURATION_COLUMNS_NO_GUTTER</td>
-	<td>//div[contains(@class,'page-editor__topper')]/div[contains(.,'Row')][${key_position}]//div[contains(@class,'page-editor__row') and contains(@class,'no-gutters')]</td>
+	<td>GRID_COLUMN</td>
+	<td>//div[contains(@class,'page-editor__topper') and contains(.,'Grid')][${key_position}]//div[contains(@class,'page-editor__col')][${key_columnNumber}]</td>
 	<td></td>
 </tr>
+<tr>
+  <td>GRID_COLUMN_EMPTY</td>
+  <td>//div[contains(@class,'page-editor__topper') and contains(.,'Grid')][${key_position}]//div[contains(@class,'row empty')]</td>
+  <td></td>
+</tr>
+<tr>
+	<td>GRID_COLUMN_NESTED_ELEMENT</td>
+	<td>//div[contains(@class,'page-editor__topper') and contains(.,'Grid')][${key_position}]//div[contains(@class,'page-editor__col')][${key_columnNumber}]${key_elementHeader}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>GRID_COLUMN_FIRST_RESIZER</td>
+	<td>//button[contains(@class,'page-editor__col__resizer-first')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>GRID_COLUMN_RESIZER</td>
+	<td>//div[contains(@class,'page-editor__col')][${key_position}]//button[contains(@class,'page-editor__col__resizer')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>LAYOUT_ELEMENTS_HEADER</td>
+	<td>//div[contains(@class,'page-editor__root page-editor__topper')]/div[contains(.,'${key_elementType}')][${key_position}]//li[contains(@class,'title')]</td>
+	<td></td>
+</tr>
+<!--LAYOUT_ELEMENTS_CONFIGURATION-->
 <tr>
 	<td>CONTAINER_CONFIGURATION_BACKGROUND_COLOR</td>
 	<td>//div[contains(@class,'page-editor__topper')]/div[contains(.,'Container')][${key_position}]//div[contains(@class,'page-editor__container')][contains(@class,'bg-${key_paletteItem}')]</td>
@@ -559,6 +564,11 @@
 <tr>
 	<td>CONTAINER_CONFIGURATION_PADDING_TOP</td>
 	<td>//div[contains(@class,'page-editor__topper')]/div[contains(.,'Container')][${key_position}]//div[contains(@class,'page-editor__container')][contains(@class,'pt-${key_paddingTop}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>GRID_CONFIGURATION_COLUMNS_NO_GUTTER</td>
+	<td>//div[contains(@class,'page-editor__topper')]/div[contains(.,'Grid')][${key_position}]//div[contains(@class,'page-editor__row') and contains(@class,'no-gutters')]</td>
 	<td></td>
 </tr>
 <!--LANGUAGE_MENU-->

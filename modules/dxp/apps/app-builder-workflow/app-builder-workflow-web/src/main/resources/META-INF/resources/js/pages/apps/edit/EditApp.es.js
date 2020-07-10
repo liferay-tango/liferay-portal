@@ -18,16 +18,19 @@ import EditAppContext, {
 	reducer,
 } from 'app-builder-web/js/pages/apps/edit/EditAppContext.es';
 import {getItem} from 'app-builder-web/js/utils/client.es';
+import {errorToast} from 'app-builder-web/js/utils/toast.es';
 import {getTranslatedValue} from 'app-builder-web/js/utils/utils.es';
 import React, {useEffect, useReducer, useState} from 'react';
 
 import '../../../../css/EditApp.scss';
 import DeployAppModal from './DeployAppModal.es';
 import configReducer, {
+	UPDATE_CONFIG,
 	UPDATE_WORKFLOW_APP,
 	getInitialConfig,
 } from './configReducer.es';
 import EditAppSidebar from './sidebar/EditAppSidebar.es';
+import {populateConfigData} from './utils.es';
 import WorkflowBuilder from './workflow-builder/WorkflowBuilder.es';
 
 export default ({
@@ -82,20 +85,27 @@ export default ({
 					`/o/app-builder-workflow/v1.0/apps/${appId}/app-workflows`
 				),
 			])
-				.then(([app, workflowApp]) => {
+				.then(populateConfigData)
+				.then(([app, workflowApp, config]) => {
 					dispatch({
 						app,
 						type: UPDATE_APP,
 					});
-
 					dispatchConfig({
 						...workflowApp,
 						type: UPDATE_WORKFLOW_APP,
 					});
+					dispatchConfig({
+						config,
+						type: UPDATE_CONFIG,
+					});
 
 					setLoading(false);
 				})
-				.catch((_) => setLoading(false));
+				.catch(() => {
+					errorToast();
+					setLoading(false);
+				});
 		}
 	}, [appId]);
 

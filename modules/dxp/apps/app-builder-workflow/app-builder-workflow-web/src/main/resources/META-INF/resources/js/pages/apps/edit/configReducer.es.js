@@ -12,6 +12,7 @@
 import {sub} from 'app-builder-web/js/utils/lang.es';
 
 export const ADD_STEP = 'ADD_STEP';
+export const UPDATE_CONFIG = 'UPDATE_CONFIG';
 export const UPDATE_DATA_OBJECT = 'UPDATE_DATA_OBJECT';
 export const UPDATE_FORM_VIEW = 'UPDATE_FORM_VIEW';
 export const UPDATE_STEP = 'UPDATE_STEP';
@@ -81,7 +82,20 @@ export default (state, action) => {
 				steps: [...workflowSteps, finalStep],
 			};
 		}
+		case UPDATE_CONFIG: {
+			const {
+				dataObject = {},
+				formView = {},
+				tableView = {},
+			} = action.config;
 
+			return {
+				...state,
+				dataObject,
+				formView,
+				tableView,
+			};
+		}
 		case UPDATE_DATA_OBJECT: {
 			return {
 				...state,

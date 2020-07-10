@@ -237,7 +237,6 @@ definition {
 	}
 
 	@description = "This is a use case for OAUTH2-242."
-	@ignore = "true"
 	@priority = "5"
 	test AssertAuthorizationCodeWorksInCluster {
 		property app.server.bundles.size = "1";

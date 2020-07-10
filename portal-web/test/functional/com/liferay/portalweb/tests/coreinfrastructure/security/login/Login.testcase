@@ -112,7 +112,6 @@ definition {
 		AssertLocation(value1 = "${portalURL}/web/guest/landing");
 	}
 
-	@ignore = "true"
 	@priority = "4"
 	test FacebookSSOSmoke {
 		property dummy.socket.proxy.disabled = "true";

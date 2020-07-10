@@ -305,6 +305,22 @@ public class ContentPageEditorDisplayContext {
 				"getExperienceUsedPortletsURL",
 				getResourceURL("/content_layout/get_experience_used_portlets")
 			).put(
+				"getIframeContentCssURL",
+				PortalUtil.getStaticResourceURL(
+					httpServletRequest,
+					PortalUtil.getPathModule() +
+						"/layout-content-page-editor-web/page_editor/app" +
+							"/components/App.css")
+			).put(
+				"getIframeContentURL",
+				() -> {
+					String layoutURL = PortalUtil.getLayoutFriendlyURL(
+						themeDisplay.getLayout(), themeDisplay);
+
+					return HttpUtil.addParameter(
+						layoutURL, "p_l_mode", Constants.PREVIEW);
+				}
+			).put(
 				"getPageContentsURL",
 				getResourceURL("/content_layout/get_page_contents")
 			).put(
@@ -382,9 +398,6 @@ public class ContentPageEditorDisplayContext {
 			).put(
 				"renderFragmentEntryURL",
 				getResourceURL("/content_layout/get_fragment_entry_link")
-			).put(
-				"responsiveEnabled",
-				_ffLayoutContentPageEditorConfiguration.responsiveEnabled()
 			).put(
 				"sidebarPanels", getSidebarPanels()
 			).put(

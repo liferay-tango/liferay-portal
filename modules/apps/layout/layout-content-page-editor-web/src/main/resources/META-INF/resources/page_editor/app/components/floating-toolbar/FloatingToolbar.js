@@ -30,6 +30,7 @@ import {FLOATING_TOOLBAR_CONFIGURATIONS} from '../../config/constants/floatingTo
 import {config} from '../../config/index';
 import {useSelector} from '../../store/index';
 import {useHoverItem, useIsActive} from '../Controls';
+import {useGlobalContext} from '../GlobalContext';
 import {useUpdatedLayoutDataContext} from '../ResizeContext';
 
 export default React.memo(FloatingToolbar, (prevProps, nextProps) => {
@@ -67,6 +68,7 @@ function FloatingToolbar({
 	const [windowWidth, setWindowWidth] = useState(0);
 	const [show, setShow] = useState(false);
 	const updatedLayoutData = useUpdatedLayoutDataContext();
+	const globalContext = useGlobalContext();
 
 	const languageId = useSelector((state) => state.languageId);
 	const selectedViewportSize = useSelector(
@@ -83,24 +85,12 @@ function FloatingToolbar({
 
 	const alignElement = useCallback(
 		(element, anchor, callback) => {
-			if (
-				isMounted() &&
-				show &&
-				element &&
-				anchor &&
-				document.body.contains(anchor)
-			) {
+			if (isMounted() && show && element && anchor) {
 				try {
-					Align.align(
-						element,
-						anchor,
-						getElementAlign(
-							element,
-							anchor,
-							config.languageDirection?.[languageId] === 'rtl'
-						),
-						false
-					);
+					align(element, anchor, {
+						globalContext,
+						rtl: config.languageDirection?.[languageId] === 'rtl',
+					});
 				}
 				catch (error) {
 					console.error(error);
@@ -118,7 +108,7 @@ function FloatingToolbar({
 				callback();
 			}
 		},
-		[isMounted, languageId, show]
+		[globalContext, isMounted, languageId, show]
 	);
 
 	const handleButtonClick = useCallback(
@@ -143,21 +133,27 @@ function FloatingToolbar({
 
 	useEffect(() => {
 		const handleWindowResize = debounceRAF(() => {
-			setWindowWidth(window.innerWidth);
+			setWindowWidth(globalContext.window.innerWidth);
 		});
 
 		const handleWindowScroll = debounceRAF(() => {
-			setWindowScrollPosition(window.scrollY);
+			setWindowScrollPosition(globalContext.window.scrollY);
 		});
 
-		window.addEventListener('resize', handleWindowResize);
-		window.addEventListener('scroll', handleWindowScroll);
+		globalContext.window.addEventListener('resize', handleWindowResize);
+		globalContext.window.addEventListener('scroll', handleWindowScroll);
 
 		return () => {
-			window.removeEventListener('resize', handleWindowResize);
-			window.removeEventListener('scroll', handleWindowScroll);
+			globalContext.window.removeEventListener(
+				'resize',
+				handleWindowResize
+			);
+			globalContext.window.removeEventListener(
+				'scroll',
+				handleWindowScroll
+			);
 		};
-	}, []);
+	}, [globalContext]);
 
 	useEffect(() => {
 		if (!itemElement) {
@@ -435,97 +431,74 @@ const ELEMENT_POSITION = {
 	},
 };
 
-/**
- * Gets a suggested align of an element to an anchor
- * @param {HTMLElement|null} element
- * @param {HTMLElement|null} anchor
- * @param {boolean} rtl
- * @private
- * @return {number} Selected align
- * @review
- */
-const getElementAlign = (element, anchor, rtl) => {
-	const horizontal = getHorizontalPosition(anchor, element, rtl);
-	const vertical = getVerticalPosition(anchor, element, horizontal);
+const align = (element, anchor, {globalContext, rtl}) => {
+	const horizontal = (() => {
+		const {
+			left: wrapperLeft,
+			right: wrapperRight,
+		} = globalContext.document
+			?.getElementById('page-editor')
+			?.getBoundingClientRect() ?? {left: 0, right: 0};
 
-	return ELEMENT_POSITION[vertical][horizontal];
-};
+		const {
+			left: anchorLeft,
+			right: anchorRight,
+		} = anchor.getBoundingClientRect();
 
-/**
- * Gets an elements horizontal position. If the element fits at the preferred
- * position (left in rtl, right in ltr), it's placed there, otherwise it is
- * placed at the opposite.
- * @param {HTMLElement|null} element
- * @param {HTMLElement|null} anchor
- * @param {boolean} rtl
- * @private
- * @return {number} Selected horizontal position
- * @review
- */
-const getHorizontalPosition = (anchor, element, rtl) => {
-	const pageEditor = document.getElementById('page-editor');
+		const {width: elementWidth} = element.getBoundingClientRect();
 
-	const {
-		left: pageEditorLeft,
-		right: pageEditorRight,
-	} = pageEditor?.getBoundingClientRect() ?? {left: 0, right: 0};
+		if (rtl) {
+			const fitsOnLeft = anchorLeft + elementWidth < wrapperRight;
 
-	const {
-		left: anchorLeft,
-		right: anchorRight,
-	} = anchor.getBoundingClientRect();
+			return fitsOnLeft ? 'left' : 'right';
+		}
+		else {
+			const fitsOnRight = anchorRight - elementWidth > wrapperLeft;
 
-	const {width: elementWidth} = element.getBoundingClientRect();
+			return fitsOnRight ? 'right' : 'left';
+		}
+	})();
 
-	if (rtl) {
-		const fitsOnLeft = anchorLeft + elementWidth < pageEditorRight;
+	const vertical = (() => {
+		const alignFits = (align, availableAlign) => {
+			try {
+				return availableAlign.includes(
+					Align.suggestAlignBestRegion(element, anchor, align)
+						.position
+				);
+			}
+			catch (error) {
+				return true;
+			}
+		};
 
-		return fitsOnLeft ? 'left' : 'right';
+		const fallbackVertical = 'top';
+		let vertical = 'bottom';
+
+		if (
+			!alignFits(
+				ELEMENT_POSITION[vertical][horizontal],
+				ELEMENT_AVAILABLE_POSITIONS[vertical]
+			) &&
+			alignFits(
+				ELEMENT_POSITION[fallbackVertical][horizontal],
+				ELEMENT_AVAILABLE_POSITIONS[fallbackVertical]
+			)
+		) {
+			vertical = fallbackVertical;
+		}
+
+		return vertical;
+	})();
+
+	Align.align(element, anchor, ELEMENT_POSITION[vertical][horizontal], false);
+
+	if (globalContext.iframe) {
+		const {left, top} = globalContext.iframe.getBoundingClientRect();
+
+		element.style.transform = `translateX(${left}px) translateY(${top}px)`;
 	}
 	else {
-		const fitsOnRight = anchorRight - elementWidth > pageEditorLeft;
-
-		return fitsOnRight ? 'right' : 'left';
+		element.style.transform = '';
 	}
-};
-
-/**
- * Gets an elements vertical position. If the element fits at bottom,
- * it's placed there, otherwise it is placed at top.
- * @param {HTMLElement|null} element
- * @param {HTMLElement|null} anchor
- * @param {string} horizontalPosition
- * @private
- * @return {number} Selected vertical position
- * @review
- */
-const getVerticalPosition = (anchor, element, horizontalPosition) => {
-	const alignFits = (align, availableAlign) => {
-		try {
-			return availableAlign.includes(
-				Align.suggestAlignBestRegion(element, anchor, align).position
-			);
-		}
-		catch (error) {
-			return true;
-		}
-	};
-
-	const fallbackVertical = 'top';
-	let vertical = 'bottom';
-
-	if (
-		!alignFits(
-			ELEMENT_POSITION[vertical][horizontalPosition],
-			ELEMENT_AVAILABLE_POSITIONS[vertical]
-		) &&
-		alignFits(
-			ELEMENT_POSITION[fallbackVertical][horizontalPosition],
-			ELEMENT_AVAILABLE_POSITIONS[fallbackVertical]
-		)
-	) {
-		vertical = fallbackVertical;
-	}
-
-	return vertical;
 };

@@ -249,6 +249,10 @@ describe('EditApp', () => {
 		fetch.mockResponseOnce(JSON.stringify(roleItems));
 		fetch.mockResponseOnce(JSON.stringify(app));
 		fetch.mockResponseOnce(JSON.stringify(workflow));
+		fetch.mockResponseOnce(JSON.stringify(formViewItems));
+		fetch.mockResponseOnce(JSON.stringify(customObjectItems));
+		fetch.mockResponseOnce(JSON.stringify(nativeObjectItems));
+		fetch.mockResponseOnce(JSON.stringify(tableViewItems));
 		fetch.mockResponseOnce(JSON.stringify(customObjectItems));
 		fetch.mockResponseOnce(JSON.stringify(nativeObjectItems));
 		fetch.mockResponseOnce(JSON.stringify(formViewItems));
