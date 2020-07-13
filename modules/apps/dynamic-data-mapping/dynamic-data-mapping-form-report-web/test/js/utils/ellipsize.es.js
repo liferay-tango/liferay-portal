@@ -12,5 +12,12 @@
  * details.
  */
 
-export default (value, lenght) =>
-	(value.substring(0, lenght) + '...').split(' ').join('');
+import ellipsize from '../../../src/main/resources/META-INF/resources/js/utils/ellipsize.es';
+
+describe('ellipsize', () => {
+	it('add an ellipsis in the end of the text', () => {
+		const ellipsized = ellipsize('Very long text', 5);
+
+		expect(ellipsized).toBe('Very...');
+	});
+});

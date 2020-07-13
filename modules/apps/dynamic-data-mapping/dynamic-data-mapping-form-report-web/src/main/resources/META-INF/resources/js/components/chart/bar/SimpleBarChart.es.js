@@ -27,7 +27,7 @@ import {
 import {NAMED_COLORS} from '../../../utils/colors.es';
 import TooltipContent from '../TooltipContent.es';
 
-const {blue, blueDark, blueLight, gray, white} = NAMED_COLORS;
+const {blueDark, gray, lightBlue, white} = NAMED_COLORS;
 
 export default ({data, height, totalEntries, width}) => {
 	const [activeIndex, setActiveIndex] = useState(null);
@@ -72,8 +72,8 @@ export default ({data, height, totalEntries, width}) => {
 				<Tooltip
 					content={
 						<TooltipContent
-							activeIndex={activeIndex}
 							showBullet={false}
+							showHeader={false}
 							totalEntries={totalEntries}
 						/>
 					}
@@ -84,16 +84,16 @@ export default ({data, height, totalEntries, width}) => {
 					barCategoryGap={30}
 					barGap={5}
 					dataKey="count"
-					fill={blue}
+					fill={lightBlue}
 					onMouseOut={handleOnMouseOut}
 					onMouseOver={(_, index) => handleOnMouseOver(index)}
 				>
 					{data.map((_, index) => (
 						<Cell
-							fill={
-								activeIndex == null || activeIndex === index
-									? blue
-									: blueLight
+							fillOpacity={
+								activeIndex != null && activeIndex != index
+									? '.5'
+									: 1
 							}
 							key={`cell-${index}`}
 						/>

@@ -62,4 +62,14 @@ describe('List', () => {
 			'see-all-entries'
 		);
 	});
+
+	it('renders dates according to the language', () => {
+		const data = ['12-20-2020'];
+
+		const type = 'date';
+
+		const {getByText} = render(<List {...props} data={data} type={type} />);
+
+		expect(getByText('12/20/2020')).toBeTruthy();
+	});
 });

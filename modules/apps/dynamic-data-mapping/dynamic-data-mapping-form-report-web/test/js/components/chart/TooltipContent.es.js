@@ -20,11 +20,10 @@ import TooltipContent from '../../../../src/main/resources/META-INF/resources/js
 describe('Tooltip', () => {
 	afterEach(cleanup);
 
-	it('renders label, number of entries and percentage', () => {
+	it('renders the tooltip with label, number of entries and percentage for SimpleBarChart', () => {
 		const {container} = render(
 			<TooltipContent
 				active={true}
-				activeIndex={0}
 				payload={[
 					{
 						name: 'count',
@@ -41,5 +40,78 @@ describe('Tooltip', () => {
 			.innerHTML;
 
 		expect(tooltipLabel).toBe('label1: 2 entries <b>(100%)</b>');
+	});
+
+	it('renders tooltip for MultiBar Chart', () => {
+		const {container} = render(
+			<TooltipContent
+				active={true}
+				label="Row 1"
+				payload={[
+					{
+						dataKey: 'Col 1',
+						fill: '#4b9bff',
+						name: 'Col 1',
+						value: 1,
+					},
+					{
+						dataKey: 'Col 2',
+						fill: '#af78ff',
+						name: 'Col 2',
+						value: 2,
+					},
+					{
+						dataKey: 'Col 3',
+						fill: '#50d2a0',
+						name: 'Col 3',
+						value: 3,
+					},
+				]}
+				roundBullet={false}
+				totalEntries={6}
+			/>
+		);
+
+		const header = container.querySelector('.header').innerHTML;
+
+		expect(header).toBe('<div class="title">Row 1</div>');
+
+		const tooltipBodies = container.querySelectorAll('#tooltip-label');
+
+		expect(tooltipBodies[0].innerHTML).toBe(
+			'Col 1: 1 entry <b>(16.6%)</b>'
+		);
+		expect(tooltipBodies[1].innerHTML).toBe(
+			'Col 2: 2 entries <b>(33.3%)</b>'
+		);
+		expect(tooltipBodies[2].innerHTML).toBe(
+			'Col 3: 3 entries <b>(50%)</b>'
+		);
+	});
+
+	it('renders tooltip for Pie chart', () => {
+		const {container} = render(
+			<TooltipContent
+				active={true}
+				payload={[
+					{
+						dataKey: 'count',
+						fill: '#4b9bff',
+						name: 'Option 1',
+						payload: {label: 'Option 1'},
+						value: 1,
+					},
+				]}
+				roundBullet={false}
+				showBullet={true}
+				showHeader={false}
+				totalEntries={1}
+			/>
+		);
+
+		const tooltipLabel = container.querySelector('#tooltip-label')
+			.innerHTML;
+
+		expect(tooltipLabel).toBe('Option 1: 1 entry <b>(100%)</b>');
 	});
 });
