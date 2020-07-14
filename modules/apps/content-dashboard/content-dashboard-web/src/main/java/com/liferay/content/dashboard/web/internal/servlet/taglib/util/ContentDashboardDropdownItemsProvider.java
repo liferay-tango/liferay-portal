@@ -18,6 +18,7 @@ import com.liferay.content.dashboard.web.internal.item.ContentDashboardItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemList;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.PortletURLUtil;
@@ -92,6 +93,32 @@ public class ContentDashboardDropdownItemsProvider {
 					_getURLWithBackURL(
 						contentDashboardItem.getEditURL(httpServletRequest)));
 				dropdownItem.setLabel(_language.get(locale, "edit"));
+
+				return dropdownItem;
+			},
+			() -> {
+				DropdownItem dropdownItem = new DropdownItem();
+
+				dropdownItem.setHref("#");
+				dropdownItem.setLabel(_language.get(locale, "info"));
+
+				return dropdownItem;
+			},
+			() -> {
+				HttpServletRequest httpServletRequest =
+					_portal.getHttpServletRequest(_liferayPortletRequest);
+
+				if (!contentDashboardItem.isViewURLEnabled(
+						httpServletRequest)) {
+
+					return null;
+				}
+
+				DropdownItem dropdownItem = new DropdownItem();
+
+				dropdownItem.setHref("#");
+				dropdownItem.setLabel(
+					LanguageUtil.get(httpServletRequest, "metrics"));
 
 				return dropdownItem;
 			});
