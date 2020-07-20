@@ -22,55 +22,43 @@ ContentDashboardAdminDisplayContext contentDashboardAdminDisplayContext = (Conte
 ContentDashboardAdminManagementToolbarDisplayContext contentDashboardAdminManagementToolbarDisplayContext = (ContentDashboardAdminManagementToolbarDisplayContext)request.getAttribute(ContentDashboardWebKeys.CONTENT_DASHBOARD_ADMIN_MANAGEMENT_TOOLBAR_DISPLAY_CONTEXT);
 %>
 
-<c:if test="<%= contentDashboardAdminDisplayContext.isAuditGraphEnabled() %>">
-	<clay:container
-		cssClass="main-content-body"
-	>
-		<div class="sheet">
-			<h2 class="sheet-title">
-				<%= contentDashboardAdminDisplayContext.getAuditGraphTitle() %>
-			</h2>
-
-			<div id="audit-graph">
-				<div class="inline-item my-5 p-5 w-100">
-					<span aria-hidden="true" class="loading-animation"></span>
-				</div>
-
-				<react:component
-					data="<%= contentDashboardAdminDisplayContext.getData() %>"
-					module="js/AuditGraphApp"
-				/>
-			</div>
-		</div>
-	</clay:container>
-</c:if>
-
-<clay:container
-	cssClass="main-content-body"
+<clay:row
+	cssClass="no-gutters"
 >
-	<div class="sheet">
-		<h2 class="sheet-title">
-			<%= LanguageUtil.format(request, "content-x", contentDashboardAdminDisplayContext.getSearchContainer().getTotal(), false) %>
-		</h2>
+	<clay:container-fluid>
+		<c:if test="<%= contentDashboardAdminDisplayContext.isAuditGraphEnabled() %>">
+			<div class="main-content-body">
+				<div class="dashboard-content sheet">
+					<h2 class="sheet-title">
+						<%= contentDashboardAdminDisplayContext.getAuditGraphTitle() %>
+					</h2>
 
-		<clay:management-toolbar
-			displayContext="<%= contentDashboardAdminManagementToolbarDisplayContext %>"
-			elementClasses="content-dashboard-management-toolbar"
-		/>
+					<div id="audit-graph">
+						<div class="inline-item my-5 p-5 w-100">
+							<span aria-hidden="true" class="loading-animation"></span>
+						</div>
 
-		<clay:container-fluid
-			cssClass="closed sidenav-container sidenav-right"
-			id='<%= liferayPortletResponse.getNamespace() + "infoPanelId" %>'
-		>
-			<liferay-frontend:sidebar-panel
-				resourceURL="<%= String.valueOf(contentDashboardAdminDisplayContext.getInfoPanelURL()) %>"
-				searchContainerId="content"
-			>
-				<liferay-util:include page="/info_panel.jsp" servletContext="<%= application %>" />
-			</liferay-frontend:sidebar-panel>
+						<react:component
+							data="<%= contentDashboardAdminDisplayContext.getData() %>"
+							module="js/AuditGraphApp"
+						/>
+					</div>
+				</div>
+			</div>
+		</c:if>
 
-			<div class="sheet-section sidenav-content">
-				<aui:form action="<%= String.valueOf(contentDashboardAdminDisplayContext.getInfoPanelURL()) %>" name="fm">
+		<div class="main-content-body">
+			<div class="dashboard-content sheet">
+				<h2 class="sheet-title">
+					<%= LanguageUtil.format(request, "content-x", contentDashboardAdminDisplayContext.getSearchContainer().getTotal(), false) %>
+				</h2>
+
+				<clay:management-toolbar
+					displayContext="<%= contentDashboardAdminManagementToolbarDisplayContext %>"
+					elementClasses="content-dashboard-management-toolbar"
+				/>
+
+				<div class="sheet-section">
 					<liferay-ui:search-container
 						id="content"
 						searchContainer="<%= contentDashboardAdminDisplayContext.getSearchContainer() %>"
@@ -137,7 +125,7 @@ ContentDashboardAdminManagementToolbarDisplayContext contentDashboardAdminManage
 								<%
 								List<ContentDashboardItem.Status> statuses = contentDashboardItem.getStatuses(locale);
 
-								for (ContentDashboardItem.Status status : statuses) {
+									for (ContentDashboardItem.Status status : statuses) {
 								%>
 
 									<clay:label
@@ -187,8 +175,17 @@ ContentDashboardAdminManagementToolbarDisplayContext contentDashboardAdminManage
 							/>
 
 							<liferay-ui:search-container-column-text>
+
+								<%
+								Map<String, Object> additionalProps = HashMapBuilder.<String, Object>put(
+									"sidebarContainerSelector", ".sidebar-container"
+								).build();
+								%>
+
 								<clay:dropdown-actions
+									additionalProps="<%= additionalProps %>"
 									dropdownItems="<%= contentDashboardAdminDisplayContext.getDropdownItems(contentDashboardItem) %>"
+									propsTransformer="js/transformers/ActionsComponentPropsTransformer"
 								/>
 							</liferay-ui:search-container-column-text>
 						</liferay-ui:search-container-row>
@@ -197,11 +194,14 @@ ContentDashboardAdminManagementToolbarDisplayContext contentDashboardAdminManage
 							markupView="lexicon"
 						/>
 					</liferay-ui:search-container>
-				</aui:form>
+				</div>
 			</div>
-		</clay:container-fluid>
+		</div>
+	</clay:container-fluid>
+
+	<div class="sidebar-container">
 	</div>
-</clay:container>
+</clay:row>
 
 <liferay-frontend:component
 	componentId="<%= contentDashboardAdminManagementToolbarDisplayContext.getDefaultEventHandler() %>"
