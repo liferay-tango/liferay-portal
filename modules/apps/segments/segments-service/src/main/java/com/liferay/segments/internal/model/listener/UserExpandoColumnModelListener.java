@@ -199,9 +199,9 @@ public class UserExpandoColumnModelListener
 			entityField = new DoubleEntityField(
 				encodedName, locale -> encodedIndexedFieldName);
 		}
-		else if ((expandoColumn.getType() == ExpandoColumnConstants.SHORT) ||
-				 (expandoColumn.getType() == ExpandoColumnConstants.INTEGER) ||
-				 (expandoColumn.getType() == ExpandoColumnConstants.LONG)) {
+		else if ((expandoColumn.getType() == ExpandoColumnConstants.INTEGER) ||
+				 (expandoColumn.getType() == ExpandoColumnConstants.LONG) ||
+				 (expandoColumn.getType() == ExpandoColumnConstants.SHORT)) {
 
 			entityField = new IntegerEntityField(
 				encodedName, locale -> encodedIndexedFieldName);
