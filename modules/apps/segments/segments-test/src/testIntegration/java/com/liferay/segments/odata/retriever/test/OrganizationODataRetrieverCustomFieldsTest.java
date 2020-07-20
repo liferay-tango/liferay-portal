@@ -173,7 +173,7 @@ public class OrganizationODataRetrieverCustomFieldsTest {
 		throws Exception {
 
 		testGetOrganizationsFilterByCustomFieldWithEquals(
-			ExpandoColumnConstants.DOUBLE,
+			ExpandoColumnConstants.FLOAT,
 			ExpandoColumnConstants.INDEX_TYPE_KEYWORD, 3.0F,
 			String.valueOf(3.0F), LocaleUtil.getDefault(), 1, true);
 	}
@@ -183,7 +183,7 @@ public class OrganizationODataRetrieverCustomFieldsTest {
 		throws Exception {
 
 		testGetOrganizationsFilterByCustomFieldWithEquals(
-			ExpandoColumnConstants.DOUBLE,
+			ExpandoColumnConstants.FLOAT,
 			ExpandoColumnConstants.INDEX_TYPE_TEXT, 3.0F, String.valueOf(3.0F),
 			LocaleUtil.getDefault(), 1, true);
 	}
@@ -253,7 +253,7 @@ public class OrganizationODataRetrieverCustomFieldsTest {
 		throws Exception {
 
 		testGetOrganizationsFilterByCustomFieldWithEquals(
-			ExpandoColumnConstants.INTEGER,
+			ExpandoColumnConstants.LONG,
 			ExpandoColumnConstants.INDEX_TYPE_KEYWORD, 3L, String.valueOf(3L),
 			LocaleUtil.getDefault(), 1, true);
 	}
@@ -263,7 +263,7 @@ public class OrganizationODataRetrieverCustomFieldsTest {
 		throws Exception {
 
 		testGetOrganizationsFilterByCustomFieldWithEquals(
-			ExpandoColumnConstants.INTEGER,
+			ExpandoColumnConstants.LONG,
 			ExpandoColumnConstants.INDEX_TYPE_TEXT, 3L, String.valueOf(3L),
 			LocaleUtil.getDefault(), 1, true);
 	}
@@ -273,7 +273,7 @@ public class OrganizationODataRetrieverCustomFieldsTest {
 		throws Exception {
 
 		testGetOrganizationsFilterByCustomFieldWithEquals(
-			ExpandoColumnConstants.INTEGER,
+			ExpandoColumnConstants.SHORT,
 			ExpandoColumnConstants.INDEX_TYPE_KEYWORD, (short)3,
 			String.valueOf((short)3), LocaleUtil.getDefault(), 1, true);
 	}
@@ -283,7 +283,7 @@ public class OrganizationODataRetrieverCustomFieldsTest {
 		throws Exception {
 
 		testGetOrganizationsFilterByCustomFieldWithEquals(
-			ExpandoColumnConstants.INTEGER,
+			ExpandoColumnConstants.SHORT,
 			ExpandoColumnConstants.INDEX_TYPE_TEXT, (short)3,
 			String.valueOf((short)3), LocaleUtil.getDefault(), 1, true);
 	}
