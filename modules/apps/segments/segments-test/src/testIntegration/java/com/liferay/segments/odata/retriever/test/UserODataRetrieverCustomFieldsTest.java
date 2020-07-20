@@ -101,364 +101,108 @@ public class UserODataRetrieverCustomFieldsTest {
 	public void testGetUsersFilterByCustomFieldWithEqualsAndBooleanKeywordType()
 		throws Exception {
 
-		ExpandoColumn expandoColumn = _addExpandoColumn(
-			_expandoTable, RandomTestUtil.randomString(),
+		testGetUsersFilterByCustomFieldWithEquals(
 			ExpandoColumnConstants.BOOLEAN,
-			ExpandoColumnConstants.INDEX_TYPE_KEYWORD);
-
-		Boolean columnValue = Boolean.TRUE;
-
-		User user1 = _addUser(expandoColumn.getName(), columnValue);
-
-		_users.add(user1);
-
-		User user2 = UserTestUtil.addUser();
-
-		_users.add(user2);
-
-		String filterString = String.format(
-			"(customField/%s eq %s)", _encodeName(expandoColumn),
-			String.valueOf(columnValue));
-
-		int count = _getODataRetriever().getResultsCount(
-			TestPropsValues.getCompanyId(), filterString,
-			LocaleUtil.getDefault());
-
-		Assert.assertEquals(1, count);
-
-		List<User> users = _getODataRetriever().getResults(
-			TestPropsValues.getCompanyId(), filterString,
-			LocaleUtil.getDefault(), 0, 1);
-
-		Assert.assertEquals(user1, users.get(0));
+			ExpandoColumnConstants.INDEX_TYPE_KEYWORD, Boolean.TRUE,
+			String.valueOf(Boolean.TRUE), LocaleUtil.getDefault());
 	}
 
 	@Test
 	public void testGetUsersFilterByCustomFieldWithEqualsAndBooleanTextType()
 		throws Exception {
 
-		ExpandoColumn expandoColumn = _addExpandoColumn(
-			_expandoTable, RandomTestUtil.randomString(),
+		testGetUsersFilterByCustomFieldWithEquals(
 			ExpandoColumnConstants.BOOLEAN,
-			ExpandoColumnConstants.INDEX_TYPE_TEXT);
-
-		Boolean columnValue = Boolean.TRUE;
-
-		User user1 = _addUser(expandoColumn.getName(), columnValue);
-
-		_users.add(user1);
-
-		User user2 = UserTestUtil.addUser();
-
-		_users.add(user2);
-
-		String filterString = String.format(
-			"(customField/%s eq %s)", _encodeName(expandoColumn),
-			String.valueOf(columnValue));
-
-		int count = _getODataRetriever().getResultsCount(
-			TestPropsValues.getCompanyId(), filterString,
-			LocaleUtil.getDefault());
-
-		Assert.assertEquals(1, count);
-
-		List<User> users = _getODataRetriever().getResults(
-			TestPropsValues.getCompanyId(), filterString,
-			LocaleUtil.getDefault(), 0, 1);
-
-		Assert.assertEquals(user1, users.get(0));
+			ExpandoColumnConstants.INDEX_TYPE_TEXT, Boolean.TRUE,
+			String.valueOf(Boolean.TRUE), LocaleUtil.getDefault());
 	}
 
 	@Test
 	public void testGetUsersFilterByCustomFieldWithEqualsAndDateKeywordType()
 		throws Exception {
 
-		ExpandoColumn expandoColumn = _addExpandoColumn(
-			_expandoTable, RandomTestUtil.randomString(),
+		Date date = new Date();
+
+		testGetUsersFilterByCustomFieldWithEquals(
 			ExpandoColumnConstants.DATE,
-			ExpandoColumnConstants.INDEX_TYPE_KEYWORD);
-
-		Date columnValue = new Date();
-
-		User user1 = _addUser(expandoColumn.getName(), columnValue);
-
-		_users.add(user1);
-
-		User user2 = UserTestUtil.addUser();
-
-		_users.add(user2);
-
-		String filterString = String.format(
-			"(customField/%s eq %s)", _encodeName(expandoColumn),
-			ISO8601Utils.format(columnValue));
-
-		int count = _getODataRetriever().getResultsCount(
-			TestPropsValues.getCompanyId(), filterString,
-			LocaleUtil.getDefault());
-
-		Assert.assertEquals(1, count);
-
-		List<User> users = _getODataRetriever().getResults(
-			TestPropsValues.getCompanyId(), filterString,
-			LocaleUtil.getDefault(), 0, 1);
-
-		Assert.assertEquals(user1, users.get(0));
+			ExpandoColumnConstants.INDEX_TYPE_KEYWORD, date,
+			ISO8601Utils.format(date), LocaleUtil.getDefault());
 	}
 
 	@Test
 	public void testGetUsersFilterByCustomFieldWithEqualsAndDateTextType()
 		throws Exception {
 
-		ExpandoColumn expandoColumn = _addExpandoColumn(
-			_expandoTable, RandomTestUtil.randomString(),
-			ExpandoColumnConstants.DATE,
-			ExpandoColumnConstants.INDEX_TYPE_TEXT);
+		Date date = new Date();
 
-		Date columnValue = new Date();
-
-		User user1 = _addUser(expandoColumn.getName(), columnValue);
-
-		_users.add(user1);
-
-		User user2 = UserTestUtil.addUser();
-
-		_users.add(user2);
-
-		String filterString = String.format(
-			"(customField/%s eq %s)", _encodeName(expandoColumn),
-			ISO8601Utils.format(columnValue));
-
-		int count = _getODataRetriever().getResultsCount(
-			TestPropsValues.getCompanyId(), filterString,
-			LocaleUtil.getDefault());
-
-		Assert.assertEquals(1, count);
-
-		List<User> users = _getODataRetriever().getResults(
-			TestPropsValues.getCompanyId(), filterString,
-			LocaleUtil.getDefault(), 0, 1);
-
-		Assert.assertEquals(user1, users.get(0));
+		testGetUsersFilterByCustomFieldWithEquals(
+			ExpandoColumnConstants.DATE, ExpandoColumnConstants.INDEX_TYPE_TEXT,
+			date, ISO8601Utils.format(date), LocaleUtil.getDefault());
 	}
 
 	@Test
 	public void testGetUsersFilterByCustomFieldWithEqualsAndDoubleKeywordType()
 		throws Exception {
 
-		ExpandoColumn expandoColumn = _addExpandoColumn(
-			_expandoTable, RandomTestUtil.randomString(),
+		testGetUsersFilterByCustomFieldWithEquals(
 			ExpandoColumnConstants.DOUBLE,
-			ExpandoColumnConstants.INDEX_TYPE_KEYWORD);
-
-		double columnValue = 3.0;
-
-		User user1 = _addUser(expandoColumn.getName(), columnValue);
-
-		_users.add(user1);
-
-		User user2 = UserTestUtil.addUser();
-
-		_users.add(user2);
-
-		String filterString = String.format(
-			"(customField/%s eq %s)", _encodeName(expandoColumn), columnValue);
-
-		int count = _getODataRetriever().getResultsCount(
-			TestPropsValues.getCompanyId(), filterString,
-			LocaleUtil.getDefault());
-
-		Assert.assertEquals(1, count);
-
-		List<User> users = _getODataRetriever().getResults(
-			TestPropsValues.getCompanyId(), filterString,
-			LocaleUtil.getDefault(), 0, 1);
-
-		Assert.assertEquals(user1, users.get(0));
+			ExpandoColumnConstants.INDEX_TYPE_KEYWORD, 3.0,
+			String.valueOf(3.0), LocaleUtil.getDefault());
 	}
 
 	@Test
 	public void testGetUsersFilterByCustomFieldWithEqualsAndDoubleTextType()
 		throws Exception {
 
-		ExpandoColumn expandoColumn = _addExpandoColumn(
-			_expandoTable, RandomTestUtil.randomString(),
+		testGetUsersFilterByCustomFieldWithEquals(
 			ExpandoColumnConstants.DOUBLE,
-			ExpandoColumnConstants.INDEX_TYPE_TEXT);
-
-		double columnValue = 3.0;
-
-		User user1 = _addUser(expandoColumn.getName(), columnValue);
-
-		_users.add(user1);
-
-		User user2 = UserTestUtil.addUser();
-
-		_users.add(user2);
-
-		String filterString = String.format(
-			"(customField/%s eq %s)", _encodeName(expandoColumn), columnValue);
-
-		int count = _getODataRetriever().getResultsCount(
-			TestPropsValues.getCompanyId(), filterString,
+			ExpandoColumnConstants.INDEX_TYPE_TEXT, 3.0, String.valueOf(3.0),
 			LocaleUtil.getDefault());
-
-		Assert.assertEquals(1, count);
-
-		List<User> users = _getODataRetriever().getResults(
-			TestPropsValues.getCompanyId(), filterString,
-			LocaleUtil.getDefault(), 0, 1);
-
-		Assert.assertEquals(user1, users.get(0));
 	}
 
 	@Test
 	public void testGetUsersFilterByCustomFieldWithEqualsAndFloatKeywordType()
 		throws Exception {
 
-		ExpandoColumn expandoColumn = _addExpandoColumn(
-			_expandoTable, RandomTestUtil.randomString(),
-			ExpandoColumnConstants.DOUBLE,
-			ExpandoColumnConstants.INDEX_TYPE_KEYWORD);
-
-		float columnValue = 3.0F;
-
-		User user1 = _addUser(expandoColumn.getName(), columnValue);
-
-		_users.add(user1);
-
-		User user2 = UserTestUtil.addUser();
-
-		_users.add(user2);
-
-		String filterString = String.format(
-			"(customField/%s eq %s)", _encodeName(expandoColumn), columnValue);
-
-		int count = _getODataRetriever().getResultsCount(
-			TestPropsValues.getCompanyId(), filterString,
-			LocaleUtil.getDefault());
-
-		Assert.assertEquals(1, count);
-
-		List<User> users = _getODataRetriever().getResults(
-			TestPropsValues.getCompanyId(), filterString,
-			LocaleUtil.getDefault(), 0, 1);
-
-		Assert.assertEquals(user1, users.get(0));
+		testGetUsersFilterByCustomFieldWithEquals(
+			ExpandoColumnConstants.FLOAT,
+			ExpandoColumnConstants.INDEX_TYPE_KEYWORD, 3.0F,
+			String.valueOf(3.0F), LocaleUtil.getDefault());
 	}
 
 	@Test
 	public void testGetUsersFilterByCustomFieldWithEqualsAndFloatTextType()
 		throws Exception {
 
-		ExpandoColumn expandoColumn = _addExpandoColumn(
-			_expandoTable, RandomTestUtil.randomString(),
-			ExpandoColumnConstants.DOUBLE,
-			ExpandoColumnConstants.INDEX_TYPE_TEXT);
-
-		float columnValue = 3.0F;
-
-		User user1 = _addUser(expandoColumn.getName(), columnValue);
-
-		_users.add(user1);
-
-		User user2 = UserTestUtil.addUser();
-
-		_users.add(user2);
-
-		String filterString = String.format(
-			"(customField/%s eq %s)", _encodeName(expandoColumn), columnValue);
-
-		int count = _getODataRetriever().getResultsCount(
-			TestPropsValues.getCompanyId(), filterString,
+		testGetUsersFilterByCustomFieldWithEquals(
+			ExpandoColumnConstants.FLOAT,
+			ExpandoColumnConstants.INDEX_TYPE_TEXT, 3.0F, String.valueOf(3.0F),
 			LocaleUtil.getDefault());
-
-		Assert.assertEquals(1, count);
-
-		List<User> users = _getODataRetriever().getResults(
-			TestPropsValues.getCompanyId(), filterString,
-			LocaleUtil.getDefault(), 0, 1);
-
-		Assert.assertEquals(user1, users.get(0));
 	}
 
 	@Test
 	public void testGetUsersFilterByCustomFieldWithEqualsAndIntegerKeywordType()
 		throws Exception {
 
-		ExpandoColumn expandoColumn = _addExpandoColumn(
-			_expandoTable, RandomTestUtil.randomString(),
+		testGetUsersFilterByCustomFieldWithEquals(
 			ExpandoColumnConstants.INTEGER,
-			ExpandoColumnConstants.INDEX_TYPE_KEYWORD);
-
-		int columnValue = 3;
-
-		User user1 = _addUser(expandoColumn.getName(), columnValue);
-
-		_users.add(user1);
-
-		User user2 = UserTestUtil.addUser();
-
-		_users.add(user2);
-
-		String filterString = String.format(
-			"(customField/%s eq %s)", _encodeName(expandoColumn), columnValue);
-
-		int count = _getODataRetriever().getResultsCount(
-			TestPropsValues.getCompanyId(), filterString,
+			ExpandoColumnConstants.INDEX_TYPE_KEYWORD, 3, String.valueOf(3),
 			LocaleUtil.getDefault());
-
-		Assert.assertEquals(1, count);
-
-		List<User> users = _getODataRetriever().getResults(
-			TestPropsValues.getCompanyId(), filterString,
-			LocaleUtil.getDefault(), 0, 1);
-
-		Assert.assertEquals(user1, users.get(0));
 	}
 
 	@Test
 	public void testGetUsersFilterByCustomFieldWithEqualsAndIntegerTextType()
 		throws Exception {
 
-		ExpandoColumn expandoColumn = _addExpandoColumn(
-			_expandoTable, RandomTestUtil.randomString(),
+		testGetUsersFilterByCustomFieldWithEquals(
 			ExpandoColumnConstants.INTEGER,
-			ExpandoColumnConstants.INDEX_TYPE_TEXT);
-
-		int columnValue = 3;
-
-		User user1 = _addUser(expandoColumn.getName(), columnValue);
-
-		_users.add(user1);
-
-		User user2 = UserTestUtil.addUser();
-
-		_users.add(user2);
-
-		String filterString = String.format(
-			"(customField/%s eq %s)", _encodeName(expandoColumn), columnValue);
-
-		int count = _getODataRetriever().getResultsCount(
-			TestPropsValues.getCompanyId(), filterString,
+			ExpandoColumnConstants.INDEX_TYPE_TEXT, 3, String.valueOf(3),
 			LocaleUtil.getDefault());
-
-		Assert.assertEquals(1, count);
-
-		List<User> users = _getODataRetriever().getResults(
-			TestPropsValues.getCompanyId(), filterString,
-			LocaleUtil.getDefault(), 0, 1);
-
-		Assert.assertEquals(user1, users.get(0));
 	}
 
 	@Test
 	public void testGetUsersFilterByCustomFieldWithEqualsAndLocalizedStringKeywordType()
 		throws Exception {
-
-		ExpandoColumn expandoColumn = _addExpandoColumn(
-			_expandoTable, RandomTestUtil.randomString(),
-			ExpandoColumnConstants.STRING_LOCALIZED,
-			ExpandoColumnConstants.INDEX_TYPE_KEYWORD);
 
 		Locale esLocale = LocaleUtil.fromLanguageId("es_ES");
 
@@ -470,27 +214,10 @@ public class UserODataRetrieverCustomFieldsTest {
 
 		Serializable columnValue = (Serializable)columnValueMap;
 
-		User user1 = _addUser(expandoColumn.getName(), columnValue);
-
-		_users.add(user1);
-
-		User user2 = UserTestUtil.addUser();
-
-		_users.add(user2);
-
-		String filterString = String.format(
-			"(customField/%s eq '%s')", _encodeName(expandoColumn),
-			columnValueMap.get(esLocale));
-
-		int count = _getODataRetriever().getResultsCount(
-			TestPropsValues.getCompanyId(), filterString, esLocale);
-
-		Assert.assertEquals(1, count);
-
-		List<User> users = _getODataRetriever().getResults(
-			TestPropsValues.getCompanyId(), filterString, esLocale, 0, 1);
-
-		Assert.assertEquals(user1, users.get(0));
+		testGetUsersFilterByCustomFieldWithEquals(
+			ExpandoColumnConstants.STRING_LOCALIZED,
+			ExpandoColumnConstants.INDEX_TYPE_KEYWORD, columnValue,
+			"'" + columnValueMap.get(esLocale) + "'", esLocale);
 	}
 
 	@Test
@@ -534,176 +261,52 @@ public class UserODataRetrieverCustomFieldsTest {
 	public void testGetUsersFilterByCustomFieldWithEqualsAndLongKeywordType()
 		throws Exception {
 
-		ExpandoColumn expandoColumn = _addExpandoColumn(
-			_expandoTable, RandomTestUtil.randomString(),
+		testGetUsersFilterByCustomFieldWithEquals(
 			ExpandoColumnConstants.INTEGER,
-			ExpandoColumnConstants.INDEX_TYPE_KEYWORD);
-
-		long columnValue = 3;
-
-		User user1 = _addUser(expandoColumn.getName(), columnValue);
-
-		_users.add(user1);
-
-		User user2 = UserTestUtil.addUser();
-
-		_users.add(user2);
-
-		String filterString = String.format(
-			"(customField/%s eq %s)", _encodeName(expandoColumn), columnValue);
-
-		int count = _getODataRetriever().getResultsCount(
-			TestPropsValues.getCompanyId(), filterString,
+			ExpandoColumnConstants.INDEX_TYPE_KEYWORD, 3L, String.valueOf(3L),
 			LocaleUtil.getDefault());
-
-		Assert.assertEquals(1, count);
-
-		List<User> users = _getODataRetriever().getResults(
-			TestPropsValues.getCompanyId(), filterString,
-			LocaleUtil.getDefault(), 0, 1);
-
-		Assert.assertEquals(user1, users.get(0));
 	}
 
 	@Test
 	public void testGetUsersFilterByCustomFieldWithEqualsAndLongTextType()
 		throws Exception {
 
-		ExpandoColumn expandoColumn = _addExpandoColumn(
-			_expandoTable, RandomTestUtil.randomString(),
+		testGetUsersFilterByCustomFieldWithEquals(
 			ExpandoColumnConstants.INTEGER,
-			ExpandoColumnConstants.INDEX_TYPE_TEXT);
-
-		long columnValue = 3;
-
-		User user1 = _addUser(expandoColumn.getName(), columnValue);
-
-		_users.add(user1);
-
-		User user2 = UserTestUtil.addUser();
-
-		_users.add(user2);
-
-		String filterString = String.format(
-			"(customField/%s eq %s)", _encodeName(expandoColumn), columnValue);
-
-		int count = _getODataRetriever().getResultsCount(
-			TestPropsValues.getCompanyId(), filterString,
+			ExpandoColumnConstants.INDEX_TYPE_TEXT, 3L, String.valueOf(3L),
 			LocaleUtil.getDefault());
-
-		Assert.assertEquals(1, count);
-
-		List<User> users = _getODataRetriever().getResults(
-			TestPropsValues.getCompanyId(), filterString,
-			LocaleUtil.getDefault(), 0, 1);
-
-		Assert.assertEquals(user1, users.get(0));
 	}
 
 	@Test
 	public void testGetUsersFilterByCustomFieldWithEqualsAndShortKeywordType()
 		throws Exception {
 
-		ExpandoColumn expandoColumn = _addExpandoColumn(
-			_expandoTable, RandomTestUtil.randomString(),
+		testGetUsersFilterByCustomFieldWithEquals(
 			ExpandoColumnConstants.INTEGER,
-			ExpandoColumnConstants.INDEX_TYPE_KEYWORD);
-
-		short columnValue = 3;
-
-		User user1 = _addUser(expandoColumn.getName(), columnValue);
-
-		_users.add(user1);
-
-		User user2 = UserTestUtil.addUser();
-
-		_users.add(user2);
-
-		String filterString = String.format(
-			"(customField/%s eq %s)", _encodeName(expandoColumn), columnValue);
-
-		int count = _getODataRetriever().getResultsCount(
-			TestPropsValues.getCompanyId(), filterString,
-			LocaleUtil.getDefault());
-
-		Assert.assertEquals(1, count);
-
-		List<User> users = _getODataRetriever().getResults(
-			TestPropsValues.getCompanyId(), filterString,
-			LocaleUtil.getDefault(), 0, 1);
-
-		Assert.assertEquals(user1, users.get(0));
+			ExpandoColumnConstants.INDEX_TYPE_KEYWORD, (short)3,
+			String.valueOf((short)3), LocaleUtil.getDefault());
 	}
 
 	@Test
 	public void testGetUsersFilterByCustomFieldWithEqualsAndShortTextType()
 		throws Exception {
 
-		ExpandoColumn expandoColumn = _addExpandoColumn(
-			_expandoTable, RandomTestUtil.randomString(),
+		testGetUsersFilterByCustomFieldWithEquals(
 			ExpandoColumnConstants.INTEGER,
-			ExpandoColumnConstants.INDEX_TYPE_TEXT);
-
-		short columnValue = 3;
-
-		User user1 = _addUser(expandoColumn.getName(), columnValue);
-
-		_users.add(user1);
-
-		User user2 = UserTestUtil.addUser();
-
-		_users.add(user2);
-
-		String filterString = String.format(
-			"(customField/%s eq %s)", _encodeName(expandoColumn), columnValue);
-
-		int count = _getODataRetriever().getResultsCount(
-			TestPropsValues.getCompanyId(), filterString,
-			LocaleUtil.getDefault());
-
-		Assert.assertEquals(1, count);
-
-		List<User> users = _getODataRetriever().getResults(
-			TestPropsValues.getCompanyId(), filterString,
-			LocaleUtil.getDefault(), 0, 1);
-
-		Assert.assertEquals(user1, users.get(0));
+			ExpandoColumnConstants.INDEX_TYPE_TEXT, (short)3,
+			String.valueOf((short)3), LocaleUtil.getDefault());
 	}
 
 	@Test
 	public void testGetUsersFilterByCustomFieldWithEqualsAndStringKeywordType()
 		throws Exception {
 
-		ExpandoColumn expandoColumn = _addExpandoColumn(
-			_expandoTable, RandomTestUtil.randomString(),
-			ExpandoColumnConstants.STRING,
-			ExpandoColumnConstants.INDEX_TYPE_KEYWORD);
-
 		String columnValue = RandomTestUtil.randomString();
 
-		User user1 = _addUser(expandoColumn.getName(), columnValue);
-
-		_users.add(user1);
-
-		User user2 = UserTestUtil.addUser();
-
-		_users.add(user2);
-
-		String filterString = StringBundler.concat(
-			"(customField/", _encodeName(expandoColumn), " eq '", columnValue,
-			"')");
-
-		int count = _getODataRetriever().getResultsCount(
-			TestPropsValues.getCompanyId(), filterString,
-			LocaleUtil.getDefault());
-
-		Assert.assertEquals(1, count);
-
-		List<User> users = _getODataRetriever().getResults(
-			TestPropsValues.getCompanyId(), filterString,
-			LocaleUtil.getDefault(), 0, 1);
-
-		Assert.assertEquals(user1, users.get(0));
+		testGetUsersFilterByCustomFieldWithEquals(
+			ExpandoColumnConstants.STRING,
+			ExpandoColumnConstants.INDEX_TYPE_KEYWORD, columnValue,
+			"'" + columnValue + "'", LocaleUtil.getDefault());
 	}
 
 	@Test
@@ -734,6 +337,37 @@ public class UserODataRetrieverCustomFieldsTest {
 			LocaleUtil.getDefault());
 
 		Assert.assertEquals(0, count);
+	}
+
+	protected void testGetUsersFilterByCustomFieldWithEquals(
+			int expandoColumnType, int expandoColumnIndexType,
+			Serializable value, String filterValue, Locale locale)
+		throws Exception {
+
+		ExpandoColumn expandoColumn = _addExpandoColumn(
+			_expandoTable, RandomTestUtil.randomString(), expandoColumnType,
+			expandoColumnIndexType);
+
+		User user1 = _addUser(expandoColumn.getName(), value);
+
+		_users.add(user1);
+
+		User user2 = UserTestUtil.addUser();
+
+		_users.add(user2);
+
+		String filterString = String.format(
+			"(customField/%s eq %s)", _encodeName(expandoColumn), filterValue);
+
+		int count = _getODataRetriever().getResultsCount(
+			TestPropsValues.getCompanyId(), filterString, locale);
+
+		Assert.assertEquals(1, count);
+
+		List<User> users = _getODataRetriever().getResults(
+			TestPropsValues.getCompanyId(), filterString, locale, 0, 1);
+
+		Assert.assertEquals(user1, users.get(0));
 	}
 
 	private ExpandoColumn _addExpandoColumn(
