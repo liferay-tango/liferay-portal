@@ -326,6 +326,78 @@ public class OrganizationODataRetrieverCustomFieldsTest {
 	}
 
 	@Test
+	public void testGetOrganizationsFilterByCustomFieldWithEqualsAndFloatKeywordType()
+		throws Exception {
+
+		ExpandoColumn expandoColumn = _addExpandoColumn(
+			_expandoTable, RandomTestUtil.randomString(),
+			ExpandoColumnConstants.DOUBLE,
+			ExpandoColumnConstants.INDEX_TYPE_KEYWORD);
+
+		float columnValue = 3.0F;
+
+		Organization organization1 = _addOrganization(
+			expandoColumn.getName(), columnValue);
+
+		_organizations.add(organization1);
+
+		Organization organization2 = OrganizationTestUtil.addOrganization();
+
+		_organizations.add(organization2);
+
+		String filterString = String.format(
+			"(customField/%s eq %s)", _encodeName(expandoColumn), columnValue);
+
+		int count = _getODataRetriever().getResultsCount(
+			TestPropsValues.getCompanyId(), filterString,
+			LocaleUtil.getDefault());
+
+		Assert.assertEquals(1, count);
+
+		List<Organization> organizations = _getODataRetriever().getResults(
+			TestPropsValues.getCompanyId(), filterString,
+			LocaleUtil.getDefault(), 0, 1);
+
+		Assert.assertEquals(organization1, organizations.get(0));
+	}
+
+	@Test
+	public void testGetOrganizationsFilterByCustomFieldWithEqualsAndFloatTextType()
+		throws Exception {
+
+		ExpandoColumn expandoColumn = _addExpandoColumn(
+			_expandoTable, RandomTestUtil.randomString(),
+			ExpandoColumnConstants.DOUBLE,
+			ExpandoColumnConstants.INDEX_TYPE_TEXT);
+
+		float columnValue = 3.0F;
+
+		Organization organization1 = _addOrganization(
+			expandoColumn.getName(), columnValue);
+
+		_organizations.add(organization1);
+
+		Organization organization2 = OrganizationTestUtil.addOrganization();
+
+		_organizations.add(organization2);
+
+		String filterString = String.format(
+			"(customField/%s eq %s)", _encodeName(expandoColumn), columnValue);
+
+		int count = _getODataRetriever().getResultsCount(
+			TestPropsValues.getCompanyId(), filterString,
+			LocaleUtil.getDefault());
+
+		Assert.assertEquals(1, count);
+
+		List<Organization> organizations = _getODataRetriever().getResults(
+			TestPropsValues.getCompanyId(), filterString,
+			LocaleUtil.getDefault(), 0, 1);
+
+		Assert.assertEquals(organization1, organizations.get(0));
+	}
+
+	@Test
 	public void testGetOrganizationsFilterByCustomFieldWithEqualsAndIntegerKeywordType()
 		throws Exception {
 
