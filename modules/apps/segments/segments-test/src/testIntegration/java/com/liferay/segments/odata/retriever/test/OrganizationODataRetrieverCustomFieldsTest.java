@@ -154,8 +154,8 @@ public class OrganizationODataRetrieverCustomFieldsTest {
 
 		testGetOrganizationsFilterByCustomFieldWithEquals(
 			ExpandoColumnConstants.DOUBLE,
-			ExpandoColumnConstants.INDEX_TYPE_KEYWORD, 3.0, String.valueOf(3.0),
-			LocaleUtil.getDefault(), 1, true);
+			ExpandoColumnConstants.INDEX_TYPE_KEYWORD, 3.0D,
+			String.valueOf(3.0D), LocaleUtil.getDefault(), 1, true);
 	}
 
 	@Test
@@ -164,7 +164,7 @@ public class OrganizationODataRetrieverCustomFieldsTest {
 
 		testGetOrganizationsFilterByCustomFieldWithEquals(
 			ExpandoColumnConstants.DOUBLE,
-			ExpandoColumnConstants.INDEX_TYPE_TEXT, 3.0, String.valueOf(3.0),
+			ExpandoColumnConstants.INDEX_TYPE_TEXT, 3.0D, String.valueOf(3.0D),
 			LocaleUtil.getDefault(), 1, true);
 	}
 
