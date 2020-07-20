@@ -461,6 +461,146 @@ public class UserODataRetrieverCustomFieldsTest {
 	}
 
 	@Test
+	public void testGetUsersFilterByCustomFieldWithEqualsAndLongKeywordType()
+		throws Exception {
+
+		ExpandoColumn expandoColumn = _addExpandoColumn(
+			_expandoTable, RandomTestUtil.randomString(),
+			ExpandoColumnConstants.INTEGER,
+			ExpandoColumnConstants.INDEX_TYPE_KEYWORD);
+
+		long columnValue = 3;
+
+		User user1 = _addUser(expandoColumn.getName(), columnValue);
+
+		_users.add(user1);
+
+		User user2 = UserTestUtil.addUser();
+
+		_users.add(user2);
+
+		String filterString = String.format(
+			"(customField/%s eq %s)", _encodeName(expandoColumn), columnValue);
+
+		int count = _getODataRetriever().getResultsCount(
+			TestPropsValues.getCompanyId(), filterString,
+			LocaleUtil.getDefault());
+
+		Assert.assertEquals(1, count);
+
+		List<User> users = _getODataRetriever().getResults(
+			TestPropsValues.getCompanyId(), filterString,
+			LocaleUtil.getDefault(), 0, 1);
+
+		Assert.assertEquals(user1, users.get(0));
+	}
+
+	@Test
+	public void testGetUsersFilterByCustomFieldWithEqualsAndLongTextType()
+		throws Exception {
+
+		ExpandoColumn expandoColumn = _addExpandoColumn(
+			_expandoTable, RandomTestUtil.randomString(),
+			ExpandoColumnConstants.INTEGER,
+			ExpandoColumnConstants.INDEX_TYPE_TEXT);
+
+		long columnValue = 3;
+
+		User user1 = _addUser(expandoColumn.getName(), columnValue);
+
+		_users.add(user1);
+
+		User user2 = UserTestUtil.addUser();
+
+		_users.add(user2);
+
+		String filterString = String.format(
+			"(customField/%s eq %s)", _encodeName(expandoColumn), columnValue);
+
+		int count = _getODataRetriever().getResultsCount(
+			TestPropsValues.getCompanyId(), filterString,
+			LocaleUtil.getDefault());
+
+		Assert.assertEquals(1, count);
+
+		List<User> users = _getODataRetriever().getResults(
+			TestPropsValues.getCompanyId(), filterString,
+			LocaleUtil.getDefault(), 0, 1);
+
+		Assert.assertEquals(user1, users.get(0));
+	}
+
+	@Test
+	public void testGetUsersFilterByCustomFieldWithEqualsAndShortKeywordType()
+		throws Exception {
+
+		ExpandoColumn expandoColumn = _addExpandoColumn(
+			_expandoTable, RandomTestUtil.randomString(),
+			ExpandoColumnConstants.INTEGER,
+			ExpandoColumnConstants.INDEX_TYPE_KEYWORD);
+
+		short columnValue = 3;
+
+		User user1 = _addUser(expandoColumn.getName(), columnValue);
+
+		_users.add(user1);
+
+		User user2 = UserTestUtil.addUser();
+
+		_users.add(user2);
+
+		String filterString = String.format(
+			"(customField/%s eq %s)", _encodeName(expandoColumn), columnValue);
+
+		int count = _getODataRetriever().getResultsCount(
+			TestPropsValues.getCompanyId(), filterString,
+			LocaleUtil.getDefault());
+
+		Assert.assertEquals(1, count);
+
+		List<User> users = _getODataRetriever().getResults(
+			TestPropsValues.getCompanyId(), filterString,
+			LocaleUtil.getDefault(), 0, 1);
+
+		Assert.assertEquals(user1, users.get(0));
+	}
+
+	@Test
+	public void testGetUsersFilterByCustomFieldWithEqualsAndShortTextType()
+		throws Exception {
+
+		ExpandoColumn expandoColumn = _addExpandoColumn(
+			_expandoTable, RandomTestUtil.randomString(),
+			ExpandoColumnConstants.INTEGER,
+			ExpandoColumnConstants.INDEX_TYPE_TEXT);
+
+		short columnValue = 3;
+
+		User user1 = _addUser(expandoColumn.getName(), columnValue);
+
+		_users.add(user1);
+
+		User user2 = UserTestUtil.addUser();
+
+		_users.add(user2);
+
+		String filterString = String.format(
+			"(customField/%s eq %s)", _encodeName(expandoColumn), columnValue);
+
+		int count = _getODataRetriever().getResultsCount(
+			TestPropsValues.getCompanyId(), filterString,
+			LocaleUtil.getDefault());
+
+		Assert.assertEquals(1, count);
+
+		List<User> users = _getODataRetriever().getResults(
+			TestPropsValues.getCompanyId(), filterString,
+			LocaleUtil.getDefault(), 0, 1);
+
+		Assert.assertEquals(user1, users.get(0));
+	}
+
+	@Test
 	public void testGetUsersFilterByCustomFieldWithEqualsAndStringKeywordType()
 		throws Exception {
 
