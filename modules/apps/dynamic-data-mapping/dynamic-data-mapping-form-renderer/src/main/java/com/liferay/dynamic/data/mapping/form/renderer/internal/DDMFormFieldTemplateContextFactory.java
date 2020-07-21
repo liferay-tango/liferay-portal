@@ -884,12 +884,17 @@ public class DDMFormFieldTemplateContextFactory {
 		DDMFormFieldRenderingContext ddmFormFieldRenderingContext) {
 
 		if (Validator.isNotNull(ddmFormField.getProperty("ddmStructureId"))) {
+			long ddmStructureLayoutId = GetterUtil.getLong(
+				ddmFormField.getProperty("ddmStructureLayoutId"));
+
+			if (ddmStructureLayoutId == 0) {
+				ddmStructureLayoutId = _getDefaultDDMFormLayoutId(
+					GetterUtil.getLong(
+						ddmFormField.getProperty("ddmStructureId")));
+			}
+
 			DDMFormLayout ddmFormLayout = _getDDMFormLayout(
-				GetterUtil.getLong(
-					ddmFormField.getProperty("ddmStructureLayoutId"),
-					_getDefaultDDMFormLayoutId(
-						GetterUtil.getLong(
-							ddmFormField.getProperty("ddmStructureId")))));
+				ddmStructureLayoutId);
 
 			String rows = MapUtil.getString(
 				ddmFormField.getProperties(), "rows");

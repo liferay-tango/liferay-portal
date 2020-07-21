@@ -49,12 +49,17 @@ public class DLFileEntryTypeImpl extends DLFileEntryTypeBaseImpl {
 
 		// See LPS-104152
 
-		if (ListUtil.isEmpty(ddmStructures)) {
+		if (ListUtil.isEmpty(ddmStructures) ||
+			!ListUtil.exists(
+				ddmStructures,
+				ddmStructure ->
+					ddmStructure.getStructureId() == getDataDefinitionId())) {
+
 			DDMStructure ddmStructure = DDMStructureManagerUtil.fetchStructure(
 				getDataDefinitionId());
 
 			if (ddmStructure != null) {
-				ddmStructures.add(ddmStructure);
+				ddmStructures.add(0, ddmStructure);
 			}
 		}
 

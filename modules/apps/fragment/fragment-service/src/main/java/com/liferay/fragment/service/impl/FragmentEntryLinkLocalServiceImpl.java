@@ -147,6 +147,8 @@ public class FragmentEntryLinkLocalServiceImpl
 		HttpServletRequest httpServletRequest = serviceContext.getRequest();
 		HttpServletResponse httpServletResponse = serviceContext.getResponse();
 
+		fragmentEntryLink.setRendererKey(rendererKey);
+
 		if ((httpServletRequest != null) && (httpServletResponse != null)) {
 			FragmentEntryProcessorContext fragmentEntryProcessorContext =
 				new DefaultFragmentEntryProcessorContext(
@@ -170,7 +172,6 @@ public class FragmentEntryLinkLocalServiceImpl
 
 		fragmentEntryLink.setEditableValues(editableValues);
 		fragmentEntryLink.setPosition(position);
-		fragmentEntryLink.setRendererKey(rendererKey);
 		fragmentEntryLink.setLastPropagationDate(
 			serviceContext.getCreateDate(new Date()));
 

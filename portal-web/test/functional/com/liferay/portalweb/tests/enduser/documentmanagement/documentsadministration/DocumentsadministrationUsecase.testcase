@@ -78,12 +78,9 @@ definition {
 			groupName = "Guest",
 			title = "Topic");
 
-		ProductMenu.gotoPortlet(
-			category = "Categorization",
-			portlet = "Categories");
-
-		Category.addCP(
-			categoryName = "category",
+		JSONCategory.addCategory(
+			groupName = "Guest",
+			title = "category",
 			vocabularyName = "Topic");
 
 		JSONDocument.addFileWithUploadedFile(
@@ -93,9 +90,7 @@ definition {
 			mimeType = "text/plain",
 			sourceFileName = "Document_1.txt");
 
-		ProductMenu.gotoPortlet(
-			category = "Content &amp; Data",
-			portlet = "Documents and Media");
+		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
 
 		LexiconEntry.changeDisplayStyle(displayStyle = "list");
 
@@ -1350,6 +1345,8 @@ definition {
 			categoryDescription = "Category Description",
 			categoryName = "Category Name",
 			vocabularyName = "Topic");
+
+		Navigator.openSiteURL(siteName = "Guest");
 
 		ProductMenu.gotoPortlet(
 			category = "Categorization",

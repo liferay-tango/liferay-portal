@@ -1123,8 +1123,12 @@ jdbc.counter.connectionProperties=oracle.jdbc.ReadTimeout=0;oracle.net.CONNECT_T
 				</elseif>
 				<elseif>
 					<and>
-						<equals arg1="${operating.system.type}" arg2="centos" />
-						<equals arg1="${operating.system.centos.version}" arg2="8" />
+						<not>
+							<and>
+								<equals arg1="${operating.system.type}" arg2="centos" />
+								<equals arg1="${operating.system.centos.version}" arg2="7" />
+							</and>
+						</not>
 						<equals arg1="${env.DOCKER_ENABLED}" arg2="true" />
 					</and>
 					<then>
@@ -4208,8 +4212,12 @@ org.apache.catalina.startup.ClassLoaderFactory.level=INFO]]>
 									</then>
 									<elseif>
 										<and>
-											<equals arg1="${operating.system.type}" arg2="centos" />
-											<equals arg1="${operating.system.centos.version}" arg2="8" />
+											<not>
+												<and>
+													<equals arg1="${operating.system.type}" arg2="centos" />
+													<equals arg1="${operating.system.centos.version}" arg2="7" />
+												</and>
+											</not>
 											<equals arg1="${env.DOCKER_ENABLED}" arg2="true" />
 										</and>
 										<then>
@@ -4270,8 +4278,12 @@ org.apache.catalina.startup.ClassLoaderFactory.level=INFO]]>
 										</then>
 										<elseif>
 											<and>
-												<equals arg1="${operating.system.type}" arg2="centos" />
-												<equals arg1="${operating.system.centos.version}" arg2="8" />
+												<not>
+													<and>
+														<equals arg1="${operating.system.type}" arg2="centos" />
+														<equals arg1="${operating.system.centos.version}" arg2="7" />
+													</and>
+												</not>
 												<equals arg1="${env.DOCKER_ENABLED}" arg2="true" />
 											</and>
 											<then>
@@ -5344,8 +5356,12 @@ war.path=${app.server.portal.dir}/</echo>
 				</then>
 				<elseif>
 					<and>
-						<equals arg1="${operating.system.type}" arg2="centos" />
-						<equals arg1="${operating.system.centos.version}" arg2="8" />
+						<not>
+							<and>
+								<equals arg1="${operating.system.type}" arg2="centos" />
+								<equals arg1="${operating.system.centos.version}" arg2="7" />
+							</and>
+						</not>
 						<equals arg1="${env.DOCKER_ENABLED}" arg2="true" />
 					</and>
 					<then>
@@ -8946,8 +8962,12 @@ auto.deploy.dest.dir=C:/WINDOWS/system32/config/systemprofile/liferay/websphere-
 
 		<if>
 			<and>
-				<equals arg1="${operating.system.type}" arg2="centos" />
-				<equals arg1="${operating.system.centos.version}" arg2="8" />
+				<not>
+					<and>
+						<equals arg1="${operating.system.type}" arg2="centos" />
+						<equals arg1="${operating.system.centos.version}" arg2="7" />
+					</and>
+				</not>
 				<equals arg1="${env.DOCKER_ENABLED}" arg2="true" />
 			</and>
 			<then>
