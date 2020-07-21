@@ -109,158 +109,108 @@ public class OrganizationODataRetrieverCustomFieldsTest {
 	public void testGetOrganizationsFilterByCustomFieldWithEqualsAndBooleanKeywordType()
 		throws Exception {
 
-		ExpandoColumn expandoColumn = _addExpandoColumn(
-			_expandoTable, RandomTestUtil.randomString(),
+		testGetOrganizationsFilterByCustomFieldWithEquals(
 			ExpandoColumnConstants.BOOLEAN,
-			ExpandoColumnConstants.INDEX_TYPE_KEYWORD);
-
-		Boolean columnValue = Boolean.TRUE;
-
-		Organization organization1 = _addOrganization(
-			expandoColumn.getName(), columnValue);
-
-		_organizations.add(organization1);
-
-		Organization organization2 = OrganizationTestUtil.addOrganization();
-
-		_organizations.add(organization2);
-
-		String filterString = String.format(
-			"(customField/%s eq %s)", _encodeName(expandoColumn),
-			String.valueOf(columnValue));
-
-		int count = _getODataRetriever().getResultsCount(
-			TestPropsValues.getCompanyId(), filterString,
-			LocaleUtil.getDefault());
-
-		Assert.assertEquals(1, count);
-
-		List<Organization> organizations = _getODataRetriever().getResults(
-			TestPropsValues.getCompanyId(), filterString,
-			LocaleUtil.getDefault(), 0, 1);
-
-		Assert.assertEquals(organization1, organizations.get(0));
+			ExpandoColumnConstants.INDEX_TYPE_KEYWORD, Boolean.TRUE,
+			String.valueOf(Boolean.TRUE), LocaleUtil.getDefault(), 1, true);
 	}
 
 	@Test
 	public void testGetOrganizationsFilterByCustomFieldWithEqualsAndBooleanTextType()
 		throws Exception {
 
-		ExpandoColumn expandoColumn = _addExpandoColumn(
-			_expandoTable, RandomTestUtil.randomString(),
+		testGetOrganizationsFilterByCustomFieldWithEquals(
 			ExpandoColumnConstants.BOOLEAN,
-			ExpandoColumnConstants.INDEX_TYPE_TEXT);
-
-		Boolean columnValue = Boolean.TRUE;
-
-		Organization organization1 = _addOrganization(
-			expandoColumn.getName(), columnValue);
-
-		_organizations.add(organization1);
-
-		Organization organization2 = OrganizationTestUtil.addOrganization();
-
-		_organizations.add(organization2);
-
-		String filterString = String.format(
-			"(customField/%s eq %s)", _encodeName(expandoColumn),
-			String.valueOf(columnValue));
-
-		int count = _getODataRetriever().getResultsCount(
-			TestPropsValues.getCompanyId(), filterString,
-			LocaleUtil.getDefault());
-
-		Assert.assertEquals(1, count);
-
-		List<Organization> organizations = _getODataRetriever().getResults(
-			TestPropsValues.getCompanyId(), filterString,
-			LocaleUtil.getDefault(), 0, 1);
-
-		Assert.assertEquals(organization1, organizations.get(0));
+			ExpandoColumnConstants.INDEX_TYPE_TEXT, Boolean.TRUE,
+			String.valueOf(Boolean.TRUE), LocaleUtil.getDefault(), 1, true);
 	}
 
 	@Test
 	public void testGetOrganizationsFilterByCustomFieldWithEqualsAndDateKeywordType()
 		throws Exception {
 
-		ExpandoColumn expandoColumn = _addExpandoColumn(
-			_expandoTable, RandomTestUtil.randomString(),
+		Date date = new Date();
+
+		testGetOrganizationsFilterByCustomFieldWithEquals(
 			ExpandoColumnConstants.DATE,
-			ExpandoColumnConstants.INDEX_TYPE_KEYWORD);
-
-		Date columnValue = new Date();
-
-		Organization organization1 = _addOrganization(
-			expandoColumn.getName(), columnValue);
-
-		_organizations.add(organization1);
-
-		Organization organization2 = OrganizationTestUtil.addOrganization();
-
-		_organizations.add(organization2);
-
-		String filterString = String.format(
-			"(customField/%s eq %s)", _encodeName(expandoColumn),
-			ISO8601Utils.format(columnValue));
-
-		int count = _getODataRetriever().getResultsCount(
-			TestPropsValues.getCompanyId(), filterString,
-			LocaleUtil.getDefault());
-
-		Assert.assertEquals(1, count);
-
-		List<Organization> organizations = _getODataRetriever().getResults(
-			TestPropsValues.getCompanyId(), filterString,
-			LocaleUtil.getDefault(), 0, 1);
-
-		Assert.assertEquals(organization1, organizations.get(0));
+			ExpandoColumnConstants.INDEX_TYPE_KEYWORD, date,
+			ISO8601Utils.format(date), LocaleUtil.getDefault(), 1, true);
 	}
 
 	@Test
 	public void testGetOrganizationsFilterByCustomFieldWithEqualsAndDateTextType()
 		throws Exception {
 
-		ExpandoColumn expandoColumn = _addExpandoColumn(
-			_expandoTable, RandomTestUtil.randomString(),
-			ExpandoColumnConstants.DATE,
-			ExpandoColumnConstants.INDEX_TYPE_TEXT);
+		Date date = new Date();
 
-		Date columnValue = new Date();
+		testGetOrganizationsFilterByCustomFieldWithEquals(
+			ExpandoColumnConstants.DATE, ExpandoColumnConstants.INDEX_TYPE_TEXT,
+			date, ISO8601Utils.format(date), LocaleUtil.getDefault(), 1, true);
+	}
 
-		Organization organization1 = _addOrganization(
-			expandoColumn.getName(), columnValue);
+	@Test
+	public void testGetOrganizationsFilterByCustomFieldWithEqualsAndDoubleKeywordType()
+		throws Exception {
 
-		_organizations.add(organization1);
+		testGetOrganizationsFilterByCustomFieldWithEquals(
+			ExpandoColumnConstants.DOUBLE,
+			ExpandoColumnConstants.INDEX_TYPE_KEYWORD, 3.0D,
+			String.valueOf(3.0D), LocaleUtil.getDefault(), 1, true);
+	}
 
-		Organization organization2 = OrganizationTestUtil.addOrganization();
+	@Test
+	public void testGetOrganizationsFilterByCustomFieldWithEqualsAndDoubleTextType()
+		throws Exception {
 
-		_organizations.add(organization2);
+		testGetOrganizationsFilterByCustomFieldWithEquals(
+			ExpandoColumnConstants.DOUBLE,
+			ExpandoColumnConstants.INDEX_TYPE_TEXT, 3.0D, String.valueOf(3.0D),
+			LocaleUtil.getDefault(), 1, true);
+	}
 
-		String filterString = String.format(
-			"(customField/%s eq %s)", _encodeName(expandoColumn),
-			ISO8601Utils.format(columnValue));
+	@Test
+	public void testGetOrganizationsFilterByCustomFieldWithEqualsAndFloatKeywordType()
+		throws Exception {
 
-		int count = _getODataRetriever().getResultsCount(
-			TestPropsValues.getCompanyId(), filterString,
-			LocaleUtil.getDefault());
+		testGetOrganizationsFilterByCustomFieldWithEquals(
+			ExpandoColumnConstants.FLOAT,
+			ExpandoColumnConstants.INDEX_TYPE_KEYWORD, 3.0F,
+			String.valueOf(3.0F), LocaleUtil.getDefault(), 1, true);
+	}
 
-		Assert.assertEquals(1, count);
+	@Test
+	public void testGetOrganizationsFilterByCustomFieldWithEqualsAndFloatTextType()
+		throws Exception {
 
-		List<Organization> organizations = _getODataRetriever().getResults(
-			TestPropsValues.getCompanyId(), filterString,
-			LocaleUtil.getDefault(), 0, 1);
+		testGetOrganizationsFilterByCustomFieldWithEquals(
+			ExpandoColumnConstants.FLOAT,
+			ExpandoColumnConstants.INDEX_TYPE_TEXT, 3.0F, String.valueOf(3.0F),
+			LocaleUtil.getDefault(), 1, true);
+	}
 
-		Assert.assertEquals(organization1, organizations.get(0));
+	@Test
+	public void testGetOrganizationsFilterByCustomFieldWithEqualsAndIntegerKeywordType()
+		throws Exception {
+
+		testGetOrganizationsFilterByCustomFieldWithEquals(
+			ExpandoColumnConstants.INTEGER,
+			ExpandoColumnConstants.INDEX_TYPE_KEYWORD, 3, String.valueOf(3),
+			LocaleUtil.getDefault(), 1, true);
+	}
+
+	@Test
+	public void testGetOrganizationsFilterByCustomFieldWithEqualsAndIntegerTextType()
+		throws Exception {
+
+		testGetOrganizationsFilterByCustomFieldWithEquals(
+			ExpandoColumnConstants.INTEGER,
+			ExpandoColumnConstants.INDEX_TYPE_TEXT, 3, String.valueOf(3),
+			LocaleUtil.getDefault(), 1, true);
 	}
 
 	@Test
 	public void testGetOrganizationsFilterByCustomFieldWithEqualsAndLocalizedStringKeywordType()
 		throws Exception {
-
-		ExpandoColumn expandoColumn = _addExpandoColumn(
-			_expandoTable, RandomTestUtil.randomString(),
-			ExpandoColumnConstants.STRING_LOCALIZED,
-			ExpandoColumnConstants.INDEX_TYPE_KEYWORD);
 
 		Locale esLocale = LocaleUtil.fromLanguageId("es_ES");
 
@@ -272,38 +222,15 @@ public class OrganizationODataRetrieverCustomFieldsTest {
 
 		Serializable columnValue = (Serializable)columnValueMap;
 
-		Organization organization1 = _addOrganization(
-			expandoColumn.getName(), columnValue);
-
-		_organizations.add(organization1);
-
-		Organization organization2 = OrganizationTestUtil.addOrganization();
-
-		_organizations.add(organization2);
-
-		String filterString = String.format(
-			"(customField/%s eq '%s')", _encodeName(expandoColumn),
-			columnValueMap.get(esLocale));
-
-		int count = _getODataRetriever().getResultsCount(
-			TestPropsValues.getCompanyId(), filterString, esLocale);
-
-		Assert.assertEquals(1, count);
-
-		List<Organization> organizations = _getODataRetriever().getResults(
-			TestPropsValues.getCompanyId(), filterString, esLocale, 0, 1);
-
-		Assert.assertEquals(organization1, organizations.get(0));
+		testGetOrganizationsFilterByCustomFieldWithEquals(
+			ExpandoColumnConstants.STRING_LOCALIZED,
+			ExpandoColumnConstants.INDEX_TYPE_KEYWORD, columnValue,
+			"'" + columnValueMap.get(esLocale) + "'", esLocale, 1, true);
 	}
 
 	@Test
 	public void testGetOrganizationsFilterByCustomFieldWithEqualsAndLocalizedStringTextType()
 		throws Exception {
-
-		ExpandoColumn expandoColumn = _addExpandoColumn(
-			_expandoTable, RandomTestUtil.randomString(),
-			ExpandoColumnConstants.STRING_LOCALIZED,
-			ExpandoColumnConstants.INDEX_TYPE_TEXT);
 
 		Locale esLocale = LocaleUtil.fromLanguageId("es_ES");
 
@@ -315,8 +242,88 @@ public class OrganizationODataRetrieverCustomFieldsTest {
 
 		Serializable columnValue = (Serializable)columnValueMap;
 
+		testGetOrganizationsFilterByCustomFieldWithEquals(
+			ExpandoColumnConstants.STRING_LOCALIZED,
+			ExpandoColumnConstants.INDEX_TYPE_TEXT, columnValue,
+			"'" + columnValueMap.get(esLocale) + "'", esLocale, 0, false);
+	}
+
+	@Test
+	public void testGetOrganizationsFilterByCustomFieldWithEqualsAndLongKeywordType()
+		throws Exception {
+
+		testGetOrganizationsFilterByCustomFieldWithEquals(
+			ExpandoColumnConstants.LONG,
+			ExpandoColumnConstants.INDEX_TYPE_KEYWORD, 3L, String.valueOf(3L),
+			LocaleUtil.getDefault(), 1, true);
+	}
+
+	@Test
+	public void testGetOrganizationsFilterByCustomFieldWithEqualsAndLongTextType()
+		throws Exception {
+
+		testGetOrganizationsFilterByCustomFieldWithEquals(
+			ExpandoColumnConstants.LONG,
+			ExpandoColumnConstants.INDEX_TYPE_TEXT, 3L, String.valueOf(3L),
+			LocaleUtil.getDefault(), 1, true);
+	}
+
+	@Test
+	public void testGetOrganizationsFilterByCustomFieldWithEqualsAndShortKeywordType()
+		throws Exception {
+
+		testGetOrganizationsFilterByCustomFieldWithEquals(
+			ExpandoColumnConstants.SHORT,
+			ExpandoColumnConstants.INDEX_TYPE_KEYWORD, (short)3,
+			String.valueOf((short)3), LocaleUtil.getDefault(), 1, true);
+	}
+
+	@Test
+	public void testGetOrganizationsFilterByCustomFieldWithEqualsAndShortTextType()
+		throws Exception {
+
+		testGetOrganizationsFilterByCustomFieldWithEquals(
+			ExpandoColumnConstants.SHORT,
+			ExpandoColumnConstants.INDEX_TYPE_TEXT, (short)3,
+			String.valueOf((short)3), LocaleUtil.getDefault(), 1, true);
+	}
+
+	@Test
+	public void testGetOrganizationsFilterByCustomFieldWithEqualsAndStringKeywordType()
+		throws Exception {
+
+		String columnValue = RandomTestUtil.randomString();
+
+		testGetOrganizationsFilterByCustomFieldWithEquals(
+			ExpandoColumnConstants.STRING,
+			ExpandoColumnConstants.INDEX_TYPE_KEYWORD, columnValue,
+			"'" + columnValue + "'", LocaleUtil.getDefault(), 1, true);
+	}
+
+	@Test
+	public void testGetOrganizationsFilterByCustomFieldWithEqualsAndStringTextType()
+		throws Exception {
+
+		String columnValue = "Hello World!";
+
+		testGetOrganizationsFilterByCustomFieldWithEquals(
+			ExpandoColumnConstants.STRING,
+			ExpandoColumnConstants.INDEX_TYPE_TEXT, columnValue,
+			"'" + columnValue + "'", LocaleUtil.getDefault(), 0, false);
+	}
+
+	protected void testGetOrganizationsFilterByCustomFieldWithEquals(
+			int expandoColumnType, int expandoColumnIndexType,
+			Serializable value, String filterValue, Locale locale,
+			int expectedCount, boolean assertOrganization)
+		throws Exception {
+
+		ExpandoColumn expandoColumn = _addExpandoColumn(
+			_expandoTable, RandomTestUtil.randomString(), expandoColumnType,
+			expandoColumnIndexType);
+
 		Organization organization1 = _addOrganization(
-			expandoColumn.getName(), columnValue);
+			expandoColumn.getName(), value);
 
 		_organizations.add(organization1);
 
@@ -325,81 +332,19 @@ public class OrganizationODataRetrieverCustomFieldsTest {
 		_organizations.add(organization2);
 
 		String filterString = String.format(
-			"(customField/%s eq '%s')", _encodeName(expandoColumn),
-			columnValueMap.get(esLocale));
+			"(customField/%s eq %s)", _encodeName(expandoColumn), filterValue);
 
 		int count = _getODataRetriever().getResultsCount(
-			TestPropsValues.getCompanyId(), filterString, esLocale);
+			TestPropsValues.getCompanyId(), filterString, locale);
 
-		Assert.assertEquals(0, count);
-	}
+		Assert.assertEquals(expectedCount, count);
 
-	@Test
-	public void testGetOrganizationsFilterByCustomFieldWithEqualsAndStringKeywordType()
-		throws Exception {
+		if (assertOrganization) {
+			List<Organization> organizations = _getODataRetriever().getResults(
+				TestPropsValues.getCompanyId(), filterString, locale, 0, 1);
 
-		ExpandoColumn expandoColumn = _addExpandoColumn(
-			_expandoTable, RandomTestUtil.randomString(),
-			ExpandoColumnConstants.STRING,
-			ExpandoColumnConstants.INDEX_TYPE_KEYWORD);
-
-		String columnValue = RandomTestUtil.randomString();
-
-		Organization organization1 = _addOrganization(
-			expandoColumn.getName(), columnValue);
-
-		_organizations.add(organization1);
-
-		Organization organization2 = OrganizationTestUtil.addOrganization();
-
-		_organizations.add(organization2);
-
-		String filterString = StringBundler.concat(
-			"(customField/", _encodeName(expandoColumn), " eq '", columnValue,
-			"')");
-
-		int count = _getODataRetriever().getResultsCount(
-			TestPropsValues.getCompanyId(), filterString,
-			LocaleUtil.getDefault());
-
-		Assert.assertEquals(1, count);
-
-		List<Organization> organizations = _getODataRetriever().getResults(
-			TestPropsValues.getCompanyId(), filterString,
-			LocaleUtil.getDefault(), 0, 1);
-
-		Assert.assertEquals(organization1, organizations.get(0));
-	}
-
-	@Test
-	public void testGetOrganizationsFilterByCustomFieldWithEqualsAndStringTextType()
-		throws Exception {
-
-		ExpandoColumn expandoColumn = _addExpandoColumn(
-			_expandoTable, RandomTestUtil.randomString(),
-			ExpandoColumnConstants.STRING,
-			ExpandoColumnConstants.INDEX_TYPE_TEXT);
-
-		String columnValue = "Hello World!";
-
-		Organization organization1 = _addOrganization(
-			expandoColumn.getName(), columnValue);
-
-		_organizations.add(organization1);
-
-		Organization organization2 = OrganizationTestUtil.addOrganization();
-
-		_organizations.add(organization2);
-
-		String filterString = StringBundler.concat(
-			"(customField/", _encodeName(expandoColumn), " eq '", columnValue,
-			"')");
-
-		int count = _getODataRetriever().getResultsCount(
-			TestPropsValues.getCompanyId(), filterString,
-			LocaleUtil.getDefault());
-
-		Assert.assertEquals(0, count);
+			Assert.assertEquals(organization1, organizations.get(0));
+		}
 	}
 
 	private ExpandoColumn _addExpandoColumn(
