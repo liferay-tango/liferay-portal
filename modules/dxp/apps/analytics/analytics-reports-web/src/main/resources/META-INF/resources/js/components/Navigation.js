@@ -21,6 +21,7 @@ import Main from './Main';
 export default function Navigation({
 	api,
 	authorName,
+	authorPortraitURL,
 	defaultTimeRange,
 	defaultTimeSpanKey,
 	languageTag,
@@ -127,6 +128,7 @@ export default function Navigation({
 				<div>
 					<Main
 						authorName={authorName}
+						authorPortraitURL={authorPortraitURL}
 						chartDataProviders={[
 							getHistoricalViews,
 							getHistoricalReads,
@@ -163,6 +165,7 @@ export default function Navigation({
 Navigation.proptypes = {
 	api: PropTypes.object.isRequired,
 	authorName: PropTypes.string.isRequired,
+	authorPortraitURL: PropTypes.string.isRequired,
 	defaultTimeRange: PropTypes.objectOf(
 		PropTypes.shape({
 			endDate: PropTypes.string.isRequired,

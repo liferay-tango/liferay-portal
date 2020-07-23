@@ -9,13 +9,12 @@
  * distribution rights of the Software.
  */
 
-import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
 import ClaySticker from '@clayui/sticker';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-function Author({authorName}) {
+function Author({authorName, authorPortraitURL}) {
 	return (
 		<div className="mt-2 text-secondary">
 			<ClaySticker
@@ -23,7 +22,9 @@ function Author({authorName}) {
 				inline={true}
 				size="sm"
 			>
-				<ClayIcon symbol="user" />
+				<div className="sticker-overlay">
+					<img className="sticker-img" src={authorPortraitURL} />
+				</div>
 			</ClaySticker>
 			{Liferay.Util.sub(
 				Liferay.Language.get('authored-by-x'),
@@ -33,7 +34,13 @@ function Author({authorName}) {
 	);
 }
 
-function BasicInformation({authorName, languageTag, publishDate, title}) {
+function BasicInformation({
+	authorName,
+	authorPortraitURL,
+	languageTag,
+	publishDate,
+	title,
+}) {
 	const formattedPublishDate = Intl.DateTimeFormat(languageTag, {
 		day: 'numeric',
 		month: 'long',
@@ -54,7 +61,10 @@ function BasicInformation({authorName, languageTag, publishDate, title}) {
 					)}
 				</p>
 
-				<Author authorName={authorName} />
+				<Author
+					authorName={authorName}
+					authorPortraitURL={authorPortraitURL}
+				/>
 			</ClayLayout.ContentCol>
 		</ClayLayout.ContentRow>
 	);
@@ -62,10 +72,12 @@ function BasicInformation({authorName, languageTag, publishDate, title}) {
 
 Author.propTypes = {
 	authorName: PropTypes.string.isRequired,
+	authorPortraitURL: PropTypes.string.isRequired,
 };
 
 BasicInformation.propTypes = {
 	authorName: PropTypes.string.isRequired,
+	authorPortraitURL: PropTypes.string.isRequired,
 	publishDate: PropTypes.number.isRequired,
 	title: PropTypes.string.isRequired,
 };

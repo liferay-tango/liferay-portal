@@ -19,6 +19,7 @@ import TrafficSources from './TrafficSources';
 
 export default function Main({
 	authorName,
+	authorPortraitURL,
 	chartDataProviders,
 	defaultTimeRange,
 	defaultTimeSpanOption,
@@ -35,6 +36,7 @@ export default function Main({
 		<>
 			<BasicInformation
 				authorName={authorName}
+				authorPortraitURL={authorPortraitURL}
 				languageTag={languageTag}
 				publishDate={pagePublishDate}
 				title={pageTitle}
@@ -87,6 +89,7 @@ export default function Main({
 
 Main.proptypes = {
 	authorName: PropTypes.string.isRequired,
+	authorPortraitURL: PropTypes.string.isRequired,
 	chartDataProviders: PropTypes.arrayOf(PropTypes.func.isRequired).isRequired,
 	defaultTimeRange: PropTypes.object.isRequired,
 	defaultTimeSpanOption: PropTypes.string.isRequired,
