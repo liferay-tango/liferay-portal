@@ -132,14 +132,7 @@ public class AnalyticsReportsPortletTest {
 				).toString()
 			).build());
 
-		Dictionary<String, Object> properties = new HashMapDictionary<>();
-
-		properties.put("trafficSourcesEnabled", true);
-
-		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
-				new ConfigurationTemporarySwapper(
-					_CONFIGURATION_PID, properties)) {
-
+		try {
 			MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
 				_getMockLiferayPortletRenderRequest();
 
@@ -353,10 +346,6 @@ public class AnalyticsReportsPortletTest {
 		ReflectionTestUtil.setFieldValue(
 			_portlet, "_http", MockHttpUtil.geHttp(mockRequest));
 	}
-
-	private static final String _CONFIGURATION_PID =
-		"com.liferay.analytics.reports.web.internal.configuration." +
-			"AnalyticsReportsConfiguration";
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
