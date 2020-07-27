@@ -25,6 +25,14 @@ export default function ({context, props}) {
 
 	const {authorName, publishDate, title} = props;
 	const {trafficSources} = props;
+	const languages = [
+		{default: true, languageId: 'en-US'},
+		{default: false, languageId: 'pt-BR'},
+		{default: false, languageId: 'fr-FR'},
+		{default: false, languageId: 'ja-JP'},
+		{default: false, languageId: 'ca-ES'},
+		{default: false, languageId: 'es-ES'},
+	];
 
 	const {
 		getAnalyticsReportsHistoricalReadsURL,
@@ -60,6 +68,7 @@ export default function ({context, props}) {
 						authorName={authorName}
 						defaultTimeRange={defaultTimeRange}
 						defaultTimeSpanKey={defaultTimeSpanKey}
+						languages={languages}
 						languageTag={languageTag}
 						pagePublishDate={publishDate}
 						pageTitle={title}

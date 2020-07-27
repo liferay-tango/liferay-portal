@@ -24,6 +24,7 @@ export default function Navigation({
 	defaultTimeRange,
 	defaultTimeSpanKey,
 	languageTag,
+	languages,
 	pagePublishDate,
 	pageTitle,
 	timeSpanOptions,
@@ -133,6 +134,7 @@ export default function Navigation({
 						]}
 						defaultTimeRange={defaultTimeRange}
 						defaultTimeSpanOption={defaultTimeSpanKey}
+						languages={languages}
 						languageTag={languageTag}
 						onTrafficSourceClick={handleTrafficSourceClick}
 						pagePublishDate={pagePublishDate}
