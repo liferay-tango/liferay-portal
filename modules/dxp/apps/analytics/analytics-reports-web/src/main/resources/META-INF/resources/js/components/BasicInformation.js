@@ -17,7 +17,7 @@ import React from 'react';
 
 function Author({authorName}) {
 	return (
-		<div className="mt-2 text-secondary">
+		<div className="text-secondary">
 			<ClaySticker
 				className="mr-2 sticker-user-icon"
 				inline={true}
