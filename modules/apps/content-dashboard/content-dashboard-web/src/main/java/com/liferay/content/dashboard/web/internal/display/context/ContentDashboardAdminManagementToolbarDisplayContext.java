@@ -182,7 +182,11 @@ public class ContentDashboardAdminManagementToolbarDisplayContext
 								_assetCategoryLocalService.fetchAssetCategory(
 									assetCategoryId)
 							).map(
-								assetCategory -> assetCategory.getTitle(_locale)
+								assetCategory -> StringBundler.concat(
+									assetCategory.getTitle(_locale),
+									StringPool.OPEN_PARENTHESIS,
+									_getScopeLabel(assetCategory.getGroupId()),
+									StringPool.CLOSE_PARENTHESIS)
 							).orElse(
 								StringPool.BLANK
 							)));
