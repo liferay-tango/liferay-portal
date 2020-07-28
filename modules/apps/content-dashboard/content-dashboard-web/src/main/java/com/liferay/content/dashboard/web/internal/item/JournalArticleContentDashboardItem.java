@@ -23,6 +23,7 @@ import com.liferay.journal.model.JournalArticle;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -262,7 +263,7 @@ public class JournalArticleContentDashboardItem
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
-		return _getViewURL(themeDisplay);
+		return _getViewURL(themeDisplay.getLocale(), themeDisplay);
 	}
 
 	@Override
@@ -279,7 +280,7 @@ public class JournalArticleContentDashboardItem
 			LocaleUtil::fromLanguageId
 		).map(
 			locale -> new AbstractMap.SimpleEntry<>(
-				locale, _getViewURL(themeDisplay))
+				locale, _getViewURL(locale, themeDisplay))
 		).collect(
 			Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)
 		);
@@ -316,15 +317,22 @@ public class JournalArticleContentDashboardItem
 		return true;
 	}
 
-	private String _getViewURL(ThemeDisplay themeDisplay) {
-		try {
-			Locale locale = themeDisplay.getLocale();
+	private String _getI18nPath(Locale locale) {
+		Locale defaultLocale = LanguageUtil.getLocale(locale.getLanguage());
 
+		if (LocaleUtil.equals(defaultLocale, locale)) {
+			return StringPool.SLASH + defaultLocale.getLanguage();
+		}
+
+		return StringPool.SLASH + locale.toLanguageTag();
+	}
+
+	private String _getViewURL(Locale locale, ThemeDisplay themeDisplay) {
+		try {
 			ThemeDisplay clonedThemeDisplay =
 				(ThemeDisplay)themeDisplay.clone();
 
-			clonedThemeDisplay.setI18nPath(
-				StringPool.SLASH + locale.toLanguageTag());
+			clonedThemeDisplay.setI18nPath(_getI18nPath(locale));
 
 			String languageId = _language.getLanguageId(locale);
 
