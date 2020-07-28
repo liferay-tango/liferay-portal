@@ -196,6 +196,9 @@ public class AnalyticsReportsDisplayContext {
 			_analyticsReportsInfoItem.getAuthorName(
 				_analyticsReportsInfoItemObject)
 		).put(
+			"authorPortraitURL",
+			"/image/user_portrait?img_id=38575&img_id_token=cXAtJPnEY05YVKUgO2YIJXYsIwo%3D&t=1595920492598"
+		).put(
 			"publishDate",
 			() -> _analyticsReportsInfoItem.getPublishDate(
 				_analyticsReportsInfoItemObject)
