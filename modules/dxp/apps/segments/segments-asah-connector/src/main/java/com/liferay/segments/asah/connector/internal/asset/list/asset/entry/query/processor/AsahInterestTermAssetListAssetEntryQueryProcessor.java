@@ -59,21 +59,21 @@ public class AsahInterestTermAssetListAssetEntryQueryProcessor
 			return;
 		}
 
-		String terms = StringUtil.merge(
-			_asahInterestTermProvider.getInterestTerms(companyId, userId));
+		String[] interestTerms = _asahInterestTermProvider.getInterestTerms(
+			companyId, userId);
 
-		if (Validator.isNull(terms)) {
+		if (interestTerms.length == 0) {
 			return;
 		}
 
 		if (_log.isDebugEnabled()) {
 			_log.debug(
 				StringBundler.concat(
-					"Adding interest terms \"", terms,
+					"Adding interest terms \"", StringUtil.merge(interestTerms),
 					"\" to asset query for user ID ", userId));
 		}
 
-		assetEntryQuery.setKeywords(terms);
+		assetEntryQuery.setAnyKeywords(interestTerms);
 	}
 
 	@Override
