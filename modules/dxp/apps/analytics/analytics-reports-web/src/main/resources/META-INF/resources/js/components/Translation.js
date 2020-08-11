@@ -17,10 +17,10 @@ import ClayLayout from '@clayui/layout';
 import PropTypes from 'prop-types';
 import React, {useState} from 'react';
 
-export default function Translation({languages}) {
+export default function Translation({viewURLs}) {
 	const [active, setActive] = useState(false);
 
-	const defaultLanguage = languages.find((language) => language.default);
+	const defaultLanguage = viewURLs.find((language) => language.default);
 
 	return (
 		<ClayLayout.ContentRow>
@@ -56,7 +56,7 @@ export default function Translation({languages}) {
 					}
 				>
 					<ClayDropDown.ItemList>
-						{Object.values(languages).map((language, index) => (
+						{Object.values(viewURLs).map((language, index) => (
 							<ClayDropDown.Item
 								key={index}
 								onClick={() => {}}
@@ -94,10 +94,11 @@ export default function Translation({languages}) {
 }
 
 Translation.propTypes = {
-	languages: PropTypes.arrayOf(
+	viewURLs: PropTypes.arrayOf(
 		PropTypes.shape({
 			default: PropTypes.bool.isRequired,
 			languageId: PropTypes.string.isRequired,
+			viewURL: PropTypes.string.isRequired,
 		})
 	).isRequired,
 };

@@ -26,7 +26,6 @@ export default function Main({
 	defaultTimeRange,
 	defaultTimeSpanOption,
 	languageTag,
-	languages,
 	onTrafficSourceClick,
 	pagePublishDate,
 	pageTitle,
@@ -34,6 +33,7 @@ export default function Main({
 	totalReadsDataProvider,
 	totalViewsDataProvider,
 	trafficSources,
+	viewURLs,
 }) {
 	return (
 		<div className="c-p-3">
@@ -47,7 +47,7 @@ export default function Main({
 			/>
 
 			<div className="mt-4">
-				<Translation languages={languages} />
+				<Translation viewURLs={viewURLs} />
 			</div>
 
 			<h5 className="mt-3 sheet-subtitle">
@@ -115,4 +115,11 @@ Main.proptypes = {
 	totalReadsDataProvider: PropTypes.func.isRequired,
 	totalViewsDataProvider: PropTypes.func.isRequired,
 	trafficSources: PropTypes.array.isRequired,
+	viewURLs: PropTypes.arrayOf(
+		PropTypes.shape({
+			default: PropTypes.bool.isRequired,
+			languageId: PropTypes.string.isRequired,
+			viewURL: PropTypes.string.isRequired,
+		})
+	).isRequired,
 };

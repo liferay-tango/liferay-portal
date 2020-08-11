@@ -26,11 +26,11 @@ export default function Navigation({
 	defaultTimeRange,
 	defaultTimeSpanKey,
 	languageTag,
-	languages,
 	pagePublishDate,
 	pageTitle,
 	timeSpanOptions,
 	trafficSources,
+	viewURLs,
 }) {
 	const [currentPage, setCurrentPage] = useState({view: 'main'});
 
@@ -138,7 +138,6 @@ export default function Navigation({
 						]}
 						defaultTimeRange={defaultTimeRange}
 						defaultTimeSpanOption={defaultTimeSpanKey}
-						languages={languages}
 						languageTag={languageTag}
 						onTrafficSourceClick={handleTrafficSourceClick}
 						pagePublishDate={pagePublishDate}
@@ -147,6 +146,7 @@ export default function Navigation({
 						totalReadsDataProvider={handleTotalReads}
 						totalViewsDataProvider={handleTotalViews}
 						trafficSources={trafficSources}
+						viewURLs={viewURLs}
 					/>
 				</div>
 			)}
@@ -188,4 +188,11 @@ Navigation.proptypes = {
 		})
 	).isRequired,
 	trafficSources: PropTypes.array.isRequired,
+	viewURLs: PropTypes.arrayOf(
+		PropTypes.shape({
+			default: PropTypes.bool.isRequired,
+			languageId: PropTypes.string.isRequired,
+			viewURL: PropTypes.string.isRequired,
+		})
+	).isRequired,
 };
