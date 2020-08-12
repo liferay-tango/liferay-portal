@@ -17,10 +17,8 @@ import ClayLayout from '@clayui/layout';
 import PropTypes from 'prop-types';
 import React, {useState} from 'react';
 
-export default function Translation({viewURLs}) {
+export default function Translation({defaultLanguage, viewURLs}) {
 	const [active, setActive] = useState(false);
-
-	const defaultLanguage = viewURLs.find((language) => language.default);
 
 	return (
 		<ClayLayout.ContentRow>
@@ -43,14 +41,12 @@ export default function Translation({viewURLs}) {
 							displayType="secondary"
 							small
 						>
-							<ClayIcon
-								symbol={defaultLanguage.languageId.toLowerCase()}
-							/>
+							<ClayIcon symbol={defaultLanguage.toLowerCase()} />
 							<span
 								className="d-block font-weight-normal"
 								style={{fontSize: 9}}
 							>
-								{defaultLanguage.languageId}
+								{defaultLanguage}
 							</span>
 						</ClayButton>
 					}
@@ -58,8 +54,11 @@ export default function Translation({viewURLs}) {
 					<ClayDropDown.ItemList>
 						{Object.values(viewURLs).map((language, index) => (
 							<ClayDropDown.Item
+								active={language.languageId === defaultLanguage}
 								key={index}
-								onClick={() => {}}
+								onClick={() =>
+									Liferay.Util.navigate(language.viewURL)
+								}
 								symbolLeft={language.languageId.toLowerCase()}
 							>
 								<ClayLayout.ContentRow>
@@ -94,6 +93,7 @@ export default function Translation({viewURLs}) {
 }
 
 Translation.propTypes = {
+	defaultLanguage: PropTypes.string.isRequired,
 	viewURLs: PropTypes.arrayOf(
 		PropTypes.shape({
 			default: PropTypes.bool.isRequired,

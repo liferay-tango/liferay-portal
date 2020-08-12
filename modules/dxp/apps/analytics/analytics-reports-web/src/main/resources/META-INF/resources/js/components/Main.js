@@ -47,7 +47,10 @@ export default function Main({
 			/>
 
 			<div className="mt-4">
-				<Translation viewURLs={viewURLs} />
+				<Translation
+					defaultLanguage={languageTag}
+					viewURLs={viewURLs}
+				/>
 			</div>
 
 			<h5 className="mt-3 sheet-subtitle">
