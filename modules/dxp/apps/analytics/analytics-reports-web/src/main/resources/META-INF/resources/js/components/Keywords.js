@@ -29,12 +29,6 @@ const KEYWORD_VALUE_TYPE = [
 ];
 
 export default function Keywords({currentPage, languageTag}) {
-	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
-	const [keywordValueType, setKeywordValueType] = useState(
-		KEYWORD_VALUE_TYPE[0]
-	);
-
 	const [{publishedToday}] = useContext(StoreContext);
 
 	const countries = useMemo(() => {
@@ -54,10 +48,6 @@ export default function Keywords({currentPage, languageTag}) {
 		);
 	}, [currentPage.data.countryKeywords]);
 
-	const [currentCountry, setCurrentCountry] = useState(
-		countries[0].countryCode
-	);
-
 	const keywords = useMemo(() => {
 		const countryKeywords =
 			currentCountry &&
@@ -67,6 +57,16 @@ export default function Keywords({currentPage, languageTag}) {
 
 		return countryKeywords?.keywords ?? [];
 	}, [currentPage.data.countryKeywords, currentCountry]);
+
+	const [currentCountry, setCurrentCountry] = useState(
+		countries[0].countryCode
+	);
+
+	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+	const [keywordValueType, setKeywordValueType] = useState(
+		KEYWORD_VALUE_TYPE[0]
+	);
 
 	const handleCountrySelection = (event) => {
 		const country = event.target.value;

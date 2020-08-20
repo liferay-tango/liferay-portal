@@ -45,11 +45,11 @@ export default function TrafficSources({
 	onTrafficSourceClick,
 	trafficSources,
 }) {
+	const [{publishedToday}] = useContext(StoreContext);
+
 	const [highlighted, setHighlighted] = useState(null);
 
 	const [, addWarning] = useWarning();
-
-	const [{publishedToday}] = useContext(StoreContext);
 
 	const fullPieChart = trafficSources.some((source) => !!source.value);
 

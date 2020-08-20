@@ -31,13 +31,13 @@ function TotalCount({
 }) {
 	const {validAnalyticsConnection} = useContext(ConnectionContext);
 
-	const [value, setValue] = useState('-');
+	const [{publishedToday}] = useContext(StoreContext);
 
 	const isMounted = useIsMounted();
 
-	const [, addWarning] = useWarning();
+	const [value, setValue] = useState('-');
 
-	const [{publishedToday}] = useContext(StoreContext);
+	const [, addWarning] = useWarning();
 
 	useEffect(() => {
 		if (validAnalyticsConnection) {
