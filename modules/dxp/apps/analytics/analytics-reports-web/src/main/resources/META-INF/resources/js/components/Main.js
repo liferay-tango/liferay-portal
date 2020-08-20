@@ -19,13 +19,12 @@ import TrafficSources from './TrafficSources';
 import Translation from './Translation';
 
 export default function Main({
-	authorName,
-	authorPortraitURL,
-	authorUserId,
+	author,
 	chartDataProviders,
 	defaultTimeRange,
 	defaultTimeSpanOption,
 	languageTag,
+	onSelectedLanguageClick,
 	onTrafficSourceClick,
 	pagePublishDate,
 	pageTitle,
@@ -38,9 +37,7 @@ export default function Main({
 	return (
 		<div className="c-p-3">
 			<BasicInformation
-				authorName={authorName}
-				authorPortraitURL={authorPortraitURL}
-				authorUserId={authorUserId}
+				author={author}
 				languageTag={languageTag}
 				publishDate={pagePublishDate}
 				title={pageTitle}
@@ -49,6 +46,9 @@ export default function Main({
 			<div className="mt-4">
 				<Translation
 					defaultLanguage={languageTag}
+					defaultTimeSpanOption={defaultTimeSpanOption}
+					onSelectedLanguageClick={onSelectedLanguageClick}
+					publishDate={pagePublishDate}
 					viewURLs={viewURLs}
 				/>
 			</div>

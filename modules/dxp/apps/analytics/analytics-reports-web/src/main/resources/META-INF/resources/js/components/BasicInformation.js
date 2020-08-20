@@ -17,49 +17,37 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-function Author({authorName, authorPortraitURL, authorUserId}) {
-	const stickerColor = parseInt(authorUserId, 10) % 10;
+function Author({author}) {
+	const {alt, authorId, url} = author;
+
+	const stickerColor = parseInt(authorId, 10) % 10;
 
 	return (
 		<div className="text-secondary">
 			<ClaySticker
 				className={classnames('c-mr-2 sticker-user-icon', {
-					[`user-icon-color-${stickerColor}`]: !authorPortraitURL,
+					[`user-icon-color-${stickerColor}`]: !url,
 				})}
 				shape="circle"
 				size="sm"
 			>
-				{authorPortraitURL ? (
-					<img
-						alt={`${authorName}.`}
-						className="sticker-img"
-						src={authorPortraitURL}
-					/>
+				{url ? (
+					<img alt={`${alt}.`} className="sticker-img" src={url} />
 				) : (
 					<ClayIcon symbol="user" />
 				)}
 			</ClaySticker>
-			{Liferay.Util.sub(
-				Liferay.Language.get('authored-by-x'),
-				authorName
-			)}
+			{Liferay.Util.sub(Liferay.Language.get('authored-by-x'), alt)}
 		</div>
 	);
 }
 
-function BasicInformation({
-	authorName,
-	authorPortraitURL,
-	authorUserId,
-	languageTag,
-	publishDate,
-	title,
-}) {
+function BasicInformation({author, languageTag, publishDate, title}) {
 	const formattedPublishDate = Intl.DateTimeFormat(languageTag, {
 		day: 'numeric',
 		month: 'long',
 		year: 'numeric',
-	}).format(publishDate);
+	}).format(new Date(publishDate));
 
 	return (
 		<div className="sidebar-section">
@@ -90,11 +78,7 @@ function BasicInformation({
 
 			<ClayLayout.ContentRow>
 				<ClayLayout.ContentCol expand>
-					<Author
-						authorName={authorName}
-						authorPortraitURL={authorPortraitURL}
-						authorUserId={authorUserId}
-					/>
+					<Author author={author} />
 				</ClayLayout.ContentCol>
 			</ClayLayout.ContentRow>
 		</div>

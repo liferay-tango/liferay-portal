@@ -15,32 +15,54 @@ import React, {useCallback, useContext, useState} from 'react';
 
 import ConnectionContext from '../context/ConnectionContext';
 import {StoreContext, useHistoricalWarning, useWarning} from '../context/store';
+import APIService from '../utils/APIService';
 import Detail from './Detail';
 import Main from './Main';
 
 export default function Navigation({
-	api,
-	authorName,
-	authorPortraitURL,
-	authorUserId,
+	author,
 	defaultTimeRange,
 	defaultTimeSpanKey,
+	endpoints,
 	languageTag,
+	namespace,
+	onSelectedLanguageClick = () => {},
+	page,
 	pagePublishDate,
 	pageTitle,
 	timeSpanOptions,
 	trafficSources,
 	viewURLs,
 }) {
+	const [{publishedToday}] = useContext(StoreContext);
+
+	const {validAnalyticsConnection} = useContext(ConnectionContext);
+
 	const [currentPage, setCurrentPage] = useState({view: 'main'});
 
 	const [trafficSourceName, setTrafficSourceName] = useState('');
 
-	const {validAnalyticsConnection} = useContext(ConnectionContext);
+	const [hasHistoricalWarning] = useHistoricalWarning();
 
 	const [hasWarning] = useWarning();
 
-	const [hasHistoricalWarning] = useHistoricalWarning();
+	const {
+		getAnalyticsReportsHistoricalReadsURL,
+		getAnalyticsReportsHistoricalViewsURL,
+		getAnalyticsReportsTotalReadsURL,
+		getAnalyticsReportsTotalViewsURL,
+	} = endpoints;
+
+	const api = APIService({
+		endpoints: {
+			getAnalyticsReportsHistoricalReadsURL,
+			getAnalyticsReportsHistoricalViewsURL,
+			getAnalyticsReportsTotalReadsURL,
+			getAnalyticsReportsTotalViewsURL,
+		},
+		namespace,
+		page,
+	});
 
 	const {getHistoricalReads, getHistoricalViews} = api;
 
@@ -93,8 +115,6 @@ export default function Navigation({
 		return Promise.resolve(trafficSource?.value ?? '-');
 	}, [trafficSourceName, trafficSources]);
 
-	const [{publishedToday}] = useContext(StoreContext);
-
 	return (
 		<>
 			{!validAnalyticsConnection && (
@@ -129,9 +149,7 @@ export default function Navigation({
 			{currentPage.view === 'main' && (
 				<div>
 					<Main
-						authorName={authorName}
-						authorPortraitURL={authorPortraitURL}
-						authorUserId={authorUserId}
+						author={author}
 						chartDataProviders={[
 							getHistoricalViews,
 							getHistoricalReads,
@@ -139,6 +157,7 @@ export default function Navigation({
 						defaultTimeRange={defaultTimeRange}
 						defaultTimeSpanOption={defaultTimeSpanKey}
 						languageTag={languageTag}
+						onSelectedLanguageClick={onSelectedLanguageClick}
 						onTrafficSourceClick={handleTrafficSourceClick}
 						pagePublishDate={pagePublishDate}
 						pageTitle={pageTitle}
