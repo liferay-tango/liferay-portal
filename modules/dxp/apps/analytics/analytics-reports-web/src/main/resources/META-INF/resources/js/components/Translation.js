@@ -15,7 +15,7 @@ import ClayIcon from '@clayui/icon';
 import ClayLabel from '@clayui/label';
 import ClayLayout from '@clayui/layout';
 import PropTypes from 'prop-types';
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 
 import {useChartState} from '../state/chartState';
 
@@ -27,6 +27,13 @@ export default function Translation({
 	viewURLs,
 }) {
 	const [active, setActive] = useState(false);
+
+	const selectedLanguage = useMemo(() => {
+		return (
+			viewURLs.find((language) => language.selected).languageId ||
+			defaultLanguage
+		);
+	}, [defaultLanguage, viewURLs]);
 
 	const {state: chartState} = useChartState({
 		defaultTimeSpanOption,
@@ -61,12 +68,12 @@ export default function Translation({
 							displayType="secondary"
 							small
 						>
-							<ClayIcon symbol={defaultLanguage.toLowerCase()} />
+							<ClayIcon symbol={selectedLanguage.toLowerCase()} />
 							<span
 								className="d-block font-weight-normal"
 								style={{fontSize: 9}}
 							>
-								{defaultLanguage}
+								{selectedLanguage}
 							</span>
 						</ClayButton>
 					}
