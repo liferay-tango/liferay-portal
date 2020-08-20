@@ -186,10 +186,7 @@ export default function Navigation({
 }
 
 Navigation.proptypes = {
-	api: PropTypes.object.isRequired,
-	authorName: PropTypes.string.isRequired,
-	authorPortraitURL: PropTypes.string.isRequired,
-	authorUserId: PropTypes.string.isRequired,
+	author: PropTypes.object.isRequired,
 	defaultTimeRange: PropTypes.objectOf(
 		PropTypes.shape({
 			endDate: PropTypes.string.isRequired,
@@ -197,8 +194,16 @@ Navigation.proptypes = {
 		})
 	).isRequired,
 	defaultTimeSpanKey: PropTypes.string.isRequired,
+	endpoints: PropTypes.object.isRequired,
 	languageTag: PropTypes.string.isRequired,
-	pagePublishDate: PropTypes.number.isRequired,
+	namespace: PropTypes.string.isRequired,
+	onSelectedLanguageClick: PropTypes.func.isRequired,
+	page: PropTypes.objectOf(
+		PropTypes.shape({
+			plid: PropTypes.number.isRequired,
+		})
+	).isRequired,
+	pagePublishDate: PropTypes.string.isRequired,
 	pageTitle: PropTypes.string.isRequired,
 	timeSpanOptions: PropTypes.arrayOf(
 		PropTypes.shape({
@@ -211,6 +216,7 @@ Navigation.proptypes = {
 		PropTypes.shape({
 			default: PropTypes.bool.isRequired,
 			languageId: PropTypes.string.isRequired,
+			selected: PropTypes.bool.isRequired,
 			viewURL: PropTypes.string.isRequired,
 		})
 	).isRequired,

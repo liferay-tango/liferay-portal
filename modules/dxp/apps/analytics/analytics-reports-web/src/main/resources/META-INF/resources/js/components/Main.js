@@ -99,15 +99,14 @@ export default function Main({
 }
 
 Main.proptypes = {
-	authorName: PropTypes.string.isRequired,
-	authorPortraitURL: PropTypes.string.isRequired,
-	authorUserId: PropTypes.string.isRequired,
+	author: PropTypes.object.isRequired,
 	chartDataProviders: PropTypes.arrayOf(PropTypes.func.isRequired).isRequired,
 	defaultTimeRange: PropTypes.object.isRequired,
 	defaultTimeSpanOption: PropTypes.string.isRequired,
 	languageTag: PropTypes.string.isRequired,
+	onSelectedLanguageClick: PropTypes.func.isRequired,
 	onTrafficSourceClick: PropTypes.func.isRequired,
-	pagePublishDate: PropTypes.number.isRequired,
+	pagePublishDate: PropTypes.string.isRequired,
 	pageTitle: PropTypes.string.isRequired,
 	timeSpanOptions: PropTypes.arrayOf(
 		PropTypes.shape({
@@ -122,6 +121,7 @@ Main.proptypes = {
 		PropTypes.shape({
 			default: PropTypes.bool.isRequired,
 			languageId: PropTypes.string.isRequired,
+			selected: PropTypes.bool.isRequired,
 			viewURL: PropTypes.string.isRequired,
 		})
 	).isRequired,

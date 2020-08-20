@@ -86,16 +86,13 @@ function BasicInformation({author, languageTag, publishDate, title}) {
 }
 
 Author.propTypes = {
-	authorName: PropTypes.string.isRequired,
-	authorPortraitURL: PropTypes.string.isRequired,
-	authorUserId: PropTypes.string.isRequired,
+	author: PropTypes.object.isRequired,
 };
 
 BasicInformation.propTypes = {
-	authorName: PropTypes.string.isRequired,
-	authorPortraitURL: PropTypes.string.isRequired,
-	authorUserId: PropTypes.string.isRequired,
-	publishDate: PropTypes.number.isRequired,
+	author: PropTypes.object.isRequired,
+	languageTag: PropTypes.string.isRequired,
+	publishDate: PropTypes.string.isRequired,
 	title: PropTypes.string.isRequired,
 };
 
