@@ -15,10 +15,30 @@ import ClayIcon from '@clayui/icon';
 import ClayLabel from '@clayui/label';
 import ClayLayout from '@clayui/layout';
 import PropTypes from 'prop-types';
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 
-export default function Translation({defaultLanguage, viewURLs}) {
+import {useChartState} from '../state/chartState';
+
+export default function Translation({
+	defaultLanguage,
+	defaultTimeSpanOption,
+	onSelectedLanguageClick,
+	publishDate,
+	viewURLs,
+}) {
 	const [active, setActive] = useState(false);
+
+	const {state: chartState} = useChartState({
+		defaultTimeSpanOption,
+		publishDate,
+	});
+
+	const {timeSpanOffset, timeSpanOption} = useCallback(() => {
+		return {
+			timeSpanOffset: chartState.timeSpanOffset,
+			timeSpanOption: chartState.timeSpanOption,
+		};
+	}, [chartState]);
 
 	return (
 		<ClayLayout.ContentRow>
@@ -54,11 +74,17 @@ export default function Translation({defaultLanguage, viewURLs}) {
 					<ClayDropDown.ItemList>
 						{Object.values(viewURLs).map((language, index) => (
 							<ClayDropDown.Item
-								active={language.languageId === defaultLanguage}
-								key={index}
-								onClick={() =>
-									Liferay.Util.navigate(language.viewURL)
+								active={
+									language.selected && language.languageId
 								}
+								key={index}
+								onClick={() => {
+									onSelectedLanguageClick(
+										language.viewURL,
+										timeSpanOffset,
+										timeSpanOption
+									);
+								}}
 								symbolLeft={language.languageId.toLowerCase()}
 							>
 								<ClayLayout.ContentRow>
@@ -94,10 +120,14 @@ export default function Translation({defaultLanguage, viewURLs}) {
 
 Translation.propTypes = {
 	defaultLanguage: PropTypes.string.isRequired,
+	defaultTimeSpanOption: PropTypes.string.isRequired,
+	onSelectedLanguageClick: PropTypes.func.isRequired,
+	publishDate: PropTypes.string.isRequired,
 	viewURLs: PropTypes.arrayOf(
 		PropTypes.shape({
 			default: PropTypes.bool.isRequired,
 			languageId: PropTypes.string.isRequired,
+			selected: PropTypes.bool.isRequired,
 			viewURL: PropTypes.string.isRequired,
 		})
 	).isRequired,
