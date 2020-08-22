@@ -21,15 +21,15 @@ const SET_LOADING = 'set-loading';
 
 const FALLBACK_DATA_SET_ITEM = {histogram: [], value: null};
 
-export const useChartState = ({defaultTimeSpanOption, publishDate}) => {
+export const useChartState = ({publishDate, timeSpanKey}) => {
 	const {validAnalyticsConnection} = useContext(ConnectionContext);
 
 	const [state, dispatch] = useReducer(reducer, {
 		dataSet: {histogram: [], keyList: [], totals: []},
 		loading: true,
 		publishDate,
+		timeSpanKey,
 		timeSpanOffset: 0,
-		timeSpanOption: defaultTimeSpanOption,
 	});
 
 	const actions = {
@@ -53,7 +53,7 @@ export const useChartState = ({defaultTimeSpanOption, publishDate}) => {
  * {
 		"loading": false,
 		"timeSpanOffset": 1,
-		"timeSpanOption": "last-7-days",
+		"timeSpanKey": "last-7-days",
 		"dataSet": {
 			"keyList": [
 				"analyticsReportsHistoricalReads",
@@ -111,8 +111,8 @@ function reducer(state, action) {
 		case CHANGE_TIME_SPAN_OPTION:
 			nextState = {
 				...state,
+				timeSpanKey: action.payload.key,
 				timeSpanOffset: 0,
-				timeSpanOption: action.payload.key,
 			};
 			break;
 		case SET_LOADING:

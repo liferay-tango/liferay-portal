@@ -21,8 +21,6 @@ import Main from './Main';
 
 export default function Navigation({
 	author,
-	defaultTimeRange,
-	defaultTimeSpanKey,
 	endpoints,
 	languageTag,
 	namespace,
@@ -30,6 +28,8 @@ export default function Navigation({
 	page,
 	pagePublishDate,
 	pageTitle,
+	timeSpanKey,
+	timeRange,
 	timeSpanOptions,
 	trafficSources,
 	viewURLs,
@@ -154,13 +154,13 @@ export default function Navigation({
 							getHistoricalViews,
 							getHistoricalReads,
 						]}
-						defaultTimeRange={defaultTimeRange}
-						defaultTimeSpanOption={defaultTimeSpanKey}
 						languageTag={languageTag}
 						onSelectedLanguageClick={onSelectedLanguageClick}
 						onTrafficSourceClick={handleTrafficSourceClick}
 						pagePublishDate={pagePublishDate}
 						pageTitle={pageTitle}
+						timeRange={timeRange}
+						timeSpanKey={timeSpanKey}
 						timeSpanOptions={timeSpanOptions}
 						totalReadsDataProvider={handleTotalReads}
 						totalViewsDataProvider={handleTotalViews}
@@ -187,13 +187,6 @@ export default function Navigation({
 
 Navigation.proptypes = {
 	author: PropTypes.object.isRequired,
-	defaultTimeRange: PropTypes.objectOf(
-		PropTypes.shape({
-			endDate: PropTypes.string.isRequired,
-			startDate: PropTypes.string.isRequired,
-		})
-	).isRequired,
-	defaultTimeSpanKey: PropTypes.string.isRequired,
 	endpoints: PropTypes.object.isRequired,
 	languageTag: PropTypes.string.isRequired,
 	namespace: PropTypes.string.isRequired,
@@ -205,6 +198,8 @@ Navigation.proptypes = {
 	).isRequired,
 	pagePublishDate: PropTypes.string.isRequired,
 	pageTitle: PropTypes.string.isRequired,
+	timeRange: PropTypes.object.isRequired,
+	timeSpanKey: PropTypes.string.isRequired,
 	timeSpanOptions: PropTypes.arrayOf(
 		PropTypes.shape({
 			key: PropTypes.string.isRequired,

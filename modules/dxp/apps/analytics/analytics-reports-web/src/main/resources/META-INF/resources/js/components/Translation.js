@@ -15,15 +15,14 @@ import ClayIcon from '@clayui/icon';
 import ClayLabel from '@clayui/label';
 import ClayLayout from '@clayui/layout';
 import PropTypes from 'prop-types';
-import React, {useCallback, useMemo, useState} from 'react';
+import React, {useMemo, useState} from 'react';
 
 import {useChartState} from '../state/chartState';
-
 export default function Translation({
 	defaultLanguage,
-	defaultTimeSpanOption,
 	onSelectedLanguageClick,
 	publishDate,
+	timeSpanKey,
 	viewURLs,
 }) {
 	const [active, setActive] = useState(false);
@@ -36,15 +35,12 @@ export default function Translation({
 	}, [defaultLanguage, viewURLs]);
 
 	const {state: chartState} = useChartState({
-		defaultTimeSpanOption,
 		publishDate,
+		timeSpanKey,
 	});
 
-	const {timeSpanOffset, timeSpanOption} = useCallback(() => {
-		return {
-			timeSpanOffset: chartState.timeSpanOffset,
-			timeSpanOption: chartState.timeSpanOption,
-		};
+	const timeSpanOffset = useMemo(() => {
+		return chartState.timeSpanOffset;
 	}, [chartState]);
 
 	return (
@@ -88,8 +84,8 @@ export default function Translation({
 								onClick={() => {
 									onSelectedLanguageClick(
 										language.viewURL,
-										timeSpanOffset,
-										timeSpanOption
+										timeSpanKey,
+										timeSpanOffset
 									);
 								}}
 								symbolLeft={language.languageId.toLowerCase()}
@@ -127,9 +123,9 @@ export default function Translation({
 
 Translation.propTypes = {
 	defaultLanguage: PropTypes.string.isRequired,
-	defaultTimeSpanOption: PropTypes.string.isRequired,
 	onSelectedLanguageClick: PropTypes.func.isRequired,
 	publishDate: PropTypes.string.isRequired,
+	timeSpanKey: PropTypes.string.isRequired,
 	viewURLs: PropTypes.arrayOf(
 		PropTypes.shape({
 			default: PropTypes.bool.isRequired,

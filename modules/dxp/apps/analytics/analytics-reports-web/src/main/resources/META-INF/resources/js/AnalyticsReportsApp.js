@@ -67,15 +67,15 @@ export default function ({context}) {
 
 	const getData = (
 		fetchURL,
-		timeSpanOffset = undefined,
-		timeSpanOption = undefined
+		timeSpanKey = undefined,
+		timeSpanOffset = undefined
 	) => {
 		safeDispatch({type: 'LOAD_DATA'});
 
 		var body = {};
 
-		if (timeSpanOffset !== undefined && timeSpanOption !== undefined) {
-			body = {timeSpanOffset, timeSpanOption};
+		if (timeSpanKey !== undefined && timeSpanOffset !== undefined) {
+			body = {timeSpanKey, timeSpanOffset};
 		}
 
 		fetch(fetchURL, {
@@ -140,8 +140,6 @@ export default function ({context}) {
 					<div className="analytics-reports-app">
 						<Navigation
 							author={state.data.author}
-							defaultTimeRange={state.data.defaultTimeRange}
-							defaultTimeSpanKey={state.data.defaultTimeSpanKey}
 							endpoints={state.data.endpoints}
 							languageTag={state.data.languageTag}
 							namespace={state.data.namespace}
@@ -151,6 +149,8 @@ export default function ({context}) {
 							page={state.data.page}
 							pagePublishDate={state.data.publishDate}
 							pageTitle={state.data.title}
+							timeRange={state.data.timeRange}
+							timeSpanKey={state.data.timeSpanKey}
 							timeSpanOptions={state.data.timeSpans}
 							trafficSources={state.data.trafficSources}
 							viewURLs={state.data.viewURLs}

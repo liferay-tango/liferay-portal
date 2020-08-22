@@ -21,13 +21,13 @@ import Translation from './Translation';
 export default function Main({
 	author,
 	chartDataProviders,
-	defaultTimeRange,
-	defaultTimeSpanOption,
 	languageTag,
 	onSelectedLanguageClick,
 	onTrafficSourceClick,
 	pagePublishDate,
 	pageTitle,
+	timeRange,
+	timeSpanKey,
 	timeSpanOptions,
 	totalReadsDataProvider,
 	totalViewsDataProvider,
@@ -46,9 +46,9 @@ export default function Main({
 			<div className="mt-4">
 				<Translation
 					defaultLanguage={languageTag}
-					defaultTimeSpanOption={defaultTimeSpanOption}
 					onSelectedLanguageClick={onSelectedLanguageClick}
 					publishDate={pagePublishDate}
+					timeSpanKey={timeSpanKey}
 					viewURLs={viewURLs}
 				/>
 			</div>
@@ -80,10 +80,10 @@ export default function Main({
 
 			<Chart
 				dataProviders={chartDataProviders}
-				defaultTimeRange={defaultTimeRange}
-				defaultTimeSpanOption={defaultTimeSpanOption}
 				languageTag={languageTag}
 				publishDate={pagePublishDate}
+				timeRange={timeRange}
+				timeSpanKey={timeSpanKey}
 				timeSpanOptions={timeSpanOptions}
 			/>
 
@@ -101,13 +101,13 @@ export default function Main({
 Main.proptypes = {
 	author: PropTypes.object.isRequired,
 	chartDataProviders: PropTypes.arrayOf(PropTypes.func.isRequired).isRequired,
-	defaultTimeRange: PropTypes.object.isRequired,
-	defaultTimeSpanOption: PropTypes.string.isRequired,
 	languageTag: PropTypes.string.isRequired,
 	onSelectedLanguageClick: PropTypes.func.isRequired,
 	onTrafficSourceClick: PropTypes.func.isRequired,
 	pagePublishDate: PropTypes.string.isRequired,
 	pageTitle: PropTypes.string.isRequired,
+	timeRange: PropTypes.object.isRequired,
+	timeSpanOption: PropTypes.string.isRequired,
 	timeSpanOptions: PropTypes.arrayOf(
 		PropTypes.shape({
 			key: PropTypes.string,
