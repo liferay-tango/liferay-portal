@@ -14,14 +14,19 @@ import PropTypes from 'prop-types';
 import React, {useCallback, useContext, useState} from 'react';
 
 import ConnectionContext from '../context/ConnectionContext';
-import {StoreContext, useHistoricalWarning, useWarning} from '../context/store';
+import {StoreContext} from '../context/store';
 import APIService from '../utils/APIService';
 import Detail from './Detail';
 import Main from './Main';
 
 export default function Navigation({
 	author,
-	endpoints,
+	endpoints: {
+		getAnalyticsReportsHistoricalReadsURL,
+		getAnalyticsReportsHistoricalViewsURL,
+		getAnalyticsReportsTotalReadsURL,
+		getAnalyticsReportsTotalViewsURL,
+	},
 	languageTag,
 	namespace,
 	onSelectedLanguageClick = () => {},
@@ -34,24 +39,15 @@ export default function Navigation({
 	trafficSources,
 	viewURLs,
 }) {
-	const [{publishedToday}] = useContext(StoreContext);
+	const [{historicalWarning, publishedToday, warning}] = useContext(
+		StoreContext
+	);
 
 	const {validAnalyticsConnection} = useContext(ConnectionContext);
 
 	const [currentPage, setCurrentPage] = useState({view: 'main'});
 
 	const [trafficSourceName, setTrafficSourceName] = useState('');
-
-	const [hasHistoricalWarning] = useHistoricalWarning();
-
-	const [hasWarning] = useWarning();
-
-	const {
-		getAnalyticsReportsHistoricalReadsURL,
-		getAnalyticsReportsHistoricalViewsURL,
-		getAnalyticsReportsTotalReadsURL,
-		getAnalyticsReportsTotalViewsURL,
-	} = endpoints;
 
 	const api = APIService({
 		endpoints: {
@@ -123,7 +119,7 @@ export default function Navigation({
 				</ClayAlert>
 			)}
 
-			{validAnalyticsConnection && (hasWarning || hasHistoricalWarning) && (
+			{validAnalyticsConnection && (historicalWarning || warning) && (
 				<ClayAlert displayType="warning" variant="stripe">
 					{Liferay.Language.get(
 						'some-data-is-temporarily-unavailable'
@@ -133,8 +129,8 @@ export default function Navigation({
 
 			{validAnalyticsConnection &&
 				publishedToday &&
-				!hasWarning &&
-				!hasHistoricalWarning && (
+				!historicalWarning &&
+				!warning && (
 					<ClayAlert
 						displayType="info"
 						title={Liferay.Language.get('no-data-is-available-yet')}

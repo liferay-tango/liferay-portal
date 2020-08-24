@@ -18,6 +18,7 @@ import PropTypes from 'prop-types';
 import React, {useMemo, useState} from 'react';
 
 import {useChartState} from '../state/chartState';
+
 export default function Translation({
 	defaultLanguage,
 	onSelectedLanguageClick,
@@ -67,7 +68,7 @@ export default function Translation({
 							<ClayIcon symbol={selectedLanguage.toLowerCase()} />
 							<span
 								className="d-block font-weight-normal"
-								style={{fontSize: 9}}
+								style={{fontSize: '9px'}}
 							>
 								{selectedLanguage}
 							</span>

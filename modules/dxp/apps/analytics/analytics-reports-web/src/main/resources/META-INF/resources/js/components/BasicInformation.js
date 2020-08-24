@@ -17,16 +17,12 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-function Author({author}) {
-	const {alt, authorId, url} = author;
-
-	const stickerColor = parseInt(authorId, 10) % 10;
-
+function Author({author: {alt, authorId, url}}) {
 	return (
 		<div className="text-secondary">
 			<ClaySticker
 				className={classnames('c-mr-2 sticker-user-icon', {
-					[`user-icon-color-${stickerColor}`]: !url,
+					[`user-icon-color-${parseInt(authorId, 10) % 10}`]: !url,
 				})}
 				shape="circle"
 				size="sm"

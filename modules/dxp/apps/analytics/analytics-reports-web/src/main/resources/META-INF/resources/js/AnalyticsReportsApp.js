@@ -26,25 +26,22 @@ const dataReducer = (state, action) => {
 		case 'LOAD_DATA':
 			return {
 				...state,
-				data: null,
-				error: null,
 				loading: true,
 			};
 
 		case 'SET_ERROR':
 			return {
 				...state,
-				data: null,
 				error: action.error,
 				loading: false,
 			};
 
 		case 'SET_DATA':
 			return {
-				...state,
 				data: action.data,
 				error: action.data?.error,
 				loading: false,
+				publishedToday: action.publishedToday,
 			};
 
 		default:
@@ -56,38 +53,38 @@ const initialState = {
 	data: null,
 	error: null,
 	loading: false,
+	publishedToday: false,
 };
 
 export default function ({context}) {
-	const {getAnalyticsReportsData} = context;
+	const {getAnalyticsReportsData} = context.endpoints;
 
 	const isMounted = useIsMounted();
 
 	const [state, dispatch] = useReducer(dataReducer, initialState);
 
-	const getData = (
-		fetchURL,
-		timeSpanKey = undefined,
-		timeSpanOffset = undefined
-	) => {
+	const getData = (fetchURL, timeSpanKey, timeSpanOffset) => {
 		safeDispatch({type: 'LOAD_DATA'});
 
-		var body = {};
-
-		if (timeSpanKey !== undefined && timeSpanOffset !== undefined) {
-			body = {timeSpanKey, timeSpanOffset};
-		}
+		const body =
+			!timeSpanOffset && !!timeSpanKey
+				? {timeSpanKey, timeSpanOffset}
+				: {};
 
 		fetch(fetchURL, {
 			body,
 			method: 'POST',
 		})
 			.then((response) =>
-				response
-					.json()
-					.then((data) =>
-						safeDispatch({data: data.context, type: 'SET_DATA'})
-					)
+				response.json().then((data) =>
+					safeDispatch({
+						data: data.context,
+						publishedToday:
+							new Date().toDateString() ===
+							new Date(data.context.publishDate).toDateString(),
+						type: 'SET_DATA',
+					})
+				)
 			)
 			.catch(() => {
 				safeDispatch({
@@ -118,12 +115,12 @@ export default function ({context}) {
 
 	return state.loading ? (
 		<ClayLoadingIndicator small />
-	) : state?.error ? (
+	) : state.error ? (
 		<ClayAlert displayType="danger" variant="stripe">
 			{state.error}
 		</ClayAlert>
 	) : (
-		state?.data && (
+		state.data && (
 			<ConnectionContext.Provider
 				value={{
 					validAnalyticsConnection:
@@ -132,9 +129,7 @@ export default function ({context}) {
 			>
 				<StoreContextProvider
 					value={{
-						publishedToday:
-							new Date().toDateString() ===
-							new Date(state.data.publishDate).toDateString(),
+						publishedToday: state.publishedToday,
 					}}
 				>
 					<div className="analytics-reports-app">
