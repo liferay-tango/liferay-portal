@@ -48,6 +48,10 @@ export default function Keywords({currentPage, languageTag}) {
 		);
 	}, [currentPage.data.countryKeywords]);
 
+	const [currentCountry, setCurrentCountry] = useState(
+		countries[0].countryCode
+	);
+
 	const keywords = useMemo(() => {
 		const countryKeywords =
 			currentCountry &&
@@ -57,10 +61,6 @@ export default function Keywords({currentPage, languageTag}) {
 
 		return countryKeywords?.keywords ?? [];
 	}, [currentPage.data.countryKeywords, currentCountry]);
-
-	const [currentCountry, setCurrentCountry] = useState(
-		countries[0].countryCode
-	);
 
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
