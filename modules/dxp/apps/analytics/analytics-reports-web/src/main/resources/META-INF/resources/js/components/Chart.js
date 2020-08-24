@@ -136,9 +136,9 @@ export default function Chart({
 }) {
 	const {validAnalyticsConnection} = useContext(ConnectionContext);
 
-	const [hasHistoricalWarning, addHistoricalWarning] = useHistoricalWarning();
-
 	const [{publishedToday}] = useContext(StoreContext);
+
+	const [hasHistoricalWarning, addHistoricalWarning] = useHistoricalWarning();
 
 	const {actions, state: chartState} = useChartState({
 		publishDate,
@@ -258,7 +258,7 @@ export default function Chart({
 	const handleTimeSpanChange = (event) => {
 		const {value} = event.target;
 
-		actions.changeTimeSpanOption({key: value});
+		actions.changeTimeSpanKey({key: value});
 	};
 	const handlePreviousTimeSpanClick = () => {
 		actions.previousTimeSpan();

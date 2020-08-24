@@ -107,7 +107,7 @@ Main.proptypes = {
 	pagePublishDate: PropTypes.string.isRequired,
 	pageTitle: PropTypes.string.isRequired,
 	timeRange: PropTypes.object.isRequired,
-	timeSpanOption: PropTypes.string.isRequired,
+	timeSpanKey: PropTypes.string.isRequired,
 	timeSpanOptions: PropTypes.arrayOf(
 		PropTypes.shape({
 			key: PropTypes.string,
