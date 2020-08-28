@@ -112,12 +112,14 @@ public class AssetDisplayPageFriendlyURLProviderImpl
 
 				String languageId = LocaleUtil.toLanguageId(locale);
 
-				clonedThemeDisplay.setI18nLanguageId(languageId);
+				if (!locale.equals(LocaleUtil.getDefault())) {
+					clonedThemeDisplay.setI18nLanguageId(languageId);
 
-				clonedThemeDisplay.setI18nPath(_getI18nPath(locale));
+					clonedThemeDisplay.setI18nPath(_getI18nPath(locale));
 
-				clonedThemeDisplay.setLanguageId(languageId);
-				clonedThemeDisplay.setLocale(locale);
+					clonedThemeDisplay.setLanguageId(languageId);
+					clonedThemeDisplay.setLocale(locale);
+				}
 
 				return _portal.getGroupFriendlyURL(
 					group.getPublicLayoutSet(), clonedThemeDisplay);
