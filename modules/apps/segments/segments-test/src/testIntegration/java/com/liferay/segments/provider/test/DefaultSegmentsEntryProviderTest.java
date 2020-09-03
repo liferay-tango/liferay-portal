@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.rule.Sync;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.OrganizationTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -54,6 +55,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Eduardo García
  */
+@Sync
 @RunWith(Arquillian.class)
 public class DefaultSegmentsEntryProviderTest {
 
