@@ -15,14 +15,12 @@
 package com.liferay.segments.internal.provider;
 
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.segments.context.Context;
@@ -214,27 +212,18 @@ public abstract class BaseSegmentsEntryProvider
 		String className, long classPK, Context context,
 		SegmentsEntry segmentsEntry, long[] segmentsEntryIds) {
 
+		boolean matchesModel = segmentsEntryRelLocalService.hasSegmentsEntryRel(
+			segmentsEntry.getSegmentsEntryId(),
+			portal.getClassNameId(className), classPK);
+
 		String contextFilterString = getFilterString(
 			segmentsEntry, Criteria.Type.CONTEXT);
 
-		if (segmentsEntryRelLocalService.hasSegmentsEntryRel(
-				segmentsEntry.getSegmentsEntryId(),
-				portal.getClassNameId(className), classPK) &&
-			Validator.isNull(contextFilterString)) {
-
-			return true;
+		if (Validator.isNull(contextFilterString)) {
+			return matchesModel;
 		}
 
-		Criteria criteria = segmentsEntry.getCriteriaObj();
-
-		if ((criteria == null) || MapUtil.isEmpty(criteria.getCriteria())) {
-			return false;
-		}
-
-		Criteria.Conjunction contextConjunction = getConjunction(
-			segmentsEntry, Criteria.Type.CONTEXT);
-
-		if ((context != null) && Validator.isNotNull(contextFilterString)) {
+		if (context != null) {
 			boolean matchesContext = false;
 
 			try {
@@ -244,6 +233,9 @@ public abstract class BaseSegmentsEntryProvider
 			catch (PortalException portalException) {
 				_log.error(portalException, portalException);
 			}
+
+			Criteria.Conjunction contextConjunction = getConjunction(
+				segmentsEntry, Criteria.Type.CONTEXT);
 
 			if (matchesContext &&
 				contextConjunction.equals(Criteria.Conjunction.OR)) {
@@ -258,38 +250,12 @@ public abstract class BaseSegmentsEntryProvider
 			}
 		}
 
-		Criteria.Conjunction modelConjunction = getConjunction(
-			segmentsEntry, Criteria.Type.MODEL);
-		ODataRetriever<BaseModel<?>> oDataRetriever =
-			serviceTrackerMap.getService(className);
 		String modelFilterString = getFilterString(
 			segmentsEntry, Criteria.Type.MODEL);
 
-		if (Validator.isNotNull(modelFilterString) &&
-			(oDataRetriever != null)) {
-
-			StringBundler sb = new StringBundler(5);
-
-			sb.append("(");
-			sb.append(modelFilterString);
-			sb.append(") and (classPK eq '");
-			sb.append(classPK);
-			sb.append("')");
-
-			boolean matchesModel = false;
-
-			try {
-				int count = oDataRetriever.getResultsCount(
-					segmentsEntry.getCompanyId(), sb.toString(),
-					LocaleUtil.getDefault());
-
-				if (count > 0) {
-					matchesModel = true;
-				}
-			}
-			catch (PortalException portalException) {
-				_log.error(portalException, portalException);
-			}
+		if (Validator.isNotNull(modelFilterString)) {
+			Criteria.Conjunction modelConjunction = getConjunction(
+				segmentsEntry, Criteria.Type.MODEL);
 
 			if (matchesModel &&
 				modelConjunction.equals(Criteria.Conjunction.OR)) {
