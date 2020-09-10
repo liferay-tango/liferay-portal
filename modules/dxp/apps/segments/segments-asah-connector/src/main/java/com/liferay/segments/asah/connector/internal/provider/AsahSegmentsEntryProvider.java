@@ -40,7 +40,6 @@ import com.liferay.segments.provider.SegmentsEntryProvider;
 import com.liferay.segments.service.SegmentsEntryLocalService;
 import com.liferay.segments.service.SegmentsEntryRelLocalService;
 
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -115,13 +114,6 @@ public class AsahSegmentsEntryProvider implements SegmentsEntryProvider {
 					_segmentsEntryRelLocalService.hasSegmentsEntryRel(
 						segmentsEntry.getSegmentsEntryId(),
 						_portal.getClassNameId(className), classPK)
-			).sorted(
-				(segmentsEntry1, segmentsEntry2) -> {
-					Date modifiedDate = segmentsEntry2.getModifiedDate();
-
-					return modifiedDate.compareTo(
-						segmentsEntry1.getModifiedDate());
-				}
 			).mapToLong(
 				SegmentsEntry::getSegmentsEntryId
 			).toArray();
