@@ -1,3 +1,4 @@
+<%--
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
@@ -11,21 +12,14 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
+--%>
 
-package com.liferay.data.cleanup.internal.upgrade;
+<%@ include file="/admin/asset/init.jsp" %>
 
-/**
- * @author Sam Ziemer
- */
-public class DictionaryCleanup extends BaseNoninstanceablePortletCleanup {
+<%
+AssetRenderer<?> assetRenderer = (AssetRenderer<?>)request.getAttribute(WebKeys.ASSET_RENDERER);
+%>
 
-	@Override
-	protected void doUpgrade() throws Exception {
-		removePortlet(
-			"com.liferay.dictionary.web", new String[] {"23"},
-			new String[] {
-				"com_liferay_dictionary_web_portlet_DictionaryPortlet"
-			});
-	}
-
-}
+<div class="asset-summary">
+	<%= HtmlUtil.stripHtml(assetRenderer.getSummary(renderRequest, renderResponse)) %>
+</div>

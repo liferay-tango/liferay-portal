@@ -21,6 +21,7 @@ import com.liferay.commerce.currency.model.CommerceMoney;
 import com.liferay.commerce.currency.model.CommerceMoneyFactory;
 import com.liferay.commerce.currency.util.PriceFormat;
 import com.liferay.commerce.discount.CommerceDiscountValue;
+import com.liferay.commerce.internal.util.CommerceBigDecimalUtil;
 import com.liferay.commerce.internal.util.CommercePriceConverterUtil;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.price.CommerceProductOptionValueRelativePriceRequest;
@@ -72,6 +73,10 @@ public abstract class BaseCommerceProductPriceCalculation
 
 		CommerceMoney commerceMoney = getUnitMinPrice(
 			cpDefinitionId, 1, commerceContext);
+
+		if (commerceMoney.isEmpty()) {
+			return commerceMoney;
+		}
 
 		cpDefinitionMinimumPrice = cpDefinitionMinimumPrice.add(
 			commerceMoney.getPrice());
@@ -195,13 +200,27 @@ public abstract class BaseCommerceProductPriceCalculation
 	}
 
 	protected BigDecimal[] getUpdatedPrices(
-			BigDecimal unitPrice, BigDecimal promoPrice, BigDecimal finalPrice,
+			CommerceMoney unitPriceCommerceMoney,
+			CommerceMoney promoPriceCommerceMoney, BigDecimal finalPrice,
 			CommerceContext commerceContext,
 			List<CommerceOptionValue> commerceOptionValues)
 		throws PortalException {
 
 		if ((commerceOptionValues == null) || commerceOptionValues.isEmpty()) {
-			return new BigDecimal[] {unitPrice, promoPrice, finalPrice};
+			return _toPriceArray(
+				unitPriceCommerceMoney, promoPriceCommerceMoney, finalPrice);
+		}
+
+		BigDecimal promoPrice = BigDecimal.ZERO;
+
+		if (!promoPriceCommerceMoney.isEmpty()) {
+			promoPrice = promoPriceCommerceMoney.getPrice();
+		}
+
+		BigDecimal unitPrice = BigDecimal.ZERO;
+
+		if (!unitPriceCommerceMoney.isEmpty()) {
+			unitPrice = unitPriceCommerceMoney.getPrice();
 		}
 
 		for (CommerceOptionValue commerceOptionValue : commerceOptionValues) {
@@ -209,7 +228,8 @@ public abstract class BaseCommerceProductPriceCalculation
 				BigDecimal optionValuePrice = commerceOptionValue.getPrice();
 
 				if ((optionValuePrice != null) &&
-					(optionValuePrice.compareTo(BigDecimal.ZERO) > 0)) {
+					CommerceBigDecimalUtil.gt(
+						optionValuePrice, BigDecimal.ZERO)) {
 
 					if (commerceOptionValue.getCPInstanceId() > 0) {
 						optionValuePrice = optionValuePrice.multiply(
@@ -219,8 +239,8 @@ public abstract class BaseCommerceProductPriceCalculation
 
 					unitPrice = unitPrice.add(optionValuePrice);
 
-					if ((promoPrice != null) &&
-						(promoPrice.compareTo(BigDecimal.ZERO) > 0)) {
+					if (CommerceBigDecimalUtil.gt(
+							promoPrice, BigDecimal.ZERO)) {
 
 						promoPrice = promoPrice.add(optionValuePrice);
 					}
@@ -248,18 +268,21 @@ public abstract class BaseCommerceProductPriceCalculation
 				CommerceMoney optionValueUnitPromoPriceMoney =
 					optionValueProductPrice.getUnitPromoPrice();
 
-				BigDecimal optionValueUnitPromoPrice =
-					optionValueUnitPromoPriceMoney.getPrice();
+				BigDecimal optionValueUnitPromoPrice = BigDecimal.ZERO;
 
-				if ((optionValueUnitPromoPrice.compareTo(BigDecimal.ZERO) >
-						0) &&
-					(promoPrice.compareTo(BigDecimal.ZERO) == 0)) {
+				if (!optionValueUnitPromoPriceMoney.isEmpty()) {
+					optionValueUnitPromoPrice =
+						optionValueUnitPromoPriceMoney.getPrice();
+				}
+
+				if (CommerceBigDecimalUtil.gt(
+						optionValueUnitPromoPrice, BigDecimal.ZERO) &&
+					CommerceBigDecimalUtil.isZero(promoPrice)) {
 
 					promoPrice = promoPrice.add(unitPrice);
 				}
-				else if ((optionValueUnitPromoPrice.compareTo(
-							BigDecimal.ZERO) == 0) &&
-						 (promoPrice.compareTo(BigDecimal.ZERO) > 0)) {
+				else if (CommerceBigDecimalUtil.gt(
+							promoPrice, BigDecimal.ZERO)) {
 
 					promoPrice = promoPrice.add(
 						optionValueUnitPrice.multiply(
@@ -303,10 +326,9 @@ public abstract class BaseCommerceProductPriceCalculation
 		CommerceMoney promoPriceMoney =
 			commerceProductPriceImpl.getUnitPromoPrice();
 
-		BigDecimal promoPrice = promoPriceMoney.getPrice();
-
-		if ((promoPrice != null) &&
-			(promoPrice.compareTo(BigDecimal.ZERO) > 0)) {
+		if (!promoPriceMoney.isEmpty() &&
+			CommerceBigDecimalUtil.gt(
+				promoPriceMoney.getPrice(), BigDecimal.ZERO)) {
 
 			BigDecimal unitPromoPriceWithTaxAmount = getConvertedPrice(
 				cpInstanceId, promoPriceMoney.getPrice(), false,
@@ -321,8 +343,7 @@ public abstract class BaseCommerceProductPriceCalculation
 		}
 		else {
 			commerceProductPriceImpl.setUnitPromoPriceWithTaxAmount(
-				commerceMoneyFactory.create(
-					commerceContext.getCommerceCurrency(), BigDecimal.ZERO));
+				commerceMoneyFactory.emptyCommerceMoney());
 		}
 
 		commerceProductPriceImpl.setUnitPriceWithTaxAmount(
@@ -390,8 +411,8 @@ public abstract class BaseCommerceProductPriceCalculation
 				cpDefinitionOptionValueRel.getCPInstanceUuid(),
 				cpDefinitionOptionValueRel.getQuantity(), commerceContext);
 
-			if (cpDefinitionOptionMinDynamicPrice.compareTo(
-					cpInstanceFinalPrice) > 0) {
+			if (CommerceBigDecimalUtil.gt(
+					cpDefinitionOptionMinDynamicPrice, cpInstanceFinalPrice)) {
 
 				cpDefinitionOptionMinDynamicPrice = cpInstanceFinalPrice;
 			}
@@ -430,8 +451,9 @@ public abstract class BaseCommerceProductPriceCalculation
 					cpDefinitionOptionValueRel.getPrice(),
 					cpDefinitionOptionValueRel.getQuantity());
 
-			if (cpDefinitionOptionMinStaticPrice.compareTo(
-					cpDefinitionOptionValueFinalPrice) > 0) {
+			if (CommerceBigDecimalUtil.gt(
+					cpDefinitionOptionMinStaticPrice,
+					cpDefinitionOptionValueFinalPrice)) {
 
 				cpDefinitionOptionMinStaticPrice =
 					cpDefinitionOptionValueFinalPrice;
@@ -499,36 +521,41 @@ public abstract class BaseCommerceProductPriceCalculation
 		CommerceMoney commerceMoney = getFinalPrice(
 			cpInstance.getCPInstanceId(), quantity, commerceContext);
 
+		if (commerceMoney.isEmpty()) {
+			return BigDecimal.ZERO;
+		}
+
 		return commerceMoney.getPrice();
 	}
 
 	private BigDecimal _getCPInstancePriceDifference(
-			long cpInstanceId, int cpInstanceMinQuantity,
-			long selectedCPInstanceId, int selectedCPInstanceMinQuantity,
-			CommerceContext commerceContext)
+			long cpInstanceId1, int cpInstance1MinQuantity, long cpInstanceId2,
+			int cpInstance2MinQuantity, CommerceContext commerceContext)
 		throws PortalException {
 
 		BigDecimal priceDifference = BigDecimal.ZERO;
 
-		if (cpInstanceId > 0) {
-			CommerceMoney cpInstanceFinalPrice = getFinalPrice(
-				cpInstanceId, cpInstanceMinQuantity, commerceContext);
+		if (cpInstanceId1 > 0) {
+			CommerceMoney cpInstance1FinalPriceCommerceMoney = getFinalPrice(
+				cpInstanceId1, cpInstance1MinQuantity, commerceContext);
 
-			priceDifference = priceDifference.add(
-				cpInstanceFinalPrice.getPrice());
+			if (!cpInstance1FinalPriceCommerceMoney.isEmpty()) {
+				priceDifference = priceDifference.add(
+					cpInstance1FinalPriceCommerceMoney.getPrice());
+			}
 		}
 
-		BigDecimal selectedCPInstanceFinalPrice = BigDecimal.ZERO;
+		if (cpInstanceId2 > 0) {
+			CommerceMoney cpInstance2FinalPriceCommerceMoney = getFinalPrice(
+				cpInstanceId2, cpInstance2MinQuantity, commerceContext);
 
-		if (selectedCPInstanceId > 0) {
-			CommerceMoney commerceMoney = getFinalPrice(
-				selectedCPInstanceId, selectedCPInstanceMinQuantity,
-				commerceContext);
-
-			selectedCPInstanceFinalPrice = commerceMoney.getPrice();
+			if (!cpInstance2FinalPriceCommerceMoney.isEmpty()) {
+				priceDifference = priceDifference.subtract(
+					cpInstance2FinalPriceCommerceMoney.getPrice());
+			}
 		}
 
-		return priceDifference.subtract(selectedCPInstanceFinalPrice);
+		return priceDifference;
 	}
 
 	private boolean _isRequiredPriceContributor(
@@ -552,6 +579,25 @@ public abstract class BaseCommerceProductPriceCalculation
 		}
 
 		return false;
+	}
+
+	private BigDecimal[] _toPriceArray(
+		CommerceMoney unitPriceCommerceMoney,
+		CommerceMoney promoPriceCommerceMoney, BigDecimal finalPrice) {
+
+		BigDecimal[] prices = new BigDecimal[3];
+
+		if (!unitPriceCommerceMoney.isEmpty()) {
+			prices[0] = unitPriceCommerceMoney.getPrice();
+		}
+
+		if (!promoPriceCommerceMoney.isEmpty()) {
+			prices[1] = promoPriceCommerceMoney.getPrice();
+		}
+
+		prices[2] = finalPrice;
+
+		return prices;
 	}
 
 	private void _validate(

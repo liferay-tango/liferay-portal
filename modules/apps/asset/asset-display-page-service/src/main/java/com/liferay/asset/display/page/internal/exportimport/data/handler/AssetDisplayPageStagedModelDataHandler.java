@@ -23,6 +23,8 @@ import com.liferay.exportimport.kernel.lar.StagedModelDataHandlerUtil;
 import com.liferay.exportimport.staged.model.repository.StagedModelRepository;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.xml.Element;
@@ -128,9 +130,21 @@ public class AssetDisplayPageStagedModelDataHandler
 					importedAssetDisplayPageEntry.getClassPK(),
 					importedAssetDisplayPageEntry.getClassPK()));
 
-			importedAssetDisplayPageEntry =
-				_stagedModelRepository.addStagedModel(
-					portletDataContext, importedAssetDisplayPageEntry);
+			try {
+				importedAssetDisplayPageEntry =
+					_stagedModelRepository.addStagedModel(
+						portletDataContext, importedAssetDisplayPageEntry);
+			}
+			catch (Exception exception) {
+				if (_log.isWarnEnabled()) {
+					_log.warn("Unable to add asset display page", exception);
+				}
+
+				portletDataContext.removePrimaryKey(
+					ExportImportPathUtil.getModelPath(assetDisplayPageEntry));
+
+				return;
+			}
 		}
 		else {
 			importedAssetDisplayPageEntry.setMvccVersion(
@@ -155,6 +169,9 @@ public class AssetDisplayPageStagedModelDataHandler
 
 		return _stagedModelRepository;
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		AssetDisplayPageStagedModelDataHandler.class);
 
 	@Reference
 	private LayoutPageTemplateEntryLocalService

@@ -35,21 +35,23 @@ public class LoadBalancerUtil {
 
 	public static List<JenkinsMaster> getAvailableJenkinsMasters(
 		String masterPrefix, String blacklistString, int minimumRAM,
-		Properties properties) {
+		int maximumSlavesPerHost, Properties properties) {
 
 		return getAvailableJenkinsMasters(
-			masterPrefix, blacklistString, minimumRAM, properties, true);
+			masterPrefix, blacklistString, minimumRAM, maximumSlavesPerHost,
+			properties, true);
 	}
 
 	public static List<JenkinsMaster> getAvailableJenkinsMasters(
 		String masterPrefix, String blacklistString, int minimumRAM,
-		Properties properties, boolean verbose) {
+		int maximumSlavesPerHost, Properties properties, boolean verbose) {
 
 		List<JenkinsMaster> allJenkinsMasters = null;
 
 		if (!_jenkinsMasters.containsKey(masterPrefix)) {
 			allJenkinsMasters = JenkinsResultsParserUtil.getJenkinsMasters(
-				properties, JenkinsMaster.SLAVE_RAM_DEFAULT, masterPrefix);
+				properties, JenkinsMaster.getSlaveRAMMinimumDefault(),
+				JenkinsMaster.getSlavesPerHostDefault(), masterPrefix);
 
 			_jenkinsMasters.put(masterPrefix, allJenkinsMasters);
 		}
@@ -78,6 +80,10 @@ public class LoadBalancerUtil {
 			}
 
 			if (jenkinsMaster.getSlaveRAM() < minimumRAM) {
+				continue;
+			}
+
+			if (jenkinsMaster.getSlavesPerHost() > maximumSlavesPerHost) {
 				continue;
 			}
 
@@ -119,7 +125,7 @@ public class LoadBalancerUtil {
 
 				String blacklistString = properties.getProperty("blacklist");
 
-				Integer minimumRAM = JenkinsMaster.SLAVE_RAM_DEFAULT;
+				Integer minimumRAM = JenkinsMaster.getSlaveRAMMinimumDefault();
 
 				String minimumRAMString = properties.getProperty("minimum.ram");
 
@@ -129,9 +135,22 @@ public class LoadBalancerUtil {
 					minimumRAM = Integer.valueOf(minimumRAMString);
 				}
 
+				Integer maximumSlavesPerHost =
+					JenkinsMaster.getSlavesPerHostDefault();
+
+				String maximumSlavesPerHostString = properties.getProperty(
+					"maximum.slaves.per.host");
+
+				if ((maximumSlavesPerHostString != null) &&
+					maximumSlavesPerHostString.matches("\\d+")) {
+
+					maximumSlavesPerHost = Integer.valueOf(
+						maximumSlavesPerHost);
+				}
+
 				List<JenkinsMaster> jenkinsMasters = getAvailableJenkinsMasters(
-					masterPrefix, blacklistString, minimumRAM, properties,
-					verbose);
+					masterPrefix, blacklistString, minimumRAM,
+					maximumSlavesPerHost, properties, verbose);
 
 				long nextUpdateTimestamp = _getNextUpdateTimestamp(
 					masterPrefix);

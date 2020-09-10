@@ -14,6 +14,7 @@
 
 package com.liferay.commerce.currency.internal.model;
 
+import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.util.CommercePriceFormatter;
 
 import java.math.BigDecimal;
@@ -26,11 +27,10 @@ import java.util.Locale;
 public class RelativeCommerceMoneyImpl extends CommerceMoneyImpl {
 
 	public RelativeCommerceMoneyImpl(
-		CommercePriceFormatter commercePriceFormatter) {
+		CommerceCurrency commerceCurrency,
+		CommercePriceFormatter commercePriceFormatter, BigDecimal price) {
 
-		super(commercePriceFormatter);
-
-		_commercePriceFormatter = commercePriceFormatter;
+		super(commerceCurrency, commercePriceFormatter, price);
 	}
 
 	@Override
@@ -41,10 +41,11 @@ public class RelativeCommerceMoneyImpl extends CommerceMoneyImpl {
 			price = BigDecimal.ZERO;
 		}
 
-		return _commercePriceFormatter.formatAsRelative(
+		CommercePriceFormatter commercePriceFormatter =
+			getCommercePriceFormatter();
+
+		return commercePriceFormatter.formatAsRelative(
 			getCommerceCurrency(), price, locale);
 	}
-
-	private final CommercePriceFormatter _commercePriceFormatter;
 
 }

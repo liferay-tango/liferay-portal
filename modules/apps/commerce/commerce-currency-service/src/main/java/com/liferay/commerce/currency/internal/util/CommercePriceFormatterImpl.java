@@ -17,7 +17,6 @@ package com.liferay.commerce.currency.internal.util;
 import com.liferay.commerce.currency.configuration.RoundingTypeConfiguration;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.model.CommerceCurrencyConstants;
-import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.currency.util.CommercePriceFormatter;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
@@ -37,7 +36,6 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Marco Leo
@@ -68,30 +66,6 @@ public class CommercePriceFormatterImpl implements CommercePriceFormatter {
 			commerceCurrency, locale);
 
 		return decimalFormat.format(price);
-	}
-
-	@Override
-	public String format(long companyId, BigDecimal price, Locale locale)
-		throws PortalException {
-
-		CommerceCurrency commerceCurrency =
-			_commerceCurrencyLocalService.fetchPrimaryCommerceCurrency(
-				companyId);
-
-		return format(commerceCurrency, price, locale);
-	}
-
-	@Override
-	public String format(
-			long companyId, String commerceCurrencyCode, BigDecimal price,
-			Locale locale)
-		throws PortalException {
-
-		CommerceCurrency commerceCurrency =
-			_commerceCurrencyLocalService.getCommerceCurrency(
-				companyId, commerceCurrencyCode);
-
-		return format(commerceCurrency, price, locale);
 	}
 
 	@Override
@@ -161,9 +135,6 @@ public class CommercePriceFormatterImpl implements CommercePriceFormatter {
 
 		return decimalFormat;
 	}
-
-	@Reference
-	private CommerceCurrencyLocalService _commerceCurrencyLocalService;
 
 	private volatile RoundingTypeConfiguration _roundingTypeConfiguration;
 

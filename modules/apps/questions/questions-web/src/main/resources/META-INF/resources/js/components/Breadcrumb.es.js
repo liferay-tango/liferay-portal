@@ -24,8 +24,7 @@ import {
 	getSectionQuery,
 } from '../utils/client.es';
 import {historyPushWithSlug, stringToSlug} from '../utils/utils.es';
-import BreadcrumbDropdown from './BreadcrumbDropdown.es';
-import Link from './Link.es';
+import BreadcrumbNode from './BreadcrumbNode.es';
 import NewTopicModal from './NewTopicModal.es';
 
 export default withRouter(({allowCreateTopicInRootTopic, history, section}) => {
@@ -45,13 +44,13 @@ export default withRouter(({allowCreateTopicInRootTopic, history, section}) => {
 		[];
 
 	const createEllipsisSectionData = () => {
-		const categories = breadcrumbNodes
+		const sections = breadcrumbNodes
 			.slice(1, breadcrumbNodes.length - 1)
 			.map((section) => {
 				return {title: section.title};
 			});
 
-		return {subCategories: categories, title: ''};
+		return {subSections: sections, title: ''};
 	};
 
 	const findParent = (messageBoardSectionId) =>
@@ -65,7 +64,7 @@ export default withRouter(({allowCreateTopicInRootTopic, history, section}) => {
 	const buildBreadcrumbNodesData = useCallback(
 		(rootSection, section, acc = []) => {
 			acc.push({
-				subCategories: getSubSections(section),
+				subSections: getSubSections(section),
 				title: section.title,
 			});
 			if (+rootSection !== +section.id) {
@@ -95,7 +94,7 @@ export default withRouter(({allowCreateTopicInRootTopic, history, section}) => {
 							rootSection
 						).then((data) => {
 							acc.push({
-								subCategories: data.messageBoardSections.items,
+								subSections: data.messageBoardSections.items,
 								title: rootSection,
 							});
 
@@ -157,24 +156,25 @@ export default withRouter(({allowCreateTopicInRootTopic, history, section}) => {
 	function AllBreadcrumb() {
 		return (
 			<>
-				{context.showCardsForTopicNavigation ? (
-					<>
-						<li className="breadcrumb-item breadcrumb-text-truncate mr-0">
-							<Link
-								className="breadcrumb-item questions-breadcrumb-unstyled"
-								to={'/'}
-							>
-								<ClayIcon symbol="home-full" />
-							</Link>
-						</li>
-						<BreadcrumbNode
-							showFirstNode={false}
-							ui={<ClayIcon symbol="home-full" />}
-						/>
-					</>
-				) : (
-					<BreadcrumbNode ui={<ClayIcon symbol="home-full" />} />
-				)}
+				<BreadcrumbNode
+					hasDropdown={!context.showCardsForTopicNavigation}
+					isFirstNode={true}
+					section={breadcrumbNodes[0]}
+					ui={<ClayIcon symbol="home-full" />}
+				/>
+				{breadcrumbNodes
+					.filter((section) => section.title)
+					.slice(1, breadcrumbNodes.length)
+					.map((section, i) => {
+						return (
+							<BreadcrumbNode
+								hasDropdown={true}
+								key={i}
+								section={section}
+								ui={section.title}
+							/>
+						);
+					})}
 			</>
 		);
 	}
@@ -182,87 +182,22 @@ export default withRouter(({allowCreateTopicInRootTopic, history, section}) => {
 	function ShortenedBreadcrumb() {
 		return (
 			<>
-				{context.showCardsForTopicNavigation && (
-					<li className="breadcrumb-item breadcrumb-text-truncate mr-0">
-						<Link
-							className="breadcrumb-item questions-breadcrumb-unstyled"
-							to={'/'}
-						>
-							<ClayIcon symbol="home-full" />
-						</Link>
-					</li>
-				)}
 				<BreadcrumbNode
-					end={1}
-					showFirstNode={false}
-					start={0}
+					hasDropdown={!context.showCardsForTopicNavigation}
+					isFirstNode={true}
+					section={breadcrumbNodes[0]}
 					ui={<ClayIcon symbol="home-full" />}
 				/>
-				<li className="breadcrumb-item breadcrumb-text-truncate mr-0">
-					<BreadcrumbDropdown
-						className="breadcrumb-item breadcrumb-text-truncate"
-						createLink={false}
-						section={createEllipsisSectionData()}
-					/>
-				</li>
-				<BreadcrumbNode showFirstNode={true} start={-1} />
+				<BreadcrumbNode
+					hasDropdown={true}
+					isEllipsis={true}
+					section={createEllipsisSectionData()}
+				/>
+				<BreadcrumbNode
+					hasDropdown={true}
+					section={breadcrumbNodes[breadcrumbNodes.length - 1]}
+				/>
 			</>
 		);
-	}
-
-	function BreadcrumbNode({
-		end = breadcrumbNodes.length,
-		showFirstNode = true,
-		start = 0,
-		ui,
-	}) {
-		return breadcrumbNodes
-			.filter((node) => node.title)
-			.slice(start, end)
-			.map((section, i) => (
-				<>
-					{section.subCategories.length <= 0 ? (
-						<li
-							className="breadcrumb-item breadcrumb-text-truncate mr-0"
-							key={i}
-						>
-							{section.title}
-						</li>
-					) : !context.showCardsForTopicNavigation && i === 0 ? (
-						<li
-							className="breadcrumb-item breadcrumb-text-truncate mr-0"
-							key={i}
-						>
-							<BreadcrumbDropdown
-								className="breadcrumb-item breadcrumb-text-truncate questions-breadcrumb-item"
-								section={section}
-								ui={ui}
-							/>
-						</li>
-					) : showFirstNode && i === 0 ? (
-						<li
-							className="breadcrumb-item breadcrumb-text-truncate mr-0"
-							key={i}
-						>
-							<BreadcrumbDropdown
-								className="breadcrumb-item breadcrumb-text-truncate questions-breadcrumb-item"
-								section={section}
-							/>
-						</li>
-					) : (
-						i !== 0 && (
-							<li
-								className="breadcrumb-item breadcrumb-text-truncate mr-0"
-								key={i}
-							>
-								<BreadcrumbDropdown
-									className="breadcrumb-item breadcrumb-text-truncate questions-breadcrumb-item"
-									section={section}
-								/>
-							</li>
-						)
-					)}
-				</>
-			));
 	}
 });

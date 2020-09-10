@@ -32,6 +32,56 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 
 	public static final Integer SLAVE_RAM_DEFAULT = 16;
 
+	public static final Integer SLAVES_PER_HOST_DEFAULT = 2;
+
+	public static Integer getSlaveRAMMinimumDefault() {
+		try {
+			String propertyValue = JenkinsResultsParserUtil.getBuildProperty(
+				"slave.ram.minimum.default");
+
+			return Integer.valueOf(propertyValue);
+		}
+		catch (Exception exception) {
+			StringBuilder sb = new StringBuilder();
+
+			sb.append("Unable to get property '");
+			sb.append("slave.ram.minimum.default");
+			sb.append("', defaulting to '");
+			sb.append(SLAVE_RAM_DEFAULT);
+			sb.append("'");
+
+			System.out.println(sb.toString());
+
+			exception.printStackTrace();
+
+			return SLAVE_RAM_DEFAULT;
+		}
+	}
+
+	public static Integer getSlavesPerHostDefault() {
+		try {
+			String propertyValue = JenkinsResultsParserUtil.getBuildProperty(
+				"slaves.per.host.default");
+
+			return Integer.valueOf(propertyValue);
+		}
+		catch (Exception exception) {
+			StringBuilder sb = new StringBuilder();
+
+			sb.append("Unable to get property '");
+			sb.append("slaves.per.host.default");
+			sb.append("', defaulting to '");
+			sb.append(SLAVES_PER_HOST_DEFAULT);
+			sb.append("'");
+
+			System.out.println(sb.toString());
+
+			exception.printStackTrace();
+
+			return SLAVES_PER_HOST_DEFAULT;
+		}
+	}
+
 	public JenkinsMaster(String masterName) {
 		if (masterName.contains(".")) {
 			_masterName = masterName.substring(0, masterName.indexOf("."));
@@ -48,7 +98,7 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 				JenkinsResultsParserUtil.combine(
 					"jenkins.local.url[", _masterName, "]"));
 
-			Integer slaveRAM = SLAVE_RAM_DEFAULT;
+			Integer slaveRAM = getSlaveRAMMinimumDefault();
 
 			String slaveRAMString = JenkinsResultsParserUtil.getProperty(
 				properties,
@@ -60,6 +110,21 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 			}
 
 			_slaveRAM = slaveRAM;
+
+			Integer slavesPerHost = getSlavesPerHostDefault();
+
+			String slavesPerHostString = JenkinsResultsParserUtil.getProperty(
+				properties,
+				JenkinsResultsParserUtil.combine(
+					"master.property(", _masterName, "/slaves.per.host)"));
+
+			if ((slavesPerHostString != null) &&
+				slavesPerHostString.matches("\\d+")) {
+
+				slavesPerHost = Integer.valueOf(slavesPerHostString);
+			}
+
+			_slavesPerHost = slavesPerHost;
 		}
 		catch (Exception exception) {
 			throw new RuntimeException(
@@ -199,6 +264,10 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 
 	public Integer getSlaveRAM() {
 		return _slaveRAM;
+	}
+
+	public Integer getSlavesPerHost() {
+		return _slavesPerHost;
 	}
 
 	public String getURL() {
@@ -380,5 +449,6 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 	private List<String> _queuedBuildURLs = new ArrayList<>();
 	private int _reportedAvailableSlavesCount;
 	private final Integer _slaveRAM;
+	private final Integer _slavesPerHost;
 
 }

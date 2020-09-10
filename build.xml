@@ -623,7 +623,7 @@ message.
 			<arg value="--build-file=${project.dir}/modules/util.gradle" />
 			<arg value="--quiet" />
 			<arg value="-Dorg.gradle.internal.launcher.welcomeMessageEnabled=false" />
-			<arg value="-PdependencyNotation=com.liferay:${artifact.name}:${build.portal.license.enterprise.app.version}" />
+			<arg value="-PdependencyNotation=com.liferay:${artifact.name}:${build.portal.license.enterprise.app.module.version}" />
 		</gradle-execute>
 
 		<copy

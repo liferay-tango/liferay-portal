@@ -28,8 +28,13 @@ import java.util.Locale;
  */
 public class CommerceMoneyImpl implements CommerceMoney {
 
-	public CommerceMoneyImpl(CommercePriceFormatter commercePriceFormatter) {
+	public CommerceMoneyImpl(
+		CommerceCurrency commerceCurrency,
+		CommercePriceFormatter commercePriceFormatter, BigDecimal price) {
+
+		_commerceCurrency = commerceCurrency;
 		_commercePriceFormatter = commercePriceFormatter;
+		_price = price;
 	}
 
 	@Override
@@ -54,16 +59,21 @@ public class CommerceMoneyImpl implements CommerceMoney {
 		return _price;
 	}
 
-	public void setCommerceCurrency(CommerceCurrency commerceCurrency) {
-		_commerceCurrency = commerceCurrency;
+	@Override
+	public boolean isEmpty() {
+		if (_price == null) {
+			return true;
+		}
+
+		return false;
 	}
 
-	public void setPrice(BigDecimal price) {
-		_price = price;
+	protected CommercePriceFormatter getCommercePriceFormatter() {
+		return _commercePriceFormatter;
 	}
 
-	private CommerceCurrency _commerceCurrency;
+	private final CommerceCurrency _commerceCurrency;
 	private final CommercePriceFormatter _commercePriceFormatter;
-	private BigDecimal _price;
+	private final BigDecimal _price;
 
 }

@@ -28,6 +28,7 @@ import com.liferay.dynamic.data.mapping.model.DDMFormLayoutRow;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 import com.liferay.dynamic.data.mapping.model.UnlocalizedValue;
+import com.liferay.dynamic.data.mapping.model.Value;
 import com.liferay.dynamic.data.mapping.service.DDMFormInstanceService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
@@ -241,24 +242,6 @@ public class AddFormInstanceRecordMVCCommandHelper {
 	}
 
 	protected void removeValue(
-		DDMFormFieldValue ddmFormFieldValue, Locale locale) {
-
-		DDMFormField ddmFormField = ddmFormFieldValue.getDDMFormField();
-
-		if (ddmFormField.isLocalizable()) {
-			ddmFormFieldValue.setValue(
-				new LocalizedValue(locale) {
-					{
-						addString(locale, StringPool.BLANK);
-					}
-				});
-		}
-		else {
-			ddmFormFieldValue.setValue(new UnlocalizedValue(StringPool.BLANK));
-		}
-	}
-
-	protected void removeValue(
 		DDMFormValues ddmFormValues, Set<String> invisibleFields) {
 
 		List<DDMFormFieldValue> ddmFormFieldValues =
@@ -270,9 +253,34 @@ public class AddFormInstanceRecordMVCCommandHelper {
 			ddmFormFieldValue -> invisibleFields.contains(
 				ddmFormFieldValue.getName())
 		).forEach(
-			ddmFormFieldValue -> removeValue(
-				ddmFormFieldValue, ddmFormValues.getDefaultLocale())
+			ddmFormFieldValue -> {
+				Value value = ddmFormFieldValue.getValue();
+
+				removeValue(
+					value.getAvailableLocales(), ddmFormFieldValue,
+					value.getDefaultLocale());
+			}
 		);
+	}
+
+	protected void removeValue(
+		Set<Locale> availableLocales, DDMFormFieldValue ddmFormFieldValue,
+		Locale defaultLocale) {
+
+		DDMFormField ddmFormField = ddmFormFieldValue.getDDMFormField();
+
+		if (ddmFormField.isLocalizable()) {
+			LocalizedValue localizedValue = new LocalizedValue(defaultLocale);
+
+			for (Locale availableLocale : availableLocales) {
+				localizedValue.addString(availableLocale, StringPool.BLANK);
+			}
+
+			ddmFormFieldValue.setValue(localizedValue);
+		}
+		else {
+			ddmFormFieldValue.setValue(new UnlocalizedValue(StringPool.BLANK));
+		}
 	}
 
 	@Reference

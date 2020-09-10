@@ -119,7 +119,8 @@ public class JenkinsCohort {
 		if (_jenkinsMastersMap.isEmpty()) {
 			List<JenkinsMaster> jenkinsMasters =
 				JenkinsResultsParserUtil.getJenkinsMasters(
-					buildProperties, 16, getName());
+					buildProperties, JenkinsMaster.getSlaveRAMMinimumDefault(),
+					JenkinsMaster.getSlavesPerHostDefault(), getName());
 
 			for (JenkinsMaster jenkinsMaster : jenkinsMasters) {
 				_jenkinsMastersMap.put(jenkinsMaster.getName(), jenkinsMaster);

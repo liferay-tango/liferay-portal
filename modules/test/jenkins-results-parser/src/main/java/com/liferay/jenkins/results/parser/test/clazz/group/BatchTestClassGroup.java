@@ -74,12 +74,23 @@ public abstract class BatchTestClassGroup extends BaseTestClassGroup {
 		return batchName;
 	}
 
+	public Integer getMaximumSlavesPerHost() {
+		String maximumSlavesPerHost = getFirstPropertyValue(
+			"test.batch.maximum.slaves.per.host");
+
+		if (maximumSlavesPerHost == null) {
+			return JenkinsMaster.getSlavesPerHostDefault();
+		}
+
+		return Integer.valueOf(maximumSlavesPerHost);
+	}
+
 	public Integer getMinimumSlaveRAM() {
 		String minimumSlaveRAM = getFirstPropertyValue(
 			"test.batch.minimum.slave.ram");
 
 		if (minimumSlaveRAM == null) {
-			return JenkinsMaster.SLAVE_RAM_DEFAULT;
+			return JenkinsMaster.getSlaveRAMMinimumDefault();
 		}
 
 		return Integer.valueOf(minimumSlaveRAM);

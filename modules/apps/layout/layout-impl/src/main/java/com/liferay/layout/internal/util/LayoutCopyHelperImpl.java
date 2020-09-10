@@ -328,16 +328,27 @@ public class LayoutCopyHelperImpl implements LayoutCopyHelper {
 	}
 
 	private void _copyPortletPreferences(
-		Layout sourceLayout, Layout targetLayout) {
+			Layout sourceLayout, Layout targetLayout)
+		throws Exception {
 
 		List<PortletPreferences> portletPreferencesList =
 			_portletPreferencesLocalService.getPortletPreferences(
 				PortletKeys.PREFS_OWNER_ID_DEFAULT,
 				PortletKeys.PREFS_OWNER_TYPE_LAYOUT, sourceLayout.getPlid());
 
-		_portletPreferencesLocalService.deletePortletPreferences(
-			PortletKeys.PREFS_OWNER_ID_DEFAULT,
-			PortletKeys.PREFS_OWNER_TYPE_LAYOUT, targetLayout.getPlid());
+		List<PortletPreferences> targetPortletPreferencesList =
+			_portletPreferencesLocalService.getPortletPreferences(
+				PortletKeys.PREFS_OWNER_ID_DEFAULT,
+				PortletKeys.PREFS_OWNER_TYPE_LAYOUT, targetLayout.getPlid());
+
+		Stream<PortletPreferences> targetPortletPreferencesStream =
+			targetPortletPreferencesList.stream();
+
+		List<String> targetPortletIds = targetPortletPreferencesStream.map(
+			PortletPreferences::getPortletId
+		).collect(
+			Collectors.toList()
+		);
 
 		for (PortletPreferences portletPreferences : portletPreferencesList) {
 			Portlet portlet = _portletLocalService.getPortletById(
@@ -346,6 +357,8 @@ public class LayoutCopyHelperImpl implements LayoutCopyHelper {
 			if ((portlet == null) || portlet.isUndeployedPortlet()) {
 				continue;
 			}
+
+			targetPortletIds.remove(portletPreferences.getPortletId());
 
 			PortletPreferences targetPortletPreferences =
 				_portletPreferencesLocalService.fetchPortletPreferences(
@@ -370,6 +383,13 @@ public class LayoutCopyHelperImpl implements LayoutCopyHelper {
 						portletPreferences.getPortletId()),
 					portletPreferences.getPreferences());
 			}
+		}
+
+		for (String portletId : targetPortletIds) {
+			_portletPreferencesLocalService.deletePortletPreferences(
+				PortletKeys.PREFS_OWNER_ID_DEFAULT,
+				PortletKeys.PREFS_OWNER_TYPE_LAYOUT, targetLayout.getPlid(),
+				portletId);
 		}
 	}
 
