@@ -16,6 +16,13 @@ import React, {useCallback, useContext, useState} from 'react';
 import ConnectionContext from '../context/ConnectionContext';
 import {StoreContext} from '../context/store';
 import APIService from '../utils/APIService';
+import {
+	mockPagePublishDate,
+	mockTimeRange,
+	mockTotalReads,
+	mockTotalViews,
+	mockTrafficSources,
+} from '../utils/mocksDemo';
 import Detail from './Detail';
 import Main from './Main';
 
@@ -27,10 +34,10 @@ export default function Navigation({
 	namespace,
 	onSelectedLanguageClick = () => {},
 	page,
-	pagePublishDate,
+	_pagePublishDate,
 	pageTitle,
 	timeSpanKey,
-	timeRange,
+	_timeRange,
 	timeSpanOptions,
 	viewURLs,
 }) {
@@ -59,22 +66,16 @@ export default function Navigation({
 	}, []);
 
 	const handleTotalReads = useCallback(() => {
-		return api
-			.getTotalReads()
-			.then((response) => response.analyticsReportsTotalReads);
-	}, [api]);
+		return mockTotalReads;
+	}, []);
 
 	const handleTotalViews = useCallback(() => {
-		return api
-			.getTotalViews()
-			.then((response) => response.analyticsReportsTotalViews);
-	}, [api]);
+		return mockTotalViews;
+	}, []);
 
 	const handleTrafficSources = useCallback(() => {
-		return api
-			.getTrafficSources()
-			.then((response) => response.trafficSources);
-	}, [api]);
+		return mockTrafficSources;
+	}, []);
 
 	const handleTrafficSourceClick = (trafficSources, trafficSourceName) => {
 		setTrafficSources(trafficSources);
@@ -152,9 +153,9 @@ export default function Navigation({
 						languageTag={languageTag}
 						onSelectedLanguageClick={onSelectedLanguageClick}
 						onTrafficSourceClick={handleTrafficSourceClick}
-						pagePublishDate={pagePublishDate}
+						pagePublishDate={mockPagePublishDate}
 						pageTitle={pageTitle}
-						timeRange={timeRange}
+						timeRange={mockTimeRange}
 						timeSpanKey={timeSpanKey}
 						timeSpanOptions={timeSpanOptions}
 						totalReadsDataProvider={handleTotalReads}
