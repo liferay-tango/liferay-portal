@@ -17,6 +17,7 @@ package com.liferay.segments.internal.context;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.mobile.device.Device;
@@ -43,6 +44,7 @@ import com.liferay.portal.odata.entity.StringEntityField;
 import com.liferay.segments.context.Context;
 import com.liferay.segments.context.RequestContextMapper;
 import com.liferay.segments.context.contributor.RequestContextContributor;
+import com.liferay.segments.internal.cache.SegmentsEntrySessionCache;
 import com.liferay.segments.internal.odata.entity.ContextEntityModel;
 
 import java.time.LocalDate;
@@ -57,6 +59,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
@@ -150,6 +153,21 @@ public class RequestContextMapperImpl implements RequestContextMapper {
 		context.put(
 			Context.REQUEST_PARAMETERS,
 			_getRequestParameters(httpServletRequest));
+
+		try {
+			Optional.ofNullable(
+				_segmentsEntrySessionCache.getSegmentsEntryIds(
+					_portal.getScopeGroupId(httpServletRequest))
+			).ifPresent(
+				segmentsEntryIds -> context.put(
+					Context.SEGMENTS_ENTRY_IDS, segmentsEntryIds)
+			);
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException, portalException);
+			}
+		}
 
 		boolean signedIn = false;
 
@@ -247,6 +265,10 @@ public class RequestContextMapperImpl implements RequestContextMapper {
 
 	private ServiceTrackerMap<String, RequestContextContributor>
 		_requestContextContributorServiceTrackerMap;
+
+	@Reference
+	private SegmentsEntrySessionCache _segmentsEntrySessionCache;
+
 	private final Map
 		<ServiceReference<RequestContextContributor>,
 		 ServiceRegistration<EntityModel>> _serviceRegistrations =

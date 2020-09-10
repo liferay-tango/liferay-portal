@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModel;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -263,36 +264,47 @@ public abstract class BaseSegmentsEntryProvider
 			}
 		}
 
-		ODataRetriever<BaseModel<?>> oDataRetriever =
-			serviceTrackerMap.getService(className);
-
 		String modelFilterString = filterStrings.get(
 			Criteria.Type.MODEL.getValue());
+		ODataRetriever<BaseModel<?>> oDataRetriever =
+			serviceTrackerMap.getService(className);
 
 		if (Validator.isNotNull(modelFilterString) &&
 			(oDataRetriever != null)) {
 
-			StringBundler sb = new StringBundler(5);
-
-			sb.append("(");
-			sb.append(modelFilterString);
-			sb.append(") and (classPK eq '");
-			sb.append(classPK);
-			sb.append("')");
-
 			boolean matchesModel = false;
 
-			try {
-				int count = oDataRetriever.getResultsCount(
-					segmentsEntry.getCompanyId(), sb.toString(),
-					LocaleUtil.getDefault());
+			if ((context != null) &&
+				context.containsKey(Context.SEGMENTS_ENTRY_IDS)) {
 
-				if (count > 0) {
-					matchesModel = true;
-				}
+				long[] matchedSegmentsEntryIds = (long[])context.get(
+					Context.SEGMENTS_ENTRY_IDS);
+
+				matchesModel = ArrayUtil.contains(
+					matchedSegmentsEntryIds,
+					segmentsEntry.getSegmentsEntryId());
 			}
-			catch (PortalException portalException) {
-				_log.error(portalException, portalException);
+			else {
+				StringBundler sb = new StringBundler(5);
+
+				sb.append("(");
+				sb.append(modelFilterString);
+				sb.append(") and (classPK eq '");
+				sb.append(classPK);
+				sb.append("')");
+
+				try {
+					int count = oDataRetriever.getResultsCount(
+						segmentsEntry.getCompanyId(), sb.toString(),
+						LocaleUtil.getDefault());
+
+					if (count > 0) {
+						matchesModel = true;
+					}
+				}
+				catch (PortalException portalException) {
+					_log.error(portalException, portalException);
+				}
 			}
 
 			Criteria.Conjunction modelConjunction = getConjunction(
