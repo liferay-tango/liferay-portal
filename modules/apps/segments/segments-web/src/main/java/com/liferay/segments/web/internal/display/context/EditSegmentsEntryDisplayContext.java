@@ -38,7 +38,6 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.segments.constants.SegmentsEntryConstants;
 import com.liferay.segments.criteria.Criteria;
 import com.liferay.segments.criteria.contributor.SegmentsCriteriaContributor;
 import com.liferay.segments.criteria.contributor.SegmentsCriteriaContributorRegistry;
@@ -237,8 +236,6 @@ public class EditSegmentsEntryDisplayContext {
 			"requestMembersCountURL", _getSegmentsEntryClassPKsCountURL()
 		).put(
 			"showInEditMode", _isShowInEditMode()
-		).put(
-			"source", _getSource()
 		).build();
 	}
 
@@ -452,18 +449,6 @@ public class EditSegmentsEntryDisplayContext {
 		resourceURL.setResourceID("getSegmentsFieldValueName");
 
 		return resourceURL.toString();
-	}
-
-	private String _getSource() throws Exception {
-		SegmentsEntry segmentsEntry = _getSegmentsEntry();
-
-		if (segmentsEntry != null) {
-			return segmentsEntry.getSource();
-		}
-
-		return ParamUtil.getString(
-			_httpServletRequest, "source",
-			SegmentsEntryConstants.SOURCE_DEFAULT);
 	}
 
 	private boolean _hasUpdatePermission() throws Exception {
