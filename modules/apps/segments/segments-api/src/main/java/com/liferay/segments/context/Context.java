@@ -56,6 +56,8 @@ public class Context
 
 	public static final String REQUEST_PARAMETERS = "requestParameters";
 
+	public static final String SEGMENTS_ENTRY_IDS = "segmentsEntryIds";
+
 	public static final String SIGNED_IN = "signedIn";
 
 	public static final String URL = "url";
