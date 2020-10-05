@@ -23,8 +23,11 @@ import EmptyPieChart from './EmptyPieChart';
 import Hint from './Hint';
 
 const COLORS_MAP = {
-	organic: '#7785FF',
+	direct: '#FF73C3',
+	organic: '#4B9FFF',
 	paid: '#FFB46E',
+	referral: '#FF5F5F',
+	social: '#50D2A0',
 };
 
 const PIE_CHART_SIZES = {
@@ -42,6 +45,49 @@ const FALLBACK_COLOR = '#e92563';
 
 const getColorByName = (name) => COLORS_MAP[name] || FALLBACK_COLOR;
 
+const MOCK_TRAFFIC_SOURCES = [
+	{
+		helpMessage:
+			'This number refers to the volume of people that find your page through a search engine.',
+		name: 'organic',
+		share: 5,
+		title: 'Organic',
+		value: 321,
+	},
+	{
+		helpMessage:
+			'This number refers to the volume of people that find your page through paid keywords.',
+		name: 'paid',
+		share: 4,
+		title: 'Paid',
+		value: 278,
+	},
+	{
+		helpMessage:
+			'This number refers to the volume of people that find your page through paid keywords.',
+		name: 'referral',
+		share: 43,
+		title: 'Referral',
+		value: 2800,
+	},
+	{
+		helpMessage:
+			'This number refers to the volume of people that find your page through paid keywords.',
+		name: 'social',
+		share: 34,
+		title: 'Social',
+		value: 2238,
+	},
+	{
+		helpMessage:
+			'This number refers to the volume of people that find your page through paid keywords.',
+		name: 'direct',
+		share: 14,
+		title: 'Direct',
+		value: 836,
+	},
+];
+
 export default function TrafficSources({
 	dataProvider,
 	languageTag,
@@ -55,9 +101,11 @@ export default function TrafficSources({
 
 	const [{publishedToday}] = useContext(StoreContext);
 
-	const [trafficSources, setTrafficSources] = useStateSafe([]);
+	const [trafficSources, setTrafficSources] = useStateSafe(
+		MOCK_TRAFFIC_SOURCES
+	);
 
-	useEffect(() => {
+	/*useEffect(() => {
 		if (validAnalyticsConnection) {
 			dataProvider()
 				.then(setTrafficSources)
@@ -66,7 +114,7 @@ export default function TrafficSources({
 					addWarning();
 				});
 		}
-	}, [addWarning, dataProvider, setTrafficSources, validAnalyticsConnection]);
+	}, [addWarning, dataProvider, setTrafficSources, validAnalyticsConnection]);*/
 
 	const fullPieChart = useMemo(
 		() => trafficSources.some(({value}) => value),

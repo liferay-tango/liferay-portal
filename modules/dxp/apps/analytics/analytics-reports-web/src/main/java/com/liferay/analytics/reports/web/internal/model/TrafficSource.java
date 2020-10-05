@@ -115,8 +115,6 @@ public class TrafficSource {
 		String helpMessage, Locale locale, String title) {
 
 		return JSONUtil.put(
-			"countryKeywords", _getCountryKeywordsJSONArray(locale)
-		).put(
 			"helpMessage", helpMessage
 		).put(
 			"name", getName()

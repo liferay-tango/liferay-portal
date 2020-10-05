@@ -19,6 +19,59 @@ import APIService from '../utils/APIService';
 import Detail from './Detail';
 import Main from './Main';
 
+const MOCK_KEYWORDS = [
+	{
+		countryKeywords: [
+			{
+				countryCode: 'us',
+				countryName: 'United States',
+				keywords: [],
+			},
+		],
+		name: 'organic',
+	},
+	{
+		countryKeywords: [
+			{
+				countryCode: 'es',
+				countryName: 'Spain',
+				keywords: [],
+			},
+		],
+		name: 'paid',
+	},
+	{
+		countryKeywords: [
+			{
+				countryCode: 'fr',
+				countryName: 'France',
+				keywords: [],
+			},
+		],
+		name: 'referral',
+	},
+	{
+		countryKeywords: [
+			{
+				countryCode: 'ar',
+				countryName: 'Arabic',
+				keywords: [],
+			},
+		],
+		name: 'social',
+	},
+	{
+		countryKeywords: [
+			{
+				countryCode: 'it',
+				countryName: 'Italy',
+				keywords: [],
+			},
+		],
+		name: 'direct',
+	},
+];
+
 export default function Navigation({
 	author,
 	canonicalURL,
@@ -84,8 +137,12 @@ export default function Navigation({
 			return trafficSource.name === trafficSourceName;
 		});
 
+		const trafficSourceKeywords = MOCK_KEYWORDS.find((channelKeywords) => {
+			return channelKeywords.name === trafficSourceName;
+		});
+
 		setCurrentPage({
-			data: trafficSource,
+			data: {...trafficSource, ...trafficSourceKeywords},
 			view: 'traffic-source-detail',
 		});
 	};
