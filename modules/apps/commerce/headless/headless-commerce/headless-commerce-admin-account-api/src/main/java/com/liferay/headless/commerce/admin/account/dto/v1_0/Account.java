@@ -290,6 +290,34 @@ public class Account {
 	protected Long logoId;
 
 	@Schema
+	public String getLogoURL() {
+		return logoURL;
+	}
+
+	public void setLogoURL(String logoURL) {
+		this.logoURL = logoURL;
+	}
+
+	@JsonIgnore
+	public void setLogoURL(
+		UnsafeSupplier<String, Exception> logoURLUnsafeSupplier) {
+
+		try {
+			logoURL = logoURLUnsafeSupplier.get();
+		}
+		catch (RuntimeException re) {
+			throw re;
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String logoURL;
+
+	@Schema
 	public String getName() {
 		return name;
 	}
@@ -551,6 +579,20 @@ public class Account {
 			sb.append("\"logoId\": ");
 
 			sb.append(logoId);
+		}
+
+		if (logoURL != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"logoURL\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(logoURL));
+
+			sb.append("\"");
 		}
 
 		if (name != null) {

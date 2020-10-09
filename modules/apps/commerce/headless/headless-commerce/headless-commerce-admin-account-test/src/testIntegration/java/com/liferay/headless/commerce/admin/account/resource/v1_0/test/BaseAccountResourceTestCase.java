@@ -192,6 +192,7 @@ public abstract class BaseAccountResourceTestCase {
 		Account account = randomAccount();
 
 		account.setExternalReferenceCode(regex);
+		account.setLogoURL(regex);
 		account.setName(regex);
 		account.setTaxId(regex);
 
@@ -202,6 +203,7 @@ public abstract class BaseAccountResourceTestCase {
 		account = AccountSerDes.toDTO(json);
 
 		Assert.assertEquals(regex, account.getExternalReferenceCode());
+		Assert.assertEquals(regex, account.getLogoURL());
 		Assert.assertEquals(regex, account.getName());
 		Assert.assertEquals(regex, account.getTaxId());
 	}
@@ -888,6 +890,14 @@ public abstract class BaseAccountResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("logoURL", additionalAssertFieldName)) {
+				if (account.getLogoURL() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("name", additionalAssertFieldName)) {
 				if (account.getName() == null) {
 					valid = false;
@@ -1098,6 +1108,16 @@ public abstract class BaseAccountResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("logoURL", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						account1.getLogoURL(), account2.getLogoURL())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("name", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						account1.getName(), account2.getName())) {
@@ -1265,6 +1285,14 @@ public abstract class BaseAccountResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("logoURL")) {
+			sb.append("'");
+			sb.append(String.valueOf(account.getLogoURL()));
+			sb.append("'");
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("name")) {
 			sb.append("'");
 			sb.append(String.valueOf(account.getName()));
@@ -1339,6 +1367,7 @@ public abstract class BaseAccountResourceTestCase {
 					RandomTestUtil.randomString());
 				id = RandomTestUtil.randomLong();
 				logoId = RandomTestUtil.randomLong();
+				logoURL = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				name = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				root = RandomTestUtil.randomBoolean();
 				taxId = StringUtil.toLowerCase(RandomTestUtil.randomString());

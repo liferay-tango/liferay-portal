@@ -22,7 +22,7 @@ String cmd = ParamUtil.getString(request, Constants.CMD);
 PortletURL portletURL = renderResponse.createRenderURL();
 
 portletURL.setParameter("mvcRenderCommandName", "/view_configuration_screen");
-portletURL.setParameter("configurationScreenKey", "synced-contact-data");
+portletURL.setParameter("configurationScreenKey", "2-synced-contact-data");
 
 String redirect = ParamUtil.getString(request, "redirect", portletURL.toString());
 

@@ -110,31 +110,6 @@ if (analyticsConfiguration != null) {
 
 	<aui:fieldset>
 		<label class="control-label">
-			<liferay-ui:message key="synced-contacts" />
-		</label>
-
-		<div class="form-text">
-			<liferay-ui:message key="synced-contacts-help" />
-		</div>
-
-		<small>
-			<strong>
-				<liferay-ui:message arguments="<%= totalContactsSelected %>" key="total-contacts-selected-x" />
-			</strong>
-		</small>
-
-		<aui:button-row>
-			<liferay-portlet:renderURL varImpl="selectContactsURL">
-				<portlet:param name="mvcRenderCommandName" value="/view_configuration_screen" />
-				<portlet:param name="configurationScreenKey" value="synced-contacts" />
-			</liferay-portlet:renderURL>
-
-			<aui:button disabled="<%= !connected %>" href="<%= selectContactsURL.toString() %>" primary="<%= true %>" value="select-contacts" />
-		</aui:button-row>
-	</aui:fieldset>
-
-	<aui:fieldset>
-		<label class="control-label">
 			<liferay-ui:message key="synced-sites" />
 		</label>
 
@@ -151,10 +126,35 @@ if (analyticsConfiguration != null) {
 		<aui:button-row>
 			<liferay-portlet:renderURL varImpl="selectSitesURL">
 				<portlet:param name="mvcRenderCommandName" value="/view_configuration_screen" />
-				<portlet:param name="configurationScreenKey" value="synced-sites" />
+				<portlet:param name="configurationScreenKey" value="1-synced-sites" />
 			</liferay-portlet:renderURL>
 
 			<aui:button disabled="<%= !connected %>" href="<%= selectSitesURL.toString() %>" primary="<%= true %>" value="select-sites" />
+		</aui:button-row>
+	</aui:fieldset>
+
+	<aui:fieldset>
+		<label class="control-label">
+			<liferay-ui:message key="synced-contacts" />
+		</label>
+
+		<div class="form-text">
+			<liferay-ui:message key="synced-contacts-help" />
+		</div>
+
+		<small>
+			<strong>
+				<liferay-ui:message arguments="<%= totalContactsSelected %>" key="total-contacts-selected-x" />
+			</strong>
+		</small>
+
+		<aui:button-row>
+			<liferay-portlet:renderURL varImpl="selectContactsURL">
+				<portlet:param name="mvcRenderCommandName" value="/view_configuration_screen" />
+				<portlet:param name="configurationScreenKey" value="2-synced-contacts" />
+			</liferay-portlet:renderURL>
+
+			<aui:button disabled="<%= !connected %>" href="<%= selectContactsURL.toString() %>" primary="<%= true %>" value="select-contacts" />
 		</aui:button-row>
 	</aui:fieldset>
 </clay:sheet>

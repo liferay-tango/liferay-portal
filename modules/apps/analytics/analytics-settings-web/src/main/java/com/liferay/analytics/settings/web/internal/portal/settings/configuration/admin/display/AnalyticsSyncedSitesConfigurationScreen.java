@@ -30,7 +30,7 @@ public class AnalyticsSyncedSitesConfigurationScreen
 
 	@Override
 	public String getKey() {
-		return "synced-sites";
+		return "1-synced-sites";
 	}
 
 	@Override

@@ -44,4 +44,39 @@
 			top: 2px;
 		}
 	}
+
+	.search-facet {
+		.custom-control-input {
+			opacity: 1;
+		}
+
+		.custom-control-label {
+			&::before,
+			&::after {
+				display: none;
+			}
+		}
+
+		.custom-control-label-text {
+			color: #7f848d;
+			font-size: 13px;
+			font-weight: 400;
+			line-height: 1.6;
+		}
+
+		.facet-clear-btn {
+			display: block;
+			margin-top: 8px;
+			text-align: right;
+
+			&:hover {
+				background: none;
+				text-decoration: none;
+			}
+		}
+
+		.term-count {
+			color: #7f848d;
+		}
+	}
 }

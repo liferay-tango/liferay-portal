@@ -24,10 +24,10 @@ portletURL.setParameter("mvcRenderCommandName", "/view_configuration_screen");
 boolean includeSyncContactsFields = ParamUtil.getBoolean(request, "includeSyncContactsFields");
 
 if (includeSyncContactsFields) {
-	portletURL.setParameter("configurationScreenKey", "synced-contact-data");
+	portletURL.setParameter("configurationScreenKey", "2-synced-contact-data");
 }
 else {
-	portletURL.setParameter("configurationScreenKey", "synced-contacts");
+	portletURL.setParameter("configurationScreenKey", "2-synced-contacts");
 }
 
 String redirect = portletURL.toString();

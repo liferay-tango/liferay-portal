@@ -54,7 +54,7 @@ String keywords = ParamUtil.getString(request, "keywords");
 				<div class="mt-4">
 					<liferay-portlet:renderURL varImpl="selectSitesURL">
 						<portlet:param name="mvcRenderCommandName" value="/view_configuration_screen" />
-						<portlet:param name="configurationScreenKey" value="synced-sites" />
+						<portlet:param name="configurationScreenKey" value="1-synced-sites" />
 					</liferay-portlet:renderURL>
 
 					<a class="btn btn-primary" href="<%= selectSitesURL.toString() %>">
