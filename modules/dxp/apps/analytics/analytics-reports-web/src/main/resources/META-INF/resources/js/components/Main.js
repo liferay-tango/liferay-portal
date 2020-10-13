@@ -81,6 +81,7 @@ export default function Main({
 			/>
 
 			<Chart
+				canonicalURL={canonicalURL}
 				dataProviders={chartDataProviders}
 				languageTag={languageTag}
 				publishDate={pagePublishDate}

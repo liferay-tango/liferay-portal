@@ -9,22 +9,20 @@
  * distribution rights of the Software.
  */
 
-const MODULUS = 2 ** 32;
-const MULTIPLIER = 1664525;
-const INCREMENT = 1013904223;
-let seed = 1;
+function hash(string) {
+	var value = 0;
+	if (string.length == 0) {
+		return value;
+	}
 
-function getNumber() {
-	seed = (MULTIPLIER * seed + INCREMENT) % MODULUS;
+	for (let i = 0; i < string.length; i++) {
+		var charCode = string.charCodeAt(i);
+		value = (value << 7) - value + charCode;
+		value = value & value;
+	}
 
-	return seed;
+	return value;
 }
-
-export function getRandom(multiplier = 100000) {
-	return Math.floor(multiplier * (getNumber() / MODULUS));
-}
-
-// --- START MOCKS ---
 
 export const mockTimeRange = {
 	endDate: '2020-08-10',
@@ -33,392 +31,412 @@ export const mockTimeRange = {
 
 export const mockPagePublishDate = 'Fri Aug 10 08:17:57 GMT 2020';
 
-export const mockTotalViews = Promise.resolve(getRandom());
+export const generateRandomNumber = (canonicalURL) => {
+	const MODULUS = 2 ** 32;
+	const MULTIPLIER = 1664525;
+	const INCREMENT = 1013904223;
+	const hashVaue = '1' + hash(canonicalURL);
+	let seed = parseInt(hashVaue, 8);
 
-export const mockTotalReads = Promise.resolve(getRandom(10000));
+	function getNumber() {
+		seed = (MULTIPLIER * seed + INCREMENT) % MODULUS;
 
-const valueViews = getRandom(10000);
+		return seed;
+	}
 
-const valueReads = getRandom(1000);
+	function getRandom(multiplier = 100000) {
+		return Math.floor(multiplier * (getNumber() / MODULUS));
+	}
 
-const values7DaysViews = [];
+	const valueViews = getRandom(100000);
 
-for (var i = 0; i <= 7; i++) {
-	values7DaysViews[i] = getRandom(100);
-}
+	const valueReads = getRandom(10000);
 
-const values7DaysReads = [];
+	function getMockTotalReads() {
+		return Promise.resolve(getRandom(10000));
+	}
 
-for (var j = 0; j <= 7; j++) {
-	values7DaysReads[j] = getRandom(100);
-}
+	function getMockTotalViews() {
+		return Promise.resolve(getRandom(100000));
+	}
 
-export const mockHistoricalViews7Days = () =>
-	Promise.resolve({
-		analyticsReportsHistoricalViews: {
-			histogram: [
-				{
-					key: '2020-08-10T00:00:00',
-					value: values7DaysViews[0],
-				},
-				{
-					key: '2020-08-11T00:00:00',
-					value: values7DaysViews[1],
-				},
-				{
-					key: '2020-08-12T00:00:00',
-					value: values7DaysViews[2],
-				},
-				{
-					key: '2020-08-13T00:00:00',
-					value: values7DaysViews[3],
-				},
-				{
-					key: '2020-08-14T00:00:00',
-					value: values7DaysViews[4],
-				},
-				{
-					key: '2020-08-15T00:00:00',
-					value: values7DaysViews[5],
-				},
-				{
-					key: '2020-08-16T00:00:00',
-					value: values7DaysViews[6],
-				},
-			],
-			value: valueViews,
-		},
-	});
-
-export const mockHistoricalReads7Days = () =>
-	Promise.resolve({
-		analyticsReportsHistoricalReads: {
-			histogram: [
-				{
-					key: '2020-08-10T00:00:00',
-					value: values7DaysReads[0],
-				},
-				{
-					key: '2020-08-11T00:00:00',
-					value: values7DaysReads[1],
-				},
-				{
-					key: '2020-08-12T00:00:00',
-					value: values7DaysReads[2],
-				},
-				{
-					key: '2020-08-13T00:00:00',
-					value: values7DaysReads[3],
-				},
-				{
-					key: '2020-08-14T00:00:00',
-					value: values7DaysReads[4],
-				},
-				{
-					key: '2020-08-15T00:00:00',
-					value: values7DaysReads[5],
-				},
-				{
-					key: '2020-08-16T00:00:00',
-					value: values7DaysReads[6],
-				},
-			],
-			value: valueReads,
-		},
-	});
-
-export const mockHistoricalViews30Days = () =>
-	Promise.resolve({
-		analyticsReportsHistoricalViews: {
-			histogram: [
-				{
-					key: '2020-08-18T00:00:00',
-				},
-				{
-					key: '2020-08-19T00:00:00',
-				},
-				{
-					key: '2020-08-20T00:00:00',
-				},
-				{
-					key: '2020-08-21T00:00:00',
-				},
-				{
-					key: '2020-08-22T00:00:00',
-				},
-				{
-					key: '2020-08-23T00:00:00',
-				},
-				{
-					key: '2020-08-24T00:00:00',
-				},
-				{
-					key: '2020-08-25T00:00:00',
-				},
-				{
-					key: '2020-08-26T00:00:00',
-				},
-				{
-					key: '2020-08-27T00:00:00',
-				},
-				{
-					key: '2020-08-28T00:00:00',
-				},
-				{
-					key: '2020-08-29T00:00:00',
-				},
-				{
-					key: '2020-08-30T00:00:00',
-				},
-				{
-					key: '2020-08-31T00:00:00',
-				},
-				{
-					key: '2020-08-01T00:00:00',
-				},
-				{
-					key: '2020-08-02T00:00:00',
-				},
-				{
-					key: '2020-08-03T00:00:00',
-				},
-				{
-					key: '2020-08-04T00:00:00',
-				},
-				{
-					key: '2020-08-05T00:00:00',
-				},
-				{
-					key: '2020-08-06T00:00:00',
-				},
-				{
-					key: '2020-08-07T00:00:00',
-				},
-				{
-					key: '2020-08-08T00:00:00',
-				},
-				{
-					key: '2020-08-09T00:00:00',
-				},
-				{
-					key: '2020-08-10T00:00:00',
-					value: values7DaysViews[0],
-				},
-				{
-					key: '2020-08-11T00:00:00',
-					value: values7DaysViews[1],
-				},
-				{
-					key: '2020-08-12T00:00:00',
-					value: values7DaysViews[2],
-				},
-				{
-					key: '2020-08-13T00:00:00',
-					value: values7DaysViews[3],
-				},
-				{
-					key: '2020-08-14T00:00:00',
-					value: values7DaysViews[4],
-				},
-				{
-					key: '2020-08-15T00:00:00',
-					value: values7DaysViews[5],
-				},
-				{
-					key: '2020-08-16T00:00:00',
-					value: values7DaysViews[6],
-				},
-			],
-			value: valueViews,
-		},
-	});
-
-export const mockHistoricalReads30Days = () =>
-	Promise.resolve({
-		analyticsReportsHistoricalReads: {
-			histogram: [
-				{
-					key: '2020-08-18T00:00:00',
-				},
-				{
-					key: '2020-08-19T00:00:00',
-				},
-				{
-					key: '2020-08-20T00:00:00',
-				},
-				{
-					key: '2020-08-21T00:00:00',
-				},
-				{
-					key: '2020-08-22T00:00:00',
-				},
-				{
-					key: '2020-08-23T00:00:00',
-				},
-				{
-					key: '2020-08-24T00:00:00',
-				},
-				{
-					key: '2020-08-25T00:00:00',
-				},
-				{
-					key: '2020-08-26T00:00:00',
-				},
-				{
-					key: '2020-08-27T00:00:00',
-				},
-				{
-					key: '2020-08-28T00:00:00',
-				},
-				{
-					key: '2020-08-29T00:00:00',
-				},
-				{
-					key: '2020-08-30T00:00:00',
-				},
-				{
-					key: '2020-08-31T00:00:00',
-				},
-				{
-					key: '2020-08-01T00:00:00',
-				},
-				{
-					key: '2020-08-02T00:00:00',
-				},
-				{
-					key: '2020-08-03T00:00:00',
-				},
-				{
-					key: '2020-08-04T00:00:00',
-				},
-				{
-					key: '2020-08-05T00:00:00',
-				},
-				{
-					key: '2020-08-06T00:00:00',
-				},
-				{
-					key: '2020-08-07T00:00:00',
-				},
-				{
-					key: '2020-08-08T00:00:00',
-				},
-				{
-					key: '2020-08-09T00:00:00',
-				},
-				{
-					key: '2020-08-10T00:00:00',
-					value: values7DaysReads[0],
-				},
-				{
-					key: '2020-08-11T00:00:00',
-					value: values7DaysReads[1],
-				},
-				{
-					key: '2020-08-12T00:00:00',
-					value: values7DaysReads[2],
-				},
-				{
-					key: '2020-08-13T00:00:00',
-					value: values7DaysReads[3],
-				},
-				{
-					key: '2020-08-14T00:00:00',
-					value: values7DaysReads[4],
-				},
-				{
-					key: '2020-08-15T00:00:00',
-					value: values7DaysReads[5],
-				},
-				{
-					key: '2020-08-16T00:00:00',
-					value: values7DaysReads[6],
-				},
-			],
-			value: valueReads,
-		},
-	});
-
-export const mockTrafficSources = Promise.resolve([
-	{
-		countryKeywords: [
-			{
-				countryCode: 'us',
-				countryName: 'United States',
-				keywords: [
+	const getMockHistoricalViews7Days = () =>
+		Promise.resolve({
+			analyticsReportsHistoricalViews: {
+				histogram: [
 					{
-						keyword: 'amazon',
-						position: 1,
-						searchVolume: getRandom(10000),
-						traffic: getRandom(),
+						key: '2020-08-10T00:00:00',
+						value: getRandom(10000),
 					},
 					{
-						keyword: 'amazon com',
-						position: 2,
-						searchVolume: getRandom(1000),
-						traffic: getRandom(10000),
+						key: '2020-08-11T00:00:00',
+						value: getRandom(10000),
+					},
+					{
+						key: '2020-08-12T00:00:00',
+						value: getRandom(10000),
+					},
+					{
+						key: '2020-08-13T00:00:00',
+						value: getRandom(10000),
+					},
+					{
+						key: '2020-08-14T00:00:00',
+						value: getRandom(10000),
+					},
+					{
+						key: '2020-08-15T00:00:00',
+						value: getRandom(10000),
+					},
+					{
+						key: '2020-08-16T00:00:00',
+						value: getRandom(100000),
 					},
 				],
+				value: valueViews,
 			},
-			{
-				countryCode: 'es',
-				countryName: 'Spain',
-				keywords: [
-					{
-						keyword: 'amazon',
-						position: 1,
-						searchVolume: getRandom(10000),
-						traffic: getRandom(),
-					},
-					{
-						keyword: 'amazon america',
-						position: 2,
-						searchVolume: getRandom(1000),
-						traffic: getRandom(10000),
-					},
-				],
-			},
-		],
-		helpMessage:
-			'This number refers to the volume of people that find your page through a search engine.',
-		name: 'organic',
-		share: 80,
-		title: 'Organic',
-		value: getRandom(),
-	},
-	{
-		countryKeywords: [
-			{
-				countryCode: 'us',
-				countryName: 'United States',
-				keywords: [
-					{
-						keyword: 'amazon',
-						position: 1,
-						searchVolume: getRandom(1000),
-						traffic: getRandom(10000),
-					},
-					{
-						keyword: 'amazon com',
-						position: 2,
-						searchVolume: getRandom(100),
-						traffic: getRandom(1000),
-					},
-				],
-			},
-			{
-				countryCode: 'es',
-				countryName: 'Spain',
-				keywords: [],
-			},
-		],
-		helpMessage:
-			'This number refers to the volume of people that find your page through paid keywords.',
-		name: 'paid',
-		share: 20,
-		title: 'Paid',
-		value: getRandom(10000),
-	},
-]);
+		});
 
-// --- END MOCKS ---
+	const getMockHistoricalReads7Days = () =>
+		Promise.resolve({
+			analyticsReportsHistoricalReads: {
+				histogram: [
+					{
+						key: '2020-08-10T00:00:00',
+						value: Math.floor(getRandom(1000) / 2),
+					},
+					{
+						key: '2020-08-11T00:00:00',
+						value: Math.floor(getRandom(1000) / 2),
+					},
+					{
+						key: '2020-08-12T00:00:00',
+						value: Math.floor(getRandom(1000) / 2),
+					},
+					{
+						key: '2020-08-13T00:00:00',
+						value: Math.floor(getRandom(1000) / 2),
+					},
+					{
+						key: '2020-08-14T00:00:00',
+						value: Math.floor(getRandom(1000) / 2),
+					},
+					{
+						key: '2020-08-15T00:00:00',
+						value: Math.floor(getRandom(1000) / 2),
+					},
+					{
+						key: '2020-08-16T00:00:00',
+						value: Math.floor(getRandom(1000) / 2),
+					},
+				],
+				value: valueReads,
+			},
+		});
+
+	const getMockHistoricalViews30Days = () =>
+		Promise.resolve({
+			analyticsReportsHistoricalViews: {
+				histogram: [
+					{
+						key: '2020-08-18T00:00:00',
+					},
+					{
+						key: '2020-08-19T00:00:00',
+					},
+					{
+						key: '2020-08-20T00:00:00',
+					},
+					{
+						key: '2020-08-21T00:00:00',
+					},
+					{
+						key: '2020-08-22T00:00:00',
+					},
+					{
+						key: '2020-08-23T00:00:00',
+					},
+					{
+						key: '2020-08-24T00:00:00',
+					},
+					{
+						key: '2020-08-25T00:00:00',
+					},
+					{
+						key: '2020-08-26T00:00:00',
+					},
+					{
+						key: '2020-08-27T00:00:00',
+					},
+					{
+						key: '2020-08-28T00:00:00',
+					},
+					{
+						key: '2020-08-29T00:00:00',
+					},
+					{
+						key: '2020-08-30T00:00:00',
+					},
+					{
+						key: '2020-08-31T00:00:00',
+					},
+					{
+						key: '2020-08-01T00:00:00',
+					},
+					{
+						key: '2020-08-02T00:00:00',
+					},
+					{
+						key: '2020-08-03T00:00:00',
+					},
+					{
+						key: '2020-08-04T00:00:00',
+					},
+					{
+						key: '2020-08-05T00:00:00',
+					},
+					{
+						key: '2020-08-06T00:00:00',
+					},
+					{
+						key: '2020-08-07T00:00:00',
+					},
+					{
+						key: '2020-08-08T00:00:00',
+					},
+					{
+						key: '2020-08-09T00:00:00',
+					},
+					{
+						key: '2020-08-10T00:00:00',
+						value: getRandom(10000),
+					},
+					{
+						key: '2020-08-11T00:00:00',
+						value: getRandom(10000),
+					},
+					{
+						key: '2020-08-12T00:00:00',
+						value: getRandom(10000),
+					},
+					{
+						key: '2020-08-13T00:00:00',
+						value: getRandom(10000),
+					},
+					{
+						key: '2020-08-14T00:00:00',
+						value: getRandom(10000),
+					},
+					{
+						key: '2020-08-15T00:00:00',
+						value: getRandom(10000),
+					},
+					{
+						key: '2020-08-16T00:00:00',
+						value: getRandom(100000),
+					},
+				],
+				value: valueViews,
+			},
+		});
+
+	const getMockHistoricalReads30Days = () =>
+		Promise.resolve({
+			analyticsReportsHistoricalReads: {
+				histogram: [
+					{
+						key: '2020-08-18T00:00:00',
+					},
+					{
+						key: '2020-08-19T00:00:00',
+					},
+					{
+						key: '2020-08-20T00:00:00',
+					},
+					{
+						key: '2020-08-21T00:00:00',
+					},
+					{
+						key: '2020-08-22T00:00:00',
+					},
+					{
+						key: '2020-08-23T00:00:00',
+					},
+					{
+						key: '2020-08-24T00:00:00',
+					},
+					{
+						key: '2020-08-25T00:00:00',
+					},
+					{
+						key: '2020-08-26T00:00:00',
+					},
+					{
+						key: '2020-08-27T00:00:00',
+					},
+					{
+						key: '2020-08-28T00:00:00',
+					},
+					{
+						key: '2020-08-29T00:00:00',
+					},
+					{
+						key: '2020-08-30T00:00:00',
+					},
+					{
+						key: '2020-08-31T00:00:00',
+					},
+					{
+						key: '2020-08-01T00:00:00',
+					},
+					{
+						key: '2020-08-02T00:00:00',
+					},
+					{
+						key: '2020-08-03T00:00:00',
+					},
+					{
+						key: '2020-08-04T00:00:00',
+					},
+					{
+						key: '2020-08-05T00:00:00',
+					},
+					{
+						key: '2020-08-06T00:00:00',
+					},
+					{
+						key: '2020-08-07T00:00:00',
+					},
+					{
+						key: '2020-08-08T00:00:00',
+					},
+					{
+						key: '2020-08-09T00:00:00',
+					},
+					{
+						key: '2020-08-10T00:00:00',
+						value: Math.floor(getRandom(1000) / 2),
+					},
+					{
+						key: '2020-08-11T00:00:00',
+						value: Math.floor(getRandom(1000) / 2),
+					},
+					{
+						key: '2020-08-12T00:00:00',
+						value: Math.floor(getRandom(1000) / 2),
+					},
+					{
+						key: '2020-08-13T00:00:00',
+						value: Math.floor(getRandom(1000) / 2),
+					},
+					{
+						key: '2020-08-14T00:00:00',
+						value: Math.floor(getRandom(1000) / 2),
+					},
+					{
+						key: '2020-08-15T00:00:00',
+						value: Math.floor(getRandom(1000) / 2),
+					},
+					{
+						key: '2020-08-16T00:00:00',
+						value: Math.floor(getRandom(1000) / 2),
+					},
+				],
+				value: valueReads,
+			},
+		});
+
+	function getMockTrafficSources() {
+		return Promise.resolve([
+			{
+				countryKeywords: [
+					{
+						countryCode: 'us',
+						countryName: 'United States',
+						keywords: [
+							{
+								keyword: 'amazon',
+								position: 1,
+								searchVolume: getRandom(10000),
+								traffic: getRandom(),
+							},
+							{
+								keyword: 'amazon com',
+								position: 2,
+								searchVolume: getRandom(1000),
+								traffic: getRandom(10000),
+							},
+						],
+					},
+					{
+						countryCode: 'es',
+						countryName: 'Spain',
+						keywords: [
+							{
+								keyword: 'amazon',
+								position: 1,
+								searchVolume: getRandom(10000),
+								traffic: getRandom(),
+							},
+							{
+								keyword: 'amazon america',
+								position: 2,
+								searchVolume: getRandom(1000),
+								traffic: getRandom(10000),
+							},
+						],
+					},
+				],
+				helpMessage:
+					'This number refers to the volume of people that find your page through a search engine.',
+				name: 'organic',
+				share: 80,
+				title: 'Organic',
+				value: getRandom(10000),
+			},
+			{
+				countryKeywords: [
+					{
+						countryCode: 'us',
+						countryName: 'United States',
+						keywords: [
+							{
+								keyword: 'amazon',
+								position: 1,
+								searchVolume: getRandom(1000),
+								traffic: getRandom(10000),
+							},
+							{
+								keyword: 'amazon com',
+								position: 2,
+								searchVolume: getRandom(100),
+								traffic: getRandom(1000),
+							},
+						],
+					},
+					{
+						countryCode: 'es',
+						countryName: 'Spain',
+						keywords: [],
+					},
+				],
+				helpMessage:
+					'This number refers to the volume of people that find your page through paid keywords.',
+				name: 'paid',
+				share: 20,
+				title: 'Paid',
+				value: getRandom(1000),
+			},
+		]);
+	}
+
+	return {
+		getMockHistoricalReads7Days,
+		getMockHistoricalReads30Days,
+		getMockHistoricalViews7Days,
+		getMockHistoricalViews30Days,
+		getMockTotalReads,
+		getMockTotalViews,
+		getMockTrafficSources,
+	};
+};

@@ -29,12 +29,7 @@ import ConnectionContext from '../context/ConnectionContext';
 import {StoreContext, useHistoricalWarning} from '../context/store';
 import {useChartState} from '../state/chartState';
 import {generateDateFormatters as dateFormat} from '../utils/dateFormat';
-import {
-	mockHistoricalReads30Days,
-	mockHistoricalReads7Days,
-	mockHistoricalViews30Days,
-	mockHistoricalViews7Days,
-} from '../utils/mocksDemo';
+import {generateRandomNumber as randomNumber} from '../utils/mocksDemo';
 import {numberFormat} from '../utils/numberFormat';
 import {ActiveDot as CustomActiveDot, Dot as CustomDot} from './CustomDots';
 import CustomTooltip from './CustomTooltip';
@@ -133,6 +128,7 @@ function legendFormatterGenerator(
 }
 
 export default function Chart({
+	canonicalURL,
 	_dataProviders = [],
 	languageTag,
 	publishDate,
@@ -151,15 +147,19 @@ export default function Chart({
 		timeSpanKey,
 	});
 
+	const randomData = useMemo(() => randomNumber(canonicalURL), [
+		canonicalURL,
+	]);
+
 	const mockHistoricalViews =
 		chartState.timeSpanKey === 'last-7-days'
-			? mockHistoricalViews7Days
-			: mockHistoricalViews30Days;
+			? randomData.getMockHistoricalViews7Days
+			: randomData.getMockHistoricalViews30Days;
 
 	const mockHistoricalReads =
 		chartState.timeSpanKey === 'last-7-days'
-			? mockHistoricalReads7Days
-			: mockHistoricalReads30Days;
+			? randomData.getMockHistoricalReads7Days
+			: randomData.getMockHistoricalReads30Days;
 
 	const dataProviders = [mockHistoricalViews, mockHistoricalReads];
 

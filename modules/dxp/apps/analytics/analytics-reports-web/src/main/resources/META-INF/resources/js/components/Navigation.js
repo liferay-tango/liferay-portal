@@ -11,17 +11,15 @@
 
 import ClayAlert from '@clayui/alert';
 import PropTypes from 'prop-types';
-import React, {useCallback, useContext, useState} from 'react';
+import React, {useCallback, useContext, useMemo, useState} from 'react';
 
 import ConnectionContext from '../context/ConnectionContext';
 import {StoreContext} from '../context/store';
 import APIService from '../utils/APIService';
 import {
+	generateRandomNumber as randomNumber,
 	mockPagePublishDate,
 	mockTimeRange,
-	mockTotalReads,
-	mockTotalViews,
-	mockTrafficSources,
 } from '../utils/mocksDemo';
 import Detail from './Detail';
 import Main from './Main';
@@ -59,6 +57,10 @@ export default function Navigation({
 		page,
 	});
 
+	const randomData = useMemo(() => randomNumber(canonicalURL), [
+		canonicalURL,
+	]);
+
 	const {getHistoricalReads, getHistoricalViews} = api;
 
 	const handleCurrentPage = useCallback((currentPage) => {
@@ -66,16 +68,16 @@ export default function Navigation({
 	}, []);
 
 	const handleTotalReads = useCallback(() => {
-		return mockTotalReads;
-	}, []);
+		return randomData.getMockTotalReads();
+	}, [randomData]);
 
 	const handleTotalViews = useCallback(() => {
-		return mockTotalViews;
-	}, []);
+		return randomData.getMockTotalViews();
+	}, [randomData]);
 
 	const handleTrafficSources = useCallback(() => {
-		return mockTrafficSources;
-	}, []);
+		return randomData.getMockTrafficSources();
+	}, [randomData]);
 
 	const handleTrafficSourceClick = (trafficSources, trafficSourceName) => {
 		setTrafficSources(trafficSources);
