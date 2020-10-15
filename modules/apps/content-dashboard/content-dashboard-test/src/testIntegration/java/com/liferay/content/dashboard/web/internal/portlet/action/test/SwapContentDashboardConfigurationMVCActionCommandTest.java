@@ -15,13 +15,15 @@
 package com.liferay.content.dashboard.web.internal.portlet.action.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
-import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
+import javax.portlet.ActionRequest;
 import javax.portlet.PortletException;
 import javax.portlet.PortletPreferences;
 
@@ -53,11 +55,11 @@ public class SwapContentDashboardConfigurationMVCActionCommandTest {
 		portletPreferences.setValues(
 			"assetVocabularyNames", "vocabulary1", "vocabulary2");
 
-		MockLiferayPortletActionResponse mockLiferayPortletActionResponse =
-			new MockLiferayPortletActionResponse();
-
-		_mvcActionCommand.processAction(
-			mockLiferayPortletActionRequest, mockLiferayPortletActionResponse);
+		JSONObject jsonObject = ReflectionTestUtil.invoke(
+			_mvcActionCommand,
+			"_getSwapContentDashboardConfigurationJSONObject",
+			new Class<?>[] {ActionRequest.class},
+			mockLiferayPortletActionRequest);
 
 		portletPreferences = mockLiferayPortletActionRequest.getPreferences();
 
@@ -65,6 +67,8 @@ public class SwapContentDashboardConfigurationMVCActionCommandTest {
 			new String[] {"vocabulary2", "vocabulary1"},
 			portletPreferences.getValues(
 				"assetVocabularyNames", new String[0]));
+
+		Assert.assertTrue(jsonObject.getBoolean("success"));
 	}
 
 	@Inject(

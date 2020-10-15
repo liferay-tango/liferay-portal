@@ -49,6 +49,14 @@ public class SwapContentDashboardConfigurationMVCActionCommand
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
+		JSONPortletResponseUtil.writeJSON(
+			actionRequest, actionResponse,
+			_getSwapContentDashboardConfigurationJSONObject(actionRequest));
+	}
+
+	private JSONObject _getSwapContentDashboardConfigurationJSONObject(
+		ActionRequest actionRequest) {
+
 		JSONObject jsonObject = JSONUtil.put("success", false);
 
 		try {
@@ -77,8 +85,7 @@ public class SwapContentDashboardConfigurationMVCActionCommand
 					actionRequest.getLocale(), "an-unexpected-error-occurred"));
 		}
 
-		JSONPortletResponseUtil.writeJSON(
-			actionRequest, actionResponse, jsonObject);
+		return jsonObject;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
