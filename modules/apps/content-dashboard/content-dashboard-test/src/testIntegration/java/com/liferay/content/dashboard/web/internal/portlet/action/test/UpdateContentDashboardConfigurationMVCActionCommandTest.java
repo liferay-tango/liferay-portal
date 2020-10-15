@@ -20,7 +20,6 @@ import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.rule.Sync;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -38,7 +37,6 @@ import org.junit.runner.RunWith;
  * @author David Arques
  */
 @RunWith(Arquillian.class)
-@Sync
 public class UpdateContentDashboardConfigurationMVCActionCommandTest {
 
 	@ClassRule

@@ -25,7 +25,6 @@ import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.rule.Sync;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.KeyValuePair;
@@ -50,7 +49,6 @@ import org.junit.runner.RunWith;
  * @author David Arques
  */
 @RunWith(Arquillian.class)
-@Sync
 public class EditContentDashboardConfigurationMVCRenderCommandTest {
 
 	@ClassRule
