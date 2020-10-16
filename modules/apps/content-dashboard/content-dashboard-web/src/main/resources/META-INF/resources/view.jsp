@@ -22,6 +22,10 @@ ContentDashboardAdminDisplayContext contentDashboardAdminDisplayContext = (Conte
 ContentDashboardAdminManagementToolbarDisplayContext contentDashboardAdminManagementToolbarDisplayContext = (ContentDashboardAdminManagementToolbarDisplayContext)request.getAttribute(ContentDashboardWebKeys.CONTENT_DASHBOARD_ADMIN_MANAGEMENT_TOOLBAR_DISPLAY_CONTEXT);
 %>
 
+<portlet:actionURL name="/swap_content_dashboard_configuration" var="swapConfigurationURL" >
+	<portlet:param name="redirect" value="<%= currentURL %>" />
+</portlet:actionURL>
+
 <clay:row
 	cssClass="no-gutters sidebar-wrapper"
 >
@@ -42,13 +46,10 @@ ContentDashboardAdminManagementToolbarDisplayContext contentDashboardAdminManage
 							cssClass="c-mr-4"
 						>
 							<span class="lfr-portal-tooltip" title="<%= LanguageUtil.get(request, "flip-axes") %>">
-								<clay:button
-									borderless="<%= true %>"
+								<aui:button
 									cssClass="component-action"
-									displayType="secondary"
-									icon="change"
-									onClick=""
-									small="<%= true %>"
+									href="<%= swapConfigurationURL %>"
+									value="A"
 								/>
 							</span>
 						</clay:content-col>

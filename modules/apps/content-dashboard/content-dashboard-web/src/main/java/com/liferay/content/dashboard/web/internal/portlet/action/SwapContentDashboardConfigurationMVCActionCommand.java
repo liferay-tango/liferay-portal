@@ -28,6 +28,8 @@ import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.PortletPreferences;
 
+import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Validator;
 import org.osgi.service.component.annotations.Component;
 
 /**
@@ -49,9 +51,13 @@ public class SwapContentDashboardConfigurationMVCActionCommand
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
-		JSONPortletResponseUtil.writeJSON(
-			actionRequest, actionResponse,
-			_getSwapContentDashboardConfigurationJSONObject(actionRequest));
+		_getSwapContentDashboardConfigurationJSONObject(actionRequest);
+
+		String redirect = ParamUtil.getString(actionRequest, "redirect");
+
+		if (Validator.isNotNull(redirect)) {
+			sendRedirect(actionRequest, actionResponse, redirect);
+		}
 	}
 
 	private JSONObject _getSwapContentDashboardConfigurationJSONObject(
