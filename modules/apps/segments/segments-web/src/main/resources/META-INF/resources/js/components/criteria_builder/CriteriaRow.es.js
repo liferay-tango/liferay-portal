@@ -317,12 +317,17 @@ class CriteriaRow extends Component {
 		const {criterion, onChange} = this.props;
 
 		if (Array.isArray(value)) {
-			const items = value.map((item) => ({
-				...criterion,
-				...item,
-			}));
+			const displayValue = value
+				.map(({displayValue}) => displayValue)
+				.join(', ');
 
-			onChange(createNewGroup(items));
+			const oDataValue = value.map(({value}) => value).join(', ');
+
+			onChange({
+				...criterion,
+				displayValue,
+				value: oDataValue,
+			});
 		}
 		else {
 			onChange({
