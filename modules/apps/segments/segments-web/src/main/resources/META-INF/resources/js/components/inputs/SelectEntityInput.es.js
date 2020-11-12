@@ -13,6 +13,7 @@
  */
 
 import ClayButton from '@clayui/button';
+import {ClayTooltipProvider} from '@clayui/tooltip';
 import {openSelectionModal} from 'frontend-js-web';
 import propTypes from 'prop-types';
 import React from 'react';
@@ -89,12 +90,16 @@ class SelectEntityInput extends React.Component {
 						value={value}
 					/>
 
-					<input
-						className="form-control"
-						disabled={disabled}
-						readOnly
-						value={displayValue}
-					/>
+					<ClayTooltipProvider>
+						<input
+							className="form-control"
+							data-tooltip-align="top"
+							disabled={disabled}
+							readOnly
+							title={displayValue}
+							value={displayValue}
+						/>
+					</ClayTooltipProvider>
 				</div>
 
 				<span className="input-group-append input-group-item input-group-item-shrink">
