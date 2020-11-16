@@ -52,6 +52,7 @@ export const PROPERTY_TYPES = {
 	DATE: 'date',
 	DATE_TIME: 'date-time',
 	DOUBLE: 'double',
+	ID: 'id',
 	INTEGER: 'integer',
 	MULTIPLE_ID: 'multiple-id',
 	SINGLE_ID: 'single-id',

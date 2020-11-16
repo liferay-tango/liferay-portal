@@ -90,7 +90,7 @@ class CriteriaSidebarItem extends Component {
 					<span className="inline-item">
 						<ClayIcon
 							symbol={
-								type === 'id'
+								type === PROPERTY_TYPES.ID
 									? multiple
 										? TYPE_ICON_MAP[
 												PROPERTY_TYPES.MULTIPLE_ID

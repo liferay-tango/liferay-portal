@@ -140,7 +140,7 @@ class CriteriaGroup extends Component {
 		const operators = getSupportedOperatorsFromType(
 			supportedOperators,
 			supportedPropertyTypes,
-			type === 'id'
+			type === PROPERTY_TYPES.ID
 				? multiple
 					? PROPERTY_TYPES.MULTIPLE_ID
 					: PROPERTY_TYPES.SINGLE_ID

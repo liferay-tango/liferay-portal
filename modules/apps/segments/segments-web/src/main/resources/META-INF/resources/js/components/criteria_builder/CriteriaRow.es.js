@@ -110,7 +110,7 @@ function drop(props, monitor) {
 	const operators = getSupportedOperatorsFromType(
 		supportedOperators,
 		supportedPropertyTypes,
-		type === 'id'
+		type === PROPERTY_TYPES.ID
 			? multiple
 				? PROPERTY_TYPES.MULTIPLE_ID
 				: PROPERTY_TYPES.SINGLE_ID
@@ -198,7 +198,11 @@ class CriteriaRow extends Component {
 			propertyName
 		);
 
-		if (this._selectedProperty.type === 'id' && value && !displayValue) {
+		if (
+			this._selectedProperty.type === PROPERTY_TYPES.ID &&
+			value &&
+			!displayValue
+		) {
 			this._fetchEntityName();
 		}
 	}
@@ -364,7 +368,7 @@ class CriteriaRow extends Component {
 		};
 
 		const type =
-			selectedProperty.type === 'id'
+			selectedProperty.type === PROPERTY_TYPES.ID
 				? selectedProperty.selectEntity.multiple
 					? PROPERTY_TYPES.MULTIPLE_ID
 					: PROPERTY_TYPES.SINGLE_ID
@@ -462,7 +466,7 @@ class CriteriaRow extends Component {
 		} = this.props;
 
 		const propertyType = selectedProperty
-			? selectedProperty.type === 'id'
+			? selectedProperty.type === PROPERTY_TYPES.ID
 				? selectedProperty.selectEntity.multiple
 					? PROPERTY_TYPES.MULTIPLE_ID
 					: PROPERTY_TYPES.SINGLE_ID
@@ -624,7 +628,8 @@ class CriteriaRow extends Component {
 										operatorLabel,
 										propertyLabel,
 										type:
-											selectedProperty.type === 'id'
+											selectedProperty.type ===
+											PROPERTY_TYPES.ID
 												? selectedProperty.selectEntity
 														.multiple
 													? PROPERTY_TYPES.MULTIPLE_ID
