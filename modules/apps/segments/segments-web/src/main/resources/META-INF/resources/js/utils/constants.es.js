@@ -28,6 +28,7 @@ export const FUNCTIONAL_OPERATORS = {
 export const NOT_OPERATORS = {
 	NOT_CONTAINS: 'not-contains',
 	NOT_EQ: 'not-eq',
+	NOT_IN: 'not-in',
 };
 
 export const GROUP = 'GROUP';
@@ -36,6 +37,7 @@ export const RELATIONAL_OPERATORS = {
 	EQ: 'eq',
 	GE: 'ge',
 	GT: 'gt',
+	IN: 'in',
 	LE: 'le',
 	LT: 'lt',
 };
@@ -60,8 +62,8 @@ export const PROPERTY_TYPES = {
  */
 
 const {AND, OR} = CONJUNCTIONS;
-const {EQ, GE, GT, LE, LT} = RELATIONAL_OPERATORS;
-const {NOT_CONTAINS, NOT_EQ} = NOT_OPERATORS;
+const {EQ, GE, GT, IN, LE, LT} = RELATIONAL_OPERATORS;
+const {NOT_CONTAINS, NOT_EQ, NOT_IN} = NOT_OPERATORS;
 const {CONTAINS} = FUNCTIONAL_OPERATORS;
 const {
 	BOOLEAN,
@@ -117,6 +119,14 @@ export const SUPPORTED_OPERATORS = [
 	{
 		label: Liferay.Language.get('not-contains'),
 		name: NOT_CONTAINS,
+	},
+	{
+		label: Liferay.Language.get('in'),
+		name: IN,
+	},
+	{
+		label: Liferay.Language.get('not-in'),
+		name: NOT_IN,
 	},
 ];
 
