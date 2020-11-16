@@ -198,50 +198,58 @@ class CriteriaRow extends Component {
 			propertyName
 		);
 
-		if (
-			this._selectedProperty.type === PROPERTY_TYPES.ID &&
-			value &&
-			!displayValue
-		) {
+		if (this._selectedProperty.type === 'id' && value && !displayValue) {
 			this._fetchEntityName();
 		}
 	}
 
-	_fetchEntityName = () => {
+	_fetchEntityName = async () => {
 		const {criterion, entityName, onChange} = this.props;
 
 		const {propertyName, value} = criterion;
 
-		const data = Liferay.Util.ns(this.context.namespace, {
-			entityName,
-			fieldName: propertyName,
-			fieldValue: value,
-		});
+		const values = value.split(', ');
 
-		fetch(this.context.requestFieldValueNameURL, {
-			body: objectToFormData(data),
-			method: 'POST',
-		})
-			.then((response) => response.json())
-			.then(({fieldValueName: displayValue}) => {
-				if (displayValue === undefined) {
-					throw new Error(DISPLAY_VALUE_NOT_FOUND_ERROR);
-				}
+		const displayValues = [];
 
-				onChange({...criterion, displayValue, unknownEntity: false});
-			})
-			.catch((error) => {
-				if (error && error.message === DISPLAY_VALUE_NOT_FOUND_ERROR) {
-					onChange({
-						...criterion,
-						displayValue: value,
-						unknownEntity: true,
-					});
-				}
-				else {
-					onChange({...criterion, displayValue: value});
-				}
+		for (var i = 0; i < values.length; i++) {
+			const data = Liferay.Util.ns(this.context.namespace, {
+				entityName,
+				fieldName: propertyName,
+				fieldValue: values[i],
 			});
+
+			await fetch(this.context.requestFieldValueNameURL, {
+				body: objectToFormData(data),
+				method: 'POST',
+			})
+				.then((response) => response.json())
+				.then(({fieldValueName: displayValue}) => {
+					if (displayValue === undefined) {
+						throw new Error(DISPLAY_VALUE_NOT_FOUND_ERROR);
+					}
+
+					displayValues.push(displayValue);
+				})
+				.catch((error) => {
+					if (
+						error &&
+						error.message === DISPLAY_VALUE_NOT_FOUND_ERROR
+					) {
+						onChange({
+							...criterion,
+							displayValue: value,
+							unknownEntity: true,
+						});
+					}
+					else {
+						onChange({...criterion, displayValue: value});
+					}
+				});
+		}
+		const displayValue = displayValues.join(', ');
+
+		onChange({...criterion, displayValue, unknownEntity: false});
 	};
 
 	_getReadableCriteriaString = ({
