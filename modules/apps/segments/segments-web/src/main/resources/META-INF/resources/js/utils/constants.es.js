@@ -52,6 +52,8 @@ export const PROPERTY_TYPES = {
 	DOUBLE: 'double',
 	ID: 'id',
 	INTEGER: 'integer',
+	MULTIPLE_ID: 'multiple-id',
+	SINGLE_ID: 'single-id',
 	STRING: 'string',
 };
 
@@ -69,8 +71,9 @@ const {
 	DATE,
 	DATE_TIME,
 	DOUBLE,
-	ID,
 	INTEGER,
+	MULTIPLE_ID,
+	SINGLE_ID,
 	STRING,
 } = PROPERTY_TYPES;
 
@@ -134,8 +137,9 @@ export const SUPPORTED_PROPERTY_TYPES = {
 	[DATE]: [EQ, GE, GT, LE, LT, NOT_EQ],
 	[DATE_TIME]: [EQ, GE, GT, LE, LT, NOT_EQ],
 	[DOUBLE]: [EQ, GE, GT, LE, LT, NOT_EQ],
-	[ID]: [EQ, NOT_EQ],
 	[INTEGER]: [EQ, GE, GT, LE, LT, NOT_EQ],
+	[MULTIPLE_ID]: [EQ, IN, NOT_EQ, NOT_IN],
+	[SINGLE_ID]: [EQ, NOT_EQ],
 	[STRING]: [EQ, NOT_EQ, CONTAINS, NOT_CONTAINS],
 };
 

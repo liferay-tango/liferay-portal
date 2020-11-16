@@ -150,7 +150,13 @@ const CriteriaSidebarCollapse = ({
 							{active &&
 								filteredProperties.length > 0 &&
 								filteredProperties.map(
-									({label, name, options, type}) => {
+									({
+										label,
+										name,
+										options,
+										selectEntity,
+										type,
+									}) => {
 										const defaultValue = getDefaultValue({
 											label,
 											name,
@@ -164,6 +170,11 @@ const CriteriaSidebarCollapse = ({
 												defaultValue={defaultValue}
 												key={name}
 												label={label}
+												multiple={
+													selectEntity
+														? selectEntity.multiple
+														: false
+												}
 												name={name}
 												propertyKey={key}
 												type={type}
