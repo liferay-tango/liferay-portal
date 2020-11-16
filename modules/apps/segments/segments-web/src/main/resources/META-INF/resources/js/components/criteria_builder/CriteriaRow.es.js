@@ -98,6 +98,7 @@ function drop(props, monitor) {
 	const {
 		defaultValue,
 		displayValue,
+		multiple,
 		operatorName,
 		propertyName,
 		type,
@@ -109,7 +110,11 @@ function drop(props, monitor) {
 	const operators = getSupportedOperatorsFromType(
 		supportedOperators,
 		supportedPropertyTypes,
-		type
+		type === 'id'
+			? multiple
+				? PROPERTY_TYPES.MULTIPLE_ID
+				: PROPERTY_TYPES.SINGLE_ID
+			: type
 	);
 
 	const newCriterion = {
@@ -344,13 +349,21 @@ class CriteriaRow extends Component {
 			[PROPERTY_TYPES.DATE]: DateInput,
 			[PROPERTY_TYPES.DATE_TIME]: DateTimeInput,
 			[PROPERTY_TYPES.DOUBLE]: DecimalInput,
-			[PROPERTY_TYPES.ID]: SelectEntityInput,
 			[PROPERTY_TYPES.INTEGER]: IntegerInput,
+			[PROPERTY_TYPES.MULTIPLE_ID]: SelectEntityInput,
+			[PROPERTY_TYPES.SINGLE_ID]: SelectEntityInput,
 			[PROPERTY_TYPES.STRING]: StringInput,
 		};
 
+		const type =
+			selectedProperty.type === 'id'
+				? selectedProperty.selectEntity.multiple
+					? PROPERTY_TYPES.MULTIPLE_ID
+					: PROPERTY_TYPES.SINGLE_ID
+				: selectedProperty.type;
+
 		const InputComponent =
-			inputComponentsMap[selectedProperty.type] ||
+			inputComponentsMap[type] ||
 			inputComponentsMap[PROPERTY_TYPES.STRING];
 
 		return (
@@ -440,7 +453,13 @@ class CriteriaRow extends Component {
 			supportedPropertyTypes,
 		} = this.props;
 
-		const propertyType = selectedProperty ? selectedProperty.type : '';
+		const propertyType = selectedProperty
+			? selectedProperty.type === 'id'
+				? selectedProperty.selectEntity.multiple
+					? PROPERTY_TYPES.MULTIPLE_ID
+					: PROPERTY_TYPES.SINGLE_ID
+				: selectedProperty.type
+			: '';
 
 		const filteredSupportedOperators = getSupportedOperatorsFromType(
 			supportedOperators,
@@ -596,7 +615,13 @@ class CriteriaRow extends Component {
 										error,
 										operatorLabel,
 										propertyLabel,
-										type: selectedProperty.type,
+										type:
+											selectedProperty.type === 'id'
+												? selectedProperty.selectEntity
+														.multiple
+													? PROPERTY_TYPES.MULTIPLE_ID
+													: PROPERTY_TYPES.SINGLE_ID
+												: selectedProperty.type,
 										value: criterion.displayValue || value,
 									})}
 								</span>

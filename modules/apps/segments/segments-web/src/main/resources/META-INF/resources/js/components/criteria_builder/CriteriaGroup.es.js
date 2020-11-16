@@ -18,7 +18,7 @@ import {PropTypes} from 'prop-types';
 import React, {Component, Fragment} from 'react';
 import {DragSource as dragSource} from 'react-dnd';
 
-import {CONJUNCTIONS} from '../../utils/constants.es';
+import {CONJUNCTIONS, PROPERTY_TYPES} from '../../utils/constants.es';
 import {DragTypes} from '../../utils/drag-types.es';
 import {
 	generateGroupId,
@@ -128,6 +128,7 @@ class CriteriaGroup extends Component {
 
 		const {
 			defaultValue,
+			multiple,
 			operatorName,
 			propertyName,
 			type,
@@ -139,7 +140,11 @@ class CriteriaGroup extends Component {
 		const operators = getSupportedOperatorsFromType(
 			supportedOperators,
 			supportedPropertyTypes,
-			type
+			type === 'id'
+				? multiple
+					? PROPERTY_TYPES.MULTIPLE_ID
+					: PROPERTY_TYPES.SINGLE_ID
+				: type
 		);
 
 		const newCriterion = {

@@ -27,8 +27,9 @@ const TYPE_ICON_MAP = {
 	[PROPERTY_TYPES.DATE]: 'date',
 	[PROPERTY_TYPES.DATE_TIME]: 'date',
 	[PROPERTY_TYPES.DOUBLE]: 'decimal',
-	[PROPERTY_TYPES.ID]: 'diagram',
 	[PROPERTY_TYPES.INTEGER]: 'integer',
+	[PROPERTY_TYPES.MULTIPLE_ID]: 'diagram',
+	[PROPERTY_TYPES.SINGLE_ID]: 'diagram',
 	[PROPERTY_TYPES.STRING]: 'text',
 };
 
@@ -38,10 +39,11 @@ const TYPE_ICON_MAP = {
  * @param {Object} props Component's current props
  * @returns {Object} The props to be passed to the drop target.
  */
-function beginDrag({defaultValue, name, propertyKey, type}) {
+function beginDrag({defaultValue, multiple, name, propertyKey, type}) {
 	return {
 		criterion: {
 			defaultValue,
+			multiple,
 			propertyName: name,
 			type,
 		},
@@ -56,6 +58,7 @@ class CriteriaSidebarItem extends Component {
 		defaultValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 		dragging: PropTypes.bool,
 		label: PropTypes.string,
+		multiple: PropTypes.bool,
 		name: PropTypes.string,
 		propertyKey: PropTypes.string.isRequired,
 		type: PropTypes.string,
@@ -67,6 +70,7 @@ class CriteriaSidebarItem extends Component {
 			connectDragSource,
 			dragging,
 			label,
+			multiple,
 			type,
 		} = this.props;
 
@@ -84,7 +88,19 @@ class CriteriaSidebarItem extends Component {
 
 				<span className="criteria-sidebar-item-type sticker sticker-light">
 					<span className="inline-item">
-						<ClayIcon symbol={TYPE_ICON_MAP[type] || 'text'} />
+						<ClayIcon
+							symbol={
+								type === 'id'
+									? multiple
+										? TYPE_ICON_MAP[
+												PROPERTY_TYPES.MULTIPLE_ID
+										  ]
+										: TYPE_ICON_MAP[
+												PROPERTY_TYPES.SINGLE_ID
+										  ]
+									: TYPE_ICON_MAP[type] || 'text'
+							}
+						/>
 					</span>
 				</span>
 
