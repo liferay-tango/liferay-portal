@@ -12,7 +12,12 @@
  * details.
  */
 
-import {CONJUNCTIONS} from '../../../src/main/resources/META-INF/resources/js/utils/constants.es';
+import {
+	CONJUNCTIONS,
+	PROPERTY_TYPES,
+	SUPPORTED_OPERATORS,
+	SUPPORTED_PROPERTY_TYPES,
+} from '../../../src/main/resources/META-INF/resources/js/utils/constants.es';
 import * as Utils from '../../../src/main/resources/META-INF/resources/js/utils/utils.es';
 import {mockCriteria, mockCriteriaNested} from '../data';
 
@@ -45,34 +50,11 @@ describe('utils', () => {
 	});
 
 	describe('getSupportedOperatorsFromType', () => {
-		it('returns an array of supported operators', () => {
-			const operators = [
-				{
-					label: Liferay.Language.get('equals'),
-					name: 'eq',
-				},
-				{
-					label: Liferay.Language.get('greater-than-or-equals'),
-					name: 'ge',
-				},
-				{
-					label: Liferay.Language.get('greater-than'),
-					name: 'gt',
-				},
-				{
-					label: Liferay.Language.get('not-equals'),
-					name: 'not-eq',
-				},
-			];
-
-			const propertyTypes = {
-				boolean: ['eq', 'not-eq'],
-			};
-
+		it('returns an array of supported operators with boolean field', () => {
 			const supportedOperators = Utils.getSupportedOperatorsFromType(
-				operators,
-				propertyTypes,
-				'boolean'
+				SUPPORTED_OPERATORS,
+				SUPPORTED_PROPERTY_TYPES,
+				PROPERTY_TYPES.BOOLEAN
 			);
 
 			expect(supportedOperators).toEqual([
@@ -83,6 +65,247 @@ describe('utils', () => {
 				{
 					label: 'not-equals',
 					name: 'not-eq',
+				},
+			]);
+		});
+
+		it('returns an array of supported operators with collection field', () => {
+			const supportedOperators = Utils.getSupportedOperatorsFromType(
+				SUPPORTED_OPERATORS,
+				SUPPORTED_PROPERTY_TYPES,
+				PROPERTY_TYPES.COLLECTION
+			);
+
+			expect(supportedOperators).toEqual([
+				{
+					label: 'equals',
+					name: 'eq',
+				},
+				{
+					label: 'not-equals',
+					name: 'not-eq',
+				},
+				{
+					label: 'contains',
+					name: 'contains',
+				},
+				{
+					label: 'not-contains',
+					name: 'not-contains',
+				},
+			]);
+		});
+
+		it('returns an array of supported operators with date field', () => {
+			const supportedOperators = Utils.getSupportedOperatorsFromType(
+				SUPPORTED_OPERATORS,
+				SUPPORTED_PROPERTY_TYPES,
+				PROPERTY_TYPES.DATE
+			);
+
+			expect(supportedOperators).toEqual([
+				{
+					label: 'equals',
+					name: 'eq',
+				},
+				{
+					label: 'not-equals',
+					name: 'not-eq',
+				},
+				{
+					label: 'greater-than',
+					name: 'gt',
+				},
+				{
+					label: 'greater-than-or-equals',
+					name: 'ge',
+				},
+				{
+					label: 'less-than',
+					name: 'lt',
+				},
+				{
+					label: 'less-than-or-equals',
+					name: 'le',
+				},
+			]);
+		});
+
+		it('returns an array of supported operators with date time field', () => {
+			const supportedOperators = Utils.getSupportedOperatorsFromType(
+				SUPPORTED_OPERATORS,
+				SUPPORTED_PROPERTY_TYPES,
+				PROPERTY_TYPES.DATE_TIME
+			);
+
+			expect(supportedOperators).toEqual([
+				{
+					label: 'equals',
+					name: 'eq',
+				},
+				{
+					label: 'not-equals',
+					name: 'not-eq',
+				},
+				{
+					label: 'greater-than',
+					name: 'gt',
+				},
+				{
+					label: 'greater-than-or-equals',
+					name: 'ge',
+				},
+				{
+					label: 'less-than',
+					name: 'lt',
+				},
+				{
+					label: 'less-than-or-equals',
+					name: 'le',
+				},
+			]);
+		});
+
+		it('returns an array of supported operators with double field', () => {
+			const supportedOperators = Utils.getSupportedOperatorsFromType(
+				SUPPORTED_OPERATORS,
+				SUPPORTED_PROPERTY_TYPES,
+				PROPERTY_TYPES.DOUBLE
+			);
+
+			expect(supportedOperators).toEqual([
+				{
+					label: 'equals',
+					name: 'eq',
+				},
+				{
+					label: 'not-equals',
+					name: 'not-eq',
+				},
+				{
+					label: 'greater-than',
+					name: 'gt',
+				},
+				{
+					label: 'greater-than-or-equals',
+					name: 'ge',
+				},
+				{
+					label: 'less-than',
+					name: 'lt',
+				},
+				{
+					label: 'less-than-or-equals',
+					name: 'le',
+				},
+			]);
+		});
+
+		it('returns an array of supported operators with integer field', () => {
+			const supportedOperators = Utils.getSupportedOperatorsFromType(
+				SUPPORTED_OPERATORS,
+				SUPPORTED_PROPERTY_TYPES,
+				PROPERTY_TYPES.INTEGER
+			);
+
+			expect(supportedOperators).toEqual([
+				{
+					label: 'equals',
+					name: 'eq',
+				},
+				{
+					label: 'not-equals',
+					name: 'not-eq',
+				},
+				{
+					label: 'greater-than',
+					name: 'gt',
+				},
+				{
+					label: 'greater-than-or-equals',
+					name: 'ge',
+				},
+				{
+					label: 'less-than',
+					name: 'lt',
+				},
+				{
+					label: 'less-than-or-equals',
+					name: 'le',
+				},
+			]);
+		});
+
+		it('returns an array of supported operators with multiple id field', () => {
+			const supportedOperators = Utils.getSupportedOperatorsFromType(
+				SUPPORTED_OPERATORS,
+				SUPPORTED_PROPERTY_TYPES,
+				PROPERTY_TYPES.MULTIPLE_ID
+			);
+
+			expect(supportedOperators).toEqual([
+				{
+					label: 'equals',
+					name: 'eq',
+				},
+				{
+					label: 'not-equals',
+					name: 'not-eq',
+				},
+				{
+					label: 'in',
+					name: 'in',
+				},
+				{
+					label: 'not-in',
+					name: 'not-in',
+				},
+			]);
+		});
+
+		it('returns an array of supported operators with single id field', () => {
+			const supportedOperators = Utils.getSupportedOperatorsFromType(
+				SUPPORTED_OPERATORS,
+				SUPPORTED_PROPERTY_TYPES,
+				PROPERTY_TYPES.SINGLE_ID
+			);
+
+			expect(supportedOperators).toEqual([
+				{
+					label: 'equals',
+					name: 'eq',
+				},
+				{
+					label: 'not-equals',
+					name: 'not-eq',
+				},
+			]);
+		});
+
+		it('returns an array of supported operators with string field', () => {
+			const supportedOperators = Utils.getSupportedOperatorsFromType(
+				SUPPORTED_OPERATORS,
+				SUPPORTED_PROPERTY_TYPES,
+				PROPERTY_TYPES.STRING
+			);
+
+			expect(supportedOperators).toEqual([
+				{
+					label: 'equals',
+					name: 'eq',
+				},
+				{
+					label: 'not-equals',
+					name: 'not-eq',
+				},
+
+				{
+					label: 'contains',
+					name: 'contains',
+				},
+				{
+					label: 'not-contains',
+					name: 'not-contains',
 				},
 			]);
 		});
