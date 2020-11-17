@@ -351,6 +351,8 @@ class CriteriaRow extends Component {
 	};
 
 	_renderValueInput = (selectedProperty, value, disabled) => {
+		const {propertyKey} = this.props;
+
 		const inputComponentsMap = {
 			[PROPERTY_TYPES.BOOLEAN]: BooleanInput,
 			[PROPERTY_TYPES.COLLECTION]: CollectionInput,
@@ -380,6 +382,7 @@ class CriteriaRow extends Component {
 				displayValue={this.props.criterion.displayValue || ''}
 				onChange={this._handleTypedInputChange}
 				options={selectedProperty.options}
+				propertyKey={propertyKey}
 				selectEntity={selectedProperty.selectEntity}
 				value={value}
 			/>
