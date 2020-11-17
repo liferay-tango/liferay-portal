@@ -122,6 +122,9 @@ describe('CriteriaRow', () => {
 					{
 						label: 'Test Property',
 						name: 'test_prop',
+						selectEntity: {
+							multiple: false,
+						},
 						type: PROPERTY_TYPES.ID,
 					},
 				]}
@@ -169,6 +172,9 @@ describe('CriteriaRow', () => {
 					{
 						label: 'Test Property',
 						name: 'test_prop',
+						selectEntity: {
+							multiple: false,
+						},
 						type: PROPERTY_TYPES.ID,
 					},
 				]}
@@ -320,6 +326,9 @@ describe('CriteriaRow', () => {
 					{
 						label: 'Test Property',
 						name: 'test_prop',
+						selectEntity: {
+							multiple: false,
+						},
 						type: PROPERTY_TYPES.ID,
 					},
 				]}
@@ -368,6 +377,9 @@ describe('CriteriaRow', () => {
 					{
 						label: 'Test Property',
 						name: 'test_prop',
+						selectEntity: {
+							multiple: false,
+						},
 						type: PROPERTY_TYPES.ID,
 					},
 				]}
