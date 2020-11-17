@@ -22,10 +22,32 @@ const ENTITY_SELECT_INPUT_TESTID = 'entity-select-input';
 describe('SelectEntityInput', () => {
 	afterEach(cleanup);
 
-	it('renders type id', () => {
+	it('renders type single id', () => {
 		const mockOnChange = jest.fn();
 
 		const defaultNumberValue = '12345';
+
+		const {getByTestId} = render(
+			<SelectEntityInput
+				onChange={mockOnChange}
+				selectEntity={{
+					id: 'entitySelect',
+					title: 'Select Entity Test',
+					url: '',
+				}}
+				value={defaultNumberValue}
+			/>
+		);
+
+		const element = getByTestId(ENTITY_SELECT_INPUT_TESTID);
+
+		expect(element.value).toBe(defaultNumberValue);
+	});
+
+	it('renders type multiple id', () => {
+		const mockOnChange = jest.fn();
+
+		const defaultNumberValue = '12345, 54321';
 
 		const {getByTestId} = render(
 			<SelectEntityInput
