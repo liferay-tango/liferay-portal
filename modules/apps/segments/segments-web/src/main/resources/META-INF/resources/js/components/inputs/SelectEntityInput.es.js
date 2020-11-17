@@ -14,7 +14,7 @@
 
 import ClayButton from '@clayui/button';
 import {ClayTooltipProvider} from '@clayui/tooltip';
-import {openSelectionModal} from 'frontend-js-web';
+import {addParams, openSelectionModal} from 'frontend-js-web';
 import propTypes from 'prop-types';
 import React from 'react';
 
@@ -23,6 +23,7 @@ class SelectEntityInput extends React.Component {
 		disabled: propTypes.bool,
 		displayValue: propTypes.oneOfType([propTypes.string, propTypes.number]),
 		onChange: propTypes.func.isRequired,
+		propertyKey: propTypes.string.isRequired,
 		selectEntity: propTypes.shape({
 			id: propTypes.string,
 			multiple: propTypes.bool,
@@ -40,8 +41,20 @@ class SelectEntityInput extends React.Component {
 	_handleSelectEntity = () => {
 		const {
 			onChange,
+			propertyKey,
 			selectEntity: {id, multiple, title, uri},
+			value,
 		} = this.props;
+
+		let url = uri;
+
+		if (propertyKey === 'user') {
+			url = addParams(
+				'_com_liferay_item_selector_web_portlet_ItemSelectorPortlet_checkedUserIds=' +
+					value,
+				uri
+			);	
+		}
 
 		if (multiple) {
 			openSelectionModal({
@@ -59,7 +72,7 @@ class SelectEntityInput extends React.Component {
 				},
 				selectEventName: id,
 				title,
-				url: uri,
+				url: propertyKey === 'user' ? url : uri,
 			});
 		}
 		else {
