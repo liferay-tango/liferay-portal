@@ -360,13 +360,20 @@ public class EditSegmentsEntryDisplayContext {
 			SegmentsCriteriaContributor segmentsCriteriaContributor)
 		throws Exception {
 
+		String criterionFilterString = _getCriterionFilterString(criterion);
+
+		if (Validator.isNull(criterionFilterString)) {
+			return null;
+		}
+
 		FilterParser filterParser = _filterParserProvider.provide(
 			segmentsCriteriaContributor.getEntityModel());
 
-		Expression expression = filterParser.parse(
-			_getCriterionFilterString(criterion));
+		Expression expression = filterParser.parse(criterionFilterString);
 
-		return (JSONObject)expression.accept(new ExpressionVisitorImpl());
+		return (JSONObject)expression.accept(
+			new ExpressionVisitorImpl(
+				_locale, segmentsCriteriaContributor.getEntityModel()));
 	}
 
 	private JSONObject _getInitialSegmentsNameJSONObject() throws Exception {
