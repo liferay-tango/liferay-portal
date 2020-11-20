@@ -13,32 +13,32 @@
  */
 
 import {
-	CONJUNCTIONS,
-	RELATIONAL_OPERATORS,
+	CONJUNCTIONS, RELATIONAL_OPERATORS,
 } from '../../src/main/resources/META-INF/resources/js/utils/constants.es';
 
 const {AND, OR} = CONJUNCTIONS;
-const {EQ} = RELATIONAL_OPERATORS;
 
-function generateItems(times) {
+const TEST_VALUE = "test"
+
+function generateItems(times, operatorName = RELATIONAL_OPERATORS.EQ, value = TEST_VALUE) {
 	const items = [];
 
 	for (let i = 0; i < times; i++) {
 		items.push({
-			operatorName: EQ,
+			operatorName,
 			propertyName: 'firstName',
-			value: 'test',
+			value,
 		});
 	}
 
 	return items;
 }
 
-export function mockCriteria(numOfItems) {
+export function mockCriteria(numOfItems, operatorName = RELATIONAL_OPERATORS.EQ, value = TEST_VALUE) {
 	return {
 		conjunctionName: AND,
 		groupId: 'group_01',
-		items: generateItems(numOfItems),
+		items: generateItems(numOfItems, operatorName, value),
 	};
 }
 

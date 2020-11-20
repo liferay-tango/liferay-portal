@@ -12,6 +12,7 @@
  * details.
  */
 
+import { FUNCTIONAL_OPERATORS, NOT_OPERATORS, RELATIONAL_OPERATORS } from '../../../src/main/resources/META-INF/resources/js/utils/constants.es';
 import * as ODataUtil from '../../../src/main/resources/META-INF/resources/js/utils/odata.es';
 import * as Utils from '../../../src/main/resources/META-INF/resources/js/utils/utils.es';
 import {mockCriteria, mockCriteriaNested} from '../data';
@@ -24,9 +25,7 @@ const properties = [
 	},
 ];
 
-function testConversionToAndFrom(testQuery, {properties, queryConjunction}) {
-	const translatedMap = ODataUtil.translateQueryToCriteria(testQuery);
-
+function testConversionToQueryString(translatedMap, testQuery, {properties, queryConjunction}) {
 	const translatedString = ODataUtil.buildQueryString(
 		[translatedMap],
 		queryConjunction,
@@ -44,6 +43,18 @@ describe('odata-util', () => {
 	});
 
 	describe('buildQueryString', () => {
+		it('returns null if the query is empty or invalid', () => {
+			const translatedMap = {
+				conjunctionName: "and",
+				groupId: "group_1",
+				items: []
+			};
+
+			const testQuery = "()";
+
+			testConversionToQueryString(translatedMap, testQuery, {properties});
+		});
+		
 		it('builds a query string from a flat criteria map', () => {
 			expect(ODataUtil.buildQueryString([mockCriteria(1)])).toEqual(
 				"(firstName eq 'test')"
@@ -58,187 +69,272 @@ describe('odata-util', () => {
 				"((((firstName eq 'test' or firstName eq 'test') and firstName eq 'test') or firstName eq 'test') and firstName eq 'test')"
 			);
 		});
-	});
 
-	describe('translateQueryToCriteria', () => {
-		it('translates a query string into a criteria map', () => {
-			expect(
-				ODataUtil.translateQueryToCriteria("(firstName eq 'test')")
-			).toEqual({
-				conjunctionName: 'and',
-				groupId: 'group_01',
-				items: [
-					{
-						operatorName: 'eq',
-						propertyName: 'firstName',
-						value: 'test',
-					},
-				],
-			});
-		});
-
-		it('handles a query string with empty groups', () => {
-			expect(
-				ODataUtil.translateQueryToCriteria("(((firstName eq 'test')))")
-			).toEqual({
-				conjunctionName: 'and',
-				groupId: 'group_01',
-				items: [
-					{
-						operatorName: 'eq',
-						propertyName: 'firstName',
-						value: 'test',
-					},
-				],
-			});
-		});
-
-		it('handles a query string with "not" operator', () => {
-			expect(
-				ODataUtil.translateQueryToCriteria(
-					"(not (firstName eq 'test'))"
-				)
-			).toEqual({
-				conjunctionName: 'and',
-				groupId: 'group_01',
-				items: [
-					{
-						operatorName: 'not-eq',
-						propertyName: 'firstName',
-						value: 'test',
-					},
-				],
-			});
-		});
-
-		it('handles a query string with "contains" operator', () => {
-			expect(
-				ODataUtil.translateQueryToCriteria(
-					"contains(firstName, 'test')"
-				)
-			).toEqual({
-				conjunctionName: 'and',
-				groupId: 'group_01',
-				items: [
-					{
-						operatorName: 'contains',
-						propertyName: 'firstName',
-						value: 'test',
-					},
-				],
-			});
-		});
-
-		it('returns null if the query is empty or invalid', () => {
-			expect(ODataUtil.translateQueryToCriteria()).toEqual(null);
-			expect(ODataUtil.translateQueryToCriteria('()')).toEqual(null);
-			expect(
-				ODataUtil.translateQueryToCriteria(
-					"(firstName eq 'test' eq 'test')"
-				)
-			).toEqual(null);
-			expect(
-				ODataUtil.translateQueryToCriteria("(firstName = 'test')")
-			).toEqual(null);
-		});
-	});
-
-	describe('conversion to and from', () => {
 		it('is able to translate a query string to map and back to string', () => {
 			const testQuery = "(firstName eq 'test')";
 
-			testConversionToAndFrom(testQuery, {properties});
+			testConversionToQueryString(mockCriteria(1), testQuery, {properties});
 		});
 
 		it('is able to translate a query string with special characters to map and back to string', () => {
 			const testQuery = "(firstName eq 'test+/?%#&')";
 
-			testConversionToAndFrom(testQuery, {properties});
+			testConversionToQueryString(mockCriteria(1, RELATIONAL_OPERATORS.EQ, 'test+/?%#&'), testQuery, {properties});
 		});
 
-		test.skip('is able to translate a query string with special characters and spaces to map and back to string', () => {
+		it('is able to translate a query string with special characters and spaces to map and back to string', () => {
 			const testQuery = "(firstName eq 'test +/?%#&')";
 
-			testConversionToAndFrom(testQuery, {properties});
+			testConversionToQueryString(mockCriteria(1, RELATIONAL_OPERATORS.EQ, 'test +/?%#&'), testQuery, {properties});
 		});
 
 		it('is able to translate a complex query string to map and back to string', () => {
-			const testQuery =
-				"((firstName eq 'test' or firstName eq 'test') and firstName eq 'test')";
+			const translatedMap = {
+				conjunctionName: "and",
+				groupId: "group_1",
+				items: [
+					{
+						conjunctionName: "or",
+						groupId: "group_2",
+						items: [
+							{
+								operatorName: "eq",
+								propertyName: "firstName",
+								value: "test1"
+							},
+							{
+								operatorName: "eq",
+								propertyName: "firstName",
+								value: "test2"
+							},
+						]
+					},
+					{
+						operatorName: "eq",
+						propertyName: "firstName",
+						value: "test3"
+					},
+				]
+			};
 
-			testConversionToAndFrom(testQuery, {properties});
+			const testQuery =
+				"((firstName eq 'test1' or firstName eq 'test2') and firstName eq 'test3')";
+
+			testConversionToQueryString(translatedMap, testQuery, {properties});
 		});
 
 		it('is able to translate a query string with "not" to map and back to string', () => {
 			const testQuery = "((not (firstName eq 'test')))";
 
-			const translatedMap = ODataUtil.translateQueryToCriteria(testQuery);
+			testConversionToQueryString(mockCriteria(1, NOT_OPERATORS.NOT_EQ), testQuery, {properties});
 
-			const translatedString = ODataUtil.buildQueryString([
-				translatedMap,
-			]);
-
-			expect(translatedString).toEqual(testQuery);
 		});
 
 		it('is able to translate a complex query string with "not" to map and back to string', () => {
+			const translatedMap = {
+				conjunctionName: "and",
+				groupId: "group_1",
+				items: [
+					{
+						operatorName: "eq",
+						propertyName: "firstName",
+						value: "test"
+					},
+					{
+						conjunctionName: "or",
+						groupId: "group_2",
+						items: [
+							{
+								operatorName: "not-eq",
+								propertyName: "lastName",
+								value: "foo"
+							},
+							{
+								operatorName: "not-eq",
+								propertyName: "lastName",
+								value: "bar"
+							},
+						]
+					}
+				]
+			};
+			
 			const testQuery =
 				"(firstName eq 'test' and ((not (lastName eq 'foo')) or (not (lastName eq 'bar'))))";
 
-			testConversionToAndFrom(testQuery, {properties});
+			testConversionToQueryString(translatedMap, testQuery, {properties});
 		});
 
 		it('is able to translate a query string with "contains" to map and back to string', () => {
 			const testQuery = "(contains(firstName, 'test'))";
 
-			testConversionToAndFrom(testQuery, {properties});
+			testConversionToQueryString(mockCriteria(1, FUNCTIONAL_OPERATORS.CONTAINS), testQuery, {properties});
 		});
 
 		it('is able to translate a query string with "contains" to map and back to string', () => {
+			const translatedMap = {
+				conjunctionName: "and",
+				groupId: "group_1",
+				items: [
+					{
+						operatorName: "eq",
+						propertyName: "firstName",
+						value: "test"
+					},
+					{
+						conjunctionName: "or",
+						groupId: "group_2",
+						items: [
+							{
+								operatorName: "contains",
+								propertyName: "lastName",
+								value: "foo"
+							},
+							{
+								operatorName: "contains",
+								propertyName: "lastName",
+								value: "bar"
+							},
+						]
+					},
+				]
+			};
+
 			const testQuery =
 				"(firstName eq 'test' and (contains(lastName, 'foo') or contains(lastName, 'bar')))";
 
-			testConversionToAndFrom(testQuery, {properties});
+			testConversionToQueryString(translatedMap, testQuery, {properties});
 		});
 
 		it('is able to translate a query string with "not contains" to map and back to string', () => {
 			const testQuery = "((not (contains(firstName, 'test'))))";
 
-			testConversionToAndFrom(testQuery, {properties});
+			testConversionToQueryString(mockCriteria(1, NOT_OPERATORS.NOT_CONTAINS), testQuery, {properties});
 		});
 
 		it('is able to translate a collection type query string with "contains" to map and back to string', () => {
+			const translatedMap = {
+				conjunctionName: "and",
+				groupId: "group_1",
+				items: [
+					{
+						operatorName: "contains",
+						propertyName: "cookies",
+						value: "keyTest=valueTest"
+					},
+				]
+			};
+
 			const testQuery =
 				"(cookies/any(c:contains(c, 'keyTest=valueTest')))";
 
-			testConversionToAndFrom(testQuery, {properties});
+			testConversionToQueryString(translatedMap, testQuery, {properties});
 		});
 
 		it('is able to translate a collection type query string with "not contains" to map and back to string', () => {
+			const translatedMap = {
+				conjunctionName: "and",
+				groupId: "group_1",
+				items: [
+					{
+						operatorName: "not-contains",
+						propertyName: "cookies",
+						value: "keyTest=valueTest"
+					},
+				]
+			};
+
 			const testQuery =
 				"((not (cookies/any(c:contains(c, 'keyTest=valueTest')))))";
 
-			testConversionToAndFrom(testQuery, {properties});
+			testConversionToQueryString(translatedMap, testQuery, {properties});
 		});
 
 		it('is able to translate a collection type query string with "eq" to map and back to string', () => {
+			const translatedMap = {
+				conjunctionName: "and",
+				groupId: "group_1",
+				items: [
+					{
+						operatorName: "eq",
+						propertyName: "cookies",
+						value: "keyTest=valueTest"
+					},
+				]
+			};
+
 			const testQuery = "(cookies/any(c:c eq 'keyTest=valueTest'))";
 
-			testConversionToAndFrom(testQuery, {properties});
+			testConversionToQueryString(translatedMap, testQuery, {properties});
 		});
 
 		it('is able to translate a collection type query string with "not" to map and back to string', () => {
+			const translatedMap = {
+				conjunctionName: "and",
+				groupId: "group_1",
+				items: [
+					{
+						operatorName: "not-eq",
+						propertyName: "cookies",
+						value: "keyTest=valueTest"
+					},
+				]
+			};
 			const testQuery =
 				"((not (cookies/any(c:c eq 'keyTest=valueTest'))))";
 
-			testConversionToAndFrom(testQuery, {properties});
+			testConversionToQueryString(translatedMap, testQuery, {properties});
 		});
 
 		it('is able to translate a nested and complex collection type query string to map and back to string', () => {
+			const translatedMap = {
+				conjunctionName: "and",
+				groupId: "group_1",
+				items: [
+					{
+						operatorName: "not-eq",
+						propertyName: "cookies",
+						value: "keyTest1=valueTest1"
+					},
+					{
+						conjunctionName: "or",
+						groupId: "group_2",
+						items: [
+							{
+								operatorName: "not-eq",
+								propertyName: "cookies",
+								value: "keyTest2=valueTest2"
+							},
+							{
+								conjunctionName: "and",
+								groupId: "group_3",
+								items: [
+									{
+										operatorName: "eq",
+										propertyName: "cookies",
+										value: "keyTest3=valueTest3"
+									},
+									{
+										operatorName: "eq",
+										propertyName: "cookies",
+										value: "keyTest4=valueTest4"
+									},
+								],
+							}
+						]
+					},
+					{
+						operatorName: "eq",
+						propertyName: "name",
+						value: "test"
+					},
+				]
+			};
+
 			const testQuery =
 				"((not (cookies/any(c:c eq 'keyTest1=valueTest1'))) and ((not (cookies/any(c:c eq 'keyTest2=valueTest2'))) or (cookies/any(c:c eq 'keyTest3=valueTest3') and cookies/any(c:c eq 'keyTest4=valueTest4'))) and name eq 'test')";
 
-			testConversionToAndFrom(testQuery, {properties});
+			testConversionToQueryString(translatedMap, testQuery, {properties});
 		});
 	});
 });
