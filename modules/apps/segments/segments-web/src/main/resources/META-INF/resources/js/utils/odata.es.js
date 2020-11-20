@@ -43,9 +43,10 @@ const getTypeByPropertyName = (propertyName, properties) => {
  * Decides whether to add quotes to value.
  * @param {boolean | string} value
  * @param {boolean | date | number | string} type
+ * @param {string} operatorName
  * @returns {string}
  */
-function valueParser(value, type) {
+function valueParser(value, type, operatorName) {
 	let parsedValue;
 
 	switch (type) {
@@ -55,6 +56,17 @@ function valueParser(value, type) {
 		case PROPERTY_TYPES.INTEGER:
 		case PROPERTY_TYPES.DOUBLE:
 			parsedValue = value;
+			break;
+		case PROPERTY_TYPES.ID:
+			if (operatorName === RELATIONAL_OPERATORS.IN) {
+				const values = value.split(', ');
+				const stringValue = values.map((value) => `'${value}'`);
+
+				parsedValue = stringValue;
+			}
+			else {
+				parsedValue = `'${value}'`;
+			}
 			break;
 		case PROPERTY_TYPES.COLLECTION:
 		case PROPERTY_TYPES.STRING:
@@ -101,12 +113,20 @@ function buildQueryString(criteria, queryConjunction, properties) {
 				criterion.type ||
 				getTypeByPropertyName(propertyName, properties);
 
-			const parsedValue = valueParser(value, type);
+			const parsedValue = valueParser(value, type, operatorName);
 
 			if (isValueType(RELATIONAL_OPERATORS, operatorName)) {
 				if (type === PROPERTY_TYPES.COLLECTION) {
 					queryString = queryString.concat(
 						`${propertyName}/any(c:c ${operatorName} ${parsedValue})`
+					);
+				}
+				else if (
+					operatorName === RELATIONAL_OPERATORS.IN &&
+					type === PROPERTY_TYPES.ID
+				) {
+					queryString = queryString.concat(
+						`${propertyName} ${operatorName} (${parsedValue})`
 					);
 				}
 				else {
