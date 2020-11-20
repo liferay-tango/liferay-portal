@@ -78,7 +78,7 @@ export function initialContributorsToContributors(
 			modelLabel: propertyGroup && propertyGroup.name,
 			properties: propertyGroup && propertyGroup.properties,
 			propertyKey: initialContributor.propertyKey,
-			query: initialContributor.initialQuery,
+			query: initialContributor.initialQuery || '',
 		};
 	});
 }

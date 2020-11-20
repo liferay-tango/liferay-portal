@@ -185,7 +185,7 @@ class CriteriaGroup extends Component {
 	_isCriteriaEmpty = () => {
 		const {criteria} = this.props;
 
-		return criteria ? !criteria.items.length : true;
+		return !criteria;
 	};
 
 	_renderConjunction = (index) => {

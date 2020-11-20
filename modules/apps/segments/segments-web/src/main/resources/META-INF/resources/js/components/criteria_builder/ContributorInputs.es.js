@@ -37,14 +37,12 @@ function ContributorInputs({contributors}) {
 						id={criteria.inputId}
 						name={criteria.inputId}
 						readOnly
-						type="hidden"
-						value={criteria.query}
+						value={JSON.stringify(criteria.query)}
 					/>
 					<input
 						id={criteria.conjunctionInputId}
 						name={criteria.conjunctionInputId}
 						readOnly
-						type="hidden"
 						value={conjunction}
 					/>
 				</React.Fragment>
