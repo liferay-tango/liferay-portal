@@ -22,7 +22,16 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 
 import com.liferay.analytics.reports.web.internal.client.AsahFaroBackendClient;
 import com.liferay.analytics.reports.web.internal.model.AcquisitionChannel;
+import com.liferay.analytics.reports.web.internal.model.CountrySearchKeywords;
+import com.liferay.analytics.reports.web.internal.model.DirectTrafficChannelImpl;
 import com.liferay.analytics.reports.web.internal.model.HistoricalMetric;
+import com.liferay.analytics.reports.web.internal.model.OrganicTrafficChannelImpl;
+import com.liferay.analytics.reports.web.internal.model.PaidTrafficChannelImpl;
+import com.liferay.analytics.reports.web.internal.model.ReferralTrafficChannelImpl;
+import com.liferay.analytics.reports.web.internal.model.ReferringSocialMedia;
+import com.liferay.analytics.reports.web.internal.model.ReferringURL;
+import com.liferay.analytics.reports.web.internal.model.SearchKeyword;
+import com.liferay.analytics.reports.web.internal.model.SocialTrafficChannelImpl;
 import com.liferay.analytics.reports.web.internal.model.TimeRange;
 import com.liferay.analytics.reports.web.internal.model.TimeSpan;
 import com.liferay.analytics.reports.web.internal.model.TrafficChannel;
@@ -32,12 +41,14 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Http;
 
 import java.time.format.DateTimeFormatter;
 
 import java.util.AbstractMap;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -191,6 +202,10 @@ public class AnalyticsReportsDataProvider {
 		throws PortalException {
 
 		try {
+			if (true) {
+				return _getTrafficChannelsMock();
+			}
+
 			Map<String, TrafficSource> trafficSourceMap = getTrafficSources(
 				companyId, url);
 
@@ -274,6 +289,103 @@ public class AnalyticsReportsDataProvider {
 		Double value = historicalMetric.getValue();
 
 		return value.longValue();
+	}
+
+	private Map<String, TrafficChannel> _getTrafficChannelsMock() {
+		return HashMapBuilder.put(
+			"direct", (TrafficChannel)new DirectTrafficChannelImpl(3000, 5.0)
+		).put(
+			"organic",
+			new OrganicTrafficChannelImpl(
+				Arrays.asList(
+					new CountrySearchKeywords(
+						"us",
+						Arrays.asList(
+							new SearchKeyword("liferay", 1, 3600, 2882L),
+							new SearchKeyword("liferay inc", 1, 755, 855L),
+							new SearchKeyword("liferay portal", 1, 556, 850L),
+							new SearchKeyword("what is liferay", 1, 390, 312L),
+							new SearchKeyword("liferay india", 1, 390, 312L),
+							new SearchKeyword(
+								"liferay development services", 1, 390, 310L))),
+					new CountrySearchKeywords(
+						"es",
+						Collections.singletonList(
+							new SearchKeyword(
+								"liferay portal", 1, 3600, 2882L)))),
+				9000, 30.0)
+		).put(
+			"paid",
+			new PaidTrafficChannelImpl(
+				Collections.singletonList(
+					new CountrySearchKeywords(
+						"us",
+						Collections.singletonList(
+							new SearchKeyword(
+								"dxp enterprises", 1, 4400, 206L)))),
+				1500, 5D)
+		).put(
+			"referral",
+			new ReferralTrafficChannelImpl(
+				Arrays.asList(
+					new ReferringURL(17985230, "http://youtube.com/"),
+					new ReferringURL(12218030, "http://www.google.com/"),
+					new ReferringURL(9062949, "http://microsoft.com/"),
+					new ReferringURL(4601453, "http://linkedin.com/"),
+					new ReferringURL(253399, "https://www.liferay.com")),
+				Arrays.asList(
+					new ReferringURL(
+						125461,
+						"https://www.liferay.com/resources/ebooks/Becoming+a+" +
+							"Digital+Business-4+Common+Enterprise+Challenges+" +
+								"Conquered"),
+					new ReferringURL(
+						85485,
+						"https://www.liferay.com/resources/whitepapers/B2B+E-" +
+							"Commerce+RFP+Kit"),
+					new ReferringURL(
+						84564,
+						"https://www.liferay.com/es/resources/whitepapers/6+T" +
+							"actics+to+Modernize+Your+Intranet"),
+					new ReferringURL(
+						5846,
+						"https://www.liferay.com/resources/case-studies/mater" +
+							"ion-case-study"),
+					new ReferringURL(
+						3521,
+						"https://www.liferay.com/web/l/a1-hrvatska-case-study"),
+					new ReferringURL(
+						2513,
+						"https://www.liferay.com/resources/case-studies/excel" +
+							"lus-case-study"),
+					new ReferringURL(
+						2200,
+						"https://www.liferay.com/resources/case-studies/terre" +
+							"s-inovia-case-study"),
+					new ReferringURL(
+						1230,
+						"https://www.liferay.com/resources/case-studies/vodaf" +
+							"one-business"),
+					new ReferringURL(
+						1100,
+						"https://www.liferay.com/web/guest/resources/case-" +
+							"studies/agia"),
+					new ReferringURL(
+						100,
+						"https://www.liferay.com/resources/case-studies/vital" +
+							"ity-case-study")),
+				7500, 25.0)
+		).put(
+			"social",
+			new SocialTrafficChannelImpl(
+				Arrays.asList(
+					new ReferringSocialMedia("linkedin", 1256),
+					new ReferringSocialMedia("twitter", 1165),
+					new ReferringSocialMedia("facebook", 229),
+					new ReferringSocialMedia("youtube", 150),
+					new ReferringSocialMedia("other", 30)),
+				9100, 30.0)
+		).build();
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
