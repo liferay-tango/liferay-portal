@@ -261,27 +261,31 @@ public abstract class BaseSegmentsEntryProvider
 		if (Validator.isNotNull(modelFilterString) &&
 			(oDataRetriever != null)) {
 
-			StringBundler sb = new StringBundler(5);
-
-			sb.append("(");
-			sb.append(modelFilterString);
-			sb.append(") and (classPK eq '");
-			sb.append(classPK);
-			sb.append("')");
-
 			boolean matchesModel = false;
 
-			try {
-				int count = oDataRetriever.getResultsCount(
-					segmentsEntry.getCompanyId(), sb.toString(),
-					LocaleUtil.getDefault());
+			if ((context == null) ||
+				MapUtil.getBoolean(context, Context.SIGNED_IN, true)) {
 
-				if (count > 0) {
-					matchesModel = true;
+				StringBundler sb = new StringBundler(5);
+
+				sb.append("(");
+				sb.append(modelFilterString);
+				sb.append(") and (classPK eq '");
+				sb.append(classPK);
+				sb.append("')");
+
+				try {
+					int count = oDataRetriever.getResultsCount(
+						segmentsEntry.getCompanyId(), sb.toString(),
+						LocaleUtil.getDefault());
+
+					if (count > 0) {
+						matchesModel = true;
+					}
 				}
-			}
-			catch (PortalException portalException) {
-				_log.error(portalException, portalException);
+				catch (PortalException portalException) {
+					_log.error(portalException, portalException);
+				}
 			}
 
 			if (matchesModel &&
