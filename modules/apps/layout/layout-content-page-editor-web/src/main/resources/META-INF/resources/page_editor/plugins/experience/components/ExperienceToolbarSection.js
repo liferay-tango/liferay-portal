@@ -29,23 +29,35 @@ export default function ExperienceToolbarSection({selectId}) {
 	const dispatch = useDispatch();
 	const segmentsExperienceId = useSelector(selectSegmentsExperienceId);
 
-	const experiences = useMemo(
-		() =>
-			Object.values(availableSegmentsExperiences)
-				.sort((a, b) => b.priority - a.priority)
-				.map((experience) => {
-					const segmentsEntryName =
-						config.availableSegmentsEntries[
-							experience.segmentsEntryId
-						].name;
+	const experiences = useMemo(() => {
+		const visitedSegmentsEntryIds = [];
 
-					return {
-						...experience,
-						segmentsEntryName,
-					};
-				}),
-		[availableSegmentsExperiences]
-	);
+		return Object.values(availableSegmentsExperiences)
+			.sort((a, b) => b.priority - a.priority)
+			.map((experience) => {
+				const segmentsEntryName =
+					config.availableSegmentsEntries[experience.segmentsEntryId]
+						.name;
+
+				const active =
+					!visitedSegmentsEntryIds.includes(
+						experience.segmentsEntryId
+					) &&
+					!visitedSegmentsEntryIds.includes(
+						config.defaultSegmentsExperienceId
+					);
+
+				if (active) {
+					visitedSegmentsEntryIds.push(experience.segmentsEntryId);
+				}
+
+				return {
+					...experience,
+					active,
+					segmentsEntryName,
+				};
+			});
+	}, [availableSegmentsExperiences]);
 	const segments = useMemo(
 		() => Object.values(config.availableSegmentsEntries),
 		[]
