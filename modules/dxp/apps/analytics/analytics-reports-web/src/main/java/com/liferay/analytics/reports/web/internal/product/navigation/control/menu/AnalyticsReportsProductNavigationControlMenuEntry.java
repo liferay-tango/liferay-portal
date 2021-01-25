@@ -125,17 +125,22 @@ public class AnalyticsReportsProductNavigationControlMenuEntry
 						LayoutDisplayPageWebKeys.
 							LAYOUT_DISPLAY_PAGE_OBJECT_PROVIDER);
 
-			try {
-				values.put(
-					"analyticsReportsPanelURL",
-					AnalyticsReportsUtil.getAnalyticsReportsPanelURL(
-						layoutDisplayPageObjectProvider.getClassNameId(),
-						layoutDisplayPageObjectProvider.getClassPK(),
-						layoutDisplayPageObjectProvider.getGroupId(),
-						httpServletRequest, _portal, _portletURLFactory));
+			if (layoutDisplayPageObjectProvider == null) {
+				System.out.println("no DPT");
 			}
-			catch (WindowStateException windowStateException) {
-				ReflectionUtil.throwException(windowStateException);
+			else {
+				try {
+					values.put(
+						"analyticsReportsPanelURL",
+						AnalyticsReportsUtil.getAnalyticsReportsPanelURL(
+							layoutDisplayPageObjectProvider.getClassNameId(),
+							layoutDisplayPageObjectProvider.getClassPK(),
+							layoutDisplayPageObjectProvider.getGroupId(),
+							httpServletRequest, _portal, _portletURLFactory));
+				}
+				catch (WindowStateException windowStateException) {
+					ReflectionUtil.throwException(windowStateException);
+				}
 			}
 
 			values.put("cssClass", StringPool.BLANK);
