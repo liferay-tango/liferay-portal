@@ -308,7 +308,7 @@ export default function AuditBarChart({rtl, vocabularies}) {
 						>
 							{data.map((entry, index) => (
 								<Cell
-									fill={entry.color}
+									fill="#4B9FFF"
 									key={`cell-${index}`}
 									opacity={
 										!tooltip
