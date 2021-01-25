@@ -41,7 +41,7 @@ public class AssetCategoryMetricTest {
 	public void testToJSONObject() {
 		AssetCategoryMetric childAssetCategoryMetric = new AssetCategoryMetric(
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomLong());
+			RandomTestUtil.randomString(), RandomTestUtil.randomLong());
 
 		AssetVocabularyMetric assetVocabularyMetric = new AssetVocabularyMetric(
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
@@ -49,7 +49,8 @@ public class AssetCategoryMetricTest {
 
 		AssetCategoryMetric assetCategoryMetric = new AssetCategoryMetric(
 			assetVocabularyMetric, RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomLong());
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomLong());
 
 		String vocabularyName = RandomTestUtil.randomString();
 
@@ -58,6 +59,8 @@ public class AssetCategoryMetricTest {
 				"categories",
 				JSONUtil.put(
 					JSONUtil.put(
+						"color", childAssetCategoryMetric.getColor()
+					).put(
 						"key", childAssetCategoryMetric.getKey()
 					).put(
 						"name", childAssetCategoryMetric.getName()
@@ -66,6 +69,8 @@ public class AssetCategoryMetricTest {
 					).put(
 						"vocabularyName", assetVocabularyMetric.getName()
 					))
+			).put(
+				"color", assetCategoryMetric.getColor()
 			).put(
 				"key", assetCategoryMetric.getKey()
 			).put(
@@ -84,12 +89,14 @@ public class AssetCategoryMetricTest {
 			new AssetVocabularyMetric(
 				RandomTestUtil.randomString(), RandomTestUtil.randomString()),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomLong());
+			RandomTestUtil.randomString(), RandomTestUtil.randomLong());
 
 		String vocabularyName = RandomTestUtil.randomString();
 
 		Assert.assertEquals(
 			JSONUtil.put(
+				"color", assetCategoryMetric.getColor()
+			).put(
 				"key", assetCategoryMetric.getKey()
 			).put(
 				"name", assetCategoryMetric.getName()
@@ -105,12 +112,14 @@ public class AssetCategoryMetricTest {
 	public void testToJSONObjectWithNullAssetVocabularyMetric() {
 		AssetCategoryMetric assetCategoryMetric = new AssetCategoryMetric(
 			null, RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomLong());
+			RandomTestUtil.randomString(), RandomTestUtil.randomLong());
 
 		String vocabularyName = RandomTestUtil.randomString();
 
 		Assert.assertEquals(
 			JSONUtil.put(
+				"color", assetCategoryMetric.getColor()
+			).put(
 				"key", assetCategoryMetric.getKey()
 			).put(
 				"name", assetCategoryMetric.getName()

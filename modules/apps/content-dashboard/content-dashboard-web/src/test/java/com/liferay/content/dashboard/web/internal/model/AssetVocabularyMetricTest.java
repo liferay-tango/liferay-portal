@@ -47,6 +47,7 @@ public class AssetVocabularyMetricTest {
 					new AssetCategoryMetric(
 						RandomTestUtil.randomString(),
 						RandomTestUtil.randomString(),
+						RandomTestUtil.randomString(),
 						RandomTestUtil.randomLong())));
 
 		AssetVocabularyMetric assetVocabularyMetric = new AssetVocabularyMetric(
@@ -54,6 +55,7 @@ public class AssetVocabularyMetricTest {
 			Collections.singletonList(
 				new AssetCategoryMetric(
 					childAssetVocabularyMetric, RandomTestUtil.randomString(),
+					RandomTestUtil.randomString(),
 					RandomTestUtil.randomString(),
 					RandomTestUtil.randomLong())));
 
@@ -82,6 +84,7 @@ public class AssetVocabularyMetricTest {
 				new AssetCategoryMetric(
 					RandomTestUtil.randomString(),
 					RandomTestUtil.randomString(),
+					RandomTestUtil.randomString(),
 					RandomTestUtil.randomLong())));
 
 		Assert.assertEquals(
@@ -103,6 +106,7 @@ public class AssetVocabularyMetricTest {
 					new AssetCategoryMetric(
 						RandomTestUtil.randomString(),
 						RandomTestUtil.randomString(),
+						RandomTestUtil.randomString(),
 						RandomTestUtil.randomLong())));
 
 		AssetVocabularyMetric assetVocabularyMetric = new AssetVocabularyMetric(
@@ -110,9 +114,11 @@ public class AssetVocabularyMetricTest {
 			Arrays.asList(
 				new AssetCategoryMetric(
 					childAssetVocabularyMetric1, RandomTestUtil.randomString(),
+					RandomTestUtil.randomString(),
 					RandomTestUtil.randomString(), RandomTestUtil.randomLong()),
 				new AssetCategoryMetric(
 					childAssetVocabularyMetric2, RandomTestUtil.randomString(),
+					RandomTestUtil.randomString(),
 					RandomTestUtil.randomString(),
 					RandomTestUtil.randomLong())));
 
@@ -127,11 +133,11 @@ public class AssetVocabularyMetricTest {
 	public void testToJSONArray() {
 		AssetCategoryMetric assetCategoryMetric1 = new AssetCategoryMetric(
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomLong());
+			RandomTestUtil.randomString(), RandomTestUtil.randomLong());
 
 		AssetCategoryMetric assetCategoryMetric2 = new AssetCategoryMetric(
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomLong());
+			RandomTestUtil.randomString(), RandomTestUtil.randomLong());
 
 		AssetVocabularyMetric assetVocabularyMetric = new AssetVocabularyMetric(
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
