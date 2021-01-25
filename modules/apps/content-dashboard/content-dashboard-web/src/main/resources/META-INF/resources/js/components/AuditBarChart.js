@@ -29,7 +29,7 @@ import {
 	YAxis,
 } from 'recharts';
 
-import {BAR_CHART, COLORS} from '../utils/constants';
+import {BAR_CHART} from '../utils/constants';
 import {shortenNumber} from '../utils/shortenNumber';
 
 export default function AuditBarChart({rtl, vocabularies}) {
@@ -43,14 +43,14 @@ export default function AuditBarChart({rtl, vocabularies}) {
 			}
 
 			const newBar = category.categories.reduce(
-				(childAcc, {key: dataKey, name}) => {
+				(childAcc, {color, key: dataKey, name}) => {
 					if (dataKeys.has(dataKey)) {
 						return childAcc;
 					}
 
 					dataKeys.add(dataKey);
 
-					return childAcc.concat({dataKey, name});
+					return childAcc.concat({color, dataKey, name});
 				},
 				[]
 			);
@@ -82,35 +82,27 @@ export default function AuditBarChart({rtl, vocabularies}) {
 			);
 		});
 
-		const {colors, legendCheckboxes} = bars.reduce(
-			(acc, {dataKey}, index) => ({
-				colors: {
-					...acc.colors,
-					[dataKey]: COLORS[index % COLORS.length],
-				},
-				legendCheckboxes: {
-					...acc.legendCheckboxes,
-					[dataKey]: true,
-				},
-			}),
-			{colors: {}, legendCheckboxes: {}}
-		);
+		const legendCheckboxes = bars.reduce((acc, {dataKey}) => {
+			return {
+				...acc,
+				[dataKey]: true,
+			};
+		}, {});
 
-		return {bars, colors, data, legendCheckboxes, maxValue};
+		return {bars, data, legendCheckboxes, maxValue};
 	}, [vocabularies]);
 
-	const {bars, colors, data, legendCheckboxes, maxValue} = auditBarChartData;
+	const {bars, data, legendCheckboxes, maxValue} = auditBarChartData;
 
 	const [checkboxes, setCheckbox] = useState(legendCheckboxes);
 
 	useEffect(() => {
 		let style;
-		if (Object.keys(colors).length) {
+		if (bars.length) {
 			style = document.createElement('style');
 			style.type = 'text/css';
-			style.textContent = Object.entries(colors).reduce(
-				(acc, [dataKey, color]) => {
-					return acc.concat(`
+			style.textContent = bars.reduce((acc, {color, dataKey}) => {
+				return acc.concat(`
 						.custom-control-color-${dataKey}.custom-control-input:checked ~ 
 							.custom-control-label::before {
 								background-color: ${color};
@@ -121,9 +113,7 @@ export default function AuditBarChart({rtl, vocabularies}) {
 								border-color: ${color};
 						}
 					`);
-				},
-				''
-			);
+			}, '');
 
 			document.head.appendChild(style);
 		}
@@ -133,7 +123,7 @@ export default function AuditBarChart({rtl, vocabularies}) {
 				document.head.removeChild(style);
 			}
 		};
-	}, [colors]);
+	}, [bars]);
 
 	const renderLegend = (props) => {
 		const {payload, yAxisName} = props;
@@ -285,7 +275,7 @@ export default function AuditBarChart({rtl, vocabularies}) {
 								>
 									{data.map((entry, index) => (
 										<Cell
-											fill={colors[bar.dataKey]}
+											fill={bar.color}
 											key={`cell-${index}`}
 											opacity={
 												!tooltip
@@ -318,7 +308,7 @@ export default function AuditBarChart({rtl, vocabularies}) {
 						>
 							{data.map((entry, index) => (
 								<Cell
-									fill={COLORS[0]}
+									fill={entry.color}
 									key={`cell-${index}`}
 									opacity={
 										!tooltip
