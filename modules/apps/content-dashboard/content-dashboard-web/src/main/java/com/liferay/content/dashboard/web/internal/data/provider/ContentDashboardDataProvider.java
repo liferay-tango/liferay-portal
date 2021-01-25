@@ -316,7 +316,7 @@ public class ContentDashboardDataProvider {
 				termsAggregationResult.getBuckets()),
 			NONE_COLOR, "none",
 			ResourceBundleUtil.getString(
-				_resourceBundle, "no-x-category",
+				_resourceBundle, "no-x-specified",
 				assetVocabulary.getTitle(_locale)),
 			filterAggregationResult.getDocCount());
 	}
@@ -405,7 +405,7 @@ public class ContentDashboardDataProvider {
 				new AssetCategoryMetric(
 					NONE_COLOR, "none",
 					ResourceBundleUtil.getString(
-						_resourceBundle, "no-x-category",
+						_resourceBundle, "no-x-specified",
 						assetVocabulary.getTitle(_locale)),
 					noneAssetCategoryMetricCount));
 		}
