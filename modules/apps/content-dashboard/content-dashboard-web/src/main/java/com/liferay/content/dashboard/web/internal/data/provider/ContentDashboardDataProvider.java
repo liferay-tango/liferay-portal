@@ -23,6 +23,7 @@ import com.liferay.content.dashboard.web.internal.search.request.ContentDashboar
 import com.liferay.content.dashboard.web.internal.searcher.ContentDashboardSearchRequestBuilderFactory;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.search.aggregation.Aggregations;
@@ -39,6 +40,7 @@ import com.liferay.portal.search.searcher.SearchRequestBuilder;
 import com.liferay.portal.search.searcher.SearchResponse;
 import com.liferay.portal.search.searcher.Searcher;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -53,6 +55,8 @@ import java.util.stream.Stream;
  * @author David Arques
  */
 public class ContentDashboardDataProvider {
+
+	public static final String NONE_COLOR = "#6B6C7E";
 
 	public ContentDashboardDataProvider(
 		Aggregations aggregations,
@@ -261,6 +265,14 @@ public class ContentDashboardDataProvider {
 			Collectors.toMap(Bucket::getKey, Bucket::getDocCount));
 	}
 
+	private String _getColor(String key) {
+		List<String> colors = Arrays.asList(
+			"#4B9FFF", "#FFB46E", "#FF5F5F", "#50D2A0", "#FF73C3", "#9CE269",
+			"#AF78FF", "#FFD76E", "#5FC8FF", "#7785FF");
+
+		return colors.get(GetterUtil.getInteger(key) % colors.size());
+	}
+
 	private BooleanQuery _getFilterBooleanQuery(
 		Set<String> mustNotAssetCategoryIds, String mustNotAssetVocabularyField,
 		Set<String> shouldAssetCategoryIds, String shouldAssetVocabularyField) {
@@ -302,7 +314,7 @@ public class ContentDashboardDataProvider {
 			_toAssetVocabularyMetric(
 				childAssetCategoryTitlesMap, childAssetVocabulary,
 				termsAggregationResult.getBuckets()),
-			"none",
+			NONE_COLOR, "none",
 			ResourceBundleUtil.getString(
 				_resourceBundle, "no-x-category",
 				assetVocabulary.getTitle(_locale)),
@@ -344,7 +356,7 @@ public class ContentDashboardDataProvider {
 						termsAggregationResult.getBuckets(),
 						childNoneAssetCategoryMetricCounts.get(
 							bucket.getKey())),
-					bucket.getKey(),
+					_getColor(bucket.getKey()), bucket.getKey(),
 					assetCategoryTitlesMap.get(bucket.getKey()),
 					bucket.getDocCount());
 			}
@@ -364,7 +376,7 @@ public class ContentDashboardDataProvider {
 			assetVocabulary.getTitle(_locale),
 			stream.map(
 				bucket -> new AssetCategoryMetric(
-					bucket.getKey(),
+					_getColor(bucket.getKey()), bucket.getKey(),
 					assetCategoryTitlesMap.get(bucket.getKey()),
 					bucket.getDocCount())
 			).collect(
@@ -381,7 +393,8 @@ public class ContentDashboardDataProvider {
 
 		List<AssetCategoryMetric> assetCategoryMetrics = stream.map(
 			bucket -> new AssetCategoryMetric(
-				bucket.getKey(), assetCategoryTitlesMap.get(bucket.getKey()),
+				_getColor(bucket.getKey()), bucket.getKey(),
+				assetCategoryTitlesMap.get(bucket.getKey()),
 				bucket.getDocCount())
 		).collect(
 			Collectors.toList()
@@ -390,7 +403,7 @@ public class ContentDashboardDataProvider {
 		if (noneAssetCategoryMetricCount != null) {
 			assetCategoryMetrics.add(
 				new AssetCategoryMetric(
-					"none",
+					NONE_COLOR, "none",
 					ResourceBundleUtil.getString(
 						_resourceBundle, "no-x-category",
 						assetVocabulary.getTitle(_locale)),

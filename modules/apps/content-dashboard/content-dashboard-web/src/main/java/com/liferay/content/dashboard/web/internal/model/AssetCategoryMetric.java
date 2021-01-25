@@ -27,21 +27,24 @@ import java.util.Optional;
 public class AssetCategoryMetric {
 
 	public AssetCategoryMetric(
-		AssetVocabularyMetric assetVocabularyMetric, String key, String name,
-		long value) {
+		AssetVocabularyMetric assetVocabularyMetric, String color, String key,
+		String name, long value) {
 
 		_assetVocabularyMetric = Optional.ofNullable(
 			assetVocabularyMetric
 		).orElse(
 			AssetVocabularyMetric.empty()
 		);
+		_color = color;
 		_key = key;
 		_name = name;
 		_value = value;
 	}
 
-	public AssetCategoryMetric(String key, String name, long value) {
-		this(AssetVocabularyMetric.empty(), key, name, value);
+	public AssetCategoryMetric(
+		String color, String key, String name, long value) {
+
+		this(AssetVocabularyMetric.empty(), color, key, name, value);
 	}
 
 	@Override
@@ -72,6 +75,10 @@ public class AssetCategoryMetric {
 		return _assetVocabularyMetric;
 	}
 
+	public String getColor() {
+		return _color;
+	}
+
 	public String getKey() {
 		return _key;
 	}
@@ -99,6 +106,8 @@ public class AssetCategoryMetric {
 		}
 
 		return jsonObject.put(
+			"color", _color
+		).put(
 			"key", _key
 		).put(
 			"name", _name
@@ -110,6 +119,7 @@ public class AssetCategoryMetric {
 	}
 
 	private AssetVocabularyMetric _assetVocabularyMetric;
+	private final String _color;
 	private final String _key;
 	private final String _name;
 	private final long _value;
