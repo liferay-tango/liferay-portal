@@ -80,9 +80,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.portlet.PortletRequest;
@@ -145,10 +148,12 @@ public class ContentPageLayoutEditorDisplayContext
 			"addSegmentsExperienceURL",
 			getFragmentEntryActionURL(
 				"/layout_content_page_editor/add_segments_experience"));
+		configContext.put("availableLocales", _getAvailableLocales());
 		configContext.put(
 			"availableSegmentsEntries", _getAvailableSegmentsEntries());
 		configContext.put(
 			"defaultSegmentsEntryId", SegmentsEntryConstants.ID_DEFAULT);
+		configContext.put("defaultLanguageId", _getDefaultLanguageId());
 		configContext.put(
 			"defaultSegmentsExperienceId",
 			String.valueOf(SegmentsExperienceConstants.ID_DEFAULT));
@@ -319,6 +324,28 @@ public class ContentPageLayoutEditorDisplayContext
 			));
 	}
 
+	private List<Map<String, Object>> _getAvailableLocales() {
+		Set<Locale> availableLocales = LanguageUtil.getAvailableLocales(
+			themeDisplay.getSiteGroupId());
+
+		Stream<Locale> stream = availableLocales.stream();
+
+		return stream.map(
+			availableLocale -> HashMapBuilder.<String, Object>put(
+				"displayName",
+				availableLocale.getDisplayName(themeDisplay.getLocale())
+			).put(
+				"languageId", LocaleUtil.toLanguageId(availableLocale)
+			).put(
+				"selected", false
+			).put(
+				"w3cLanguageId", LocaleUtil.toW3cLanguageId(availableLocale)
+			).build()
+		).collect(
+			Collectors.toList()
+		);
+	}
+
 	private Map<String, Object> _getAvailableSegmentsEntries() {
 		Map<String, Object> availableSegmentsEntries = new HashMap<>();
 
@@ -366,6 +393,12 @@ public class ContentPageLayoutEditorDisplayContext
 		}
 
 		return StringPool.BLANK;
+	}
+
+	private String _getDefaultLanguageId() {
+		Group group = themeDisplay.getSiteGroup();
+
+		return group.getDefaultLanguageId();
 	}
 
 	private String _getEditSegmentsEntryURL() throws Exception {
