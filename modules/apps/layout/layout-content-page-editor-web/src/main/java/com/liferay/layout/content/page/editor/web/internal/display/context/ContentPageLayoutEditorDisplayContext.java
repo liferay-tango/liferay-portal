@@ -80,9 +80,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.portlet.PortletRequest;
@@ -145,6 +148,7 @@ public class ContentPageLayoutEditorDisplayContext
 			"addSegmentsExperienceURL",
 			getFragmentEntryActionURL(
 				"/layout_content_page_editor/add_segments_experience"));
+		configContext.put("availableLocales", _getAvailableLocales());
 		configContext.put(
 			"availableSegmentsEntries", _getAvailableSegmentsEntries());
 		configContext.put(
@@ -317,6 +321,35 @@ public class ContentPageLayoutEditorDisplayContext
 			).put(
 				"type", InfoListItemSelectorReturnType.class.getName()
 			));
+	}
+
+	private List<Map<String, Object>> _getAvailableLocales() {
+		Group group = themeDisplay.getSiteGroup();
+
+		String defaultLanguageId = group.getDefaultLanguageId();
+
+		Set<Locale> availableLocales = LanguageUtil.getAvailableLocales(
+			themeDisplay.getSiteGroupId());
+
+		Stream<Locale> stream = availableLocales.stream();
+
+		return stream.map(
+			availableLocale -> HashMapBuilder.<String, Object>put(
+				"default",
+				defaultLanguageId == LocaleUtil.toLanguageId(availableLocale)
+			).put(
+				"displayName",
+				availableLocale.getDisplayName(themeDisplay.getLocale())
+			).put(
+				"languageId", LocaleUtil.toLanguageId(availableLocale)
+			).put(
+				"selected", false
+			).put(
+				"w3cLanguageId", LocaleUtil.toW3cLanguageId(availableLocale)
+			).build()
+		).collect(
+			Collectors.toList()
+		);
 	}
 
 	private Map<String, Object> _getAvailableSegmentsEntries() {
