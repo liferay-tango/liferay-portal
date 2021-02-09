@@ -63,6 +63,8 @@ public class SegmentsServiceUpgrade implements UpgradeStepRegistrator {
 				"SegmentsEntry", "SegmentsEntryRel", "SegmentsEntryRole",
 				"SegmentsExperience", "SegmentsExperiment",
 				"SegmentsExperimentRel"));
+
+		registry.register("2.3.0", "2.4.0", new UpgradeSchema());
 	}
 
 	@Reference
