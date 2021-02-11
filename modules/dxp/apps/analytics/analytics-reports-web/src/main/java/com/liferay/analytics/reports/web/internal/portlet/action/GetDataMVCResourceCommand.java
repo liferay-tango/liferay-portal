@@ -104,17 +104,6 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 							httpServletRequest,
 							_layoutDisplayPageProviderTracker, _portal);
 
-		if (layoutDisplayPageObjectProvider == null) {
-			JSONPortletResponseUtil.writeJSON(
-				resourceRequest, resourceResponse,
-				JSONUtil.put(
-					"error",
-					_language.get(
-						httpServletRequest, "an-unexpected-error-occurred")));
-
-			return;
-		}
-
 		try {
 			AnalyticsReportsInfoItem<Object> analyticsReportsInfoItem =
 				(AnalyticsReportsInfoItem<Object>)
