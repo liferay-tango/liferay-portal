@@ -56,6 +56,23 @@ public class AnalyticsReportsUtil {
 		"https://www.liferay.com/products/analytics-cloud/get-started";
 
 	public static String getAnalyticsReportsPanelURL(
+			HttpServletRequest httpServletRequest, Portal portal,
+			PortletURLFactory portletURLFactory)
+		throws WindowStateException {
+
+		PortletURL portletURL = portletURLFactory.create(
+			httpServletRequest, AnalyticsReportsPortletKeys.ANALYTICS_REPORTS,
+			RenderRequest.RENDER_PHASE);
+
+		portletURL.setParameter("mvcPath", "/analytics_reports_panel.jsp");
+		portletURL.setParameter(
+			"redirect", portal.getCurrentCompleteURL(httpServletRequest));
+		portletURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+
+		return portletURL.toString();
+	}
+
+	public static String getAnalyticsReportsPanelURL(
 			long classNameId, long classPK, long groupId,
 			HttpServletRequest httpServletRequest, Portal portal,
 			PortletURLFactory portletURLFactory)

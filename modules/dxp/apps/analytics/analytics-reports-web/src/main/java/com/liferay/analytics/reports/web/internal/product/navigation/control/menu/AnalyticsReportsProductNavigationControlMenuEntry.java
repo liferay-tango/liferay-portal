@@ -126,13 +126,21 @@ public class AnalyticsReportsProductNavigationControlMenuEntry
 							LAYOUT_DISPLAY_PAGE_OBJECT_PROVIDER);
 
 			try {
-				values.put(
-					"analyticsReportsPanelURL",
-					AnalyticsReportsUtil.getAnalyticsReportsPanelURL(
-						layoutDisplayPageObjectProvider.getClassNameId(),
-						layoutDisplayPageObjectProvider.getClassPK(),
-						layoutDisplayPageObjectProvider.getGroupId(),
-						httpServletRequest, _portal, _portletURLFactory));
+				if (layoutDisplayPageObjectProvider != null) {
+					values.put(
+						"analyticsReportsPanelURL",
+						AnalyticsReportsUtil.getAnalyticsReportsPanelURL(
+							layoutDisplayPageObjectProvider.getClassNameId(),
+							layoutDisplayPageObjectProvider.getClassPK(),
+							layoutDisplayPageObjectProvider.getGroupId(),
+							httpServletRequest, _portal, _portletURLFactory));
+				}
+				else {
+					values.put(
+						"analyticsReportsPanelURL",
+						AnalyticsReportsUtil.getAnalyticsReportsPanelURL(
+							httpServletRequest, _portal, _portletURLFactory));
+				}
 			}
 			catch (WindowStateException windowStateException) {
 				ReflectionUtil.throwException(windowStateException);
