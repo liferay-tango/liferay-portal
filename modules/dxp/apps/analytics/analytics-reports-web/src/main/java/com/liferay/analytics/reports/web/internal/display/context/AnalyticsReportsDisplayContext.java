@@ -98,14 +98,18 @@ public class AnalyticsReportsDisplayContext<T> {
 	private ResourceURL _getResourceURL(String resourceID) {
 		ResourceURL resourceURL = _renderResponse.createResourceURL();
 
+		resourceURL.setResourceID(resourceID);
+
+		if (_layoutDisplayPageObjectProvider == null) {
+			return resourceURL;
+		}
+
 		resourceURL.setParameter(
 			"classNameId",
 			String.valueOf(_layoutDisplayPageObjectProvider.getClassNameId()));
 		resourceURL.setParameter(
 			"classPK",
 			String.valueOf(_layoutDisplayPageObjectProvider.getClassPK()));
-
-		resourceURL.setResourceID(resourceID);
 
 		return resourceURL;
 	}

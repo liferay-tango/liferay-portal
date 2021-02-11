@@ -31,6 +31,7 @@ import com.liferay.portal.kernel.portlet.PortletURLFactory;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -40,6 +41,7 @@ import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
@@ -161,55 +163,18 @@ public class AnalyticsReportsUtil {
 			PermissionChecker permissionChecker, Portal portal)
 		throws PortalException {
 
-		if (!layout.isTypeAssetDisplay()) {
-			return false;
+		if (layout.isTypeAssetDisplay()) {
+			return _isShowAnalyticsReportsPanelForAssetTypeDisplay(
+				analyticsReportsInfoItemTracker, companyId, httpServletRequest,
+				layout, layoutDisplayPageObjectProvider, permissionChecker,
+				portal);
+		}
+		else if (layout.isTypeContent()) {
+			return _isShowAnalyticsReportsPanelForTypeContent(
+				companyId, httpServletRequest, layout, permissionChecker);
 		}
 
-		if ((layoutDisplayPageObjectProvider == null) ||
-			(layoutDisplayPageObjectProvider.getDisplayObject() == null)) {
-
-			return false;
-		}
-
-		if (!_hasAnalyticsReportsInfoItem(
-				analyticsReportsInfoItemTracker,
-				layoutDisplayPageObjectProvider, portal)) {
-
-			return false;
-		}
-
-		if (_isEmbeddedPersonalApplicationLayout(layout)) {
-			return false;
-		}
-
-		String layoutMode = ParamUtil.getString(
-			httpServletRequest, "p_l_mode", Constants.VIEW);
-
-		if (layoutMode.equals(Constants.EDIT)) {
-			return false;
-		}
-
-		PortalPreferences portalPreferences =
-			PortletPreferencesFactoryUtil.getPortalPreferences(
-				httpServletRequest);
-
-		boolean hidePanel = GetterUtil.getBoolean(
-			portalPreferences.getValue(
-				AnalyticsReportsPortletKeys.ANALYTICS_REPORTS, "hide-panel"));
-
-		if (!isAnalyticsConnected(companyId) && hidePanel) {
-			return false;
-		}
-
-		if (!_hasEditPermission(
-				layoutDisplayPageObjectProvider.getClassNameId(),
-				layoutDisplayPageObjectProvider.getClassPK(), layout,
-				permissionChecker)) {
-
-			return false;
-		}
-
-		return true;
+		return false;
 	}
 
 	private static boolean _hasAnalyticsReportsInfoItem(
@@ -270,6 +235,114 @@ public class AnalyticsReportsUtil {
 		}
 
 		return false;
+	}
+
+	private static boolean _isShowAnalyticsReportsPanelForAssetTypeDisplay(
+			AnalyticsReportsInfoItemTracker analyticsReportsInfoItemTracker,
+			long companyId, HttpServletRequest httpServletRequest,
+			Layout layout,
+			LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider,
+			PermissionChecker permissionChecker, Portal portal)
+		throws PortalException {
+
+		if ((layoutDisplayPageObjectProvider == null) ||
+			(layoutDisplayPageObjectProvider.getDisplayObject() == null)) {
+
+			return false;
+		}
+
+		if (!_hasAnalyticsReportsInfoItem(
+				analyticsReportsInfoItemTracker,
+				layoutDisplayPageObjectProvider, portal)) {
+
+			return false;
+		}
+
+		if (_isEmbeddedPersonalApplicationLayout(layout)) {
+			return false;
+		}
+
+		String layoutMode = ParamUtil.getString(
+			httpServletRequest, "p_l_mode", Constants.VIEW);
+
+		if (layoutMode.equals(Constants.EDIT)) {
+			return false;
+		}
+
+		PortalPreferences portalPreferences =
+			PortletPreferencesFactoryUtil.getPortalPreferences(
+				httpServletRequest);
+
+		boolean hidePanel = GetterUtil.getBoolean(
+			portalPreferences.getValue(
+				AnalyticsReportsPortletKeys.ANALYTICS_REPORTS, "hide-panel"));
+
+		if (!isAnalyticsConnected(companyId) && hidePanel) {
+			return false;
+		}
+
+		if (!_hasEditPermission(
+				layoutDisplayPageObjectProvider.getClassNameId(),
+				layoutDisplayPageObjectProvider.getClassPK(), layout,
+				permissionChecker)) {
+
+			return false;
+		}
+
+		return true;
+	}
+
+	private static boolean _isShowAnalyticsReportsPanelForTypeContent(
+			long companyId, HttpServletRequest httpServletRequest,
+			Layout layout, PermissionChecker permissionChecker)
+		throws PortalException {
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		if (!themeDisplay.isSignedIn()) {
+			return false;
+		}
+
+		if (layout.isTypeControlPanel()) {
+			return false;
+		}
+
+		if (_isEmbeddedPersonalApplicationLayout(layout)) {
+			return false;
+		}
+
+		if (!layout.isTypeContent()) {
+			return false;
+		}
+
+		if (!LayoutPermissionUtil.contains(
+				permissionChecker, layout, ActionKeys.UPDATE)) {
+
+			return false;
+		}
+
+		String layoutMode = ParamUtil.getString(
+			httpServletRequest, "p_l_mode", Constants.VIEW);
+
+		if (layoutMode.equals(Constants.EDIT)) {
+			return false;
+		}
+
+		PortalPreferences portalPreferences =
+			PortletPreferencesFactoryUtil.getPortalPreferences(
+				httpServletRequest);
+
+		boolean hidePanel = GetterUtil.getBoolean(
+			portalPreferences.getValue(
+				AnalyticsReportsPortletKeys.ANALYTICS_REPORTS, "hide-panel"));
+
+		if (!isAnalyticsConnected(companyId) && hidePanel) {
+			return false;
+		}
+
+		return true;
 	}
 
 }

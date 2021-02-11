@@ -30,12 +30,14 @@ import com.liferay.info.type.WebImage;
 import com.liferay.layout.display.page.LayoutDisplayPageObjectProvider;
 import com.liferay.layout.display.page.LayoutDisplayPageProviderTracker;
 import com.liferay.layout.seo.kernel.LayoutSEOLinkManager;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
@@ -104,7 +106,33 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 							httpServletRequest,
 							_layoutDisplayPageProviderTracker, _portal);
 
-		try {
+		JSONObject authorJSONObject = JSONUtil.put(
+			"authorId", 0
+		).put(
+			"name", "Name"
+		).put(
+			"url", ""
+		);
+
+		CanonicalURLProvider canonicalURLProvider = new CanonicalURLProvider(
+			httpServletRequest, _layoutSEOLinkManager, _portal);
+
+		ThemeDisplay themeDisplay = (ThemeDisplay)resourceRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		Locale locale = _getLocale(
+			httpServletRequest, themeDisplay.getLanguageId());
+
+		String title = StringPool.BLANK;
+
+		Layout layout = themeDisplay.getLayout();
+
+		Date publishDate = layout.getPublishDate();
+
+		JSONArray viewURLsJSONArray = _getViewURLsJSONArray(
+			themeDisplay.getScopeGroup(), resourceResponse, locale);
+
+		if (layoutDisplayPageObjectProvider != null) {
 			AnalyticsReportsInfoItem<Object> analyticsReportsInfoItem =
 				(AnalyticsReportsInfoItem<Object>)
 					_analyticsReportsInfoItemTracker.
@@ -112,33 +140,41 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 							_portal.getClassName(
 								layoutDisplayPageObjectProvider.
 									getClassNameId()));
-			CanonicalURLProvider canonicalURLProvider =
-				new CanonicalURLProvider(
-					httpServletRequest, _layoutSEOLinkManager, _portal);
 			InfoItemFieldValuesProvider<Object> infoItemFieldValuesProvider =
 				_infoItemServiceTracker.getFirstInfoItemService(
 					InfoItemFieldValuesProvider.class,
 					_portal.getClassName(
 						layoutDisplayPageObjectProvider.getClassNameId()));
-			ThemeDisplay themeDisplay =
-				(ThemeDisplay)resourceRequest.getAttribute(
-					WebKeys.THEME_DISPLAY);
 
+			authorJSONObject = _getAuthorJSONObject(
+				analyticsReportsInfoItem, infoItemFieldValuesProvider, locale,
+				layoutDisplayPageObjectProvider.getDisplayObject());
+
+			title = layoutDisplayPageObjectProvider.getTitle(
+				themeDisplay.getLocale());
+
+			publishDate = analyticsReportsInfoItem.getPublishDate(
+				layoutDisplayPageObjectProvider.getDisplayObject());
+
+			viewURLsJSONArray = _getViewURLsJSONArray(
+				analyticsReportsInfoItem, layoutDisplayPageObjectProvider,
+				layoutDisplayPageObjectProvider.getDisplayObject(),
+				resourceResponse, locale);
+		}
+
+		try {
 			JSONPortletResponseUtil.writeJSON(
 				resourceRequest, resourceResponse,
 				JSONUtil.put(
 					"context",
 					_getJSONObject(
-						analyticsReportsInfoItem,
+						authorJSONObject,
 						canonicalURLProvider.getCanonicalURL(),
-						themeDisplay.getCompanyId(),
-						infoItemFieldValuesProvider,
+						themeDisplay.getCompanyId(), layout,
 						layoutDisplayPageObjectProvider,
-						themeDisplay.getLayout(), themeDisplay.getLocale(),
-						_getLocale(
-							httpServletRequest, themeDisplay.getLanguageId()),
-						layoutDisplayPageObjectProvider.getDisplayObject(),
-						resourceResponse, _getTimeRange(resourceRequest))));
+						themeDisplay.getLocale(), locale, publishDate,
+						resourceResponse, _getTimeRange(resourceRequest), title,
+						viewURLsJSONArray)));
 		}
 		catch (Exception exception) {
 			_log.error(exception, exception);
@@ -185,12 +221,12 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 	}
 
 	private JSONObject _getJSONObject(
-		AnalyticsReportsInfoItem<Object> analyticsReportsInfoItem,
-		String canonicalURL, long companyId,
-		InfoItemFieldValuesProvider<Object> infoItemFieldValuesProvider,
+		JSONObject authorJSONObject, String canonicalURL, long companyId,
+		Layout layout,
 		LayoutDisplayPageObjectProvider<Object> layoutDisplayPageObjectProvider,
-		Layout layout, Locale locale, Locale urlLocale, Object object,
-		ResourceResponse resourceResponse, TimeRange timeRange) {
+		Locale locale, Locale urlLocale, Date publishDate,
+		ResourceResponse resourceResponse, TimeRange timeRange, String title,
+		JSONArray viewURLsJSONArray) {
 
 		AnalyticsReportsDataProvider analyticsReportsDataProvider =
 			new AnalyticsReportsDataProvider(_http);
@@ -199,10 +235,7 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 			locale, getClass());
 
 		return JSONUtil.put(
-			"author",
-			_getAuthorJSONObject(
-				analyticsReportsInfoItem, infoItemFieldValuesProvider, locale,
-				object)
+			"author", authorJSONObject
 		).put(
 			"canonicalURL", canonicalURL
 		).put(
@@ -251,8 +284,7 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 			"page", JSONUtil.put("plid", layout.getPlid())
 		).put(
 			"publishDate",
-			DateTimeFormatter.ISO_DATE.format(
-				_toLocaleDate(analyticsReportsInfoItem.getPublishDate(object)))
+			DateTimeFormatter.ISO_DATE.format(_toLocaleDate(publishDate))
 		).put(
 			"timeRange",
 			JSONUtil.put(
@@ -267,15 +299,12 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 		).put(
 			"timeSpans", _getTimeSpansJSONArray(resourceBundle)
 		).put(
-			"title", layoutDisplayPageObjectProvider.getTitle(urlLocale)
+			"title", title
 		).put(
 			"validAnalyticsConnection",
 			analyticsReportsDataProvider.isValidAnalyticsConnection(companyId)
 		).put(
-			"viewURLs",
-			_getViewURLsJSONArray(
-				analyticsReportsInfoItem, layoutDisplayPageObjectProvider,
-				object, resourceResponse, urlLocale)
+			"viewURLs", viewURLsJSONArray
 		);
 	}
 
@@ -292,14 +321,19 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 
 		ResourceURL resourceURL = resourceResponse.createResourceURL();
 
+		resourceURL.setParameter("languageId", LocaleUtil.toLanguageId(locale));
+		resourceURL.setResourceID(resourceID);
+
+		if (layoutDisplayPageObjectProvider == null) {
+			return resourceURL;
+		}
+
 		resourceURL.setParameter(
 			"classNameId",
 			String.valueOf(layoutDisplayPageObjectProvider.getClassNameId()));
 		resourceURL.setParameter(
 			"classPK",
 			String.valueOf(layoutDisplayPageObjectProvider.getClassPK()));
-		resourceURL.setParameter("languageId", LocaleUtil.toLanguageId(locale));
-		resourceURL.setResourceID(resourceID);
 
 		return resourceURL;
 	}
@@ -374,6 +408,30 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 					_getResourceURL(
 						layoutDisplayPageObjectProvider, locale,
 						resourceResponse, "/analytics_reports/get_data")
+				)
+			).toArray());
+	}
+
+	private JSONArray _getViewURLsJSONArray(
+		Group group, ResourceResponse resourceResponse, Locale locale) {
+
+		return JSONUtil.putAll(
+			Stream.of(
+				group.getAvailableLanguageIds()
+			).map(
+				languageId -> JSONUtil.put(
+					"default",
+					Objects.equals(languageId, group.getDefaultLanguageId())
+				).put(
+					"languageId", languageId
+				).put(
+					"selected",
+					Objects.equals(languageId, LocaleUtil.toLanguageId(locale))
+				).put(
+					"viewURL",
+					_getResourceURL(
+						null, locale, resourceResponse,
+						"/analytics_reports/get_data")
 				)
 			).toArray());
 	}
