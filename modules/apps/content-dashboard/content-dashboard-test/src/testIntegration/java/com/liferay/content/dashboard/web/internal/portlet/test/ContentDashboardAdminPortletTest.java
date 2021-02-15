@@ -31,6 +31,7 @@ import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.constants.LanguageConstants;
 import com.liferay.portal.kernel.model.Company;
@@ -159,16 +160,15 @@ public class ContentDashboardAdminPortletTest {
 				childAssetVocabulary.getVocabularyId(), serviceContext);
 
 		try {
-			JournalArticle journalArticle = JournalTestUtil.addArticle(
-				_user.getUserId(), _group.getGroupId(), 0);
-
-			_journalArticleLocalService.updateAsset(
-				_user.getUserId(), journalArticle,
-				new long[] {
-					assetCategory.getCategoryId(),
-					childAssetCategory.getCategoryId()
-				},
-				new String[0], new long[0], null);
+			JournalTestUtil.addArticle(
+				_group.getGroupId(), 0,
+				_getServiceContext(
+					_user.getUserId(), _group.getGroupId(),
+					new long[] {
+						assetCategory.getCategoryId(),
+						childAssetCategory.getCategoryId()
+					},
+					new String[0]));
 
 			Assert.assertEquals(
 				String.format(
@@ -213,13 +213,11 @@ public class ContentDashboardAdminPortletTest {
 			serviceContext);
 
 		try {
-			JournalArticle journalArticle = JournalTestUtil.addArticle(
-				_user.getUserId(), _group.getGroupId(), 0);
-
-			_journalArticleLocalService.updateAsset(
-				_user.getUserId(), journalArticle,
-				new long[] {assetCategory.getCategoryId()}, new String[0],
-				new long[0], null);
+			JournalTestUtil.addArticle(
+				_group.getGroupId(), 0,
+				_getServiceContext(
+					_user.getUserId(), _group.getGroupId(),
+					new long[] {assetCategory.getCategoryId()}, new String[0]));
 
 			Assert.assertEquals(
 				String.format(
@@ -336,13 +334,10 @@ public class ContentDashboardAdminPortletTest {
 
 		try {
 			JournalArticle journalArticle = JournalTestUtil.addArticle(
-				_user.getUserId(), _group.getGroupId(), 0);
-
-			_journalArticleLocalService.updateAsset(
-				_user.getUserId(), journalArticle,
-				new long[] {assetCategory.getCategoryId()}, new String[0],
-				new long[0], null);
-
+				_group.getGroupId(), 0,
+				_getServiceContext(
+					_user.getUserId(), _group.getGroupId(),
+					new long[] {assetCategory.getCategoryId()}, new String[0]));
 			JournalTestUtil.addArticle(
 				_user.getUserId(), _group.getGroupId(), 0);
 
@@ -375,18 +370,15 @@ public class ContentDashboardAdminPortletTest {
 	@Test
 	public void testGetSearchContainerWithAssetTag() throws Exception {
 		JournalArticle journalArticle1 = JournalTestUtil.addArticle(
-			_user.getUserId(), _group.getGroupId(), 0);
-
-		_journalArticleLocalService.updateAsset(
-			_user.getUserId(), journalArticle1, new long[0],
-			new String[] {"tag1"}, new long[0], null);
-
-		JournalArticle journalArticle2 = JournalTestUtil.addArticle(
-			_user.getUserId(), _group.getGroupId(), 0);
-
-		_journalArticleLocalService.updateAsset(
-			_user.getUserId(), journalArticle2, new long[0],
-			new String[] {"tag2"}, new long[0], null);
+			_group.getGroupId(), 0,
+			_getServiceContext(
+				_user.getUserId(), _group.getGroupId(), new long[0],
+				new String[] {"tag1"}));
+		JournalTestUtil.addArticle(
+			_group.getGroupId(), 0,
+			_getServiceContext(
+				_user.getUserId(), _group.getGroupId(), new long[0],
+				new String[] {"tag2"}));
 
 		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
 			_getMockLiferayPortletRenderRequest();
@@ -665,13 +657,10 @@ public class ContentDashboardAdminPortletTest {
 
 		try {
 			JournalArticle journalArticle = JournalTestUtil.addArticle(
-				_user.getUserId(), _group.getGroupId(), 0);
-
-			_journalArticleLocalService.updateAsset(
-				_user.getUserId(), journalArticle,
-				new long[] {assetCategory.getCategoryId()}, new String[0],
-				new long[0], null);
-
+				_group.getGroupId(), 0,
+				_getServiceContext(
+					_user.getUserId(), _group.getGroupId(),
+					new long[] {assetCategory.getCategoryId()}, new String[0]));
 			JournalTestUtil.addArticle(
 				_user.getUserId(), _group.getGroupId(), 0);
 
@@ -705,7 +694,6 @@ public class ContentDashboardAdminPortletTest {
 	public void testGetSearchContainerWithKeywords() throws Exception {
 		JournalArticle journalArticle = JournalTestUtil.addArticle(
 			_user.getUserId(), _group.getGroupId(), 0);
-
 		JournalTestUtil.addArticle(_user.getUserId(), _group.getGroupId(), 0);
 
 		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
@@ -752,24 +740,22 @@ public class ContentDashboardAdminPortletTest {
 			serviceContext);
 
 		try {
-			JournalArticle journalArticle1 = JournalTestUtil.addArticle(
-				_user.getUserId(), _group.getGroupId(), 0);
-
-			_journalArticleLocalService.updateAsset(
-				_user.getUserId(), journalArticle1,
-				new long[] {assetCategory1.getCategoryId()}, new String[0],
-				new long[0], null);
+			JournalTestUtil.addArticle(
+				_group.getGroupId(), 0,
+				_getServiceContext(
+					_user.getUserId(), _group.getGroupId(),
+					new long[] {assetCategory1.getCategoryId()},
+					new String[0]));
 
 			JournalArticle journalArticle2 = JournalTestUtil.addArticle(
-				_user.getUserId(), _group.getGroupId(), 0);
-
-			_journalArticleLocalService.updateAsset(
-				_user.getUserId(), journalArticle2,
-				new long[] {
-					assetCategory1.getCategoryId(),
-					assetCategory2.getCategoryId()
-				},
-				new String[0], new long[0], null);
+				_group.getGroupId(), 0,
+				_getServiceContext(
+					_user.getUserId(), _group.getGroupId(),
+					new long[] {
+						assetCategory1.getCategoryId(),
+						assetCategory2.getCategoryId()
+					},
+					new String[0]));
 
 			MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
 				_getMockLiferayPortletRenderRequest();
@@ -804,19 +790,17 @@ public class ContentDashboardAdminPortletTest {
 
 	@Test
 	public void testGetSearchContainerWithMultipleAssetTags() throws Exception {
-		JournalArticle journalArticle1 = JournalTestUtil.addArticle(
-			_user.getUserId(), _group.getGroupId(), 0);
-
-		_journalArticleLocalService.updateAsset(
-			_user.getUserId(), journalArticle1, new long[0],
-			new String[] {"tag1"}, new long[0], null);
+		JournalTestUtil.addArticle(
+			_group.getGroupId(), 0,
+			_getServiceContext(
+				_user.getUserId(), _group.getGroupId(), new long[0],
+				new String[] {"tag1"}));
 
 		JournalArticle journalArticle2 = JournalTestUtil.addArticle(
-			_user.getUserId(), _group.getGroupId(), 0);
-
-		_journalArticleLocalService.updateAsset(
-			_user.getUserId(), journalArticle2, new long[0],
-			new String[] {"tag1", "tag2"}, new long[0], null);
+			_group.getGroupId(), 0,
+			_getServiceContext(
+				_user.getUserId(), _group.getGroupId(), new long[0],
+				new String[] {"tag1", "tag2"}));
 
 		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
 			_getMockLiferayPortletRenderRequest();
@@ -995,24 +979,22 @@ public class ContentDashboardAdminPortletTest {
 			serviceContext);
 
 		try {
-			JournalArticle journalArticle1 = JournalTestUtil.addArticle(
-				_user.getUserId(), _group.getGroupId(), 0);
-
-			_journalArticleLocalService.updateAsset(
-				_user.getUserId(), journalArticle1,
-				new long[] {assetCategory1.getCategoryId()}, new String[0],
-				new long[0], null);
+			JournalTestUtil.addArticle(
+				_group.getGroupId(), 0,
+				_getServiceContext(
+					_user.getUserId(), _group.getGroupId(),
+					new long[] {assetCategory1.getCategoryId()},
+					new String[0]));
 
 			JournalArticle journalArticle2 = JournalTestUtil.addArticle(
-				_user.getUserId(), _group.getGroupId(), 0);
-
-			_journalArticleLocalService.updateAsset(
-				_user.getUserId(), journalArticle2,
-				new long[] {
-					assetCategory1.getCategoryId(),
-					assetCategory2.getCategoryId()
-				},
-				new String[0], new long[0], null);
+				_group.getGroupId(), 0,
+				_getServiceContext(
+					_user.getUserId(), _group.getGroupId(),
+					new long[] {
+						assetCategory1.getCategoryId(),
+						assetCategory2.getCategoryId()
+					},
+					new String[0]));
 
 			MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
 				_getMockLiferayPortletRenderRequest();
@@ -1391,16 +1373,15 @@ public class ContentDashboardAdminPortletTest {
 				childAssetVocabulary.getVocabularyId(), serviceContext);
 
 		try {
-			JournalArticle journalArticle = JournalTestUtil.addArticle(
-				_user.getUserId(), _group.getGroupId(), 0);
-
-			_journalArticleLocalService.updateAsset(
-				_user.getUserId(), journalArticle,
-				new long[] {
-					assetCategory.getCategoryId(),
-					childAssetCategory.getCategoryId()
-				},
-				new String[0], new long[0], null);
+			JournalTestUtil.addArticle(
+				_group.getGroupId(), 0,
+				_getServiceContext(
+					_user.getUserId(), _group.getGroupId(),
+					new long[] {
+						assetCategory.getCategoryId(),
+						childAssetCategory.getCategoryId()
+					},
+					new String[0]));
 
 			Assert.assertTrue(_isSwapConfigurationEnabled("audience", "stage"));
 		}
@@ -1429,13 +1410,11 @@ public class ContentDashboardAdminPortletTest {
 			serviceContext);
 
 		try {
-			JournalArticle journalArticle = JournalTestUtil.addArticle(
-				_user.getUserId(), _group.getGroupId(), 0);
-
-			_journalArticleLocalService.updateAsset(
-				_user.getUserId(), journalArticle,
-				new long[] {assetCategory.getCategoryId()}, new String[0],
-				new long[0], null);
+			JournalTestUtil.addArticle(
+				_group.getGroupId(), 0,
+				_getServiceContext(
+					_user.getUserId(), _group.getGroupId(),
+					new long[] {assetCategory.getCategoryId()}, new String[0]));
 
 			Assert.assertFalse(
 				_isSwapConfigurationEnabled("audience", "stage"));
@@ -1474,16 +1453,15 @@ public class ContentDashboardAdminPortletTest {
 				childAssetVocabulary.getVocabularyId(), serviceContext);
 
 		try {
-			JournalArticle journalArticle = JournalTestUtil.addArticle(
-				_user.getUserId(), _group.getGroupId(), 0);
-
-			_journalArticleLocalService.updateAsset(
-				_user.getUserId(), journalArticle,
-				new long[] {
-					assetCategory.getCategoryId(),
-					childAssetCategory.getCategoryId()
-				},
-				new String[0], new long[0], null);
+			JournalTestUtil.addArticle(
+				_group.getGroupId(), 0,
+				_getServiceContext(
+					_user.getUserId(), _group.getGroupId(),
+					new long[] {
+						assetCategory.getCategoryId(),
+						childAssetCategory.getCategoryId()
+					},
+					new String[0]));
 
 			Assert.assertFalse(_isSwapConfigurationEnabled("audience"));
 		}
@@ -1604,6 +1582,20 @@ public class ContentDashboardAdminPortletTest {
 			mockLiferayPortletRenderRequest.getAttribute(
 				"CONTENT_DASHBOARD_ADMIN_DISPLAY_CONTEXT"),
 			"getSearchContainer", new Class<?>[0]);
+	}
+
+	private ServiceContext _getServiceContext(
+			long userId, long groupId, long[] assetCategoryIds,
+			String[] assetTagNames)
+		throws PortalException {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(groupId, userId);
+
+		serviceContext.setAssetCategoryIds(assetCategoryIds);
+		serviceContext.setAssetTagNames(assetTagNames);
+
+		return serviceContext;
 	}
 
 	private ThemeDisplay _getThemeDisplay(Locale locale) throws Exception {

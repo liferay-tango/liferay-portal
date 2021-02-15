@@ -19,7 +19,6 @@ import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
-import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -276,46 +275,47 @@ public class ContentDashboardAdminPortletGetPropsTest {
 				_company.getGroupId(), TestPropsValues.getUserId());
 
 		AssetVocabulary assetVocabulary =
-			_assetVocabularyLocalService.fetchGroupVocabulary(
-				_company.getGroupId(), "audience");
+			_assetVocabularyLocalService.addVocabulary(
+				TestPropsValues.getUserId(), _company.getGroupId(),
+				"vocabulary", serviceContext);
 
 		AssetCategory assetCategory = _assetCategoryLocalService.addCategory(
-			TestPropsValues.getUserId(), _company.getGroupId(),
-			RandomTestUtil.randomString(), assetVocabulary.getVocabularyId(),
-			serviceContext);
+			TestPropsValues.getUserId(), _company.getGroupId(), "category",
+			assetVocabulary.getVocabularyId(), serviceContext);
 
 		AssetVocabulary childAssetVocabulary =
-			_assetVocabularyLocalService.fetchGroupVocabulary(
-				_company.getGroupId(), "stage");
+			_assetVocabularyLocalService.addVocabulary(
+				TestPropsValues.getUserId(), _company.getGroupId(),
+				"child-vocabulary", serviceContext);
 
 		AssetCategory childAssetCategory =
 			_assetCategoryLocalService.addCategory(
 				TestPropsValues.getUserId(), _company.getGroupId(),
-				RandomTestUtil.randomString(),
-				childAssetVocabulary.getVocabularyId(), serviceContext);
+				"child-category", childAssetVocabulary.getVocabularyId(),
+				serviceContext);
 
 		try {
-			JournalArticle journalArticle1 = JournalTestUtil.addArticle(
-				TestPropsValues.getUserId(), _group.getGroupId(), 0);
-
-			_journalArticleLocalService.updateAsset(
-				TestPropsValues.getUserId(), journalArticle1,
-				new long[] {assetCategory.getCategoryId()}, new String[0],
-				new long[0], null);
-
-			JournalArticle journalArticle2 = JournalTestUtil.addArticle(
-				TestPropsValues.getUserId(), _group.getGroupId(), 0);
-
-			_journalArticleLocalService.updateAsset(
-				TestPropsValues.getUserId(), journalArticle2,
-				new long[] {
-					assetCategory.getCategoryId(),
-					childAssetCategory.getCategoryId()
-				},
-				new String[0], new long[0], null);
+			JournalTestUtil.addArticle(
+				_group.getGroupId(), 0,
+				_getServiceContext(
+					TestPropsValues.getUserId(), _group.getGroupId(),
+					new long[] {assetCategory.getCategoryId()}));
+			JournalTestUtil.addArticle(
+				_group.getGroupId(), 0,
+				_getServiceContext(
+					TestPropsValues.getUserId(), _group.getGroupId(),
+					new long[] {
+						assetCategory.getCategoryId(),
+						childAssetCategory.getCategoryId()
+					}));
 
 			Map<String, Object> data = _getData(
-				_getMockLiferayPortletRenderRequest());
+				_getMockLiferayPortletRenderRequest(
+					new String[] {
+						assetVocabulary.getName(),
+						childAssetVocabulary.getName()
+					},
+					LocaleUtil.getSiteDefault()));
 
 			Map<String, Object> props = (Map<String, Object>)data.get("props");
 
@@ -334,40 +334,36 @@ public class ContentDashboardAdminPortletGetPropsTest {
 								String.valueOf(
 									childAssetCategory.getCategoryId())
 							).put(
-								"name",
-								childAssetCategory.getTitle(LocaleUtil.US)
+								"name", "child-category"
 							).put(
 								"value", 1L
 							).put(
-								"vocabularyName",
-								childAssetVocabulary.getTitle(LocaleUtil.US)
+								"vocabularyName", "child-vocabulary"
 							),
 							JSONUtil.put(
 								"key", "none"
 							).put(
-								"name", "No Stage Specified"
+								"name", "No child-vocabulary Specified"
 							).put(
 								"value", 1L
 							).put(
-								"vocabularyName",
-								childAssetVocabulary.getTitle(LocaleUtil.US)
+								"vocabularyName", "child-vocabulary"
 							))
 					).put(
 						"key", String.valueOf(assetCategory.getCategoryId())
 					).put(
-						"name", assetCategory.getTitle(LocaleUtil.US)
+						"name", "category"
 					).put(
 						"value", 2L
 					).put(
-						"vocabularyName",
-						assetVocabulary.getTitle(LocaleUtil.US)
+						"vocabularyName", "vocabulary"
 					)
 				).toString(),
 				vocabulariesJSONArray.toString());
 		}
 		finally {
-			_assetCategoryLocalService.deleteAssetCategory(assetCategory);
-			_assetCategoryLocalService.deleteAssetCategory(childAssetCategory);
+			_assetVocabularyLocalService.deleteVocabulary(assetVocabulary);
+			_assetVocabularyLocalService.deleteVocabulary(childAssetVocabulary);
 		}
 	}
 
@@ -380,58 +376,58 @@ public class ContentDashboardAdminPortletGetPropsTest {
 				_company.getGroupId(), TestPropsValues.getUserId());
 
 		AssetVocabulary assetVocabulary =
-			_assetVocabularyLocalService.fetchGroupVocabulary(
-				_company.getGroupId(), "audience");
+			_assetVocabularyLocalService.addVocabulary(
+				TestPropsValues.getUserId(), _company.getGroupId(),
+				"vocabulary", serviceContext);
 
 		AssetCategory assetCategory1 = _assetCategoryLocalService.addCategory(
-			TestPropsValues.getUserId(), _company.getGroupId(), "A1",
+			TestPropsValues.getUserId(), _company.getGroupId(), "category-1",
 			assetVocabulary.getVocabularyId(), serviceContext);
 		AssetCategory assetCategory2 = _assetCategoryLocalService.addCategory(
-			TestPropsValues.getUserId(), _company.getGroupId(), "A2",
+			TestPropsValues.getUserId(), _company.getGroupId(), "category-2",
 			assetVocabulary.getVocabularyId(), serviceContext);
 
 		AssetVocabulary childAssetVocabulary =
-			_assetVocabularyLocalService.fetchGroupVocabulary(
-				_company.getGroupId(), "stage");
+			_assetVocabularyLocalService.addVocabulary(
+				TestPropsValues.getUserId(), _company.getGroupId(),
+				"child-vocabulary", serviceContext);
 
 		AssetCategory childAssetCategory =
 			_assetCategoryLocalService.addCategory(
-				TestPropsValues.getUserId(), _company.getGroupId(), "S1",
-				childAssetVocabulary.getVocabularyId(), serviceContext);
+				TestPropsValues.getUserId(), _company.getGroupId(),
+				"child-category", childAssetVocabulary.getVocabularyId(),
+				serviceContext);
 
 		try {
-			JournalArticle journalArticle1 = JournalTestUtil.addArticle(
-				TestPropsValues.getUserId(), _group.getGroupId(), 0);
-
-			_journalArticleLocalService.updateAsset(
-				TestPropsValues.getUserId(), journalArticle1,
-				new long[] {
-					assetCategory1.getCategoryId(),
-					childAssetCategory.getCategoryId()
-				},
-				new String[0], new long[0], null);
-
-			JournalArticle journalArticle2 = JournalTestUtil.addArticle(
-				TestPropsValues.getUserId(), _group.getGroupId(), 0);
-
-			_journalArticleLocalService.updateAsset(
-				TestPropsValues.getUserId(), journalArticle2,
-				new long[] {
-					assetCategory1.getCategoryId(),
-					assetCategory2.getCategoryId()
-				},
-				new String[0], new long[0], null);
-
-			JournalArticle journalArticle3 = JournalTestUtil.addArticle(
-				TestPropsValues.getUserId(), _group.getGroupId(), 0);
-
-			_journalArticleLocalService.updateAsset(
-				TestPropsValues.getUserId(), journalArticle3,
-				new long[] {childAssetCategory.getCategoryId()}, new String[0],
-				new long[0], null);
+			JournalTestUtil.addArticle(
+				_group.getGroupId(), 0,
+				_getServiceContext(
+					TestPropsValues.getUserId(), _group.getGroupId(),
+					new long[] {
+						assetCategory1.getCategoryId(),
+						childAssetCategory.getCategoryId()
+					}));
+			JournalTestUtil.addArticle(
+				_group.getGroupId(), 0,
+				_getServiceContext(
+					TestPropsValues.getUserId(), _group.getGroupId(),
+					new long[] {
+						assetCategory1.getCategoryId(),
+						assetCategory2.getCategoryId()
+					}));
+			JournalTestUtil.addArticle(
+				_group.getGroupId(), 0,
+				_getServiceContext(
+					TestPropsValues.getUserId(), _group.getGroupId(),
+					new long[] {childAssetCategory.getCategoryId()}));
 
 			Map<String, Object> data = _getData(
-				_getMockLiferayPortletRenderRequest());
+				_getMockLiferayPortletRenderRequest(
+					new String[] {
+						assetVocabulary.getName(),
+						childAssetVocabulary.getName()
+					},
+					LocaleUtil.getSiteDefault()));
 
 			Map<String, Object> props = (Map<String, Object>)data.get("props");
 
@@ -450,32 +446,29 @@ public class ContentDashboardAdminPortletGetPropsTest {
 								String.valueOf(
 									childAssetCategory.getCategoryId())
 							).put(
-								"name", "S1"
+								"name", "child-category"
 							).put(
 								"value", 1L
 							).put(
-								"vocabularyName",
-								childAssetVocabulary.getTitle(LocaleUtil.US)
+								"vocabularyName", "child-vocabulary"
 							),
 							JSONUtil.put(
 								"key", "none"
 							).put(
-								"name", "No Stage Specified"
+								"name", "No child-vocabulary Specified"
 							).put(
 								"value", 1L
 							).put(
-								"vocabularyName",
-								childAssetVocabulary.getTitle(LocaleUtil.US)
+								"vocabularyName", "child-vocabulary"
 							))
 					).put(
 						"key", String.valueOf(assetCategory1.getCategoryId())
 					).put(
-						"name", "A1"
+						"name", "category-1"
 					).put(
 						"value", 2L
 					).put(
-						"vocabularyName",
-						assetVocabulary.getTitle(LocaleUtil.US)
+						"vocabularyName", "vocabulary"
 					),
 					JSONUtil.put(
 						"categories",
@@ -485,32 +478,29 @@ public class ContentDashboardAdminPortletGetPropsTest {
 								String.valueOf(
 									childAssetCategory.getCategoryId())
 							).put(
-								"name", "S1"
+								"name", "child-category"
 							).put(
 								"value", 0L
 							).put(
-								"vocabularyName",
-								childAssetVocabulary.getTitle(LocaleUtil.US)
+								"vocabularyName", "child-vocabulary"
 							),
 							JSONUtil.put(
 								"key", "none"
 							).put(
-								"name", "No Stage Specified"
+								"name", "No child-vocabulary Specified"
 							).put(
 								"value", 1L
 							).put(
-								"vocabularyName",
-								childAssetVocabulary.getTitle(LocaleUtil.US)
+								"vocabularyName", "child-vocabulary"
 							))
 					).put(
 						"key", String.valueOf(assetCategory2.getCategoryId())
 					).put(
-						"name", "A2"
+						"name", "category-2"
 					).put(
 						"value", 1L
 					).put(
-						"vocabularyName",
-						assetVocabulary.getTitle(LocaleUtil.US)
+						"vocabularyName", "vocabulary"
 					),
 					JSONUtil.put(
 						"categories",
@@ -520,30 +510,28 @@ public class ContentDashboardAdminPortletGetPropsTest {
 								String.valueOf(
 									childAssetCategory.getCategoryId())
 							).put(
-								"name", "S1"
+								"name", "child-category"
 							).put(
 								"value", 1L
 							).put(
-								"vocabularyName",
-								childAssetVocabulary.getTitle(LocaleUtil.US)
+								"vocabularyName", "child-vocabulary"
 							))
 					).put(
 						"key", "none"
 					).put(
-						"name", "No Audience Specified"
+						"name", "No vocabulary Specified"
 					).put(
 						"value", 1L
 					).put(
-						"vocabularyName",
-						assetVocabulary.getTitle(LocaleUtil.US)
+						"vocabularyName", "vocabulary"
 					)
 				).toString(),
 				vocabulariesJSONArray.toString());
 		}
 		finally {
-			_assetCategoryLocalService.deleteAssetCategory(assetCategory1);
-			_assetCategoryLocalService.deleteAssetCategory(assetCategory2);
-			_assetCategoryLocalService.deleteAssetCategory(childAssetCategory);
+			_assetVocabularyLocalService.deleteAssetVocabulary(assetVocabulary);
+			_assetVocabularyLocalService.deleteAssetVocabulary(
+				childAssetVocabulary);
 		}
 	}
 
@@ -699,34 +687,38 @@ public class ContentDashboardAdminPortletGetPropsTest {
 
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
-				_company.getCompanyId(), _company.getGroupId(),
-				TestPropsValues.getUserId());
+				_company.getGroupId(), TestPropsValues.getUserId());
 
 		AssetVocabulary assetVocabulary =
-			_assetVocabularyLocalService.fetchGroupVocabulary(
-				serviceContext.getScopeGroupId(), "audience");
+			_assetVocabularyLocalService.addVocabulary(
+				TestPropsValues.getUserId(), _company.getGroupId(),
+				"vocabulary", serviceContext);
 
-		AssetCategory assetCategory = _assetCategoryLocalService.addCategory(
-			TestPropsValues.getUserId(), _company.getGroupId(),
-			RandomTestUtil.randomString(), assetVocabulary.getVocabularyId(),
-			serviceContext);
+		_assetCategoryLocalService.addCategory(
+			TestPropsValues.getUserId(), _company.getGroupId(), "category",
+			assetVocabulary.getVocabularyId(), serviceContext);
 
 		AssetVocabulary childAssetVocabulary =
-			_assetVocabularyLocalService.fetchGroupVocabulary(
-				serviceContext.getScopeGroupId(), "stage");
-
-		AssetCategory childAssetCategory =
-			_assetCategoryLocalService.addCategory(
+			_assetVocabularyLocalService.addVocabulary(
 				TestPropsValues.getUserId(), _company.getGroupId(),
-				RandomTestUtil.randomString(),
-				childAssetVocabulary.getVocabularyId(), serviceContext);
+				"child-vocabulary", serviceContext);
+
+		_assetCategoryLocalService.addCategory(
+			TestPropsValues.getUserId(), _company.getGroupId(),
+			"child-category", childAssetVocabulary.getVocabularyId(),
+			serviceContext);
 
 		try {
 			JournalTestUtil.addArticle(
 				TestPropsValues.getUserId(), _group.getGroupId(), 0);
 
 			Map<String, Object> data = _getData(
-				_getMockLiferayPortletRenderRequest());
+				_getMockLiferayPortletRenderRequest(
+					new String[] {
+						assetVocabulary.getName(),
+						childAssetVocabulary.getName()
+					},
+					LocaleUtil.getSiteDefault()));
 
 			Map<String, Object> props = (Map<String, Object>)data.get("props");
 
@@ -740,8 +732,9 @@ public class ContentDashboardAdminPortletGetPropsTest {
 				vocabulariesJSONArray.toString());
 		}
 		finally {
-			_assetCategoryLocalService.deleteAssetCategory(assetCategory);
-			_assetCategoryLocalService.deleteAssetCategory(childAssetCategory);
+			_assetVocabularyLocalService.deleteAssetVocabulary(assetVocabulary);
+			_assetVocabularyLocalService.deleteAssetVocabulary(
+				childAssetVocabulary);
 		}
 	}
 
@@ -751,39 +744,42 @@ public class ContentDashboardAdminPortletGetPropsTest {
 
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
-				_company.getCompanyId(), _company.getGroupId(),
-				TestPropsValues.getUserId());
+				_company.getGroupId(), TestPropsValues.getUserId());
 
 		AssetVocabulary assetVocabulary =
-			_assetVocabularyLocalService.fetchGroupVocabulary(
-				serviceContext.getScopeGroupId(), "audience");
+			_assetVocabularyLocalService.addVocabulary(
+				TestPropsValues.getUserId(), _company.getGroupId(),
+				"vocabulary", serviceContext);
 
-		AssetCategory assetCategory = _assetCategoryLocalService.addCategory(
-			TestPropsValues.getUserId(), _company.getGroupId(),
-			RandomTestUtil.randomString(), assetVocabulary.getVocabularyId(),
-			serviceContext);
+		_assetCategoryLocalService.addCategory(
+			TestPropsValues.getUserId(), _company.getGroupId(), "category",
+			assetVocabulary.getVocabularyId(), serviceContext);
 
 		AssetVocabulary childAssetVocabulary =
-			_assetVocabularyLocalService.fetchGroupVocabulary(
-				serviceContext.getScopeGroupId(), "stage");
+			_assetVocabularyLocalService.addVocabulary(
+				TestPropsValues.getUserId(), _company.getGroupId(),
+				"child-vocabulary", serviceContext);
 
 		AssetCategory childAssetCategory =
 			_assetCategoryLocalService.addCategory(
 				TestPropsValues.getUserId(), _company.getGroupId(),
-				RandomTestUtil.randomString(),
-				childAssetVocabulary.getVocabularyId(), serviceContext);
+				"child-category", childAssetVocabulary.getVocabularyId(),
+				serviceContext);
 
 		try {
-			JournalArticle journalArticle = JournalTestUtil.addArticle(
-				TestPropsValues.getUserId(), _group.getGroupId(), 0);
-
-			_journalArticleLocalService.updateAsset(
-				TestPropsValues.getUserId(), journalArticle,
-				new long[] {childAssetCategory.getCategoryId()}, new String[0],
-				new long[0], null);
+			JournalTestUtil.addArticle(
+				_group.getGroupId(), 0,
+				_getServiceContext(
+					TestPropsValues.getUserId(), _group.getGroupId(),
+					new long[] {childAssetCategory.getCategoryId()}));
 
 			Map<String, Object> data = _getData(
-				_getMockLiferayPortletRenderRequest());
+				_getMockLiferayPortletRenderRequest(
+					new String[] {
+						assetVocabulary.getName(),
+						childAssetVocabulary.getName()
+					},
+					LocaleUtil.getSiteDefault()));
 
 			Map<String, Object> props = (Map<String, Object>)data.get("props");
 
@@ -798,19 +794,18 @@ public class ContentDashboardAdminPortletGetPropsTest {
 						"key",
 						String.valueOf(childAssetCategory.getCategoryId())
 					).put(
-						"name", childAssetCategory.getTitle(LocaleUtil.US)
+						"name", "child-category"
 					).put(
 						"value", 1L
 					).put(
-						"vocabularyName",
-						childAssetVocabulary.getTitle(LocaleUtil.US)
+						"vocabularyName", "child-vocabulary"
 					)
 				).toString(),
 				vocabulariesJSONArray.toString());
 		}
 		finally {
-			_assetCategoryLocalService.deleteAssetCategory(assetCategory);
-			_assetCategoryLocalService.deleteAssetCategory(childAssetCategory);
+			_assetVocabularyLocalService.deleteVocabulary(assetVocabulary);
+			_assetVocabularyLocalService.deleteVocabulary(childAssetVocabulary);
 		}
 	}
 
@@ -886,50 +881,83 @@ public class ContentDashboardAdminPortletGetPropsTest {
 	public void testGetPropsWithMissingChildAssetVocabularies()
 		throws Exception {
 
-		JournalTestUtil.addArticle(
-			TestPropsValues.getUserId(), _group.getGroupId(), 0);
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_company.getGroupId(), TestPropsValues.getUserId());
 
-		Map<String, Object> data = _getData(
-			_getMockLiferayPortletRenderRequest());
+		AssetVocabulary assetVocabulary =
+			_assetVocabularyLocalService.addVocabulary(
+				TestPropsValues.getUserId(), _company.getGroupId(),
+				RandomTestUtil.randomString(), serviceContext);
+		AssetVocabulary childAssetVocabulary =
+			_assetVocabularyLocalService.addVocabulary(
+				TestPropsValues.getUserId(), _company.getGroupId(),
+				RandomTestUtil.randomString(), serviceContext);
 
-		Map<String, Object> props = (Map<String, Object>)data.get("props");
+		try {
+			JournalTestUtil.addArticle(
+				TestPropsValues.getUserId(), _group.getGroupId(), 0);
 
-		Assert.assertNotNull(props);
+			Map<String, Object> data = _getData(
+				_getMockLiferayPortletRenderRequest(
+					new String[] {
+						assetVocabulary.getName(),
+						childAssetVocabulary.getName()
+					},
+					LocaleUtil.getSiteDefault()));
 
-		JSONArray vocabulariesJSONArray = (JSONArray)props.get("vocabularies");
+			Map<String, Object> props = (Map<String, Object>)data.get("props");
 
-		Assert.assertEquals(
-			String.valueOf(JSONFactoryUtil.createJSONArray()),
-			vocabulariesJSONArray.toString());
+			Assert.assertNotNull(props);
+
+			JSONArray vocabulariesJSONArray = (JSONArray)props.get(
+				"vocabularies");
+
+			Assert.assertEquals(
+				String.valueOf(JSONFactoryUtil.createJSONArray()),
+				vocabulariesJSONArray.toString());
+		}
+		finally {
+			_assetVocabularyLocalService.deleteAssetVocabulary(assetVocabulary);
+			_assetVocabularyLocalService.deleteAssetVocabulary(
+				childAssetVocabulary);
+		}
 	}
 
 	@Test
 	public void testGetPropsWithMissingChildAssetVocabulary() throws Exception {
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
-				_company.getCompanyId(), _company.getGroupId(),
-				TestPropsValues.getUserId());
+				_company.getGroupId(), TestPropsValues.getUserId());
 
 		AssetVocabulary assetVocabulary =
-			_assetVocabularyLocalService.fetchGroupVocabulary(
-				serviceContext.getScopeGroupId(), "audience");
+			_assetVocabularyLocalService.addVocabulary(
+				TestPropsValues.getUserId(), _company.getGroupId(),
+				"vocabulary", serviceContext);
 
 		AssetCategory assetCategory = _assetCategoryLocalService.addCategory(
-			TestPropsValues.getUserId(), _company.getGroupId(),
-			RandomTestUtil.randomString(), assetVocabulary.getVocabularyId(),
-			serviceContext);
+			TestPropsValues.getUserId(), _company.getGroupId(), "category",
+			assetVocabulary.getVocabularyId(), serviceContext);
+
+		AssetVocabulary childAssetVocabulary =
+			_assetVocabularyLocalService.addVocabulary(
+				TestPropsValues.getUserId(), _company.getGroupId(),
+				RandomTestUtil.randomString(), serviceContext);
 
 		try {
-			JournalArticle journalArticle = JournalTestUtil.addArticle(
-				TestPropsValues.getUserId(), _group.getGroupId(), 0);
-
-			_journalArticleLocalService.updateAsset(
-				TestPropsValues.getUserId(), journalArticle,
-				new long[] {assetCategory.getCategoryId()}, new String[0],
-				new long[0], null);
+			JournalTestUtil.addArticle(
+				_group.getGroupId(), 0,
+				_getServiceContext(
+					TestPropsValues.getUserId(), _group.getGroupId(),
+					new long[] {assetCategory.getCategoryId()}));
 
 			Map<String, Object> data = _getData(
-				_getMockLiferayPortletRenderRequest());
+				_getMockLiferayPortletRenderRequest(
+					new String[] {
+						assetVocabulary.getName(),
+						childAssetVocabulary.getName()
+					},
+					LocaleUtil.getSiteDefault()));
 
 			Map<String, Object> props = (Map<String, Object>)data.get("props");
 
@@ -943,18 +971,19 @@ public class ContentDashboardAdminPortletGetPropsTest {
 					JSONUtil.put(
 						"key", String.valueOf(assetCategory.getCategoryId())
 					).put(
-						"name", assetCategory.getTitle(LocaleUtil.US)
+						"name", "category"
 					).put(
 						"value", 1L
 					).put(
-						"vocabularyName",
-						assetVocabulary.getTitle(LocaleUtil.US)
+						"vocabularyName", "vocabulary"
 					)
 				).toString(),
 				vocabulariesJSONArray.toString());
 		}
 		finally {
-			_assetCategoryLocalService.deleteAssetCategory(assetCategory);
+			_assetVocabularyLocalService.deleteAssetVocabulary(assetVocabulary);
+			_assetVocabularyLocalService.deleteAssetVocabulary(
+				childAssetVocabulary);
 		}
 	}
 
@@ -962,50 +991,50 @@ public class ContentDashboardAdminPortletGetPropsTest {
 	public void testGetPropsWithNoneAssetCategory() throws Exception {
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
-				_company.getCompanyId(), _company.getGroupId(),
-				TestPropsValues.getUserId());
+				_company.getGroupId(), TestPropsValues.getUserId());
 
 		AssetVocabulary assetVocabulary =
-			_assetVocabularyLocalService.fetchGroupVocabulary(
-				serviceContext.getScopeGroupId(), "audience");
+			_assetVocabularyLocalService.addVocabulary(
+				TestPropsValues.getUserId(), _company.getGroupId(),
+				"vocabulary", serviceContext);
 
 		AssetCategory assetCategory = _assetCategoryLocalService.addCategory(
-			TestPropsValues.getUserId(), _company.getGroupId(),
-			RandomTestUtil.randomString(), assetVocabulary.getVocabularyId(),
-			serviceContext);
+			TestPropsValues.getUserId(), _company.getGroupId(), "category",
+			assetVocabulary.getVocabularyId(), serviceContext);
 
 		AssetVocabulary childAssetVocabulary =
-			_assetVocabularyLocalService.fetchGroupVocabulary(
-				serviceContext.getScopeGroupId(), "stage");
+			_assetVocabularyLocalService.addVocabulary(
+				TestPropsValues.getUserId(), _company.getGroupId(),
+				"child-vocabulary", serviceContext);
 
 		AssetCategory childAssetCategory =
 			_assetCategoryLocalService.addCategory(
 				TestPropsValues.getUserId(), _company.getGroupId(),
-				RandomTestUtil.randomString(),
-				childAssetVocabulary.getVocabularyId(), serviceContext);
+				"child-category", childAssetVocabulary.getVocabularyId(),
+				serviceContext);
 
 		try {
-			JournalArticle journalArticle1 = JournalTestUtil.addArticle(
-				TestPropsValues.getUserId(), _group.getGroupId(), 0);
-
-			_journalArticleLocalService.updateAsset(
-				TestPropsValues.getUserId(), journalArticle1,
-				new long[] {
-					assetCategory.getCategoryId(),
-					childAssetCategory.getCategoryId()
-				},
-				new String[0], new long[0], null);
-
-			JournalArticle journalArticle2 = JournalTestUtil.addArticle(
-				TestPropsValues.getUserId(), _group.getGroupId(), 0);
-
-			_journalArticleLocalService.updateAsset(
-				TestPropsValues.getUserId(), journalArticle2,
-				new long[] {childAssetCategory.getCategoryId()}, new String[0],
-				new long[0], null);
+			JournalTestUtil.addArticle(
+				_group.getGroupId(), 0,
+				_getServiceContext(
+					TestPropsValues.getUserId(), _group.getGroupId(),
+					new long[] {
+						assetCategory.getCategoryId(),
+						childAssetCategory.getCategoryId()
+					}));
+			JournalTestUtil.addArticle(
+				_group.getGroupId(), 0,
+				_getServiceContext(
+					TestPropsValues.getUserId(), _group.getGroupId(),
+					new long[] {childAssetCategory.getCategoryId()}));
 
 			Map<String, Object> data = _getData(
-				_getMockLiferayPortletRenderRequest());
+				_getMockLiferayPortletRenderRequest(
+					new String[] {
+						assetVocabulary.getName(),
+						childAssetVocabulary.getName()
+					},
+					LocaleUtil.getSiteDefault()));
 
 			Map<String, Object> props = (Map<String, Object>)data.get("props");
 
@@ -1024,23 +1053,20 @@ public class ContentDashboardAdminPortletGetPropsTest {
 								String.valueOf(
 									childAssetCategory.getCategoryId())
 							).put(
-								"name",
-								childAssetCategory.getTitle(LocaleUtil.US)
+								"name", "child-category"
 							).put(
 								"value", 1L
 							).put(
-								"vocabularyName",
-								childAssetVocabulary.getTitle(LocaleUtil.US)
+								"vocabularyName", "child-vocabulary"
 							))
 					).put(
 						"key", String.valueOf(assetCategory.getCategoryId())
 					).put(
-						"name", assetCategory.getTitle(LocaleUtil.US)
+						"name", "category"
 					).put(
 						"value", 1L
 					).put(
-						"vocabularyName",
-						assetVocabulary.getTitle(LocaleUtil.US)
+						"vocabularyName", "vocabulary"
 					)
 				).put(
 					JSONUtil.put(
@@ -1051,30 +1077,28 @@ public class ContentDashboardAdminPortletGetPropsTest {
 								String.valueOf(
 									childAssetCategory.getCategoryId())
 							).put(
-								"name",
-								childAssetCategory.getTitle(LocaleUtil.US)
+								"name", "child-category"
 							).put(
 								"value", 1L
 							).put(
-								"vocabularyName",
-								childAssetVocabulary.getTitle(LocaleUtil.US)
+								"vocabularyName", "child-vocabulary"
 							))
 					).put(
 						"key", "none"
 					).put(
-						"name", "No Audience Specified"
+						"name", "No vocabulary Specified"
 					).put(
 						"value", 1L
 					).put(
-						"vocabularyName",
-						assetVocabulary.getTitle(LocaleUtil.US)
+						"vocabularyName", "vocabulary"
 					)
 				).toString(),
 				vocabulariesJSONArray.toString());
 		}
 		finally {
-			_assetCategoryLocalService.deleteAssetCategory(assetCategory);
-			_assetCategoryLocalService.deleteAssetCategory(childAssetCategory);
+			_assetVocabularyLocalService.deleteAssetVocabulary(assetVocabulary);
+			_assetVocabularyLocalService.deleteAssetVocabulary(
+				childAssetVocabulary);
 		}
 	}
 
@@ -1092,14 +1116,6 @@ public class ContentDashboardAdminPortletGetPropsTest {
 			mockLiferayPortletRenderRequest.getAttribute(
 				"CONTENT_DASHBOARD_ADMIN_DISPLAY_CONTEXT"),
 			"getData", new Class<?>[0]);
-	}
-
-	private MockLiferayPortletRenderRequest
-			_getMockLiferayPortletRenderRequest()
-		throws Exception {
-
-		return _getMockLiferayPortletRenderRequest(
-			new String[] {"audience", "stage"}, LocaleUtil.US);
 	}
 
 	private MockLiferayPortletRenderRequest _getMockLiferayPortletRenderRequest(
