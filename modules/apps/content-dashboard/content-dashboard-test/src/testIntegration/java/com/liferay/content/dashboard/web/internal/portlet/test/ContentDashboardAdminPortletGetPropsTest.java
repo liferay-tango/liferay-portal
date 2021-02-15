@@ -319,8 +319,6 @@ public class ContentDashboardAdminPortletGetPropsTest {
 
 			Map<String, Object> props = (Map<String, Object>)data.get("props");
 
-			Assert.assertNotNull(props);
-
 			JSONArray vocabulariesJSONArray = (JSONArray)props.get(
 				"vocabularies");
 
@@ -431,7 +429,6 @@ public class ContentDashboardAdminPortletGetPropsTest {
 
 			Map<String, Object> props = (Map<String, Object>)data.get("props");
 
-			Assert.assertNotNull(props);
 
 			JSONArray vocabulariesJSONArray = (JSONArray)props.get(
 				"vocabularies");
@@ -722,8 +719,6 @@ public class ContentDashboardAdminPortletGetPropsTest {
 
 			Map<String, Object> props = (Map<String, Object>)data.get("props");
 
-			Assert.assertNotNull(props);
-
 			JSONArray vocabulariesJSONArray = (JSONArray)props.get(
 				"vocabularies");
 
@@ -782,8 +777,6 @@ public class ContentDashboardAdminPortletGetPropsTest {
 					LocaleUtil.getSiteDefault()));
 
 			Map<String, Object> props = (Map<String, Object>)data.get("props");
-
-			Assert.assertNotNull(props);
 
 			JSONArray vocabulariesJSONArray = (JSONArray)props.get(
 				"vocabularies");
@@ -908,8 +901,6 @@ public class ContentDashboardAdminPortletGetPropsTest {
 
 			Map<String, Object> props = (Map<String, Object>)data.get("props");
 
-			Assert.assertNotNull(props);
-
 			JSONArray vocabulariesJSONArray = (JSONArray)props.get(
 				"vocabularies");
 
@@ -960,8 +951,6 @@ public class ContentDashboardAdminPortletGetPropsTest {
 					LocaleUtil.getSiteDefault()));
 
 			Map<String, Object> props = (Map<String, Object>)data.get("props");
-
-			Assert.assertNotNull(props);
 
 			JSONArray vocabulariesJSONArray = (JSONArray)props.get(
 				"vocabularies");
@@ -1037,8 +1026,6 @@ public class ContentDashboardAdminPortletGetPropsTest {
 					LocaleUtil.getSiteDefault()));
 
 			Map<String, Object> props = (Map<String, Object>)data.get("props");
-
-			Assert.assertNotNull(props);
 
 			JSONArray vocabulariesJSONArray = (JSONArray)props.get(
 				"vocabularies");
