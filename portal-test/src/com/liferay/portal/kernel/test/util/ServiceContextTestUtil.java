@@ -76,4 +76,18 @@ public class ServiceContextTestUtil {
 		return serviceContext;
 	}
 
+	public static ServiceContext getServiceContext(
+			long userId, long groupId, long[] assetCategoryIds,
+			String[] assetTagNames)
+		throws PortalException {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(groupId, userId);
+
+		serviceContext.setAssetCategoryIds(assetCategoryIds);
+		serviceContext.setAssetTagNames(assetTagNames);
+
+		return serviceContext;
+	}
+
 }
