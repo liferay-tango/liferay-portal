@@ -31,7 +31,6 @@ import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.constants.LanguageConstants;
 import com.liferay.portal.kernel.model.Company;
@@ -162,7 +161,7 @@ public class ContentDashboardAdminPortletTest {
 		try {
 			JournalTestUtil.addArticle(
 				_group.getGroupId(), 0,
-				_getServiceContext(
+				ServiceContextTestUtil.getServiceContext(
 					_user.getUserId(), _group.getGroupId(),
 					new long[] {
 						assetCategory.getCategoryId(),
@@ -215,7 +214,7 @@ public class ContentDashboardAdminPortletTest {
 		try {
 			JournalTestUtil.addArticle(
 				_group.getGroupId(), 0,
-				_getServiceContext(
+				ServiceContextTestUtil.getServiceContext(
 					_user.getUserId(), _group.getGroupId(),
 					new long[] {assetCategory.getCategoryId()}, new String[0]));
 
@@ -335,7 +334,7 @@ public class ContentDashboardAdminPortletTest {
 		try {
 			JournalArticle journalArticle = JournalTestUtil.addArticle(
 				_group.getGroupId(), 0,
-				_getServiceContext(
+				ServiceContextTestUtil.getServiceContext(
 					_user.getUserId(), _group.getGroupId(),
 					new long[] {assetCategory.getCategoryId()}, new String[0]));
 			JournalTestUtil.addArticle(
@@ -371,12 +370,12 @@ public class ContentDashboardAdminPortletTest {
 	public void testGetSearchContainerWithAssetTag() throws Exception {
 		JournalArticle journalArticle1 = JournalTestUtil.addArticle(
 			_group.getGroupId(), 0,
-			_getServiceContext(
+			ServiceContextTestUtil.getServiceContext(
 				_user.getUserId(), _group.getGroupId(), new long[0],
 				new String[] {"tag1"}));
 		JournalTestUtil.addArticle(
 			_group.getGroupId(), 0,
-			_getServiceContext(
+			ServiceContextTestUtil.getServiceContext(
 				_user.getUserId(), _group.getGroupId(), new long[0],
 				new String[] {"tag2"}));
 
@@ -658,7 +657,7 @@ public class ContentDashboardAdminPortletTest {
 		try {
 			JournalArticle journalArticle = JournalTestUtil.addArticle(
 				_group.getGroupId(), 0,
-				_getServiceContext(
+				ServiceContextTestUtil.getServiceContext(
 					_user.getUserId(), _group.getGroupId(),
 					new long[] {assetCategory.getCategoryId()}, new String[0]));
 			JournalTestUtil.addArticle(
@@ -742,14 +741,14 @@ public class ContentDashboardAdminPortletTest {
 		try {
 			JournalTestUtil.addArticle(
 				_group.getGroupId(), 0,
-				_getServiceContext(
+				ServiceContextTestUtil.getServiceContext(
 					_user.getUserId(), _group.getGroupId(),
 					new long[] {assetCategory1.getCategoryId()},
 					new String[0]));
 
 			JournalArticle journalArticle2 = JournalTestUtil.addArticle(
 				_group.getGroupId(), 0,
-				_getServiceContext(
+				ServiceContextTestUtil.getServiceContext(
 					_user.getUserId(), _group.getGroupId(),
 					new long[] {
 						assetCategory1.getCategoryId(),
@@ -792,13 +791,13 @@ public class ContentDashboardAdminPortletTest {
 	public void testGetSearchContainerWithMultipleAssetTags() throws Exception {
 		JournalTestUtil.addArticle(
 			_group.getGroupId(), 0,
-			_getServiceContext(
+			ServiceContextTestUtil.getServiceContext(
 				_user.getUserId(), _group.getGroupId(), new long[0],
 				new String[] {"tag1"}));
 
 		JournalArticle journalArticle2 = JournalTestUtil.addArticle(
 			_group.getGroupId(), 0,
-			_getServiceContext(
+			ServiceContextTestUtil.getServiceContext(
 				_user.getUserId(), _group.getGroupId(), new long[0],
 				new String[] {"tag1", "tag2"}));
 
@@ -981,14 +980,14 @@ public class ContentDashboardAdminPortletTest {
 		try {
 			JournalTestUtil.addArticle(
 				_group.getGroupId(), 0,
-				_getServiceContext(
+				ServiceContextTestUtil.getServiceContext(
 					_user.getUserId(), _group.getGroupId(),
 					new long[] {assetCategory1.getCategoryId()},
 					new String[0]));
 
 			JournalArticle journalArticle2 = JournalTestUtil.addArticle(
 				_group.getGroupId(), 0,
-				_getServiceContext(
+				ServiceContextTestUtil.getServiceContext(
 					_user.getUserId(), _group.getGroupId(),
 					new long[] {
 						assetCategory1.getCategoryId(),
@@ -1375,7 +1374,7 @@ public class ContentDashboardAdminPortletTest {
 		try {
 			JournalTestUtil.addArticle(
 				_group.getGroupId(), 0,
-				_getServiceContext(
+				ServiceContextTestUtil.getServiceContext(
 					_user.getUserId(), _group.getGroupId(),
 					new long[] {
 						assetCategory.getCategoryId(),
@@ -1412,7 +1411,7 @@ public class ContentDashboardAdminPortletTest {
 		try {
 			JournalTestUtil.addArticle(
 				_group.getGroupId(), 0,
-				_getServiceContext(
+				ServiceContextTestUtil.getServiceContext(
 					_user.getUserId(), _group.getGroupId(),
 					new long[] {assetCategory.getCategoryId()}, new String[0]));
 
@@ -1455,7 +1454,7 @@ public class ContentDashboardAdminPortletTest {
 		try {
 			JournalTestUtil.addArticle(
 				_group.getGroupId(), 0,
-				_getServiceContext(
+				ServiceContextTestUtil.getServiceContext(
 					_user.getUserId(), _group.getGroupId(),
 					new long[] {
 						assetCategory.getCategoryId(),
@@ -1582,20 +1581,6 @@ public class ContentDashboardAdminPortletTest {
 			mockLiferayPortletRenderRequest.getAttribute(
 				"CONTENT_DASHBOARD_ADMIN_DISPLAY_CONTEXT"),
 			"getSearchContainer", new Class<?>[0]);
-	}
-
-	private ServiceContext _getServiceContext(
-			long userId, long groupId, long[] assetCategoryIds,
-			String[] assetTagNames)
-		throws PortalException {
-
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(groupId, userId);
-
-		serviceContext.setAssetCategoryIds(assetCategoryIds);
-		serviceContext.setAssetTagNames(assetTagNames);
-
-		return serviceContext;
 	}
 
 	private ThemeDisplay _getThemeDisplay(Locale locale) throws Exception {

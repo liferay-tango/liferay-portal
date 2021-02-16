@@ -20,7 +20,6 @@ import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.journal.test.util.JournalTestUtil;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Company;
@@ -106,17 +105,19 @@ public class ContentDashboardAdminPortletGetPropsTest {
 		try {
 			JournalTestUtil.addArticle(
 				_group.getGroupId(), 0,
-				_getServiceContext(
+				ServiceContextTestUtil.getServiceContext(
 					TestPropsValues.getUserId(), _group.getGroupId(),
 					new long[] {
 						assetCategory1.getCategoryId(),
 						assetCategory2.getCategoryId()
-					}));
+					},
+					new String[0]));
 			JournalTestUtil.addArticle(
 				_group.getGroupId(), 0,
-				_getServiceContext(
+				ServiceContextTestUtil.getServiceContext(
 					TestPropsValues.getUserId(), _group.getGroupId(),
-					new long[] {assetCategory2.getCategoryId()}));
+					new long[] {assetCategory2.getCategoryId()},
+					new String[0]));
 
 			Map<String, Object> data = _getData(
 				_getMockLiferayPortletRenderRequest(
@@ -189,21 +190,23 @@ public class ContentDashboardAdminPortletGetPropsTest {
 		try {
 			JournalTestUtil.addArticle(
 				_group.getGroupId(), 0,
-				_getServiceContext(
+				ServiceContextTestUtil.getServiceContext(
 					TestPropsValues.getUserId(), _group.getGroupId(),
 					new long[] {
 						assetCategory.getCategoryId(),
 						childAssetCategory1.getCategoryId(),
 						childAssetCategory2.getCategoryId()
-					}));
+					},
+					new String[0]));
 			JournalTestUtil.addArticle(
 				_group.getGroupId(), 0,
-				_getServiceContext(
+				ServiceContextTestUtil.getServiceContext(
 					TestPropsValues.getUserId(), _group.getGroupId(),
 					new long[] {
 						assetCategory.getCategoryId(),
 						childAssetCategory2.getCategoryId()
-					}));
+					},
+					new String[0]));
 
 			Map<String, Object> data = _getData(
 				_getMockLiferayPortletRenderRequest(
@@ -289,17 +292,18 @@ public class ContentDashboardAdminPortletGetPropsTest {
 		try {
 			JournalTestUtil.addArticle(
 				_group.getGroupId(), 0,
-				_getServiceContext(
+				ServiceContextTestUtil.getServiceContext(
 					TestPropsValues.getUserId(), _group.getGroupId(),
-					new long[] {assetCategory.getCategoryId()}));
+					new long[] {assetCategory.getCategoryId()}, new String[0]));
 			JournalTestUtil.addArticle(
 				_group.getGroupId(), 0,
-				_getServiceContext(
+				ServiceContextTestUtil.getServiceContext(
 					TestPropsValues.getUserId(), _group.getGroupId(),
 					new long[] {
 						assetCategory.getCategoryId(),
 						childAssetCategory.getCategoryId()
-					}));
+					},
+					new String[0]));
 
 			Map<String, Object> data = _getData(
 				_getMockLiferayPortletRenderRequest(
@@ -388,25 +392,28 @@ public class ContentDashboardAdminPortletGetPropsTest {
 		try {
 			JournalTestUtil.addArticle(
 				_group.getGroupId(), 0,
-				_getServiceContext(
+				ServiceContextTestUtil.getServiceContext(
 					TestPropsValues.getUserId(), _group.getGroupId(),
 					new long[] {
 						assetCategory1.getCategoryId(),
 						childAssetCategory.getCategoryId()
-					}));
+					},
+					new String[0]));
 			JournalTestUtil.addArticle(
 				_group.getGroupId(), 0,
-				_getServiceContext(
+				ServiceContextTestUtil.getServiceContext(
 					TestPropsValues.getUserId(), _group.getGroupId(),
 					new long[] {
 						assetCategory1.getCategoryId(),
 						assetCategory2.getCategoryId()
-					}));
+					},
+					new String[0]));
 			JournalTestUtil.addArticle(
 				_group.getGroupId(), 0,
-				_getServiceContext(
+				ServiceContextTestUtil.getServiceContext(
 					TestPropsValues.getUserId(), _group.getGroupId(),
-					new long[] {childAssetCategory.getCategoryId()}));
+					new long[] {childAssetCategory.getCategoryId()},
+					new String[0]));
 
 			Map<String, Object> data = _getData(
 				_getMockLiferayPortletRenderRequest(
@@ -556,20 +563,22 @@ public class ContentDashboardAdminPortletGetPropsTest {
 		try {
 			JournalTestUtil.addArticle(
 				_group.getGroupId(), 0,
-				_getServiceContext(
+				ServiceContextTestUtil.getServiceContext(
 					TestPropsValues.getUserId(), _group.getGroupId(),
 					new long[] {
 						assetCategory1.getCategoryId(),
 						childAssetCategory2.getCategoryId()
-					}));
+					},
+					new String[0]));
 			JournalTestUtil.addArticle(
 				_group.getGroupId(), 0,
-				_getServiceContext(
+				ServiceContextTestUtil.getServiceContext(
 					TestPropsValues.getUserId(), _group.getGroupId(),
 					new long[] {
 						assetCategory2.getCategoryId(),
 						childAssetCategory1.getCategoryId()
-					}));
+					},
+					new String[0]));
 
 			Map<String, Object> data = _getData(
 				_getMockLiferayPortletRenderRequest(
@@ -743,9 +752,10 @@ public class ContentDashboardAdminPortletGetPropsTest {
 		try {
 			JournalTestUtil.addArticle(
 				_group.getGroupId(), 0,
-				_getServiceContext(
+				ServiceContextTestUtil.getServiceContext(
 					TestPropsValues.getUserId(), _group.getGroupId(),
-					new long[] {childAssetCategory.getCategoryId()}));
+					new long[] {childAssetCategory.getCategoryId()},
+					new String[0]));
 
 			Map<String, Object> data = _getData(
 				_getMockLiferayPortletRenderRequest(
@@ -808,9 +818,9 @@ public class ContentDashboardAdminPortletGetPropsTest {
 		try {
 			JournalTestUtil.addArticle(
 				_group.getGroupId(), 0,
-				_getServiceContext(
+				ServiceContextTestUtil.getServiceContext(
 					TestPropsValues.getUserId(), _group.getGroupId(),
-					new long[] {assetCategory.getCategoryId()}));
+					new long[] {assetCategory.getCategoryId()}, new String[0]));
 
 			Map<String, Object> data = _getData(
 				_getMockLiferayPortletRenderRequest(
@@ -908,9 +918,9 @@ public class ContentDashboardAdminPortletGetPropsTest {
 		try {
 			JournalTestUtil.addArticle(
 				_group.getGroupId(), 0,
-				_getServiceContext(
+				ServiceContextTestUtil.getServiceContext(
 					TestPropsValues.getUserId(), _group.getGroupId(),
-					new long[] {assetCategory.getCategoryId()}));
+					new long[] {assetCategory.getCategoryId()}, new String[0]));
 
 			Map<String, Object> data = _getData(
 				_getMockLiferayPortletRenderRequest(
@@ -972,17 +982,19 @@ public class ContentDashboardAdminPortletGetPropsTest {
 		try {
 			JournalTestUtil.addArticle(
 				_group.getGroupId(), 0,
-				_getServiceContext(
+				ServiceContextTestUtil.getServiceContext(
 					TestPropsValues.getUserId(), _group.getGroupId(),
 					new long[] {
 						assetCategory.getCategoryId(),
 						childAssetCategory.getCategoryId()
-					}));
+					},
+					new String[0]));
 			JournalTestUtil.addArticle(
 				_group.getGroupId(), 0,
-				_getServiceContext(
+				ServiceContextTestUtil.getServiceContext(
 					TestPropsValues.getUserId(), _group.getGroupId(),
-					new long[] {childAssetCategory.getCategoryId()}));
+					new long[] {childAssetCategory.getCategoryId()},
+					new String[0]));
 
 			Map<String, Object> data = _getData(
 				_getMockLiferayPortletRenderRequest(
@@ -1124,18 +1136,6 @@ public class ContentDashboardAdminPortletGetPropsTest {
 			"assetVocabularyNames", assetVocabularyNames);
 
 		return mockLiferayPortletRenderRequest;
-	}
-
-	private ServiceContext _getServiceContext(
-			long userId, long groupId, long[] assetCategoryIds)
-		throws PortalException {
-
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(groupId, userId);
-
-		serviceContext.setAssetCategoryIds(assetCategoryIds);
-
-		return serviceContext;
 	}
 
 	private ThemeDisplay _getThemeDisplay(Locale locale) throws Exception {
