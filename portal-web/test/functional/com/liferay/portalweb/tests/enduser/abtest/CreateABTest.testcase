@@ -3,7 +3,7 @@ definition {
 
 	property analytics.cloud.enabled = "true";
 	property portal.release = "false";
-	property portal.upstream = "false";
+	property portal.upstream = "true";
 	property testray.main.component.name = "A/B Test";
 
 	setUp {
