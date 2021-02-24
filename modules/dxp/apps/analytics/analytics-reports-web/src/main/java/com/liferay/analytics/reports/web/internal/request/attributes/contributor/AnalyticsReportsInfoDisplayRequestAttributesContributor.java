@@ -14,6 +14,9 @@
 
 package com.liferay.analytics.reports.web.internal.request.attributes.contributor;
 
+import com.liferay.analytics.reports.info.item.AnalyticsReportsInfoItem;
+import com.liferay.analytics.reports.info.item.AnalyticsReportsInfoItemTracker;
+import com.liferay.analytics.reports.info.item.ClassNameClassPKInfoItemIdentifier;
 import com.liferay.analytics.reports.web.internal.constants.AnalyticsReportsWebKeys;
 import com.liferay.analytics.reports.web.internal.info.display.contributor.util.LayoutDisplayPageProviderUtil;
 import com.liferay.info.display.request.attributes.contributor.InfoDisplayRequestAttributesContributor;
@@ -61,12 +64,40 @@ public class AnalyticsReportsInfoDisplayRequestAttributesContributor
 		ClassName className = _classNameLocalService.fetchClassName(
 			layoutDisplayPageObjectProvider.getClassNameId());
 
+		if (className == null) {
+			httpServletRequest.setAttribute(
+				AnalyticsReportsWebKeys.INFO_ITEM_REFERENCE,
+				new InfoItemReference(
+					Layout.class.getName(), themeDisplay.getPlid()));
+
+			return;
+		}
+
+		AnalyticsReportsInfoItem<?> analyticsReportsInfoItem =
+			_analyticsReportsInfoItemTracker.getAnalyticsReportsInfoItem(
+				className.getClassName());
+
+		if (analyticsReportsInfoItem == null) {
+			httpServletRequest.setAttribute(
+				AnalyticsReportsWebKeys.INFO_ITEM_REFERENCE,
+				new InfoItemReference(
+					LayoutDisplayPageObjectProvider.class.getName(),
+					new ClassNameClassPKInfoItemIdentifier(
+						className.getClassName(),
+						layoutDisplayPageObjectProvider.getClassPK())));
+
+			return;
+		}
+
 		httpServletRequest.setAttribute(
 			AnalyticsReportsWebKeys.INFO_ITEM_REFERENCE,
 			new InfoItemReference(
 				className.getClassName(),
 				layoutDisplayPageObjectProvider.getClassPK()));
 	}
+
+	@Reference
+	private AnalyticsReportsInfoItemTracker _analyticsReportsInfoItemTracker;
 
 	@Reference
 	private ClassNameLocalService _classNameLocalService;

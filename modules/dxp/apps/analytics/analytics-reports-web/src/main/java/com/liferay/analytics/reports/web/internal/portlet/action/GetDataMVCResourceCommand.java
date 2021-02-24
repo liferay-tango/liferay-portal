@@ -16,6 +16,7 @@ package com.liferay.analytics.reports.web.internal.portlet.action;
 
 import com.liferay.analytics.reports.info.item.AnalyticsReportsInfoItem;
 import com.liferay.analytics.reports.info.item.AnalyticsReportsInfoItemTracker;
+import com.liferay.analytics.reports.info.item.ClassNameClassPKInfoItemIdentifier;
 import com.liferay.analytics.reports.info.item.provider.AnalyticsReportsInfoItemObjectProvider;
 import com.liferay.analytics.reports.web.internal.constants.AnalyticsReportsPortletKeys;
 import com.liferay.analytics.reports.web.internal.data.provider.AnalyticsReportsDataProvider;
@@ -23,11 +24,14 @@ import com.liferay.analytics.reports.web.internal.info.item.provider.AnalyticsRe
 import com.liferay.analytics.reports.web.internal.layout.seo.CanonicalURLProvider;
 import com.liferay.analytics.reports.web.internal.model.TimeRange;
 import com.liferay.analytics.reports.web.internal.model.TimeSpan;
+import com.liferay.info.item.ClassPKInfoItemIdentifier;
+import com.liferay.info.item.InfoItemIdentifier;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.info.item.InfoItemServiceTracker;
 import com.liferay.info.type.WebImage;
 import com.liferay.layout.display.page.LayoutDisplayPageProviderTracker;
 import com.liferay.layout.seo.kernel.LayoutSEOLinkManager;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchModelException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -166,6 +170,16 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 		WebImage webImage = analyticsReportsInfoItem.getAuthorWebImage(
 			object, locale);
 
+		if (webImage == null) {
+			return JSONUtil.put(
+				"authorId", 0
+			).put(
+				"name", StringPool.BLANK
+			).put(
+				"url", StringPool.BLANK
+			);
+		}
+
 		long portraitId = GetterUtil.getLong(
 			_http.getParameter(HtmlUtil.escape(webImage.getUrl()), "img_id"));
 
@@ -183,13 +197,13 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 	}
 
 	private String _getClassName(HttpServletRequest httpServletRequest) {
-		long classNameId = ParamUtil.getLong(httpServletRequest, "classNameId");
+		String className = ParamUtil.getString(httpServletRequest, "className");
 
-		if (classNameId == 0) {
+		if (Validator.isNull(className)) {
 			return Layout.class.getName();
 		}
 
-		return _portal.getClassName(classNameId);
+		return className;
 	}
 
 	private long _getClassPK(HttpServletRequest httpServletRequest) {
@@ -209,8 +223,25 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 	private InfoItemReference _getInfoItemReference(
 		HttpServletRequest httpServletRequest) {
 
+		String innerClassName = _getInnerClassName(httpServletRequest);
+
+		InfoItemIdentifier infoItemIdentifier = null;
+
+		if (Validator.isNull(innerClassName)) {
+			infoItemIdentifier = new ClassPKInfoItemIdentifier(
+				_getClassPK(httpServletRequest));
+		}
+		else {
+			infoItemIdentifier = new ClassNameClassPKInfoItemIdentifier(
+				innerClassName, _getClassPK(httpServletRequest));
+		}
+
 		return new InfoItemReference(
-			_getClassName(httpServletRequest), _getClassPK(httpServletRequest));
+			_getClassName(httpServletRequest), infoItemIdentifier);
+	}
+
+	private String _getInnerClassName(HttpServletRequest httpServletRequest) {
+		return ParamUtil.getString(httpServletRequest, "innerClassName");
 	}
 
 	private JSONObject _getJSONObject(
