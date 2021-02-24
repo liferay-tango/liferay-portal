@@ -15,12 +15,9 @@
 package com.liferay.analytics.reports.journal.internal.info.item;
 
 import com.liferay.analytics.reports.info.item.AnalyticsReportsInfoItem;
+import com.liferay.analytics.reports.info.item.AnalyticsReportsInfoItemTracker;
 import com.liferay.asset.display.page.model.AssetDisplayPageEntry;
 import com.liferay.asset.display.page.service.AssetDisplayPageEntryLocalService;
-import com.liferay.asset.display.page.util.AssetDisplayPageUtil;
-import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
-import com.liferay.asset.kernel.model.AssetRenderer;
-import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.info.field.InfoFieldValue;
 import com.liferay.info.item.InfoItemFieldValues;
 import com.liferay.info.item.InfoItemReference;
@@ -32,23 +29,15 @@ import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.layout.display.page.LayoutDisplayPageObjectProvider;
 import com.liferay.layout.display.page.LayoutDisplayPageProvider;
 import com.liferay.layout.display.page.LayoutDisplayPageProviderTracker;
-import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.security.permission.ActionKeys;
-import com.liferay.portal.kernel.security.permission.PermissionChecker;
-import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.PropsKeys;
-import com.liferay.portal.kernel.util.PropsUtil;
 
 import java.util.Date;
 import java.util.List;
@@ -149,36 +138,46 @@ public class JournalArticleAnalyticsReportsInfoItem
 
 	@Override
 	public boolean isShow(JournalArticle journalArticle) {
-		Layout layout = _getLayout(journalArticle);
+		LayoutDisplayPageProvider<?> layoutDisplayPageProvider =
+			_layoutDisplayPageProviderTracker.getLayoutDisplayPageProviderByClassName(
+				JournalArticle.class.getName()
+			);
 
-		if (layout == null) {
+		if (layoutDisplayPageProvider == null)  {
 			return false;
 		}
 
-		if (!layout.isTypeAssetDisplay()) {
+		LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider =
+			layoutDisplayPageProvider.getLayoutDisplayPageObjectProvider(
+				new InfoItemReference(
+					JournalArticle.class.getName(),
+					journalArticle.getResourcePrimKey()
+				)
+			);
+
+		if (layoutDisplayPageObjectProvider == null)  {
 			return false;
 		}
 
-		if (_isEmbeddedPersonalApplicationLayout(layout)) {
+		AnalyticsReportsInfoItem<LayoutDisplayPageObjectProvider>
+			analyticsReportsInfoItem =
+				(AnalyticsReportsInfoItem<LayoutDisplayPageObjectProvider>)
+					_analyticsReportsInfoItemTracker.
+						getAnalyticsReportsInfoItem(
+							LayoutDisplayPageObjectProvider.class.getName());
+
+		if (analyticsReportsInfoItem == null)  {
 			return false;
 		}
 
-		try {
-			if (!_hasEditPermission(
-					journalArticle, layout,
-					PermissionThreadLocal.getPermissionChecker())) {
-
-				return false;
-			}
-		}
-		catch (PortalException portalException) {
-			_log.error(portalException, portalException);
-
-			return false;
-		}
-
-		return true;
+		return analyticsReportsInfoItem.isShow(layoutDisplayPageObjectProvider);
 	}
+
+	@Reference
+	private LayoutDisplayPageProviderTracker _layoutDisplayPageProviderTracker;
+
+	@Reference
+	private AnalyticsReportsInfoItemTracker _analyticsReportsInfoItemTracker;
 
 	private Date _getJournalArticleFirstPublishLocalDate(
 		JournalArticle journalArticle) {
@@ -197,52 +196,6 @@ public class JournalArticleAnalyticsReportsInfoItem
 		}
 	}
 
-	private Layout _getLayout(JournalArticle journalArticle) {
-		LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider =
-			_getLayoutDisplayPageObjectProvider(journalArticle);
-
-		if ((layoutDisplayPageObjectProvider == null) ||
-			(layoutDisplayPageObjectProvider.getDisplayObject() == null)) {
-
-			return null;
-		}
-
-		try {
-			LayoutPageTemplateEntry layoutPageTemplateEntry =
-				AssetDisplayPageUtil.getAssetDisplayPageLayoutPageTemplateEntry(
-					layoutDisplayPageObjectProvider.getGroupId(),
-					layoutDisplayPageObjectProvider.getClassNameId(),
-					layoutDisplayPageObjectProvider.getClassPK(),
-					layoutDisplayPageObjectProvider.getClassTypeId());
-
-			return _layoutLocalService.fetchLayout(
-				layoutPageTemplateEntry.getPlid());
-		}
-		catch (PortalException portalException) {
-			_log.error(portalException, portalException);
-		}
-
-		return null;
-	}
-
-	private LayoutDisplayPageObjectProvider<?>
-		_getLayoutDisplayPageObjectProvider(JournalArticle journalArticle) {
-
-		LayoutDisplayPageProvider<?> layoutDisplayPageProvider =
-			_layoutDisplayPageProviderTracker.
-				getLayoutDisplayPageProviderByClassName(
-					JournalArticle.class.getName());
-
-		if (layoutDisplayPageProvider == null) {
-			return null;
-		}
-
-		return layoutDisplayPageProvider.getLayoutDisplayPageObjectProvider(
-			new InfoItemReference(
-				JournalArticle.class.getName(),
-				journalArticle.getResourcePrimKey()));
-	}
-
 	private Optional<User> _getUser(JournalArticle journalArticle) {
 		return Optional.ofNullable(
 			_journalArticleLocalService.fetchLatestArticle(
@@ -251,50 +204,6 @@ public class JournalArticleAnalyticsReportsInfoItem
 			latestArticle -> _userLocalService.fetchUser(
 				latestArticle.getUserId())
 		);
-	}
-
-	private boolean _hasEditPermission(
-			JournalArticle journalArticle, Layout layout,
-			PermissionChecker permissionChecker)
-		throws PortalException {
-
-		AssetRendererFactory<?> assetRendererFactory =
-			AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassName(
-				JournalArticle.class.getName());
-
-		AssetRenderer<?> assetRenderer = null;
-
-		if (assetRendererFactory != null) {
-			assetRenderer = assetRendererFactory.getAssetRenderer(
-				journalArticle.getResourcePrimKey());
-		}
-
-		if (((assetRenderer == null) ||
-			 !assetRenderer.hasEditPermission(permissionChecker)) &&
-			!LayoutPermissionUtil.contains(
-				permissionChecker, layout, ActionKeys.UPDATE)) {
-
-			return false;
-		}
-
-		return true;
-	}
-
-	private boolean _isEmbeddedPersonalApplicationLayout(Layout layout) {
-		if (layout.isTypeControlPanel()) {
-			return false;
-		}
-
-		String layoutFriendlyURL = layout.getFriendlyURL();
-
-		if (layout.isSystem() &&
-			layoutFriendlyURL.equals(
-				PropsUtil.get(PropsKeys.CONTROL_PANEL_LAYOUT_FRIENDLY_URL))) {
-
-			return true;
-		}
-
-		return false;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
@@ -309,9 +218,6 @@ public class JournalArticleAnalyticsReportsInfoItem
 
 	@Reference
 	private JournalArticleLocalService _journalArticleLocalService;
-
-	@Reference
-	private LayoutDisplayPageProviderTracker _layoutDisplayPageProviderTracker;
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;
