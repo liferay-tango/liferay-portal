@@ -6,7 +6,7 @@ definition {
 		Click(locator1 = "ABTest#VIEW_DATA_ANALYTICS_CLOUD_BUTTON");
 	}
 
-	macro createABTestByBounceRate {
+	macro createABTest {
 		Click(locator1 = "ABTest#AB_TEST_BUTTON");
 
 		Click(locator1 = "ABTest#CREATE_TEST_BUTTON");
@@ -16,6 +16,10 @@ definition {
 		Type(
 			locator1 = "ABTest#AB_TEST_TITLE_FIELD",
 			value1 = "${testTitle}");
+
+		AssertClick(
+			locator1 = "ABTest#SELECT_GOAL",
+			value1 = "${goal}");
 
 		Click(locator1 = "ABTest#SAVE_AB_TEST_BUTTON");
 	}
@@ -52,12 +56,34 @@ definition {
 		}
 	}
 
+	macro selectElementID {
+		Click(locator1 = "ABTest#SELECT_CLICKABLE_ELEMENT_BUTTON");
+
+		Click(locator1 = "ABTest#SELECT_CLICKABLE_ELEMENT");
+
+		Click(locator1 = "ABTest#SET_ELEMENT_AS_CLICK_TARGET_BUTTON");
+
+		Alert.viewSuccessMessage();
+
+		AssertTextEquals(
+			locator1 = "ABTest#TARGET_LABEL",
+			value1 = "Target");
+	}
+
 	macro terminateTest {
 		ClickNoError(locator1 = "ABTest#TERMINATE_TEST_BUTTON");
 
 		AssertConfirm.assertConfirmationNoError(value1 = "Are you sure you want to terminate this test?");
 
 		Alert.viewSuccessMessage();
+	}
+
+	macro writeId {
+		Click(locator1 = "ABTest#ELEMENT_ID_INPUT");
+
+		Type(
+			locator1 = "ABTest#ELEMENT_ID_INPUT",
+			value1 = "${elementId}");
 	}
 
 }
