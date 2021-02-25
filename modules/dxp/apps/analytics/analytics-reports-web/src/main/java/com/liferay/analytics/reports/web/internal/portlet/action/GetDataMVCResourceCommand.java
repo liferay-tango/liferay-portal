@@ -20,14 +20,11 @@ import com.liferay.analytics.reports.info.item.provider.AnalyticsReportsInfoItem
 import com.liferay.analytics.reports.web.internal.constants.AnalyticsReportsPortletKeys;
 import com.liferay.analytics.reports.web.internal.data.provider.AnalyticsReportsDataProvider;
 import com.liferay.analytics.reports.web.internal.info.item.provider.AnalyticsReportsInfoItemObjectProviderTracker;
-import com.liferay.analytics.reports.web.internal.layout.seo.CanonicalURLProvider;
 import com.liferay.analytics.reports.web.internal.model.TimeRange;
 import com.liferay.analytics.reports.web.internal.model.TimeSpan;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.info.item.InfoItemServiceTracker;
 import com.liferay.info.type.WebImage;
-import com.liferay.layout.display.page.LayoutDisplayPageProviderTracker;
-import com.liferay.layout.seo.kernel.LayoutSEOLinkManager;
 import com.liferay.portal.kernel.exception.NoSuchModelException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -120,10 +117,6 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 						getAnalyticsReportsInfoItem(
 							infoItemReference.getClassName());
 
-			CanonicalURLProvider canonicalURLProvider =
-				new CanonicalURLProvider(
-					httpServletRequest, _layoutDisplayPageProviderTracker,
-					_layoutSEOLinkManager, _portal);
 			ThemeDisplay themeDisplay =
 				(ThemeDisplay)resourceRequest.getAttribute(
 					WebKeys.THEME_DISPLAY);
@@ -133,9 +126,7 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 				JSONUtil.put(
 					"context",
 					_getJSONObject(
-						analyticsReportsInfoItem,
-						canonicalURLProvider.getCanonicalURL(),
-						themeDisplay.getCompanyId(), infoItemReference,
+						analyticsReportsInfoItem, themeDisplay.getCompanyId(),
 						themeDisplay.getLayout(), themeDisplay.getLocale(),
 						_getLocale(
 							httpServletRequest, themeDisplay.getLanguageId()),
@@ -212,14 +203,13 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 
 	private JSONObject _getJSONObject(
 		AnalyticsReportsInfoItem<Object> analyticsReportsInfoItem,
-		String canonicalURL, long companyId,
-		InfoItemReference infoItemReference, Layout layout, Locale locale,
-		Locale urlLocale, Object object, ResourceResponse resourceResponse,
-		TimeRange timeRange) {
+		long companyId, Layout layout, Locale locale, Locale urlLocale,
+		Object object, ResourceResponse resourceResponse, TimeRange timeRange) {
 
 		AnalyticsReportsDataProvider analyticsReportsDataProvider =
 			new AnalyticsReportsDataProvider(_http);
-
+		String canonicalURL = analyticsReportsInfoItem.getCanonicalURL(
+			object, urlLocale);
 		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
 			locale, getClass());
 
@@ -234,31 +224,31 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 				"analyticsReportsHistoricalReadsURL",
 				String.valueOf(
 					_getResourceURL(
-						infoItemReference, urlLocale, resourceResponse,
+						canonicalURL, urlLocale, resourceResponse,
 						"/analytics_reports/get_historical_reads"))
 			).put(
 				"analyticsReportsHistoricalViewsURL",
 				String.valueOf(
 					_getResourceURL(
-						infoItemReference, urlLocale, resourceResponse,
+						canonicalURL, urlLocale, resourceResponse,
 						"/analytics_reports/get_historical_views"))
 			).put(
 				"analyticsReportsTotalReadsURL",
 				String.valueOf(
 					_getResourceURL(
-						infoItemReference, urlLocale, resourceResponse,
+						canonicalURL, urlLocale, resourceResponse,
 						"/analytics_reports/get_total_reads"))
 			).put(
 				"analyticsReportsTotalViewsURL",
 				String.valueOf(
 					_getResourceURL(
-						infoItemReference, urlLocale, resourceResponse,
+						canonicalURL, urlLocale, resourceResponse,
 						"/analytics_reports/get_total_views"))
 			).put(
 				"analyticsReportsTrafficSourcesURL",
 				String.valueOf(
 					_getResourceURL(
-						infoItemReference, urlLocale, resourceResponse,
+						canonicalURL, urlLocale, resourceResponse,
 						"/analytics_reports/get_traffic_sources"))
 			)
 		).put(
@@ -294,8 +284,7 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 		).put(
 			"viewURLs",
 			_getViewURLsJSONArray(
-				analyticsReportsInfoItem, infoItemReference, object,
-				resourceResponse, urlLocale)
+				analyticsReportsInfoItem, object, resourceResponse, urlLocale)
 		);
 	}
 
@@ -307,15 +296,13 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 	}
 
 	private ResourceURL _getResourceURL(
-		InfoItemReference infoItemReference, Locale locale,
-		ResourceResponse resourceResponse, String resourceID) {
+		String canonicalURL, Locale locale, ResourceResponse resourceResponse,
+		String resourceID) {
 
 		ResourceURL resourceURL = resourceResponse.createResourceURL();
 
 		resourceURL.setParameter("languageId", LocaleUtil.toLanguageId(locale));
-		resourceURL.setParameter("className", infoItemReference.getClassName());
-		resourceURL.setParameter(
-			"classPK", String.valueOf(infoItemReference.getClassPK()));
+		resourceURL.setParameter("canonicalURL", canonicalURL);
 		resourceURL.setResourceID(resourceID);
 
 		return resourceURL;
@@ -367,8 +354,7 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 
 	private JSONArray _getViewURLsJSONArray(
 		AnalyticsReportsInfoItem<Object> analyticsReportsInfoItem,
-		InfoItemReference infoItemReference, Object object,
-		ResourceResponse resourceResponse, Locale urlLocale) {
+		Object object, ResourceResponse resourceResponse, Locale urlLocale) {
 
 		List<Locale> locales = analyticsReportsInfoItem.getAvailableLocales(
 			object);
@@ -389,8 +375,9 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 				).put(
 					"viewURL",
 					_getResourceURL(
-						infoItemReference, locale, resourceResponse,
-						"/analytics_reports/get_data")
+						analyticsReportsInfoItem.getCanonicalURL(
+							object, locale),
+						locale, resourceResponse, "/analytics_reports/get_data")
 				)
 			).toArray());
 	}
@@ -425,12 +412,6 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 
 	@Reference
 	private Language _language;
-
-	@Reference
-	private LayoutDisplayPageProviderTracker _layoutDisplayPageProviderTracker;
-
-	@Reference
-	private LayoutSEOLinkManager _layoutSEOLinkManager;
 
 	@Reference
 	private Portal _portal;
