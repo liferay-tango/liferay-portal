@@ -9,6 +9,7 @@
  * distribution rights of the Software.
  */
 
+const CONTROL_EXPERIENCE_ID_URL_KEY = 'controlSegmentsExperienceId';
 const EXPERIENCE_ID_URL_KEY = 'segmentsExperienceId';
 
 const EXPERIENCE_KEY_URL_KEY = 'segmentsExperienceKey';
@@ -24,7 +25,8 @@ const EXPERIMENT_KEY_URL_KEY = 'segmentsExperimentKey';
  */
 export function navigateToExperience(
 	experienceId,
-	baseUrl = window.location.href
+	baseUrl = window.location.href,
+	controlSegmentsExperienceId = undefined
 ) {
 	const currentUrl = new URL(baseUrl);
 	const urlQueryString = currentUrl.search;
@@ -33,6 +35,10 @@ export function navigateToExperience(
 	urlSearchParams.delete(EXPERIENCE_KEY_URL_KEY);
 	urlSearchParams.delete(EXPERIMENT_KEY_URL_KEY);
 
+	urlSearchParams.set(
+		CONTROL_EXPERIENCE_ID_URL_KEY,
+		controlSegmentsExperienceId
+	);
 	urlSearchParams.set(EXPERIENCE_ID_URL_KEY, experienceId);
 	currentUrl.search = urlSearchParams.toString();
 

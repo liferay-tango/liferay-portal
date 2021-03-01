@@ -23,6 +23,7 @@ import {indexToPercentageString} from '../../../util/percentages.es';
 function Variant({
 	active,
 	control = false,
+	controlSegmentsExperienceId,
 	editable,
 	name,
 	onVariantDeletion,
@@ -153,7 +154,11 @@ function Variant({
 	}
 
 	function _handleEditVariantContent() {
-		navigateToExperience(segmentsExperienceId, editVariantLayoutURL);
+		navigateToExperience(
+			segmentsExperienceId,
+			editVariantLayoutURL,
+			controlSegmentsExperienceId
+		);
 	}
 
 	function _handleVariantNavigation() {
@@ -164,6 +169,7 @@ function Variant({
 Variant.propTypes = {
 	active: PropTypes.bool.isRequired,
 	control: PropTypes.bool.isRequired,
+	controlSegmentsExperienceId: PropTypes.string.isRequired,
 	editable: PropTypes.bool.isRequired,
 	name: PropTypes.string.isRequired,
 	onVariantDeletion: PropTypes.func.isRequired,

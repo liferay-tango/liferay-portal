@@ -25,6 +25,10 @@ function VariantList({
 	selectedSegmentsExperienceId,
 	variants,
 }) {
+	const controlSegmentsExperienceId =
+		variants.length &&
+		variants.find(({control}) => control).segmentsExperienceId;
+
 	return (
 		<ClayList>
 			{variants.map((variant) => {
@@ -38,6 +42,9 @@ function VariantList({
 							selectedSegmentsExperienceId
 						}
 						control={variant.control}
+						controlSegmentsExperienceId={
+							controlSegmentsExperienceId
+						}
 						editable={editable}
 						key={variant.segmentsExperimentRelId}
 						name={variant.name}
