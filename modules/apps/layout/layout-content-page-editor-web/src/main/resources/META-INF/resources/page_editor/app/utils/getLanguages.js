@@ -17,18 +17,21 @@ import {config} from '../../app/config/index';
 export default function getLanguages(
 	availableLanguages,
 	availableSegmentsExperiences,
+	controlSegmentsExperienceId,
 	segmentsExperienceId
 ) {
 	if (
 		!availableSegmentsExperiences ||
 		!segmentsExperienceId ||
+		controlSegmentsExperienceId === config.defaultSegmentsExperienceId ||
 		segmentsExperienceId === config.defaultSegmentsExperienceId
 	) {
 		return availableLanguages;
 	}
 
-	const languages =
-		availableSegmentsExperiences[segmentsExperienceId].languageIds;
+	const languages = controlSegmentsExperienceId
+		? availableSegmentsExperiences[controlSegmentsExperienceId].languageIds
+		: availableSegmentsExperiences[segmentsExperienceId].languageIds;
 
 	return languages.reduce((acc, languageId) => {
 		if (availableLanguages[languageId]) {

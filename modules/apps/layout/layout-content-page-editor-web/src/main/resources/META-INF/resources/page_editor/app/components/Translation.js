@@ -138,13 +138,14 @@ export default function Translation({
 		[fragmentEntryLinks]
 	);
 
-	const availableSegmentsExperiences = useSelector(
-		(state) => state.availableSegmentsExperiences
-	);
+	const store = useSelector((state) => state);
+
+	const {availableSegmentsExperiences, controlSegmentsExperienceId} = store;
 
 	const languages = getLanguages(
 		availableLanguages,
 		availableSegmentsExperiences,
+		controlSegmentsExperienceId,
 		segmentsExperienceId
 	);
 
