@@ -34,11 +34,17 @@ export function navigateToExperience(
 
 	urlSearchParams.delete(EXPERIENCE_KEY_URL_KEY);
 	urlSearchParams.delete(EXPERIMENT_KEY_URL_KEY);
-
-	urlSearchParams.set(
+	urlSearchParams.delete(
 		CONTROL_EXPERIENCE_ID_URL_KEY,
 		controlSegmentsExperienceId
 	);
+
+	if (controlSegmentsExperienceId) {
+		urlSearchParams.set(
+			CONTROL_EXPERIENCE_ID_URL_KEY,
+			controlSegmentsExperienceId
+		);
+	}
 	urlSearchParams.set(EXPERIENCE_ID_URL_KEY, experienceId);
 	currentUrl.search = urlSearchParams.toString();
 
