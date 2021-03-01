@@ -187,6 +187,15 @@ public class ContentPageLayoutEditorDisplayContext
 			SegmentsExperienceUtil.getAvailableSegmentsExperiences(
 				httpServletRequest));
 		stateContext.put("layoutDataList", _getLayoutDataList());
+
+		long controlSegmentsExperienceId = _getControlSegmentsExperienceId();
+
+		if (controlSegmentsExperienceId != -1) {
+			stateContext.put(
+				"controlSegmentsExperienceId",
+				String.valueOf(controlSegmentsExperienceId));
+		}
+
 		stateContext.put(
 			"segmentsExperienceId", String.valueOf(getSegmentsExperienceId()));
 		stateContext.put(
@@ -427,6 +436,12 @@ public class ContentPageLayoutEditorDisplayContext
 		}
 
 		return StringPool.BLANK;
+	}
+
+	private long _getControlSegmentsExperienceId() {
+		return ParamUtil.getLong(
+			PortalUtil.getOriginalServletRequest(httpServletRequest),
+			"controlSegmentsExperienceId", -1);
 	}
 
 	private String _getEditSegmentsEntryURL() throws Exception {
