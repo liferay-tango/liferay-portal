@@ -77,6 +77,7 @@ describe('SegmentsExperimentsSidebar', () => {
 		const {getByDisplayValue, getByText} = renderApp({
 			initialSegmentsExperiences: segmentsExperiences,
 			initialSegmentsExperiment: segmentsExperiment,
+			initialSegmentsVariants: controlVariant,
 		});
 
 		const defaultExperience = getByDisplayValue(
@@ -113,6 +114,7 @@ describe('SegmentsExperimentsSidebar', () => {
 	it('Renders experiment status label', () => {
 		const {getByText} = renderApp({
 			initialSegmentsExperiment: segmentsExperiment,
+			initialSegmentsVariants: controlVariant,
 		});
 
 		const statusLabel = getByText(segmentsExperiment.status.label);
@@ -124,6 +126,7 @@ describe('SegmentsExperimentsSidebar', () => {
 
 		const {queryByTestId} = renderApp({
 			initialSegmentsExperiment: segmentsExperiment,
+			initialSegmentsVariants: controlVariant,
 		});
 
 		expect(queryByTestId('segments-experiments-drop-down')).toBe(null);
@@ -142,6 +145,7 @@ describe('SegmentsExperimentsSidebar', () => {
 
 		const {getByText} = renderApp({
 			initialSegmentsExperiment: experiment,
+			initialSegmentsVariants: controlVariant,
 		});
 
 		const clickGoalSection = getByText('click-goal');
@@ -230,6 +234,7 @@ describe('Variants', () => {
 
 		const {queryByTestId} = renderApp({
 			initialSegmentsExperiment: segmentsExperiment,
+			initialSegmentsVariants: segmentsVariants,
 		});
 
 		expect(queryByTestId('create-variant')).toBe(null);
@@ -279,6 +284,7 @@ describe('Review and Run test', () => {
 		const {getByDisplayValue, getByText} = renderApp({
 			initialSegmentsExperiences: segmentsExperiences,
 			initialSegmentsExperiment: experiment,
+			initialSegmentsVariants: segmentsVariants,
 		});
 
 		getByDisplayValue(segmentsExperiences[0].name);
@@ -800,9 +806,9 @@ describe('Winner declared', () => {
 		});
 		const {publishExperience} = APIServiceMocks;
 
-		const publishButton = getByText('discard-test');
+		const discardButton = getByText('discard-test');
 
-		userEvent.click(publishButton);
+		userEvent.click(discardButton);
 
 		expect(publishExperience).toHaveBeenCalledWith({
 			segmentsExperimentId: segmentsExperiment.segmentsExperimentId,

@@ -15,7 +15,7 @@ import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import ClickGoalPicker from '../../../src/main/resources/META-INF/resources/js/components/ClickGoalPicker/ClickGoalPicker.es';
-import {segmentsExperiment} from '../fixtures.es';
+import {segmentsExperiment, segmentsVariants} from '../fixtures.es';
 import renderApp from '../renderApp.es';
 
 describe('ClickGoalPicker', () => {
@@ -32,6 +32,7 @@ describe('ClickGoalPicker', () => {
 
 		const {getByText} = renderApp({
 			initialSegmentsExperiment: experiment,
+			initialSegmentsVariants: segmentsVariants,
 		});
 
 		expect(getByText(experiment.name)).toBeInTheDocument();
