@@ -24,6 +24,7 @@ const SegmentsExperimentsContext = React.createContext({
 		runExperiment: () => {},
 	},
 	assetsPath: '',
+	editVariantLayoutURL: '',
 	page: {
 		classNameId: '',
 		classPK: '',
