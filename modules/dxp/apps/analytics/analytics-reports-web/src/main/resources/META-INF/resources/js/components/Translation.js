@@ -9,31 +9,26 @@
  * distribution rights of the Software.
  */
 
-import ClayButton from '@clayui/button';
-import ClayDropDown from '@clayui/drop-down';
-import ClayIcon from '@clayui/icon';
-import ClayLabel from '@clayui/label';
 import ClayLayout from '@clayui/layout';
 import PropTypes from 'prop-types';
-import React, {useMemo, useState} from 'react';
+import React from 'react';
 
 import {useChartState} from '../context/ChartStateContext';
-
+import Flags from './Flags';
 export default function Translation({
 	defaultLanguage,
 	onSelectedLanguageClick,
 	viewURLs,
 }) {
-	const [active, setActive] = useState(false);
-
-	const selectedLanguage = useMemo(() => {
-		return (
-			viewURLs.find((language) => language.selected)?.languageId ||
-			defaultLanguage
-		);
-	}, [defaultLanguage, viewURLs]);
-
 	const chartState = useChartState();
+
+	const handleSelectedLanguageClick = (viewURL) => {
+		onSelectedLanguageClick(
+			viewURL,
+			chartState.timeSpanKey,
+			chartState.timeSpanOffset
+		);
+	};
 
 	return (
 		<ClayLayout.ContentRow>
@@ -46,68 +41,11 @@ export default function Translation({
 				</span>
 			</ClayLayout.ContentCol>
 			<ClayLayout.ContentCol>
-				<ClayDropDown
-					active={active}
-					hasLeftSymbols
-					onActiveChange={setActive}
-					trigger={
-						<ClayButton
-							className="btn-monospaced"
-							displayType="secondary"
-							small
-						>
-							<ClayIcon symbol={selectedLanguage.toLowerCase()} />
-							<span
-								className="d-block font-weight-normal"
-								style={{fontSize: '9px'}}
-							>
-								{selectedLanguage}
-							</span>
-						</ClayButton>
-					}
-				>
-					<ClayDropDown.ItemList>
-						{Object.values(viewURLs).map((language, index) => (
-							<ClayDropDown.Item
-								active={
-									language.selected && language.languageId
-								}
-								key={index}
-								onClick={() => {
-									onSelectedLanguageClick(
-										language.viewURL,
-										chartState.timeSpanKey,
-										chartState.timeSpanOffset
-									);
-								}}
-								symbolLeft={language.languageId.toLowerCase()}
-							>
-								<ClayLayout.ContentRow>
-									<ClayLayout.ContentCol expand>
-										<span>{language.languageId}</span>
-									</ClayLayout.ContentCol>
-									<ClayLayout.ContentCol>
-										<ClayLabel
-											displayType={
-												language.default
-													? 'primary'
-													: 'success'
-											}
-										>
-											{language.default
-												? Liferay.Language.get(
-														'default'
-												  )
-												: Liferay.Language.get(
-														'translated'
-												  )}
-										</ClayLabel>
-									</ClayLayout.ContentCol>
-								</ClayLayout.ContentRow>
-							</ClayDropDown.Item>
-						))}
-					</ClayDropDown.ItemList>
-				</ClayDropDown>
+				<Flags
+					defaultLanguage={defaultLanguage}
+					onSelectedLanguageClick={handleSelectedLanguageClick}
+					viewURLs={viewURLs}
+				/>
 			</ClayLayout.ContentCol>
 		</ClayLayout.ContentRow>
 	);
