@@ -30,17 +30,17 @@ import org.osgi.service.component.annotations.Component;
 	immediate = true,
 	property = {
 		"javax.portlet.name=" + AnalyticsReportsPortletKeys.ANALYTICS_REPORTS,
-		"mvc.command.name=/analytics_reports/view_layout_audit"
+		"mvc.command.name=/analytics_reports/view_audit"
 	},
 	service = MVCRenderCommand.class
 )
-public class ViewLayoutAuditMVCRenderCommand implements MVCRenderCommand {
+public class ViewAuditMVCRenderCommand implements MVCRenderCommand {
 
 	public String render(
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws PortletException {
 
-		return "/view_layout_audit.jsp";
+		return "/view_audit.jsp";
 	}
 
 }

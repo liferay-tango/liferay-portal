@@ -18,7 +18,7 @@
 
 <%
 String analyticsReportsPanelState = SessionClicks.get(request, "com.liferay.analytics.reports.web_panelState", "closed");
-String layoutAuditPanelState = SessionClicks.get(request, "com.liferay.analytics.reports.web_layoutAuditPanelState", "closed");
+String auditPanelState = SessionClicks.get(request, "com.liferay.analytics.reports.web_auditPanelState", "closed");
 %>
 
 <div class="lfr-analytics-reports-sidebar" id="analyticsReportsSidebar">
@@ -50,8 +50,8 @@ String layoutAuditPanelState = SessionClicks.get(request, "com.liferay.analytics
 			<c:when test='<%= Objects.equals(analyticsReportsPanelState, "open") %>'>
 				<liferay-util:include page="/analytics_reports_panel.jsp" servletContext="<%= application %>" />
 			</c:when>
-			<c:when test='<%= Objects.equals(layoutAuditPanelState, "open") %>'>
-				<liferay-util:include page="/view_layout_audit.jsp" servletContext="<%= application %>" />
+			<c:when test='<%= Objects.equals(auditPanelState, "open") %>'>
+				<liferay-util:include page="/view_audit.jsp" servletContext="<%= application %>" />
 			</c:when>
 		</c:choose>
 	</div>
@@ -84,27 +84,27 @@ String layoutAuditPanelState = SessionClicks.get(request, "com.liferay.analytics
 		Liferay.SideNavigation.destroy(analyticsReportsPanelToggle);
 	});
 
-	var layoutAuditPanelToggle = document.getElementById(
-		'<portlet:namespace />layoutAuditPanelToggleId'
+	var auditPanelToggle = document.getElementById(
+		'<portlet:namespace />auditPanelToggleId'
 	);
 
-	var sidenavInstance = Liferay.SideNavigation.initialize(layoutAuditPanelToggle);
+	var sidenavInstance = Liferay.SideNavigation.initialize(auditPanelToggle);
 
 	sidenavInstance.on('open.lexicon.sidenav', (event) => {
 		Liferay.Util.Session.set(
-			'com.liferay.analytics.reports.web_layoutAuditPanelState',
+			'com.liferay.analytics.reports.web_auditPanelState',
 			'open'
 		);
 	});
 
 	sidenavInstance.on('closed.lexicon.sidenav', (event) => {
 		Liferay.Util.Session.set(
-			'com.liferay.analytics.reports.web_layoutAuditPanelState',
+			'com.liferay.analytics.reports.web_auditPanelState',
 			'closed'
 		);
 	});
 
 	Liferay.once('screenLoad', () => {
-		Liferay.SideNavigation.destroy(layoutAuditPanelToggle);
+		Liferay.SideNavigation.destroy(auditPanelToggle);
 	});
 </aui:script>

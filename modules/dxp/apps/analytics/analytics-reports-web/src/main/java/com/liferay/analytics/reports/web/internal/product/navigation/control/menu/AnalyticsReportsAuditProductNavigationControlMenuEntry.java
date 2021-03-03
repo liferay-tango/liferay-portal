@@ -74,7 +74,7 @@ import org.osgi.service.component.annotations.Reference;
 	},
 	service = ProductNavigationControlMenuEntry.class
 )
-public class AnalyticsReportsLayoutAuditProductNavigationControlMenuEntry
+public class AnalyticsReportsAuditProductNavigationControlMenuEntry
 	extends BaseProductNavigationControlMenuEntry {
 
 	@Override
@@ -95,7 +95,7 @@ public class AnalyticsReportsLayoutAuditProductNavigationControlMenuEntry
 
 		BodyBottomTag bodyBottomTag = new BodyBottomTag();
 
-		bodyBottomTag.setOutputKey("layoutAuditPanel");
+		bodyBottomTag.setOutputKey("auditPanel");
 
 		try {
 			bodyBottomTag.doBodyTag(
@@ -118,8 +118,8 @@ public class AnalyticsReportsLayoutAuditProductNavigationControlMenuEntry
 		Map<String, String> values = new HashMap<>();
 
 		if (isPanelStateOpen(httpServletRequest)) {
+			values.put("auditPanelURL", StringPool.BLANK);
 			values.put("cssClass", "active");
-			values.put("layoutAuditPanelURL", StringPool.BLANK);
 		}
 		else {
 			InfoItemReference infoItemReference = _getInfoItemReference(
@@ -127,8 +127,8 @@ public class AnalyticsReportsLayoutAuditProductNavigationControlMenuEntry
 
 			try {
 				values.put(
-					"layoutAuditPanelURL",
-					AnalyticsReportsUtil.getLayoutAuditPanelURL(
+					"auditPanelURL",
+					AnalyticsReportsUtil.getAuditPanelURL(
 						infoItemReference, httpServletRequest, _portal,
 						_portletURLFactory));
 			}
@@ -170,12 +170,11 @@ public class AnalyticsReportsLayoutAuditProductNavigationControlMenuEntry
 	}
 
 	public boolean isPanelStateOpen(HttpServletRequest httpServletRequest) {
-		String layoutAuditPanelState = SessionClicks.get(
+		String auditPanelState = SessionClicks.get(
 			httpServletRequest,
-			"com.liferay.analytics.reports.web_layoutAuditPanelState",
-			"closed");
+			"com.liferay.analytics.reports.web_auditPanelState", "closed");
 
-		if (Objects.equals(layoutAuditPanelState, "open")) {
+		if (Objects.equals(auditPanelState, "open")) {
 			return true;
 		}
 
@@ -237,18 +236,18 @@ public class AnalyticsReportsLayoutAuditProductNavigationControlMenuEntry
 			jspWriter.write("<div class=\"");
 
 			if (isPanelStateOpen(httpServletRequest)) {
-				jspWriter.write("lfr-has-layout-audit-panel open-admin-panel ");
+				jspWriter.write("lfr-has-audit-panel open-admin-panel ");
 			}
 
 			jspWriter.write(
 				StringBundler.concat(
 					"d-print-none lfr-admin-panel lfr-product-menu-panel ",
-					"lfr-layout-audit-panel sidenav-fixed sidenav-menu-slider ",
+					"lfr-audit-panel sidenav-fixed sidenav-menu-slider ",
 					"sidenav-right\" id=\""));
 
 			jspWriter.write(_portletNamespace);
 
-			jspWriter.write("layoutAuditPanelId\">");
+			jspWriter.write("auditPanelId\">");
 			jspWriter.write(
 				"<div class=\"sidebar sidebar-light sidenav-menu " +
 					"sidebar-sm\">");
@@ -269,7 +268,7 @@ public class AnalyticsReportsLayoutAuditProductNavigationControlMenuEntry
 
 	private static final String _ICON_TMPL_CONTENT = StringUtil.read(
 		AnalyticsReportsProductNavigationControlMenuEntry.class,
-		"icon_layout_audit.tmpl");
+		"icon_audit.tmpl");
 
 	private volatile AnalyticsReportsConfiguration
 		_analyticsReportsConfiguration;

@@ -13,7 +13,7 @@ import ClayLayout from '@clayui/layout';
 import {ClayTooltipProvider} from '@clayui/tooltip';
 import React from 'react';
 
-import EmptyLayoutAuditPanel from './components/EmptyLayoutAuditPanel';
+import EmptyAuditPanel from './components/EmptyAuditPanel';
 import Flags from './components/Flags';
 
 const MOCK_DATA = {
@@ -99,7 +99,7 @@ export default function () {
 				</ClayLayout.ContentCol>
 			</ClayLayout.ContentRow>
 
-			{validConnection ? <></> : <EmptyLayoutAuditPanel />}
+			{validConnection ? <></> : <EmptyAuditPanel />}
 		</>
 	);
 }

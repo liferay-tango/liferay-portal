@@ -12,7 +12,7 @@
 import ClayButton from '@clayui/button';
 import React from 'react';
 
-export default function EmptyLayoutAuditPanel({showButton}) {
+export default function EmptyAuditPanel({showButton}) {
 	return (
 		<div className="text-center">
 			<img

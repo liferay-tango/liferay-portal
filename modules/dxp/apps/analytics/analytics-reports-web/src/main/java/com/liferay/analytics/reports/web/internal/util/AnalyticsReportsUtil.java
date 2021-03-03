@@ -84,7 +84,7 @@ public class AnalyticsReportsUtil {
 		return PrefsPropsUtil.getString(companyId, "liferayAnalyticsProjectId");
 	}
 
-	public static String getLayoutAuditPanelURL(
+	public static String getAuditPanelURL(
 			InfoItemReference infoItemReference,
 			HttpServletRequest httpServletRequest, Portal portal,
 			PortletURLFactory portletURLFactory)
@@ -95,7 +95,7 @@ public class AnalyticsReportsUtil {
 			RenderRequest.RENDER_PHASE);
 
 		portletURL.setParameter(
-			"mvcRenderCommandName", "/analytics_reports/view_layout_audit");
+			"mvcRenderCommandName", "/analytics_reports/view_audit");
 		portletURL.setParameter(
 			"redirect", portal.getCurrentCompleteURL(httpServletRequest));
 		portletURL.setParameter("className", infoItemReference.getClassName());
