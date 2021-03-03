@@ -49,6 +49,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Sarai Díaz
  */
 @Component(
+	configurationPid = "com.liferay.analytics.reports.web.internal.configuration.AnalyticsReportsConfiguration",
 	configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true,
 	property = {
 		"com.liferay.portlet.add-default-resource=true",
