@@ -193,16 +193,13 @@ public class AnalyticsReportsAuditProductNavigationControlMenuEntry
 	}
 
 	@Activate
-	protected void activate() {
-		_portletNamespace = _portal.getPortletNamespace(
-			AnalyticsReportsPortletKeys.ANALYTICS_REPORTS);
-	}
-
-	@Activate
 	@Modified
 	protected void activate(Map<String, Object> properties) {
 		_analyticsReportsConfiguration = ConfigurableUtil.createConfigurable(
 			AnalyticsReportsConfiguration.class, properties);
+
+		_portletNamespace = _portal.getPortletNamespace(
+			AnalyticsReportsPortletKeys.ANALYTICS_REPORTS);
 	}
 
 	private InfoItemReference _getInfoItemReference(
@@ -236,14 +233,14 @@ public class AnalyticsReportsAuditProductNavigationControlMenuEntry
 			jspWriter.write("<div class=\"");
 
 			if (isPanelStateOpen(httpServletRequest)) {
-				jspWriter.write("lfr-has-audit-panel open-admin-panel ");
+				jspWriter.write("open-admin-panel ");
 			}
 
 			jspWriter.write(
 				StringBundler.concat(
-					"d-print-none lfr-admin-panel lfr-product-menu-panel ",
-					"lfr-audit-panel sidenav-fixed sidenav-menu-slider ",
-					"sidenav-right\" id=\""));
+					"closed d-print-none lfr-admin-panel ",
+					"lfr-product-menu-panel lfr-audit-panel sidenav-fixed ",
+					"sidenav-menu-slider sidenav-right\" id=\""));
 
 			jspWriter.write(_portletNamespace);
 

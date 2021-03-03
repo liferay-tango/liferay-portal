@@ -21,14 +21,48 @@ String analyticsReportsPanelState = SessionClicks.get(request, "com.liferay.anal
 String auditPanelState = SessionClicks.get(request, "com.liferay.analytics.reports.web_auditPanelState", "closed");
 %>
 
-<c:choose>
-	<c:when test='<%= Objects.equals(analyticsReportsPanelState, "open") %>'>
-		<liferay-util:include page="/analytics_reports_panel.jsp" servletContext="<%= application %>" />
-	</c:when>
-	<c:when test='<%= Objects.equals(auditPanelState, "open") %>'>
-		<liferay-util:include page="/view_audit.jsp" servletContext="<%= application %>" />
-	</c:when>
-</c:choose>
+<div class="sidebar-header">
+	<clay:content-row
+		cssClass="sidebar-section"
+	>
+		<clay:content-col
+			expand="<%= true %>"
+		>
+			<c:choose>
+				<c:when test='<%= Objects.equals(analyticsReportsPanelState, "open") && !Objects.equals(auditPanelState, "open") %>'>
+					<h1 class="sr-only"><liferay-ui:message key="content-performance-panel" /></h1>
+
+					<span><liferay-ui:message key="content-performance" /></span>
+				</c:when>
+				<c:when test='<%= Objects.equals(auditPanelState, "open") && !Objects.equals(analyticsReportsPanelState, "open") %>'>
+					<h1 class="sr-only"><liferay-ui:message key="page-audit" /></h1>
+
+					<span><liferay-ui:message key="page-audit" /></span>
+				</c:when>
+			</c:choose>
+		</clay:content-col>
+
+		<clay:content-col>
+			<clay:button
+				cssClass="sidenav-close"
+				displayType="unstyled"
+				icon="times-small"
+				monospaced="<%= true %>"
+			/>
+		</clay:content-col>
+	</clay:content-row>
+</div>
+
+<div class="sidebar-body">
+	<c:choose>
+		<c:when test='<%= Objects.equals(analyticsReportsPanelState, "open") && !Objects.equals(auditPanelState, "open") %>'>
+			<liferay-util:include page="/analytics_reports_panel.jsp" servletContext="<%= application %>" />
+		</c:when>
+		<c:when test='<%= Objects.equals(auditPanelState, "open") && !Objects.equals(analyticsReportsPanelState, "open") %>'>
+			<liferay-util:include page="/view_audit.jsp" servletContext="<%= application %>" />
+		</c:when>
+	</c:choose>
+</div>
 
 <aui:script>
 	var analyticsReportsPanelToggle = document.getElementById(
