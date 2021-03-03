@@ -21,59 +21,32 @@ String analyticsReportsPanelState = SessionClicks.get(request, "com.liferay.anal
 String auditPanelState = SessionClicks.get(request, "com.liferay.analytics.reports.web_auditPanelState", "closed");
 %>
 
-<div class="lfr-analytics-reports-sidebar" id="analyticsReportsSidebar">
-	<div class="sidebar-header">
-		<clay:content-row
-			cssClass="sidebar-section"
-		>
-			<clay:content-col
-				expand="<%= true %>"
-			>
-				<h1 class="sr-only"><liferay-ui:message key="content-performance-panel" /></h1>
-
-				<span><liferay-ui:message key="content-performance" /></span>
-			</clay:content-col>
-
-			<clay:content-col>
-				<clay:button
-					cssClass="sidenav-close"
-					displayType="unstyled"
-					icon="times-small"
-					monospaced="<%= true %>"
-				/>
-			</clay:content-col>
-		</clay:content-row>
-	</div>
-
-	<div class="sidebar-body">
-		<c:choose>
-			<c:when test='<%= Objects.equals(analyticsReportsPanelState, "open") %>'>
-				<liferay-util:include page="/analytics_reports_panel.jsp" servletContext="<%= application %>" />
-			</c:when>
-			<c:when test='<%= Objects.equals(auditPanelState, "open") %>'>
-				<liferay-util:include page="/view_audit.jsp" servletContext="<%= application %>" />
-			</c:when>
-		</c:choose>
-	</div>
-</div>
+<c:choose>
+	<c:when test='<%= Objects.equals(analyticsReportsPanelState, "open") %>'>
+		<liferay-util:include page="/analytics_reports_panel.jsp" servletContext="<%= application %>" />
+	</c:when>
+	<c:when test='<%= Objects.equals(auditPanelState, "open") %>'>
+		<liferay-util:include page="/view_audit.jsp" servletContext="<%= application %>" />
+	</c:when>
+</c:choose>
 
 <aui:script>
 	var analyticsReportsPanelToggle = document.getElementById(
 		'<portlet:namespace />analyticsReportsPanelToggleId'
 	);
 
-	var sidenavInstance = Liferay.SideNavigation.initialize(
+	var analyticsReportsSidenavInstance = Liferay.SideNavigation.initialize(
 		analyticsReportsPanelToggle
 	);
 
-	sidenavInstance.on('open.lexicon.sidenav', (event) => {
+	analyticsReportsSidenavInstance.on('open.lexicon.sidenav', (event) => {
 		Liferay.Util.Session.set(
 			'com.liferay.analytics.reports.web_panelState',
 			'open'
 		);
 	});
 
-	sidenavInstance.on('closed.lexicon.sidenav', (event) => {
+	analyticsReportsSidenavInstance.on('closed.lexicon.sidenav', (event) => {
 		Liferay.Util.Session.set(
 			'com.liferay.analytics.reports.web_panelState',
 			'closed'
@@ -88,16 +61,16 @@ String auditPanelState = SessionClicks.get(request, "com.liferay.analytics.repor
 		'<portlet:namespace />auditPanelToggleId'
 	);
 
-	var sidenavInstance = Liferay.SideNavigation.initialize(auditPanelToggle);
+	var auditSidenavInstance = Liferay.SideNavigation.initialize(auditPanelToggle);
 
-	sidenavInstance.on('open.lexicon.sidenav', (event) => {
+	auditSidenavInstance.on('open.lexicon.sidenav', (event) => {
 		Liferay.Util.Session.set(
 			'com.liferay.analytics.reports.web_auditPanelState',
 			'open'
 		);
 	});
 
-	sidenavInstance.on('closed.lexicon.sidenav', (event) => {
+	auditSidenavInstance.on('closed.lexicon.sidenav', (event) => {
 		Liferay.Util.Session.set(
 			'com.liferay.analytics.reports.web_auditPanelState',
 			'closed'

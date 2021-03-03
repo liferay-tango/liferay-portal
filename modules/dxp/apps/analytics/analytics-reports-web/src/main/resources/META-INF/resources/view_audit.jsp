@@ -16,17 +16,44 @@
 
 <%@ include file="/init.jsp" %>
 
-<div class="c-p-3" id="<portlet:namespace />-audit-root" %>
-	<div class="inline-item my-5 p-5 w-100">
-		<span aria-hidden="true" class="loading-animation"></span>
+<div class="lfr-audit-sidebar" id="auditSidebar">
+	<div class="sidebar-header">
+		<clay:content-row
+			cssClass="sidebar-section"
+		>
+			<clay:content-col
+				expand="<%= true %>"
+			>
+				<h1 class="sr-only"><liferay-ui:message key="page-audit" /></h1>
+
+				<span><liferay-ui:message key="page-audit" /></span>
+			</clay:content-col>
+
+			<clay:content-col>
+				<clay:button
+					cssClass="sidenav-close"
+					displayType="unstyled"
+					icon="times-small"
+					monospaced="<%= true %>"
+				/>
+			</clay:content-col>
+		</clay:content-row>
 	</div>
 
-	<react:component
-		module="js/AuditApp"
-		props='<%=
-			HashMapBuilder.<String, Object>put(
-				"validConnection", false
-			).build()
-		%>'
-	/>
+	<div class="sidebar-body">
+		<div class="c-p-3" id="<portlet:namespace />-audit-root" %>
+			<div class="inline-item my-5 p-5 w-100">
+				<span aria-hidden="true" class="loading-animation"></span>
+			</div>
+
+			<react:component
+				module="js/AuditApp"
+				props='<%=
+					HashMapBuilder.<String, Object>put(
+						"validConnection", false
+					).build()
+				%>'
+			/>
+		</div>
+	</div>
 </div>
