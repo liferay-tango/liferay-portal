@@ -14,6 +14,7 @@
 
 package com.liferay.analytics.reports.web.internal.product.navigation.control.menu;
 
+import com.liferay.analytics.reports.web.internal.configuration.AnalyticsReportsConfiguration;
 import com.liferay.analytics.reports.web.internal.constants.AnalyticsReportsPortletKeys;
 import com.liferay.analytics.reports.web.internal.constants.AnalyticsReportsWebKeys;
 import com.liferay.analytics.reports.web.internal.util.AnalyticsReportsUtil;
@@ -21,6 +22,7 @@ import com.liferay.info.item.InfoItemReference;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Layout;
@@ -57,12 +59,14 @@ import javax.servlet.jsp.PageContext;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Sarai Díaz
  */
 @Component(
+	configurationPid = "com.liferay.analytics.reports.web.internal.configuration.AnalyticsReportsConfiguration",
 	immediate = true,
 	property = {
 		"product.navigation.control.menu.category.key=" + ProductNavigationControlMenuCategoryKeys.USER,
@@ -182,13 +186,24 @@ public class AnalyticsReportsLayoutAuditProductNavigationControlMenuEntry
 	public boolean isShow(HttpServletRequest httpServletRequest)
 		throws PortalException {
 
-		return true;
+		if (_analyticsReportsConfiguration.auditEnabled()) {
+			return true;
+		}
+
+		return false;
 	}
 
 	@Activate
 	protected void activate() {
 		_portletNamespace = _portal.getPortletNamespace(
 			AnalyticsReportsPortletKeys.ANALYTICS_REPORTS);
+	}
+
+	@Activate
+	@Modified
+	protected void activate(Map<String, Object> properties) {
+		_analyticsReportsConfiguration = ConfigurableUtil.createConfigurable(
+			AnalyticsReportsConfiguration.class, properties);
 	}
 
 	private InfoItemReference _getInfoItemReference(
@@ -255,6 +270,9 @@ public class AnalyticsReportsLayoutAuditProductNavigationControlMenuEntry
 	private static final String _ICON_TMPL_CONTENT = StringUtil.read(
 		AnalyticsReportsProductNavigationControlMenuEntry.class,
 		"icon_layout_audit.tmpl");
+
+	private volatile AnalyticsReportsConfiguration
+		_analyticsReportsConfiguration;
 
 	@Reference
 	private Html _html;
