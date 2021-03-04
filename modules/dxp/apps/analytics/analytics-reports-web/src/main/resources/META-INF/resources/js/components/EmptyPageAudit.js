@@ -25,26 +25,30 @@ export default function EmptyAuditPanel({assetsPath, showButton}) {
 
 			<div className="c-mb-2 font-weight-semi-bold">
 				<span>
-					Check issues that impact on your page&apos;s accessibility
-					and SEO.
+					{Liferay.Language.get(
+						"check-issues-that-impact-on-your-page's-accessibility-and-seo"
+					)}
 				</span>
 			</div>
 
 			{showButton ? (
 				<>
 					<div className="c-mb-3 text-secondary">
-						Connect to PageSpeed to run a Page Audit.
+						{Liferay.Language.get(
+							'connect-to-pagespeed-to-run-a-page-audit'
+						)}
 					</div>
 
 					<ClayButton displayType="secondary">
-						Connect to PageSpeed
+						{Liferay.Language.get('connect-to-pagespeed')}
 					</ClayButton>
 				</>
 			) : (
 				<div className="text-secondary">
 					<span>
-						To run a Page Audit connect with Page Speed from
-						Instance settings &#62; Pages &#62; PageSpeed.
+						{Liferay.Language.get(
+							'to-run-a-page-audit-connect-with-pagespeed-from-instance-settings-pages-pagespeed'
+						)}
 					</span>
 				</div>
 			)}
