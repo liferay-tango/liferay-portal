@@ -23,11 +23,11 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
  */
 @ExtendedObjectClassDefinition(generateUI = false)
 @Meta.OCD(
-	id = "com.liferay.analytics.reports.web.internal.configuration.AnalyticsReportsConfiguration"
+	id = "com.liferay.analytics.reports.web.internal.configuration.AnalyticsReportsPageSpeedConfiguration"
 )
-public interface AnalyticsReportsConfiguration {
+public interface AnalyticsReportsPageSpeedConfiguration {
 
 	@Meta.AD(deflt = "false", required = false)
-	public boolean auditEnabled();
+	public boolean enabled();
 
 }

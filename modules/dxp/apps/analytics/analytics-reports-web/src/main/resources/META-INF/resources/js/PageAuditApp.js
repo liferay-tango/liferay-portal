@@ -22,10 +22,9 @@ import EmptyPageAudit from './components/EmptyPageAudit';
 const MOCK_DATA = {
 	assetsPath: '/o/analytics-reports-web/assets',
 	canonicalURL: 'http://localhost:8080/en/web/guest/w/basic-content-page',
-	defaultLanguage: 'en-US',
-	showButton: false,
+	showConfigurePageSpeedButton: false,
 	title: 'Basic Content Page',
-	validConnection: false,
+	validPageSpeedConnection: false,
 	viewURLs: [
 		{
 			default: true,
@@ -45,21 +44,21 @@ const MOCK_DATA = {
 const {
 	assetsPath,
 	canonicalURL,
-	defaultLanguage,
-	showButton,
+	showConfigurePageSpeedButton,
 	title,
+	validPageSpeedConnection,
 	viewURLs,
 } = MOCK_DATA;
 
 const noop = () => {};
 
-export default function ({validConnection}) {
+export default function () {
 	const [active, setActive] = useState(false);
 
 	const selectedLanguage = useMemo(() => {
 		return (
-			viewURLs.find((language) => language.selected)?.languageId ||
-			defaultLanguage
+			viewURLs.find(({selected}) => selected).languageId ||
+			viewURLs.find(({default: isDefault}) => isDefault).languageId
 		);
 	}, []);
 
@@ -164,12 +163,12 @@ export default function ({validConnection}) {
 				</ClayLayout.ContentCol>
 			</ClayLayout.ContentRow>
 
-			{validConnection ? (
+			{validPageSpeedConnection ? (
 				<></>
 			) : (
 				<EmptyPageAudit
 					assetsPath={assetsPath}
-					showButton={showButton}
+					showConfigurePageSpeedButton={showConfigurePageSpeedButton}
 				/>
 			)}
 		</>

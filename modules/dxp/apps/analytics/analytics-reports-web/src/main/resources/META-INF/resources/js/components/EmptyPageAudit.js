@@ -12,7 +12,10 @@
 import ClayButton from '@clayui/button';
 import React from 'react';
 
-export default function EmptyAuditPanel({assetsPath, showButton}) {
+export default function EmptyAuditPanel({
+	assetsPath,
+	showConfigurePageSpeedButton,
+}) {
 	const defaultIllustration = `${assetsPath}/issues-default.svg`;
 
 	return (
@@ -31,7 +34,7 @@ export default function EmptyAuditPanel({assetsPath, showButton}) {
 				</span>
 			</div>
 
-			{showButton ? (
+			{showConfigurePageSpeedButton ? (
 				<>
 					<div className="c-mb-3 text-secondary">
 						{Liferay.Language.get(

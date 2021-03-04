@@ -17,7 +17,7 @@ package com.liferay.analytics.reports.web.internal.product.navigation.control.me
 import com.liferay.analytics.reports.info.item.AnalyticsReportsInfoItem;
 import com.liferay.analytics.reports.info.item.AnalyticsReportsInfoItemTracker;
 import com.liferay.analytics.reports.info.item.provider.AnalyticsReportsInfoItemObjectProvider;
-import com.liferay.analytics.reports.web.internal.configuration.AnalyticsReportsConfiguration;
+import com.liferay.analytics.reports.web.internal.configuration.AnalyticsReportsPageSpeedConfiguration;
 import com.liferay.analytics.reports.web.internal.constants.AnalyticsReportsPortletKeys;
 import com.liferay.analytics.reports.web.internal.constants.AnalyticsReportsWebKeys;
 import com.liferay.analytics.reports.web.internal.info.item.provider.AnalyticsReportsInfoItemObjectProviderTracker;
@@ -69,7 +69,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Sarai Díaz
  */
 @Component(
-	configurationPid = "com.liferay.analytics.reports.web.internal.configuration.AnalyticsReportsConfiguration",
+	configurationPid = "com.liferay.analytics.reports.web.internal.configuration.AnalyticsReportsPageSpeedConfiguration",
 	immediate = true,
 	property = {
 		"product.navigation.control.menu.category.key=" + ProductNavigationControlMenuCategoryKeys.USER,
@@ -188,7 +188,7 @@ public class AnalyticsReportsAuditProductNavigationControlMenuEntry
 	public boolean isShow(HttpServletRequest httpServletRequest)
 		throws PortalException {
 
-		if (!_analyticsReportsConfiguration.auditEnabled()) {
+		if (!_analyticsReportsPageSpeedConfiguration.enabled()) {
 			return false;
 		}
 
@@ -242,8 +242,9 @@ public class AnalyticsReportsAuditProductNavigationControlMenuEntry
 
 	@Activate
 	protected void activate(Map<String, Object> properties) {
-		_analyticsReportsConfiguration = ConfigurableUtil.createConfigurable(
-			AnalyticsReportsConfiguration.class, properties);
+		_analyticsReportsPageSpeedConfiguration =
+			ConfigurableUtil.createConfigurable(
+				AnalyticsReportsPageSpeedConfiguration.class, properties);
 
 		_portletNamespace = _portal.getPortletNamespace(
 			AnalyticsReportsPortletKeys.ANALYTICS_REPORTS);
@@ -314,14 +315,15 @@ public class AnalyticsReportsAuditProductNavigationControlMenuEntry
 		AnalyticsReportsAuditProductNavigationControlMenuEntry.class,
 		"icon_audit.tmpl");
 
-	private AnalyticsReportsConfiguration _analyticsReportsConfiguration;
-
 	@Reference
 	private AnalyticsReportsInfoItemObjectProviderTracker
 		_analyticsReportsInfoItemObjectProviderTracker;
 
 	@Reference
 	private AnalyticsReportsInfoItemTracker _analyticsReportsInfoItemTracker;
+
+	private volatile AnalyticsReportsPageSpeedConfiguration
+		_analyticsReportsPageSpeedConfiguration;
 
 	@Reference
 	private Html _html;
