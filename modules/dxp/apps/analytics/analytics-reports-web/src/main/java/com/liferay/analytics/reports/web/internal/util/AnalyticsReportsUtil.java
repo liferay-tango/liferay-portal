@@ -84,6 +84,28 @@ public class AnalyticsReportsUtil {
 		return PrefsPropsUtil.getString(companyId, "liferayAnalyticsProjectId");
 	}
 
+	public static String getAuditPanelURL(
+			InfoItemReference infoItemReference,
+			HttpServletRequest httpServletRequest, Portal portal,
+			PortletURLFactory portletURLFactory)
+		throws WindowStateException {
+
+		PortletURL portletURL = portletURLFactory.create(
+			httpServletRequest, AnalyticsReportsPortletKeys.ANALYTICS_REPORTS,
+			RenderRequest.RENDER_PHASE);
+
+		portletURL.setParameter(
+			"mvcRenderCommandName", "/analytics_reports/view_audit_panel");
+		portletURL.setParameter(
+			"redirect", portal.getCurrentCompleteURL(httpServletRequest));
+		portletURL.setParameter("className", infoItemReference.getClassName());
+		portletURL.setParameter(
+			"classPK", String.valueOf(infoItemReference.getClassPK()));
+		portletURL.setWindowState(LiferayWindowState.EXCLUSIVE);
+
+		return portletURL.toString();
+	}
+
 	public static boolean isAnalyticsConnected(long companyId) {
 		if (Validator.isNull(
 				PrefsPropsUtil.getString(
