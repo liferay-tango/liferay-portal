@@ -16,4 +16,17 @@
 
 <%@ include file="/init.jsp" %>
 
-<h1>Hello World!</h1>
+<div class="c-p-3" id="<portlet:namespace />-audit-root" %>
+	<div class="inline-item my-5 p-5 w-100">
+		<span aria-hidden="true" class="loading-animation"></span>
+	</div>
+
+	<react:component
+		module="js/PageAuditApp"
+		props='<%=
+			HashMapBuilder.<String, Object>put(
+				"validConnection", false
+			).build()
+		%>'
+	/>
+</div>
