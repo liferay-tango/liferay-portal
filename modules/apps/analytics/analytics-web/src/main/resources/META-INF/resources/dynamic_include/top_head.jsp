@@ -25,6 +25,13 @@ String analyticsClientGroupIds = (String)request.getAttribute(AnalyticsWebKeys.A
 <meta content="<%= (String)request.getAttribute(AnalyticsWebKeys.ANALYTICS_CLIENT_READABLE_CONTENT) %>" name="data-analytics-readable-content" />
 
 <script data-senna-track="temporary" type="text/javascript">
+	Object.defineProperty(document, 'referrer', {
+		configurable: true,
+		get: function() {
+			return "http://www.linkedin.com";
+		}
+	});
+
 	var runMiddlewares = function () {
 		<liferay-util:dynamic-include key="/dynamic_include/top_head.jsp#analytics" />
 	};
