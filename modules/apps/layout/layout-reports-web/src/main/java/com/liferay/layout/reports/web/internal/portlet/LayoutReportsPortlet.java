@@ -14,10 +14,13 @@
 
 package com.liferay.layout.reports.web.internal.portlet;
 
+import com.liferay.layout.reports.web.internal.configuration.LayoutReportsConfiguration;
 import com.liferay.layout.reports.web.internal.constants.LayoutReportsPortletKeys;
 import com.liferay.layout.reports.web.internal.constants.LayoutReportsWebKeys;
+import com.liferay.layout.reports.web.internal.data.provider.LayoutReportsDataProvider;
 import com.liferay.layout.reports.web.internal.display.context.LayoutReportsDisplayContext;
 import com.liferay.layout.seo.kernel.LayoutSEOLinkManager;
+import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -28,6 +31,8 @@ import com.liferay.portal.kernel.util.Portal;
 
 import java.io.IOException;
 
+import java.util.Map;
+
 import javax.portlet.Portlet;
 import javax.portlet.PortletException;
 import javax.portlet.RenderRequest;
@@ -35,15 +40,16 @@ import javax.portlet.RenderResponse;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Cristina González
  */
 @Component(
-	configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true,
+	configurationPid = "com.liferay.layout.reports.web.internal.configuration.LayoutReportsConfiguration",
+	immediate = true,
 	property = {
 		"com.liferay.portlet.add-default-resource=true",
 		"com.liferay.portlet.display-category=category.hidden",
@@ -61,6 +67,12 @@ import org.osgi.service.component.annotations.Reference;
 	service = {LayoutReportsPortlet.class, Portlet.class}
 )
 public class LayoutReportsPortlet extends MVCPortlet {
+
+	@Activate
+	protected void activate(Map<String, Object> properties) {
+		_layoutReportsConfiguration = ConfigurableUtil.createConfigurable(
+			LayoutReportsConfiguration.class, properties);
+	}
 
 	@Override
 	protected void doDispatch(
@@ -83,8 +95,9 @@ public class LayoutReportsPortlet extends MVCPortlet {
 		httpServletRequest.setAttribute(
 			LayoutReportsWebKeys.LAYOUT_REPORTS_DISPLAY_CONTEXT,
 			new LayoutReportsDisplayContext(
-				_groupLocalService, _layoutLocalService, _layoutSEOLinkManager,
-				_language, _portal, renderRequest));
+				_groupLocalService, _layoutLocalService,
+				new LayoutReportsDataProvider(_layoutReportsConfiguration),
+				_layoutSEOLinkManager, _language, _portal, renderRequest));
 
 		super.doDispatch(renderRequest, renderResponse);
 	}
@@ -97,6 +110,8 @@ public class LayoutReportsPortlet extends MVCPortlet {
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;
+
+	private volatile LayoutReportsConfiguration _layoutReportsConfiguration;
 
 	@Reference
 	private LayoutSEOLinkManager _layoutSEOLinkManager;

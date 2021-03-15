@@ -14,6 +14,7 @@
 
 package com.liferay.layout.reports.web.internal.display.context;
 
+import com.liferay.layout.reports.web.internal.data.provider.LayoutReportsDataProvider;
 import com.liferay.layout.seo.kernel.LayoutSEOLink;
 import com.liferay.layout.seo.kernel.LayoutSEOLinkManager;
 import com.liferay.petra.string.StringPool;
@@ -49,11 +50,13 @@ public class LayoutReportsDisplayContext {
 	public LayoutReportsDisplayContext(
 		GroupLocalService groupLocalService,
 		LayoutLocalService layoutLocalService,
+		LayoutReportsDataProvider layoutReportsDataProvider,
 		LayoutSEOLinkManager layoutSEOLinkManager, Language language,
 		Portal portal, RenderRequest renderRequest) {
 
 		_groupLocalService = groupLocalService;
 		_layoutLocalService = layoutLocalService;
+		_layoutReportsDataProvider = layoutReportsDataProvider;
 		_layoutSEOLinkManager = layoutSEOLinkManager;
 		_language = language;
 		_portal = portal;
@@ -84,7 +87,8 @@ public class LayoutReportsDisplayContext {
 			).put(
 				"showButton", false
 			).put(
-				"validConnection", false
+				"validConnection",
+				_layoutReportsDataProvider.isValidConnection()
 			).build());
 
 		return _data;
@@ -179,6 +183,7 @@ public class LayoutReportsDisplayContext {
 	private final GroupLocalService _groupLocalService;
 	private final Language _language;
 	private final LayoutLocalService _layoutLocalService;
+	private final LayoutReportsDataProvider _layoutReportsDataProvider;
 	private final LayoutSEOLinkManager _layoutSEOLinkManager;
 	private final Portal _portal;
 	private final RenderRequest _renderRequest;
