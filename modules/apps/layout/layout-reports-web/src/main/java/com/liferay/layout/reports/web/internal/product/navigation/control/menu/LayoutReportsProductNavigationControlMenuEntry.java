@@ -388,7 +388,7 @@ public class LayoutReportsProductNavigationControlMenuEntry
 	@Reference
 	private LayoutLocalService _layoutLocalService;
 
-	private LayoutReportsConfiguration _layoutReportsConfiguration;
+	private volatile LayoutReportsConfiguration _layoutReportsConfiguration;
 
 	@Reference
 	private Portal _portal;

@@ -21,13 +21,20 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 /**
  * @author Sarai Díaz
  */
-@ExtendedObjectClassDefinition(generateUI = false)
+@ExtendedObjectClassDefinition(
+	category = "pages", scope = ExtendedObjectClassDefinition.Scope.COMPANY
+)
 @Meta.OCD(
-	id = "com.liferay.layout.reports.web.internal.configuration.LayoutReportsConfiguration"
+	id = "com.liferay.layout.reports.web.internal.configuration.LayoutReportsConfiguration",
+	localization = "content/Language",
+	name = "layout-reports-configuration-name"
 )
 public interface LayoutReportsConfiguration {
 
 	@Meta.AD(deflt = "false", required = false)
 	public boolean enabled();
+
+	@Meta.AD(required = false)
+	public String apiKey();
 
 }
