@@ -14,6 +14,8 @@
 
 package com.liferay.layout.reports.web.internal.display.context;
 
+import com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys;
+import com.liferay.layout.reports.web.internal.configuration.LayoutReportsConfiguration;
 import com.liferay.layout.reports.web.internal.data.provider.LayoutReportsDataProvider;
 import com.liferay.layout.seo.kernel.LayoutSEOLink;
 import com.liferay.layout.seo.kernel.LayoutSEOLinkManager;
@@ -24,6 +26,8 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -40,6 +44,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.portlet.PortletRequest;
+import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
 
 /**
@@ -82,10 +88,11 @@ public class LayoutReportsDisplayContext {
 			).put(
 				"canonicalURLs", _getCanonicalURLs(layout)
 			).put(
-				"defaultLanguageId",
-				LocaleUtil.toBCP47LanguageId(_getDefaultLocale(layout))
+				"configurePageSpeedURL",
+				_getConfigurePageSpeedURL(_renderRequest)
 			).put(
-				"showButton", false
+				"defaultLanguageId",
+				LocaleUtil.toW3cLanguageId(_getDefaultLocale(layout))
 			).put(
 				"validConnection",
 				_layoutReportsDataProvider.isValidConnection()
@@ -149,7 +156,7 @@ public class LayoutReportsDisplayContext {
 					return layoutSEOLink.getHref();
 				}
 			).put(
-				"languageId", LocaleUtil.toBCP47LanguageId(locale)
+				"languageId", LocaleUtil.toW3cLanguageId(locale)
 			).put(
 				"title",
 				Optional.ofNullable(
@@ -165,6 +172,31 @@ public class LayoutReportsDisplayContext {
 		);
 	}
 
+	private String _getConfigurePageSpeedURL(PortletRequest portletRequest) {
+		if (_isOmniAdmin()) {
+			PortletURL portletURL = _portal.getControlPanelPortletURL(
+				portletRequest, ConfigurationAdminPortletKeys.SYSTEM_SETTINGS,
+				PortletRequest.RENDER_PHASE);
+
+			portletURL.setParameter(
+				"mvcRenderCommandName",
+				"/configuration_admin/edit_configuration");
+
+			portletURL.setParameter(
+				"factoryPid", LayoutReportsConfiguration.class.getName());
+			portletURL.setParameter(
+				"pid", LayoutReportsConfiguration.class.getName());
+			portletURL.setParameter(
+				"redirect",
+				_portal.getCurrentCompleteURL(
+					_portal.getHttpServletRequest(portletRequest)));
+
+			return String.valueOf(portletURL);
+		}
+
+		return null;
+	}
+
 	private Locale _getDefaultLocale(Layout layout) {
 		try {
 			return _portal.getSiteDefaultLocale(layout.getGroupId());
@@ -174,6 +206,17 @@ public class LayoutReportsDisplayContext {
 
 			return LocaleUtil.getSiteDefault();
 		}
+	}
+
+	private boolean _isOmniAdmin() {
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		if (permissionChecker.isOmniadmin()) {
+			return true;
+		}
+
+		return false;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

@@ -12,11 +12,14 @@
  * details.
  */
 
-import ClayButton from '@clayui/button';
+import ClayLink from '@clayui/link';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-export default function EmptyLayoutReports({assetsPath, showButton}) {
+export default function EmptyLayoutReports({
+	assetsPath,
+	configurePageSpeedURL,
+}) {
 	const defaultIllustration = `${assetsPath}/issues-default.svg`;
 
 	return (
@@ -38,7 +41,7 @@ export default function EmptyLayoutReports({assetsPath, showButton}) {
 				</span>
 			</div>
 
-			{showButton ? (
+			{configurePageSpeedURL ? (
 				<>
 					<div className="c-mb-3 text-secondary">
 						{Liferay.Language.get(
@@ -46,9 +49,12 @@ export default function EmptyLayoutReports({assetsPath, showButton}) {
 						)}
 					</div>
 
-					<ClayButton displayType="secondary">
+					<ClayLink
+						className="btn btn-secondary"
+						href={configurePageSpeedURL}
+					>
 						{Liferay.Language.get('connect-to-pagespeed')}
-					</ClayButton>
+					</ClayLink>
 				</>
 			) : (
 				<div className="text-secondary">
@@ -65,5 +71,5 @@ export default function EmptyLayoutReports({assetsPath, showButton}) {
 
 EmptyLayoutReports.propTypes = {
 	assetsPath: PropTypes.string.isRequired,
-	showButton: PropTypes.bool.isRequired,
+	configurePageSpeedURL: PropTypes.string,
 };

@@ -21,8 +21,8 @@ export default function ({context}) {
 	const {
 		assetsPath,
 		canonicalURLs,
+		configurePageSpeedURL,
 		defaultLanguageId,
-		showButton,
 		validConnection,
 	} = context;
 
@@ -36,7 +36,7 @@ export default function ({context}) {
 			{validConnection || (
 				<EmptyLayoutReports
 					assetsPath={assetsPath}
-					showButton={showButton}
+					configurePageSpeedURL={configurePageSpeedURL}
 				/>
 			)}
 		</>
