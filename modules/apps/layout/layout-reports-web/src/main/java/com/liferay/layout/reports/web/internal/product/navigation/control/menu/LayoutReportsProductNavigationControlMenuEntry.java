@@ -74,6 +74,7 @@ import javax.servlet.jsp.PageContext;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -222,6 +223,7 @@ public class LayoutReportsProductNavigationControlMenuEntry
 	}
 
 	@Activate
+	@Modified
 	protected void activate(Map<String, Object> properties) {
 		_layoutReportsConfiguration = ConfigurableUtil.createConfigurable(
 			LayoutReportsConfiguration.class, properties);
