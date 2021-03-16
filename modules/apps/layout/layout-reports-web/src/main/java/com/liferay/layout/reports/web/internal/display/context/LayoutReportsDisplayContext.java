@@ -41,6 +41,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -128,6 +129,8 @@ public class LayoutReportsDisplayContext {
 	}
 
 	private List<Map<String, Object>> _getCanonicalURLs(Layout layout) {
+		Locale defaultLocale = _getDefaultLocale(layout);
+
 		String currentCompleteURL = _portal.getCurrentCompleteURL(
 			_portal.getHttpServletRequest(_renderRequest));
 
@@ -145,6 +148,21 @@ public class LayoutReportsDisplayContext {
 		).orElseGet(
 			Collections::emptySet
 		).stream(
+		).sorted(
+			(locale1, locale2) -> {
+				if (Objects.equals(locale1, defaultLocale)) {
+					return -1;
+				}
+
+				if (Objects.equals(locale2, defaultLocale)) {
+					return 1;
+				}
+
+				String languageId1 = LocaleUtil.toW3cLanguageId(locale1);
+				String languageId2 = LocaleUtil.toW3cLanguageId(locale2);
+
+				return languageId1.compareToIgnoreCase(languageId2);
+			}
 		).map(
 			locale -> HashMapBuilder.<String, Object>put(
 				"canonicalURL",
