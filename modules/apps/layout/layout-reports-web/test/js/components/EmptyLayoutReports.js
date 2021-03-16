@@ -21,7 +21,7 @@ import '@testing-library/jest-dom/extend-expect';
 
 const testProps = {
 	assetsPath: 'assetsPath',
-	showButton: false,
+	configurePageSpeedURL: null,
 };
 
 describe('EmptyLayoutReports', () => {
@@ -31,7 +31,7 @@ describe('EmptyLayoutReports', () => {
 		const {getByText} = render(
 			<EmptyLayoutReports
 				assetsPath={testProps.assetsPath}
-				showButton={testProps.showButton}
+				configurePageSpeedURL={testProps.configurePageSpeedURL}
 			/>
 		);
 
@@ -51,7 +51,7 @@ describe('EmptyLayoutReports', () => {
 		const {getByText} = render(
 			<EmptyLayoutReports
 				assetsPath={testProps.assetsPath}
-				showButton={true}
+				configurePageSpeedURL="validURL"
 			/>
 		);
 
