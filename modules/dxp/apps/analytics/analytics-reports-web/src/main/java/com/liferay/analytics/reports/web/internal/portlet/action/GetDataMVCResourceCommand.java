@@ -505,9 +505,7 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 	private static final Map
 		<AnalyticsReportsInfoItem.Action, ObjectValuePair<String, String>>
 			_objectValuePairs =
-				HashMapBuilder.
-					<AnalyticsReportsInfoItem.Action,
-					 ObjectValuePair<String, String>>put(
+				HashMapBuilder.put(
 						AnalyticsReportsInfoItem.Action.HISTORICAL_READS,
 						new ObjectValuePair<>(
 							"analyticsReportsHistoricalReadsURL",
