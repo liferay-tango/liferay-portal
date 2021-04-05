@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 
@@ -121,8 +122,10 @@ public class LayoutReportsPortlet extends MVCPortlet {
 					_layoutLocalService,
 					new LayoutReportsDataProvider(
 						_layoutReportsGooglePageSpeedConfigurationProvider.
-							getApiKey(group)),
-					_layoutSEOLinkManager, _language, _portal, renderRequest));
+							getApiKey(group),
+						_http),
+					_layoutSEOLinkManager, _language, _portal, renderRequest,
+					renderResponse));
 
 			super.doDispatch(renderRequest, renderResponse);
 		}
@@ -139,6 +142,9 @@ public class LayoutReportsPortlet extends MVCPortlet {
 
 	@Reference
 	private GroupLocalService _groupLocalService;
+
+	@Reference
+	private Http _http;
 
 	@Reference
 	private InfoItemServiceTracker _infoItemServiceTracker;

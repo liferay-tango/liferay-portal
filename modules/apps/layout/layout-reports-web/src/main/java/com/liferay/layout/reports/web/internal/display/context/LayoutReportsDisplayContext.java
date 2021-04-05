@@ -53,6 +53,8 @@ import java.util.stream.Collectors;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
+import javax.portlet.RenderResponse;
+import javax.portlet.ResourceURL;
 
 /**
  * @author Cristina González
@@ -65,7 +67,8 @@ public class LayoutReportsDisplayContext {
 		LayoutLocalService layoutLocalService,
 		LayoutReportsDataProvider layoutReportsDataProvider,
 		LayoutSEOLinkManager layoutSEOLinkManager, Language language,
-		Portal portal, RenderRequest renderRequest) {
+		Portal portal, RenderRequest renderRequest,
+		RenderResponse renderResponse) {
 
 		_groupLocalService = groupLocalService;
 		_infoItemServiceTracker = infoItemServiceTracker;
@@ -75,6 +78,7 @@ public class LayoutReportsDisplayContext {
 		_language = language;
 		_portal = portal;
 		_renderRequest = renderRequest;
+		_renderResponse = renderResponse;
 
 		_themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
@@ -180,6 +184,10 @@ public class LayoutReportsDisplayContext {
 			).put(
 				"languageId", LocaleUtil.toW3cLanguageId(locale)
 			).put(
+				"layoutReportsIssuesURL",
+				_getResourceURL(
+					layout.getGroupId(), canonicalURL, _renderResponse)
+			).put(
 				"title", _getTitle(layout, locale)
 			).build()
 		).collect(
@@ -278,6 +286,18 @@ public class LayoutReportsDisplayContext {
 		}
 	}
 
+	private ResourceURL _getResourceURL(
+		long groupId, String canonicalURL, RenderResponse renderResponse) {
+
+		ResourceURL resourceURL = renderResponse.createResourceURL();
+
+		resourceURL.setParameter("groupId", String.valueOf(groupId));
+		resourceURL.setParameter("canonicalURL", canonicalURL);
+		resourceURL.setResourceID("/layout_reports/get_layout_reports_issues");
+
+		return resourceURL;
+	}
+
 	private String _getTitle(Layout layout, Locale locale) {
 		if (layout.isTypeAssetDisplay()) {
 			return Optional.ofNullable(
@@ -346,6 +366,7 @@ public class LayoutReportsDisplayContext {
 	private final LayoutSEOLinkManager _layoutSEOLinkManager;
 	private final Portal _portal;
 	private final RenderRequest _renderRequest;
+	private final RenderResponse _renderResponse;
 	private final ThemeDisplay _themeDisplay;
 
 }
