@@ -15,23 +15,18 @@
 import ClayLayout from '@clayui/layout';
 import {ClayTooltipProvider} from '@clayui/tooltip';
 import PropTypes from 'prop-types';
-import React, {useState} from 'react';
+import React from 'react';
 
 import LanguagesDropdown from './LanguagesDropdown';
 
-export default function BasicInformation({canonicalURLs, defaultLanguageId}) {
-	const [selectedCanonicalURL, setSeletedCanonicalURL] = useState(
-		canonicalURLs.find(({languageId}) => languageId === defaultLanguageId)
-	);
-
-	const handleSelectLanguageId = (selectedLanguageId) => {
-		if (selectedCanonicalURL.languageId !== selectedLanguageId) {
-			setSeletedCanonicalURL(
-				canonicalURLs.find(
-					({languageId}) => languageId === selectedLanguageId
-				)
-			);
-		}
+export default function BasicInformation({
+	canonicalURLs,
+	defaultLanguageId,
+	onLanguageChange,
+	selectedCanonicalURL,
+}) {
+	const handleSelectLanguageId = (event) => {
+		onLanguageChange(event.target.value);
 	};
 
 	return (
@@ -89,8 +84,11 @@ BasicInformation.propTypes = {
 		PropTypes.shape({
 			canonicalURL: PropTypes.string.isRequired,
 			languageId: PropTypes.string.isRequired,
+			layoutReportsIssuesURL: PropTypes.string,
 			title: PropTypes.string.isRequired,
 		})
 	),
 	defaultLanguageId: PropTypes.string.isRequired,
+	onLanguageChange: PropTypes.func.isRequired,
+	selectedCanonicalURL: PropTypes.object.isRequired,
 };
