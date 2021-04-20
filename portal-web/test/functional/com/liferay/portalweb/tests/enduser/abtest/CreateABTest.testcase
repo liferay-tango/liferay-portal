@@ -89,6 +89,10 @@ definition {
 
 		ContentPages.clickPencil();
 
+		if (IsElementNotPresent(locator1 = "PageEditor#FRAGMENT_SIDEBAR_TAB_BUTTON")) {
+			Refresh();
+		}
+
 		PageEditor.addFragment(
 			collectionName = "Basic Components",
 			fragmentName = "Button");
