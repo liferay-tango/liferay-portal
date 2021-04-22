@@ -13,6 +13,8 @@ definition {
 			locator1 = "AnalyticsCloudConnection#ANALYTICS_CLOUD_PASSWORD_LOGIN_FIELD",
 			value1 = "${password}");
 
+		Check(locator1 = "AnalyticsCloudConnection#REMEMBER_ME_CHECKBOX");
+
 		Click(locator1 = "AnalyticsCloudConnection#ANALYTICS_CLOUD_LOGIN_BUTTON");
 	}
 
@@ -30,13 +32,38 @@ definition {
 
 		Click(locator1 = "AnalyticsCloudConnection#CONNECT_ANALYTICS_CLOUD_BUTTON");
 
-		Click(locator1 = "AnalyticsCloudConnection#SYNCED_SITES_BUTTON");
+		AssertTextEquals(
+			locator1 = "AnalyticsCloudConnection#ANALYTICS_CLOUD_CONNECTED_CONFIRMATION_MESSAGE",
+			value1 = "Your DXP instance is connected to Analytics Cloud.");
+
+		Click(locator1 = "AnalyticsCloudConnection#SYNCED_SITES_LINK");
 
 		Click(locator1 = "AnalyticsCloudConnection#NEW_PROPERTY_BUTTON");
+
+		Click(locator1 = "AnalyticsCloudConnection#SYNCED_SITES_SEARCH_FIELD");
+
+		Type(
+			locator1 = "AnalyticsCloudConnection#SYNCED_SITES_SEARCH_FIELD",
+			value1 = "${siteName}");
+
+		KeyPress(
+			locator1 = "AnalyticsCloudConnection#SYNCED_SITES_SEARCH_FIELD",
+			value1 = "\ENTER");
 
 		Click(locator1 = "AnalyticsCloudConnection#INPUT_LIFERAY_DXP_CHECKBOX");
 
 		Click(locator1 = "AnalyticsCloudConnection#DONE_BUTTON");
+
+		//Click(locator1 = "AnalyticsCloudConnection#SYNCED_CONTACT_DATA_LINK");
+
+		//Click(locator1 = "AnalyticsCloudConnection#SYNCED_CONTACTS_BUTTON");
+
+		//Check.checkToggleSwitch(locator1 = "AnalyticsCloudConnection#SYNC_ALL_CONTACTS_TOGGLE");
+
+		//Click(locator1 = "AnalyticsCloudConnection#SAVE_AND_NEXT_BUTTON");
+
+		//Click(locator1 = "Button#SAVE");
+
 	}
 
 	macro takeTokenFromAnalyticsCloud {
@@ -55,6 +82,8 @@ definition {
 		Click(locator1 = "AnalyticsCloudConnection#LIFERAY_DXP_SOURCE");
 
 		Click(locator1 = "AnalyticsCloudConnection#ANALYTICS_CLOUD_CONNECT_WITH_TOKEN_BUTTON");
+
+		Click(locator1 = "AnalyticsCloudConnection#ANALYTICS_CLOUD_TOKEN_INPUT");
 
 		Copy(locator1 = "AnalyticsCloudConnection#ANALYTICS_CLOUD_TOKEN_INPUT");
 	}

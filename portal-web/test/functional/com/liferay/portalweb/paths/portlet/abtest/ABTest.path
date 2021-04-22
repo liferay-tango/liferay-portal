@@ -15,7 +15,7 @@
 </tr>
 <tr>
 	<td>AB_TEST_TITLE_AC_SIDE</td>
-	<td>//*[contains(@class, 'title text-truncate')]</td>
+	<td>//*[@class= 'text-truncate' and contains(text(),'${ABtestTitle}')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -30,17 +30,27 @@
 </tr>
 <tr>
 	<td>CREATE_TEST_BUTTON</td>
-	<td>//*[contains(@class, 'btn btn-secondary')]</td>
+	<td>//*[contains(@class, 'btn-secondary') and contains(text(),'Create Test')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>CREATE_VARIANT_BUTTON</td>
-	<td>//*[contains(@class,'mb-3 btn btn-secondary') and contains(text(),'Create Variant')]</td>
+	<td>//*[contains(@class,'btn btn-secondary') and contains(text(),'Create Variant')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>DELETE_VARIANT_BUTTON</td>
 	<td>//div[@class='dropdown-menu show']//button[contains(@class, 'dropdown-item') and contains(text(), 'Delete')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ELEMENT_ID_INPUT</td>
+	<td>//input[@id='clickableElement']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>INVALID_ID_MESSAGE</td>
+	<td>//*[contains(@class,'form-feedback-item')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -50,7 +60,7 @@
 </tr>
 <tr>
 	<td>REVIEW_AND_RUN_TEST_BUTTON</td>
-	<td>//*[contains(@class,'w-100 btn btn-primary') and contains(text(),'Review and Run Test')]</td>
+	<td>//button[contains(@class,'btn-primary') and contains(text(),'Review and Run Test')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -69,8 +79,33 @@
 	<td></td>
 </tr>
 <tr>
+	<td>SELECT_CLICKABLE_ELEMENT</td>
+	<td>//*[contains(@class,'lfr-segments-experiment-click-goal-target-overlay')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SELECT_CLICKABLE_ELEMENT_BUTTON</td>
+	<td>//button[contains(@class,'btn-secondary')and contains(text(),'Select Clickable Element')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SELECT_GOAL</td>
+	<td>//select[contains(@class,'form-control')]/option[.='${goal}']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SET_ELEMENT_AS_CLICK_TARGET_BUTTON</td>
+	<td>//button[contains(@class,'btn-primary')and contains(text(),'Set Element as Click Target')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>TARGET_LABEL</td>
+	<td>//*[contains(@class,'mr-2 text-truncate')and contains(text(),'Target')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>TERMINATE_TEST_BUTTON</td>
-	<td>//*[contains(@class,'w-100 btn btn-secondary') and contains(text(),'Terminate Test')]</td>
+	<td>//*[contains(@class,'btn-secondary') and contains(text(),'Terminate Test')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -85,12 +120,12 @@
 </tr>
 <tr>
 	<td>VARIANT_NEEDED_MESSAGE</td>
-	<td>//*[contains(@class,'font-weight-bold mb-3 text-danger')]</td>
+	<td>//*[contains(@class,'text-danger') and contains(text(),'A variant needs to be created')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>VIEW_DATA_ANALYTICS_CLOUD_BUTTON</td>
-	<td>//*[contains(@class,'btn btn-secondary btn-sm mt-3 w-100 link-secondary')]</td>
+	<td>//*[contains(@class,'btn-secondary') and contains(text(),'View Data in Analytics Cloud')]</td>
 	<td></td>
 </tr>
 </tbody>

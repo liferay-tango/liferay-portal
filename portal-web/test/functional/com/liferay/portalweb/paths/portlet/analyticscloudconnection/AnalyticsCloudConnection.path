@@ -20,7 +20,7 @@
 </tr>
 <tr>
 	<td>ANALYTICS_CLOUD_DXP_BUTTON</td>
-	<td>//*[contains(@class, 'lexicon-icon lexicon-icon-liferay-ac user-icon-sm')]</td>
+	<td>//*[contains(@class, 'list-group-card-item')]//*[contains(@href, 'analytics-cloud-connection')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -45,12 +45,17 @@
 </tr>
 <tr>
 	<td>ANALYTICS_CLOUD_TOKEN_INPUT</td>
-	<td>//input[contains(@class, 'input-root form-control text-truncate input-group-inset input-group-inset-after')]</td>
+	<td>//input[contains(@class, 'input-root') and contains(@class, 'input-group-inset') and contains(@class, 'input-group-inset-after')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>ANALYTICS_CLOUD_CONNECT_WITH_TOKEN_BUTTON</td>
 	<td>//*[contains(@class, 'button-root btn btn-primary')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>ANALYTICS_CLOUD_CONNECTED_CONFIRMATION_MESSAGE</td>
+	<td>//*[contains(@class, 'control-label') and contains(text(), 'Your DXP instance is connected to Analytics Cloud.')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -105,7 +110,7 @@
 </tr>
 <tr>
 	<td>NEW_PROPERTY_BUTTON</td>
-	<td>//*[contains(@class, 'btn btn-primary nav-btn nav-btn-monospaced')]</td>
+	<td>//*[contains(@class, 'btn-primary') and contains(@class, 'nav-btn-monospaced')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -114,13 +119,43 @@
 	<td></td>
 </tr>
 <tr>
+	<td>REMEMBER_ME_CHECKBOX</td>
+	<td>//input[(@id='_com_liferay_login_web_portlet_LoginPortlet_rememberMe')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SAVE_AND_NEXT_BUTTON</td>
+	<td>//button[contains(@id, '_com_liferay_configuration_admin_web_portlet_InstanceSettingsPortlet_lmfn')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>SKIP_FOR_NOW_BUTTON</td>
 	<td>//*[contains(@class, 'btn btn-secondary') and text()='Skip for Now']</td>
 	<td></td>
 </tr>
 <tr>
-	<td>SYNCED_SITES_BUTTON</td>
+	<td>SYNC_ALL_CONTACTS_TOGGLE</td>
+	<td>//*[contains(@class, 'toggle-switch-check')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SYNCED_CONTACTS_BUTTON</td>
+	<td>//*[contains(@class, 'text-decoration-none')][1]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SYNCED_CONTACT_DATA_LINK</td>
+	<td>//*[contains(@class, 'nav-link') and text()='Synced Contact Data']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SYNCED_SITES_LINK</td>
 	<td>//*[contains(@class, 'nav-link') and text()='Synced Sites']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SYNCED_SITES_SEARCH_FIELD</td>
+	<td>//input[contains(@class, 'input-group-inset-after')]</td>
 	<td></td>
 </tr>
 </tbody>
