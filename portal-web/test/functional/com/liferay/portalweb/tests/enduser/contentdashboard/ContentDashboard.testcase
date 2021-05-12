@@ -593,7 +593,7 @@ definition {
 		ContentDashboard.filterByTag(
 			filterOption = "Tags",
 			tagName = "tagnumber1");
-		
+
 		AssertClickNoError(
 			locator1 = "Button#CANCEL",
 			value1 = "Cancel");
