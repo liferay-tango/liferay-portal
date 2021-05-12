@@ -1010,6 +1010,60 @@ definition {
 		// TODO LPS-130290 AddSegmentByUserScreenName pending implementation
 	}
 
+	@description = "This is a test for LPS-130290."
+	@ignore = "true"
+	@priority = "5"
+	test AddSegmentByUserSite {
+		property portal.acceptance = "false";
+
+		// TODO LPS-130290 AddSegmentByUserSite pending implementation
+	}
+
+	@description = "This is a test for LPS-130290."
+	@ignore = "true"
+	@priority = "5"
+	test AddSegmentByUserSiteOrganizationRole {
+		property portal.acceptance = "false";
+
+		// TODO LPS-130290 AddSegmentByUserSiteOrganizationRole pending implementation
+	}
+
+	@description = "This is a test for LPS-130290."
+	@ignore = "true"
+	@priority = "5"
+	test AddSegmentByUserTag {
+		property portal.acceptance = "false";
+
+		// TODO LPS-130290 AddSegmentByUserTag pending implementation
+	}
+
+	@description = "This is a test for LPS-130290."
+	@ignore = "true"
+	@priority = "5"
+	test AddSegmentByUserTeam {
+		property portal.acceptance = "false";
+
+		// TODO LPS-130290 AddSegmentByUserTeam pending implementation
+	}
+
+	@description = "This is a test for LPS-130290."
+	@ignore = "true"
+	@priority = "5"
+	test AddSegmentByUserUser {
+		property portal.acceptance = "false";
+
+		// TODO LPS-130290 AddSegmentByUserUser pending implementation
+	}
+
+	@description = "This is a test for LPS-130290."
+	@ignore = "true"
+	@priority = "5"
+	test AddSegmentByUserUserGroup {
+		property portal.acceptance = "false";
+
+		// TODO LPS-130290 AddSegmentByUserUserGroup pending implementation
+	}
+
 	@description = "Validate if the user can create a segment with Properties User and Email Segment with Contains Option"
 	@priority = "5"
 	test AddSegmentUserEmailAddressContains {
