@@ -133,6 +133,14 @@ const Issue = ({issue}) => {
 					{issue.title}
 				</ClayList.ItemField>
 
+				<ClayList.ItemField className="pl-0" expand>
+					<span
+						dangerouslySetInnerHTML={{
+							__html: issue.description,
+						}}
+					/>
+				</ClayList.ItemField>
+
 				<ClayList.ItemField className="pr-0">
 					<ClayBadge
 						className="mr-0"
