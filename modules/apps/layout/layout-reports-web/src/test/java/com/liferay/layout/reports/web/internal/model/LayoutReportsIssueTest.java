@@ -43,12 +43,12 @@ public class LayoutReportsIssueTest {
 		LayoutReportsIssue layoutReportsIssue1 = new LayoutReportsIssue(
 			Collections.singletonList(
 				new LayoutReportsIssue.Detail(
-					LayoutReportsIssue.Detail.Key.TITLE, 100)),
+					"description", LayoutReportsIssue.Detail.Key.TITLE, 100)),
 			LayoutReportsIssue.Key.SEO);
 		LayoutReportsIssue layoutReportsIssue2 = new LayoutReportsIssue(
 			Collections.singletonList(
 				new LayoutReportsIssue.Detail(
-					LayoutReportsIssue.Detail.Key.TITLE, 100)),
+					"description", LayoutReportsIssue.Detail.Key.TITLE, 100)),
 			LayoutReportsIssue.Key.SEO);
 
 		Assert.assertTrue(layoutReportsIssue1.equals(layoutReportsIssue2));
@@ -59,7 +59,7 @@ public class LayoutReportsIssueTest {
 		LayoutReportsIssue layoutReportsIssue = new LayoutReportsIssue(
 			Collections.singletonList(
 				new LayoutReportsIssue.Detail(
-					LayoutReportsIssue.Detail.Key.TITLE, 100)),
+					"description", LayoutReportsIssue.Detail.Key.TITLE, 100)),
 			LayoutReportsIssue.Key.SEO);
 
 		List<LayoutReportsIssue.Detail> details =
@@ -83,7 +83,7 @@ public class LayoutReportsIssueTest {
 		new LayoutReportsIssue(
 			Collections.singletonList(
 				new LayoutReportsIssue.Detail(
-					LayoutReportsIssue.Detail.Key.TITLE, 100)),
+					"description", LayoutReportsIssue.Detail.Key.TITLE, 100)),
 			null);
 	}
 
@@ -92,14 +92,14 @@ public class LayoutReportsIssueTest {
 		LayoutReportsIssue layoutReportsIssue1 = new LayoutReportsIssue(
 			Collections.singletonList(
 				new LayoutReportsIssue.Detail(
-					LayoutReportsIssue.Detail.Key.TITLE, 100)),
+					"description", LayoutReportsIssue.Detail.Key.TITLE, 100)),
 			LayoutReportsIssue.Key.SEO);
 		LayoutReportsIssue layoutReportsIssue2 = new LayoutReportsIssue(
 			Arrays.asList(
 				new LayoutReportsIssue.Detail(
-					LayoutReportsIssue.Detail.Key.HREFLANG, 50),
+					"description", LayoutReportsIssue.Detail.Key.HREFLANG, 50),
 				new LayoutReportsIssue.Detail(
-					LayoutReportsIssue.Detail.Key.TITLE, 50)),
+					"description", LayoutReportsIssue.Detail.Key.TITLE, 50)),
 			LayoutReportsIssue.Key.SEO);
 
 		Assert.assertFalse(layoutReportsIssue1.equals(layoutReportsIssue2));
@@ -110,12 +110,12 @@ public class LayoutReportsIssueTest {
 		LayoutReportsIssue layoutReportsIssue1 = new LayoutReportsIssue(
 			Collections.singletonList(
 				new LayoutReportsIssue.Detail(
-					LayoutReportsIssue.Detail.Key.TITLE, 100)),
+					"description", LayoutReportsIssue.Detail.Key.TITLE, 100)),
 			LayoutReportsIssue.Key.SEO);
 		LayoutReportsIssue layoutReportsIssue2 = new LayoutReportsIssue(
 			Collections.singletonList(
 				new LayoutReportsIssue.Detail(
-					LayoutReportsIssue.Detail.Key.TITLE, 100)),
+					"description", LayoutReportsIssue.Detail.Key.TITLE, 100)),
 			LayoutReportsIssue.Key.ACCESSIBILITY);
 
 		Assert.assertFalse(layoutReportsIssue1.equals(layoutReportsIssue2));
@@ -126,12 +126,12 @@ public class LayoutReportsIssueTest {
 		LayoutReportsIssue layoutReportsIssue1 = new LayoutReportsIssue(
 			Collections.singletonList(
 				new LayoutReportsIssue.Detail(
-					LayoutReportsIssue.Detail.Key.TITLE, 100)),
+					"description", LayoutReportsIssue.Detail.Key.TITLE, 100)),
 			LayoutReportsIssue.Key.SEO);
 		LayoutReportsIssue layoutReportsIssue2 = new LayoutReportsIssue(
 			Collections.singletonList(
 				new LayoutReportsIssue.Detail(
-					LayoutReportsIssue.Detail.Key.TITLE, 200)),
+					"description", LayoutReportsIssue.Detail.Key.TITLE, 200)),
 			LayoutReportsIssue.Key.SEO);
 
 		Assert.assertFalse(layoutReportsIssue1.equals(layoutReportsIssue2));
@@ -142,7 +142,7 @@ public class LayoutReportsIssueTest {
 		LayoutReportsIssue layoutReportsIssue = new LayoutReportsIssue(
 			Collections.singletonList(
 				new LayoutReportsIssue.Detail(
-					LayoutReportsIssue.Detail.Key.TITLE, 100)),
+					"description", LayoutReportsIssue.Detail.Key.TITLE, 100)),
 			LayoutReportsIssue.Key.SEO);
 
 		JSONObject jsonObject = layoutReportsIssue.toJSONObject(
@@ -167,9 +167,10 @@ public class LayoutReportsIssueTest {
 		LayoutReportsIssue layoutReportsIssue = new LayoutReportsIssue(
 			Arrays.asList(
 				new LayoutReportsIssue.Detail(
-					LayoutReportsIssue.Detail.Key.CANONICAL_LINK, 99),
+					"description", LayoutReportsIssue.Detail.Key.CANONICAL_LINK,
+					99),
 				new LayoutReportsIssue.Detail(
-					LayoutReportsIssue.Detail.Key.TITLE, 100)),
+					"description", LayoutReportsIssue.Detail.Key.TITLE, 100)),
 			LayoutReportsIssue.Key.SEO);
 
 		Assert.assertEquals(
