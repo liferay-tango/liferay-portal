@@ -38,6 +38,15 @@ public class EntriesChecker extends EmptyOnClickRowChecker {
 
 	@Override
 	public boolean isChecked(Object object) {
+		long[] selectedTagIds = ParamUtil.getLongValues(
+			_portletRequest, "selectedTagIds");
+
+		AssetTag tag = (AssetTag)object;
+
+		if (ArrayUtil.contains(selectedTagIds, tag.getTagId())) {
+			return true;
+		}
+
 		String[] selectedTagNames = StringUtil.split(
 			ParamUtil.getString(_portletRequest, "selectedTagNames"));
 
@@ -45,13 +54,13 @@ public class EntriesChecker extends EmptyOnClickRowChecker {
 			return false;
 		}
 
-		AssetTag tag = (AssetTag)object;
+		if (ArrayUtil.contains(selectedTagNames, tag.getName()) &&
+			ArrayUtil.isEmpty(selectedTagIds)) {
 
-		if (!ArrayUtil.contains(selectedTagNames, tag.getName())) {
-			return false;
+			return true;
 		}
 
-		return true;
+		return false;
 	}
 
 	private final PortletRequest _portletRequest;

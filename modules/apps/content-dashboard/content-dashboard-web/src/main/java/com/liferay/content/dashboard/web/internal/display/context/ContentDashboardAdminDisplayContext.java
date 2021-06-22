@@ -46,6 +46,7 @@ import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -131,18 +132,29 @@ public class ContentDashboardAdminDisplayContext {
 		);
 	}
 
-	public Set<String> getAssetTagIds() {
+	public Set<Long> getAssetTagIds() {
 		if (_assetTagIds != null) {
 			return _assetTagIds;
 		}
 
-		_assetTagIds = new HashSet(
+		_assetTagIds = SetUtil.fromArray(
+			ParamUtil.getLongValues(_liferayPortletRequest, "assetTagId"));
+
+		return _assetTagIds;
+	}
+
+	public Set<String> getAssetTagNames() {
+		if (_assetTagNames != null) {
+			return _assetTagNames;
+		}
+
+		_assetTagNames = new HashSet(
 			Arrays.asList(
 				ArrayUtil.toStringArray(
 					ParamUtil.getStringValues(
-						_liferayPortletRequest, "assetTagId"))));
+						_liferayPortletRequest, "assetTagName"))));
 
-		return _assetTagIds;
+		return _assetTagNames;
 	}
 
 	public List<AssetVocabulary> getAssetVocabularies() {
@@ -445,7 +457,8 @@ public class ContentDashboardAdminDisplayContext {
 	}
 
 	private List<Long> _assetCategoryIds;
-	private Set<String> _assetTagIds;
+	private Set<Long> _assetTagIds;
+	private Set<String> _assetTagNames;
 	private final List<AssetVocabulary> _assetVocabularies;
 	private final AssetVocabularyMetric _assetVocabularyMetric;
 	private List<Long> _authorIds;
