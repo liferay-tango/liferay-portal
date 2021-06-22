@@ -73,13 +73,21 @@ export default function propsTransformer({portletNamespace, ...otherProps}) {
 			multiple: true,
 			onSelect: (selectedItem) => {
 				if (selectedItem) {
-					const assetTags = selectedItem.map((tag) => tag.value);
+					const assetTagIds = selectedItem.map((tag) => tag.tagid);
+					const assetTagNames = selectedItem.map((tag) => tag.value);
 
 					let redirectURL = itemData?.redirectURL;
 
-					assetTags.forEach((assetTag) => {
+					assetTagIds.forEach((assetTagId) => {
 						redirectURL = addParams(
-							`${portletNamespace}assetTagId=${assetTag}`,
+							`${portletNamespace}assetTagId=${assetTagId}`,
+							redirectURL
+						);
+					});
+
+					assetTagNames.forEach((assetTagName) => {
+						redirectURL = addParams(
+							`${portletNamespace}assetTagName=${assetTagName}`,
 							redirectURL
 						);
 					});

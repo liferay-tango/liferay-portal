@@ -85,7 +85,7 @@ public class ContentDashboardSearchContextBuilder {
 					ParamUtil.getLongValues(
 						_httpServletRequest, "assetCategoryId"),
 					_assetCategoryLocalService, _assetVocabularyLocalService),
-				ParamUtil.getStringValues(_httpServletRequest, "assetTagId"),
+				ParamUtil.getLongValues(_httpServletRequest, "assetTagId"),
 				ParamUtil.getLongValues(_httpServletRequest, "authorIds")));
 
 		String[] contentDashboardItemTypePayloads =
@@ -201,17 +201,17 @@ public class ContentDashboardSearchContextBuilder {
 	}
 
 	private Optional<Filter> _getAssetTagNamesFilterOptional(
-		String[] assetTagNames) {
+		long[] assetTagIds) {
 
-		if (ArrayUtil.isEmpty(assetTagNames)) {
+		if (ArrayUtil.isEmpty(assetTagIds)) {
 			return Optional.empty();
 		}
 
 		BooleanFilter booleanFilter = new BooleanFilter();
 
-		for (String assetTagName : assetTagNames) {
+		for (Long assetTagId : assetTagIds) {
 			booleanFilter.addTerm(
-				Field.ASSET_TAG_NAMES + ".raw", assetTagName,
+				Field.ASSET_TAG_IDS, String.valueOf(assetTagId),
 				BooleanClauseOccur.MUST);
 		}
 
@@ -233,7 +233,7 @@ public class ContentDashboardSearchContextBuilder {
 	}
 
 	private BooleanClause[] _getBooleanClauses(
-		AssetCategoryIds assetCategoryIds, String[] assetTagNames,
+		AssetCategoryIds assetCategoryIds, long[] assetTagNames,
 		long[] authorIds) {
 
 		BooleanQueryImpl booleanQueryImpl = new BooleanQueryImpl();

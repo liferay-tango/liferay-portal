@@ -90,8 +90,14 @@ public class AssetTagsSelectorDisplayContext {
 		).setParameter(
 			"groupIds", StringUtil.merge(_getGroupIds())
 		).setParameter(
+			"selectedTagIds", StringUtil.merge(getSelectedTagIds())
+		).setParameter(
 			"selectedTagNames", StringUtil.merge(getSelectedTagNames())
 		).build();
+	}
+
+	public String[] getSelectedTagIds() {
+		return ParamUtil.getStringValues(_renderRequest, "selectedTagIds");
 	}
 
 	public String[] getSelectedTagNames() {

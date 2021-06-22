@@ -16,8 +16,14 @@
 
 <%@ include file="/init.jsp" %>
 
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+<%
+AssetTagsSelectorManagementToolbarDisplayContext assetTagsSelectorManagementToolbarDisplayContext = new AssetTagsSelectorManagementToolbarDisplayContext(request, liferayPortletRequest, liferayPortletResponse, assetTagsSelectorDisplayContext);
+%>
+
 <clay:management-toolbar
-	managementToolbarDisplayContext="<%= new AssetTagsSelectorManagementToolbarDisplayContext(request, liferayPortletRequest, liferayPortletResponse, assetTagsSelectorDisplayContext) %>"
+	managementToolbarDisplayContext="<%= assetTagsSelectorManagementToolbarDisplayContext %>"
 />
 
 <clay:container-fluid>
@@ -30,12 +36,34 @@
 			keyProperty="name"
 			modelVar="tag"
 		>
-			<liferay-ui:search-container-column-text
-				cssClass="content-column name-column title-column"
-				name="name"
-				truncate="<%= true %>"
-				value="<%= tag.getName() %>"
-			/>
+
+			<%
+			row.setData(
+				HashMapBuilder.<String, Object>put(
+					"tagId", tag.getTagId()
+				).put(
+					"value", tag.getName()
+				).build());
+			%>
+
+			<c:choose>
+				<c:when test='<%= GetterUtil.getBoolean(request.getParameter("showGroupName")) %>'>
+					<liferay-ui:search-container-column-text
+						cssClass="content-column name-column title-column"
+						name="name"
+						truncate="<%= true %>"
+						value="<%= assetTagsSelectorManagementToolbarDisplayContext.getNameAndGroup(tag) %>"
+					/>
+				</c:when>
+				<c:otherwise>
+					<liferay-ui:search-container-column-text
+						cssClass="content-column name-column title-column"
+						name="name"
+						truncate="<%= true %>"
+						value="<%= tag.getName() %>"
+					/>
+				</c:otherwise>
+			</c:choose>
 		</liferay-ui:search-container-row>
 
 		<liferay-ui:search-iterator

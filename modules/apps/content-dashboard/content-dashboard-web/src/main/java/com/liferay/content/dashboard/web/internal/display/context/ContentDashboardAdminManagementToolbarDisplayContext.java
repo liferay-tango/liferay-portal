@@ -105,6 +105,8 @@ public class ContentDashboardAdminManagementToolbarDisplayContext
 		).setParameter(
 			"assetTagId", (String)null
 		).setParameter(
+			"assetTagName", (String)null
+		).setParameter(
 			"authorIds", (String)null
 		).setParameter(
 			"contentDashboardItemTypePayload", (String)null
@@ -337,10 +339,10 @@ public class ContentDashboardAdminManagementToolbarDisplayContext
 						_getStatusLabel(status));
 			});
 
-		Set<String> assetTagIds =
-			_contentDashboardAdminDisplayContext.getAssetTagIds();
+		Set<String> assetTagNames =
+			_contentDashboardAdminDisplayContext.getAssetTagNames();
 
-		for (String assetTagId : assetTagIds) {
+		for (String assetTagName : assetTagNames) {
 			labelItemListWrapper.add(
 				labelItem -> {
 					labelItem.putData(
@@ -350,13 +352,13 @@ public class ContentDashboardAdminManagementToolbarDisplayContext
 								PortletURLUtil.clone(
 									currentURLObj, liferayPortletResponse)
 							).setParameter(
-								"assetTagId",
+								"assetTagName",
 								() -> {
 									Stream<String> stream =
-										assetTagIds.stream();
+										assetTagNames.stream();
 
 									return stream.filter(
-										id -> !Objects.equals(id, assetTagId)
+										id -> !Objects.equals(id, assetTagName)
 									).toArray(
 										String[]::new
 									);
@@ -367,7 +369,7 @@ public class ContentDashboardAdminManagementToolbarDisplayContext
 					labelItem.setLabel(
 						StringBundler.concat(
 							LanguageUtil.get(httpServletRequest, "tag"),
-							StringPool.COLON, assetTagId));
+							StringPool.COLON, assetTagName));
 				});
 		}
 
@@ -408,7 +410,7 @@ public class ContentDashboardAdminManagementToolbarDisplayContext
 		}
 
 		Set<String> assetTagIds =
-			_contentDashboardAdminDisplayContext.getAssetTagIds();
+			_contentDashboardAdminDisplayContext.getAssetTagNames();
 
 		if (!SetUtil.isEmpty(assetTagIds)) {
 			Stream<String> stream = assetTagIds.stream();
@@ -563,16 +565,32 @@ public class ContentDashboardAdminManagementToolbarDisplayContext
 				);
 			}
 		).setParameter(
-			"selectedTagNames",
+			"selectedTagIds",
 			() -> {
-				Set<String> assetTagIds =
+				Set<Long> assetTagIds =
 					_contentDashboardAdminDisplayContext.getAssetTagIds();
 
-				Stream<String> assetTagIdsStream = assetTagIds.stream();
+				Stream<Long> assetTagIdsStream = assetTagIds.stream();
 
-				return assetTagIdsStream.collect(
+				return assetTagIdsStream.map(
+					String::valueOf
+				).collect(
+					Collectors.joining(StringPool.COMMA)
+				);
+			}
+		).setParameter(
+			"selectedTagNames",
+			() -> {
+				Set<String> assetTagNames =
+					_contentDashboardAdminDisplayContext.getAssetTagNames();
+
+				Stream<String> assetTagNamesStream = assetTagNames.stream();
+
+				return assetTagNamesStream.collect(
 					Collectors.joining(StringPool.COMMA));
 			}
+		).setParameter(
+			"showGroupName", true
 		).setWindowState(
 			LiferayWindowState.POP_UP
 		).build();
