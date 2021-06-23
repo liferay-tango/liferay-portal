@@ -200,7 +200,7 @@ public class ContentDashboardSearchContextBuilder {
 		return Optional.of(booleanFilter);
 	}
 
-	private Optional<Filter> _getAssetTagNamesFilterOptional(
+	private Optional<Filter> _getAssetTagIdsFilterOptional(
 		long[] assetTagIds) {
 
 		if (ArrayUtil.isEmpty(assetTagIds)) {
@@ -233,7 +233,7 @@ public class ContentDashboardSearchContextBuilder {
 	}
 
 	private BooleanClause[] _getBooleanClauses(
-		AssetCategoryIds assetCategoryIds, long[] assetTagNames,
+		AssetCategoryIds assetCategoryIds, long[] assetTagIds,
 		long[] authorIds) {
 
 		BooleanQueryImpl booleanQueryImpl = new BooleanQueryImpl();
@@ -248,12 +248,12 @@ public class ContentDashboardSearchContextBuilder {
 				assetCategoryIdsFilterOptional.get(), BooleanClauseOccur.MUST);
 		}
 
-		Optional<Filter> assetTagNamesFilterOptional =
-			_getAssetTagNamesFilterOptional(assetTagNames);
+		Optional<Filter> assetTagIdsFilterOptional =
+			_getAssetTagIdsFilterOptional(assetTagIds);
 
-		if (assetTagNamesFilterOptional.isPresent()) {
+		if (assetTagIdsFilterOptional.isPresent()) {
 			booleanFilter.add(
-				assetTagNamesFilterOptional.get(), BooleanClauseOccur.MUST);
+				assetTagIdsFilterOptional.get(), BooleanClauseOccur.MUST);
 		}
 
 		Optional<Filter> authorIdsFilterOptional = _getAuthorIdsFilterOptional(
