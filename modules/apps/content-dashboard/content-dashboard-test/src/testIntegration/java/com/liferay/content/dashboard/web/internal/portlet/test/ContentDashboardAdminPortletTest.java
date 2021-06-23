@@ -21,7 +21,6 @@ import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetTagLocalService;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
-import com.liferay.asset.kernel.service.persistence.AssetTagUtil;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.model.DDMTemplate;
 import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
@@ -81,7 +80,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Random;
 import java.util.stream.Stream;
 
 import javax.portlet.Portlet;
@@ -164,7 +162,7 @@ public class ContentDashboardAdminPortletTest {
 				_group.getGroupId(), 0,
 				ServiceContextTestUtil.getServiceContext(
 					_group.getGroupId(), _user.getUserId(),
-					new long[]{
+					new long[] {
 						assetCategory.getCategoryId(),
 						childAssetCategory.getCategoryId()
 					}));
@@ -216,7 +214,7 @@ public class ContentDashboardAdminPortletTest {
 				_group.getGroupId(), 0,
 				ServiceContextTestUtil.getServiceContext(
 					_group.getGroupId(), _user.getUserId(),
-					new long[]{assetCategory.getCategoryId()}));
+					new long[] {assetCategory.getCategoryId()}));
 
 			Assert.assertEquals(
 				String.format(
@@ -233,7 +231,7 @@ public class ContentDashboardAdminPortletTest {
 		Map<String, Object> data = _getData(
 			_getMockLiferayPortletRenderRequest());
 
-		Map<String, Object> context = (Map<String, Object>) data.get("context");
+		Map<String, Object> context = (Map<String, Object>)data.get("context");
 
 		Assert.assertNotNull(context);
 		Assert.assertEquals(
@@ -244,12 +242,12 @@ public class ContentDashboardAdminPortletTest {
 	public void testGetContextWithRtlLanguageDirection() throws Exception {
 		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
 			_getMockLiferayPortletRenderRequest(
-				new String[]{"audience", "stage"},
+				new String[] {"audience", "stage"},
 				LocaleUtil.fromLanguageId("ar_SA"));
 
 		Map<String, Object> data = _getData(mockLiferayPortletRenderRequest);
 
-		Map<String, Object> context = (Map<String, Object>) data.get("context");
+		Map<String, Object> context = (Map<String, Object>)data.get("context");
 
 		Assert.assertNotNull(context);
 		Assert.assertEquals(
@@ -258,7 +256,7 @@ public class ContentDashboardAdminPortletTest {
 
 	@Test
 	public void testGetOnClickConfiguration() throws Exception {
-		MVCPortlet mvcPortlet = (MVCPortlet) _portlet;
+		MVCPortlet mvcPortlet = (MVCPortlet)_portlet;
 
 		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
 			_getMockLiferayPortletRenderRequest();
@@ -276,7 +274,7 @@ public class ContentDashboardAdminPortletTest {
 			onClickConfiguration.contains(
 				HtmlUtil.escapeJS(
 					"mvcRenderCommandName=/content_dashboard" +
-					"/edit_content_dashboard_configuration")));
+						"/edit_content_dashboard_configuration")));
 	}
 
 	@Test
@@ -336,7 +334,7 @@ public class ContentDashboardAdminPortletTest {
 				_group.getGroupId(), 0,
 				ServiceContextTestUtil.getServiceContext(
 					_group.getGroupId(), _user.getUserId(),
-					new long[]{assetCategory.getCategoryId()}));
+					new long[] {assetCategory.getCategoryId()}));
 
 			JournalTestUtil.addArticle(
 				_user.getUserId(), _group.getGroupId(), 0);
@@ -358,7 +356,7 @@ public class ContentDashboardAdminPortletTest {
 			Assert.assertEquals(
 				journalArticle.getTitle(LocaleUtil.US),
 				ReflectionTestUtil.invoke(
-					results.get(0), "getTitle", new Class<?>[]{Locale.class},
+					results.get(0), "getTitle", new Class<?>[] {Locale.class},
 					LocaleUtil.US));
 		}
 		finally {
@@ -369,27 +367,25 @@ public class ContentDashboardAdminPortletTest {
 
 	@Test
 	public void testGetSearchContainerWithAssetTag() throws Exception {
-		AssetTag tag1 =
-			_assetTagLocalService.addTag(_user.getUserId(), _group.getGroupId(),
-				"tag1",
-				ServiceContextTestUtil.getServiceContext());
+		AssetTag tag1 = _assetTagLocalService.addTag(
+			_user.getUserId(), _group.getGroupId(), "tag1",
+			ServiceContextTestUtil.getServiceContext());
 
-		AssetTag tag2 =
-			_assetTagLocalService.addTag(_user.getUserId(), _group.getGroupId(),
-				"tag2",
-				ServiceContextTestUtil.getServiceContext());
+		AssetTag tag2 = _assetTagLocalService.addTag(
+			_user.getUserId(), _group.getGroupId(), "tag2",
+			ServiceContextTestUtil.getServiceContext());
 
 		JournalArticle journalArticle1 = JournalTestUtil.addArticle(
 			_group.getGroupId(), 0,
 			ServiceContextTestUtil.getServiceContext(
 				_group.getGroupId(), _user.getUserId(),
-				new String[]{tag1.getName()}));
+				new String[] {tag1.getName()}));
 
 		JournalTestUtil.addArticle(
 			_group.getGroupId(), 0,
 			ServiceContextTestUtil.getServiceContext(
-				_group.getGroupId(), _user.getUserId(), new String[]{
-					tag2.getName()}));
+				_group.getGroupId(), _user.getUserId(),
+				new String[] {tag2.getName()}));
 
 		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
 			_getMockLiferayPortletRenderRequest();
@@ -407,7 +403,7 @@ public class ContentDashboardAdminPortletTest {
 		Assert.assertEquals(
 			journalArticle1.getTitle(LocaleUtil.US),
 			ReflectionTestUtil.invoke(
-				results.get(0), "getTitle", new Class<?>[]{Locale.class},
+				results.get(0), "getTitle", new Class<?>[] {Locale.class},
 				LocaleUtil.US));
 	}
 
@@ -438,7 +434,7 @@ public class ContentDashboardAdminPortletTest {
 			Assert.assertEquals(
 				journalArticle.getTitle(LocaleUtil.US),
 				ReflectionTestUtil.invoke(
-					results.get(0), "getTitle", new Class<?>[]{Locale.class},
+					results.get(0), "getTitle", new Class<?>[] {Locale.class},
 					LocaleUtil.US));
 		}
 		finally {
@@ -499,7 +495,7 @@ public class ContentDashboardAdminPortletTest {
 		Assert.assertEquals(
 			journalArticle.getTitle(LocaleUtil.US),
 			ReflectionTestUtil.invoke(
-				results.get(0), "getTitle", new Class<?>[]{Locale.class},
+				results.get(0), "getTitle", new Class<?>[] {Locale.class},
 				LocaleUtil.US));
 	}
 
@@ -520,12 +516,12 @@ public class ContentDashboardAdminPortletTest {
 		Assert.assertEquals(
 			journalArticle2.getTitle(LocaleUtil.US),
 			ReflectionTestUtil.invoke(
-				results.get(0), "getTitle", new Class<?>[]{Locale.class},
+				results.get(0), "getTitle", new Class<?>[] {Locale.class},
 				LocaleUtil.US));
 		Assert.assertEquals(
 			journalArticle1.getTitle(LocaleUtil.US),
 			ReflectionTestUtil.invoke(
-				results.get(1), "getTitle", new Class<?>[]{Locale.class},
+				results.get(1), "getTitle", new Class<?>[] {Locale.class},
 				LocaleUtil.US));
 	}
 
@@ -568,12 +564,12 @@ public class ContentDashboardAdminPortletTest {
 		Assert.assertEquals(
 			journalArticle1.getTitle(LocaleUtil.US),
 			ReflectionTestUtil.invoke(
-				results.get(0), "getTitle", new Class<?>[]{Locale.class},
+				results.get(0), "getTitle", new Class<?>[] {Locale.class},
 				LocaleUtil.US));
 		Assert.assertEquals(
 			journalArticle2.getTitle(LocaleUtil.US),
 			ReflectionTestUtil.invoke(
-				results.get(1), "getTitle", new Class<?>[]{Locale.class},
+				results.get(1), "getTitle", new Class<?>[] {Locale.class},
 				LocaleUtil.US));
 	}
 
@@ -644,7 +640,7 @@ public class ContentDashboardAdminPortletTest {
 				_group.getGroupId(), 0,
 				ServiceContextTestUtil.getServiceContext(
 					_group.getGroupId(), _user.getUserId(),
-					new long[]{assetCategory.getCategoryId()}));
+					new long[] {assetCategory.getCategoryId()}));
 
 			JournalTestUtil.addArticle(
 				_user.getUserId(), _group.getGroupId(), 0);
@@ -666,7 +662,7 @@ public class ContentDashboardAdminPortletTest {
 			Assert.assertEquals(
 				journalArticle.getTitle(LocaleUtil.US),
 				ReflectionTestUtil.invoke(
-					results.get(0), "getTitle", new Class<?>[]{Locale.class},
+					results.get(0), "getTitle", new Class<?>[] {Locale.class},
 					LocaleUtil.US));
 		}
 		finally {
@@ -698,7 +694,7 @@ public class ContentDashboardAdminPortletTest {
 		Assert.assertEquals(
 			journalArticle.getTitle(LocaleUtil.US),
 			ReflectionTestUtil.invoke(
-				results.get(0), "getTitle", new Class<?>[]{Locale.class},
+				results.get(0), "getTitle", new Class<?>[] {Locale.class},
 				LocaleUtil.US));
 	}
 
@@ -730,13 +726,13 @@ public class ContentDashboardAdminPortletTest {
 				_group.getGroupId(), 0,
 				ServiceContextTestUtil.getServiceContext(
 					_group.getGroupId(), _user.getUserId(),
-					new long[]{assetCategory1.getCategoryId()}));
+					new long[] {assetCategory1.getCategoryId()}));
 
 			JournalArticle journalArticle2 = JournalTestUtil.addArticle(
 				_group.getGroupId(), 0,
 				ServiceContextTestUtil.getServiceContext(
 					_group.getGroupId(), _user.getUserId(),
-					new long[]{
+					new long[] {
 						assetCategory1.getCategoryId(),
 						assetCategory2.getCategoryId()
 					}));
@@ -761,7 +757,7 @@ public class ContentDashboardAdminPortletTest {
 			Assert.assertEquals(
 				journalArticle2.getTitle(LocaleUtil.US),
 				ReflectionTestUtil.invoke(
-					results.get(0), "getTitle", new Class<?>[]{Locale.class},
+					results.get(0), "getTitle", new Class<?>[] {Locale.class},
 					LocaleUtil.US));
 		}
 		finally {
@@ -774,37 +770,36 @@ public class ContentDashboardAdminPortletTest {
 
 	@Test
 	public void testGetSearchContainerWithMultipleAssetTags() throws Exception {
+		AssetTag tag1 = _assetTagLocalService.addTag(
+			_user.getUserId(), _group.getGroupId(), "tag1",
+			ServiceContextTestUtil.getServiceContext());
 
-		AssetTag tag1 =
-			_assetTagLocalService.addTag(_user.getUserId(), _group.getGroupId(),
-				"tag1",
-				ServiceContextTestUtil.getServiceContext());
-
-		AssetTag tag2 =
-			_assetTagLocalService.addTag(_user.getUserId(), _group.getGroupId(),
-				"tag2",
-				ServiceContextTestUtil.getServiceContext());
+		AssetTag tag2 = _assetTagLocalService.addTag(
+			_user.getUserId(), _group.getGroupId(), "tag2",
+			ServiceContextTestUtil.getServiceContext());
 
 		JournalTestUtil.addArticle(
 			_group.getGroupId(), 0,
 			ServiceContextTestUtil.getServiceContext(
 				_group.getGroupId(), _user.getUserId(),
-				new String[]{tag1.getName()}));
+				new String[] {tag1.getName()}));
 
 		JournalArticle journalArticle2 = JournalTestUtil.addArticle(
 			_group.getGroupId(), 0,
 			ServiceContextTestUtil.getServiceContext(
 				_group.getGroupId(), _user.getUserId(),
-				new String[]{tag1.getName(), tag2.getName()}));
+				new String[] {tag1.getName(), tag2.getName()}));
 
 		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
 			_getMockLiferayPortletRenderRequest();
 
 		mockLiferayPortletRenderRequest.addParameter(
 			"assetTagId",
-			StringUtil.merge(new String[]{
-				String.valueOf(tag1.getTagId()),
-				String.valueOf(tag2.getTagId())}));
+			StringUtil.merge(
+				new String[] {
+					String.valueOf(tag1.getTagId()),
+					String.valueOf(tag2.getTagId())
+				}));
 
 		SearchContainer<Object> searchContainer = _getSearchContainer(
 			mockLiferayPortletRenderRequest);
@@ -816,7 +811,7 @@ public class ContentDashboardAdminPortletTest {
 		Assert.assertEquals(
 			journalArticle2.getTitle(LocaleUtil.US),
 			ReflectionTestUtil.invoke(
-				results.get(0), "getTitle", new Class<?>[]{Locale.class},
+				results.get(0), "getTitle", new Class<?>[] {Locale.class},
 				LocaleUtil.US));
 	}
 
@@ -835,7 +830,7 @@ public class ContentDashboardAdminPortletTest {
 
 			mockLiferayPortletRenderRequest.setParameter(
 				"authorIds",
-				new String[]{
+				new String[] {
 					String.valueOf(user.getUserId()),
 					String.valueOf(_user.getUserId())
 				});
@@ -854,7 +849,7 @@ public class ContentDashboardAdminPortletTest {
 					result -> Objects.equals(
 						journalArticle1.getTitle(LocaleUtil.US),
 						ReflectionTestUtil.invoke(
-							result, "getTitle", new Class<?>[]{Locale.class},
+							result, "getTitle", new Class<?>[] {Locale.class},
 							LocaleUtil.US))));
 
 			stream = results.stream();
@@ -864,7 +859,7 @@ public class ContentDashboardAdminPortletTest {
 					result -> Objects.equals(
 						journalArticle2.getTitle(LocaleUtil.US),
 						ReflectionTestUtil.invoke(
-							result, "getTitle", new Class<?>[]{Locale.class},
+							result, "getTitle", new Class<?>[] {Locale.class},
 							LocaleUtil.US))));
 		}
 		finally {
@@ -912,7 +907,7 @@ public class ContentDashboardAdminPortletTest {
 
 		mockLiferayPortletRenderRequest.setParameter(
 			"contentDashboardItemTypePayload",
-			new String[]{
+			new String[] {
 				JSONUtil.put(
 					"className", DDMStructure.class.getName()
 				).put(
@@ -939,7 +934,7 @@ public class ContentDashboardAdminPortletTest {
 				result -> Objects.equals(
 					journalArticle1.getTitle(LocaleUtil.US),
 					ReflectionTestUtil.invoke(
-						result, "getTitle", new Class<?>[]{Locale.class},
+						result, "getTitle", new Class<?>[] {Locale.class},
 						LocaleUtil.US))));
 
 		stream = results.stream();
@@ -949,7 +944,7 @@ public class ContentDashboardAdminPortletTest {
 				result -> Objects.equals(
 					journalArticle2.getTitle(LocaleUtil.US),
 					ReflectionTestUtil.invoke(
-						result, "getTitle", new Class<?>[]{Locale.class},
+						result, "getTitle", new Class<?>[] {Locale.class},
 						LocaleUtil.US))));
 	}
 
@@ -981,13 +976,13 @@ public class ContentDashboardAdminPortletTest {
 				_group.getGroupId(), 0,
 				ServiceContextTestUtil.getServiceContext(
 					_group.getGroupId(), _user.getUserId(),
-					new long[]{assetCategory1.getCategoryId()}));
+					new long[] {assetCategory1.getCategoryId()}));
 
 			JournalArticle journalArticle2 = JournalTestUtil.addArticle(
 				_group.getGroupId(), 0,
 				ServiceContextTestUtil.getServiceContext(
 					_group.getGroupId(), _user.getUserId(),
-					new long[]{
+					new long[] {
 						assetCategory1.getCategoryId(),
 						assetCategory2.getCategoryId()
 					}));
@@ -1012,7 +1007,7 @@ public class ContentDashboardAdminPortletTest {
 			Assert.assertEquals(
 				journalArticle2.getTitle(LocaleUtil.US),
 				ReflectionTestUtil.invoke(
-					results.get(0), "getTitle", new Class<?>[]{Locale.class},
+					results.get(0), "getTitle", new Class<?>[] {Locale.class},
 					LocaleUtil.US));
 		}
 		finally {
@@ -1070,7 +1065,7 @@ public class ContentDashboardAdminPortletTest {
 			Assert.assertEquals(
 				journalArticle.getTitle(LocaleUtil.US),
 				ReflectionTestUtil.invoke(
-					results.get(0), "getTitle", new Class<?>[]{Locale.class},
+					results.get(0), "getTitle", new Class<?>[] {Locale.class},
 					LocaleUtil.US));
 		}
 		finally {
@@ -1112,7 +1107,7 @@ public class ContentDashboardAdminPortletTest {
 				result -> Objects.equals(
 					journalArticle1.getTitle(LocaleUtil.US),
 					ReflectionTestUtil.invoke(
-						result, "getTitle", new Class<?>[]{Locale.class},
+						result, "getTitle", new Class<?>[] {Locale.class},
 						LocaleUtil.US))));
 
 		stream = results.stream();
@@ -1122,7 +1117,7 @@ public class ContentDashboardAdminPortletTest {
 				result -> Objects.equals(
 					journalArticle2.getTitle(LocaleUtil.US),
 					ReflectionTestUtil.invoke(
-						result, "getTitle", new Class<?>[]{Locale.class},
+						result, "getTitle", new Class<?>[] {Locale.class},
 						LocaleUtil.US))));
 	}
 
@@ -1157,7 +1152,7 @@ public class ContentDashboardAdminPortletTest {
 		Assert.assertEquals(
 			journalArticle.getTitle(LocaleUtil.US),
 			ReflectionTestUtil.invoke(
-				results.get(0), "getTitle", new Class<?>[]{Locale.class},
+				results.get(0), "getTitle", new Class<?>[] {Locale.class},
 				LocaleUtil.US));
 	}
 
@@ -1192,7 +1187,7 @@ public class ContentDashboardAdminPortletTest {
 		Assert.assertEquals(
 			journalArticle.getTitle(LocaleUtil.US),
 			ReflectionTestUtil.invoke(
-				results.get(0), "getTitle", new Class<?>[]{Locale.class},
+				results.get(0), "getTitle", new Class<?>[] {Locale.class},
 				LocaleUtil.US));
 	}
 
@@ -1223,7 +1218,7 @@ public class ContentDashboardAdminPortletTest {
 				_user.getUserId());
 
 			serviceContext.setAssetCategoryIds(
-				new long[]{assetCategory.getCategoryId()});
+				new long[] {assetCategory.getCategoryId()});
 
 			JournalTestUtil.updateArticle(
 				journalArticle, RandomTestUtil.randomString(),
@@ -1279,7 +1274,7 @@ public class ContentDashboardAdminPortletTest {
 		List<Object> results = searchContainer.getResults();
 
 		List<Object> versions = ReflectionTestUtil.invoke(
-			results.get(0), "getVersions", new Class<?>[]{Locale.class},
+			results.get(0), "getVersions", new Class<?>[] {Locale.class},
 			LocaleUtil.US);
 
 		Assert.assertEquals(versions.toString(), 2, versions.size());
@@ -1338,7 +1333,7 @@ public class ContentDashboardAdminPortletTest {
 		Assert.assertEquals(
 			journalArticle.getTitle(LocaleUtil.US),
 			ReflectionTestUtil.invoke(
-				results.get(0), "getTitle", new Class<?>[]{Locale.class},
+				results.get(0), "getTitle", new Class<?>[] {Locale.class},
 				LocaleUtil.US));
 	}
 
@@ -1373,7 +1368,7 @@ public class ContentDashboardAdminPortletTest {
 				_group.getGroupId(), 0,
 				ServiceContextTestUtil.getServiceContext(
 					_group.getGroupId(), _user.getUserId(),
-					new long[]{
+					new long[] {
 						assetCategory.getCategoryId(),
 						childAssetCategory.getCategoryId()
 					}));
@@ -1409,7 +1404,7 @@ public class ContentDashboardAdminPortletTest {
 				_group.getGroupId(), 0,
 				ServiceContextTestUtil.getServiceContext(
 					_group.getGroupId(), _user.getUserId(),
-					new long[]{assetCategory.getCategoryId()}));
+					new long[] {assetCategory.getCategoryId()}));
 
 			Assert.assertFalse(
 				_isSwapConfigurationEnabled("audience", "stage"));
@@ -1452,7 +1447,7 @@ public class ContentDashboardAdminPortletTest {
 				_group.getGroupId(), 0,
 				ServiceContextTestUtil.getServiceContext(
 					_group.getGroupId(), _user.getUserId(),
-					new long[]{
+					new long[] {
 						assetCategory.getCategoryId(),
 						childAssetCategory.getCategoryId()
 					}));
@@ -1466,10 +1461,10 @@ public class ContentDashboardAdminPortletTest {
 	}
 
 	private String _getAuditGraphTitle(
-		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest)
+			MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest)
 		throws Exception {
 
-		MVCPortlet mvcPortlet = (MVCPortlet) _portlet;
+		MVCPortlet mvcPortlet = (MVCPortlet)_portlet;
 
 		mvcPortlet.render(
 			mockLiferayPortletRenderRequest,
@@ -1482,10 +1477,10 @@ public class ContentDashboardAdminPortletTest {
 	}
 
 	private Map<String, Object> _getData(
-		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest)
+			MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest)
 		throws Exception {
 
-		MVCPortlet mvcPortlet = (MVCPortlet) _portlet;
+		MVCPortlet mvcPortlet = (MVCPortlet)_portlet;
 
 		mvcPortlet.render(
 			mockLiferayPortletRenderRequest,
@@ -1498,15 +1493,15 @@ public class ContentDashboardAdminPortletTest {
 	}
 
 	private MockLiferayPortletRenderRequest
-	_getMockLiferayPortletRenderRequest()
+			_getMockLiferayPortletRenderRequest()
 		throws Exception {
 
 		return _getMockLiferayPortletRenderRequest(
-			new String[]{"audience", "stage"}, LocaleUtil.US);
+			new String[] {"audience", "stage"}, LocaleUtil.US);
 	}
 
 	private MockLiferayPortletRenderRequest _getMockLiferayPortletRenderRequest(
-		String[] assetVocabularyNames, Locale locale)
+			String[] assetVocabularyNames, Locale locale)
 		throws Exception {
 
 		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
@@ -1543,10 +1538,10 @@ public class ContentDashboardAdminPortletTest {
 	}
 
 	private SearchContainer<Object> _getSearchContainer(
-		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest)
+			MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest)
 		throws Exception {
 
-		MVCPortlet mvcPortlet = (MVCPortlet) _portlet;
+		MVCPortlet mvcPortlet = (MVCPortlet)_portlet;
 
 		mvcPortlet.render(
 			mockLiferayPortletRenderRequest,
@@ -1573,7 +1568,7 @@ public class ContentDashboardAdminPortletTest {
 	private Boolean _isSwapConfigurationEnabled(String... assetVocabularyNames)
 		throws Exception {
 
-		MVCPortlet mvcPortlet = (MVCPortlet) _portlet;
+		MVCPortlet mvcPortlet = (MVCPortlet)_portlet;
 
 		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
 			_getMockLiferayPortletRenderRequest(
@@ -1602,7 +1597,6 @@ public class ContentDashboardAdminPortletTest {
 
 	@Inject
 	private AssetTagLocalService _assetTagLocalService;
-
 
 	@Inject
 	private AssetVocabularyLocalService _assetVocabularyLocalService;
