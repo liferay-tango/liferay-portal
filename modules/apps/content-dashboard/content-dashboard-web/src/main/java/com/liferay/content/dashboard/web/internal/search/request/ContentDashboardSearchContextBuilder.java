@@ -200,9 +200,7 @@ public class ContentDashboardSearchContextBuilder {
 		return Optional.of(booleanFilter);
 	}
 
-	private Optional<Filter> _getAssetTagIdsFilterOptional(
-		long[] assetTagIds) {
-
+	private Optional<Filter> _getAssetTagIdsFilterOptional(long[] assetTagIds) {
 		if (ArrayUtil.isEmpty(assetTagIds)) {
 			return Optional.empty();
 		}
