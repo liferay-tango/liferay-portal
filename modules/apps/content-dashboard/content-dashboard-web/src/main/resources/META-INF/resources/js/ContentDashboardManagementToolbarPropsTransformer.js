@@ -80,10 +80,6 @@ export default function propsTransformer({portletNamespace, ...otherProps}) {
 							`${portletNamespace}assetTagId=${assetTag.tagid}`,
 							redirectURL
 						);
-						redirectURL = addParams(
-							`${portletNamespace}assetTagName=${assetTag.value}`,
-							redirectURL
-						);
 					});
 
 					navigate(redirectURL);

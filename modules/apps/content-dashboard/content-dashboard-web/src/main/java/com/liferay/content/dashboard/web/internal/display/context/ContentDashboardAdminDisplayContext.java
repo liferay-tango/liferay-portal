@@ -55,7 +55,6 @@ import com.liferay.users.admin.item.selector.UserItemSelectorCriterion;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -141,20 +140,6 @@ public class ContentDashboardAdminDisplayContext {
 			ParamUtil.getLongValues(_liferayPortletRequest, "assetTagId"));
 
 		return _assetTagIds;
-	}
-
-	public Set<String> getAssetTagNames() {
-		if (_assetTagNames != null) {
-			return _assetTagNames;
-		}
-
-		_assetTagNames = new HashSet(
-			Arrays.asList(
-				ArrayUtil.toStringArray(
-					ParamUtil.getStringValues(
-						_liferayPortletRequest, "assetTagName"))));
-
-		return _assetTagNames;
 	}
 
 	public List<AssetVocabulary> getAssetVocabularies() {
@@ -458,7 +443,6 @@ public class ContentDashboardAdminDisplayContext {
 
 	private List<Long> _assetCategoryIds;
 	private Set<Long> _assetTagIds;
-	private Set<String> _assetTagNames;
 	private final List<AssetVocabulary> _assetVocabularies;
 	private final AssetVocabularyMetric _assetVocabularyMetric;
 	private List<Long> _authorIds;

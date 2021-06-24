@@ -107,8 +107,6 @@ public class ContentDashboardAdminManagementToolbarDisplayContext
 		).setParameter(
 			"assetTagId", (String)null
 		).setParameter(
-			"assetTagName", (String)null
-		).setParameter(
 			"authorIds", (String)null
 		).setParameter(
 			"contentDashboardItemTypePayload", (String)null
@@ -582,17 +580,6 @@ public class ContentDashboardAdminManagementToolbarDisplayContext
 				).collect(
 					Collectors.joining(StringPool.COMMA)
 				);
-			}
-		).setParameter(
-			"selectedTagNames",
-			() -> {
-				Set<String> assetTagNames =
-					_contentDashboardAdminDisplayContext.getAssetTagNames();
-
-				Stream<String> assetTagNamesStream = assetTagNames.stream();
-
-				return assetTagNamesStream.collect(
-					Collectors.joining(StringPool.COMMA));
 			}
 		).setParameter(
 			"showGroupName", true
