@@ -76,7 +76,7 @@ export default function IssuesList() {
 
 const LoadingProgressBar = ({percentage}) => (
 	<div className="my-4 text-secondary">
-		{Liferay.Language.get('connecting-with-google-pagespeed')}
+		{Liferay.Language.get('connecting-with-google-pagespeed-2')}
 		<ClayProgressBar value={percentage} />
 	</div>
 );
