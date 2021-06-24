@@ -1038,6 +1038,55 @@ public class ContentDashboardAdminPortletTest {
 	}
 
 	@Test
+	public void testGetSearchContainerWithSameTagNameInMultipleGroups()
+		throws Exception {
+
+		AssetTag tagInGroup1 = _assetTagLocalService.addTag(
+			_user.getUserId(), _group.getGroupId(), "tag1",
+			ServiceContextTestUtil.getServiceContext());
+
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			_group.getGroupId(), 0,
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), _user.getUserId(),
+				new String[] {tagInGroup1.getName()}));
+
+		Group group2 = GroupTestUtil.addGroup(
+			_company.getCompanyId(), _user.getUserId(), 0);
+
+		AssetTag tagInGroup2 = _assetTagLocalService.addTag(
+			_user.getUserId(), group2.getGroupId(), "tag1",
+			ServiceContextTestUtil.getServiceContext());
+
+		JournalTestUtil.addArticle(
+			group2.getGroupId(), 0,
+			ServiceContextTestUtil.getServiceContext(
+				group2.getGroupId(), _user.getUserId(),
+				new String[] {tagInGroup2.getName()}));
+
+		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
+			_getMockLiferayPortletRenderRequest();
+
+		mockLiferayPortletRenderRequest.addParameter(
+			"assetTagId",
+			StringUtil.merge(
+				new String[] {String.valueOf(tagInGroup1.getTagId())}));
+
+		SearchContainer<Object> searchContainer = _getSearchContainer(
+			mockLiferayPortletRenderRequest);
+
+		Assert.assertEquals(1, searchContainer.getTotal());
+
+		List<Object> results = searchContainer.getResults();
+
+		Assert.assertEquals(
+			journalArticle.getTitle(LocaleUtil.US),
+			ReflectionTestUtil.invoke(
+				results.get(0), "getTitle", new Class<?>[] {Locale.class},
+				LocaleUtil.US));
+	}
+
+	@Test
 	public void testGetSearchContainerWithScope() throws Exception {
 		Group group = GroupTestUtil.addGroup(
 			_company.getCompanyId(), _user.getUserId(), 0);
