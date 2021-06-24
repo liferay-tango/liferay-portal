@@ -79,6 +79,7 @@ public class AssetTagsSelectorDisplayContext {
 		}
 		catch (PortalException portalException) {
 			_log.error(portalException, portalException);
+
 			sb.append(group.getName());
 		}
 
