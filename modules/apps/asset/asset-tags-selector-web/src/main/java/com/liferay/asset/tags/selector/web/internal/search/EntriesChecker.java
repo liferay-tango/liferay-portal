@@ -50,13 +50,7 @@ public class EntriesChecker extends EmptyOnClickRowChecker {
 		String[] selectedTagNames = StringUtil.split(
 			ParamUtil.getString(_portletRequest, "selectedTagNames"));
 
-		if (ArrayUtil.isEmpty(selectedTagNames)) {
-			return false;
-		}
-
-		if (ArrayUtil.contains(selectedTagNames, tag.getName()) &&
-			ArrayUtil.isEmpty(selectedTagIds)) {
-
+		if (ArrayUtil.contains(selectedTagNames, tag.getName())) {
 			return true;
 		}
 
