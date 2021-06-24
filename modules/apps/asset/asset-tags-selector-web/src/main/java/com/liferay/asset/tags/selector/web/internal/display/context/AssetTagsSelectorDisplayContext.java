@@ -76,7 +76,7 @@ public class AssetTagsSelectorDisplayContext {
 		return _eventName;
 	}
 
-	public String getNameAndGroup(AssetTag tag) {
+	public String getAssetTagNameWithGroup(AssetTag tag) {
 		Group group = GroupLocalServiceUtil.fetchGroup(tag.getGroupId());
 
 		StringBundler sb = new StringBundler(5);

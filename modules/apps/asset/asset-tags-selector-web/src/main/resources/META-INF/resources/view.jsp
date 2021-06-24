@@ -46,7 +46,7 @@
 						cssClass="content-column name-column title-column"
 						name="name"
 						truncate="<%= true %>"
-						value="<%= assetTagsSelectorDisplayContext.getNameAndGroup(tag) %>"
+						value="<%= assetTagsSelectorDisplayContext.getAssetTagNameWithGroup(tag) %>"
 					/>
 				</c:when>
 				<c:otherwise>
