@@ -31,6 +31,7 @@ import com.liferay.info.item.InfoItemReference;
 import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -415,14 +416,12 @@ public class ContentDashboardAdminManagementToolbarDisplayContext
 				));
 		}
 
-		Set<String> assetTagIds =
-			_contentDashboardAdminDisplayContext.getAssetTagNames();
+		Set<Long> assetTagIds =
+			_contentDashboardAdminDisplayContext.getAssetTagIds();
 
 		if (!SetUtil.isEmpty(assetTagIds)) {
-			Stream<String> stream = assetTagIds.stream();
-
 			portletURL.setParameter(
-				"assetTagId", stream.toArray(String[]::new));
+				"assetTagId", StringUtil.merge(assetTagIds, StringPool.COMMA));
 		}
 
 		List<Long> authorIds =
