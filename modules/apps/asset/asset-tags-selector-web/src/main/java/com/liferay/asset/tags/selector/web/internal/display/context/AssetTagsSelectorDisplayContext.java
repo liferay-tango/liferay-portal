@@ -76,7 +76,6 @@ public class AssetTagsSelectorDisplayContext {
 		try {
 			sb.append(
 				group.getDescriptiveName(_httpServletRequest.getLocale()));
-			_httpServletRequest.setAttribute("scopeId", tag.getGroupId());
 		}
 		catch (PortalException portalException) {
 			_log.error(portalException, portalException);
