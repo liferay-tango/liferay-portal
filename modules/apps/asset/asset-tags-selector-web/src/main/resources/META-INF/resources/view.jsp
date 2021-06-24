@@ -41,7 +41,7 @@
 			%>
 
 			<c:choose>
-				<c:when test='<%= GetterUtil.getBoolean(request.getParameter("showGroupName")) %>'>
+				<c:when test='<%= ParamUtil.getBoolean(request, "showGroupName") %>'>
 					<liferay-ui:search-container-column-text
 						cssClass="content-column name-column title-column"
 						name="name"
