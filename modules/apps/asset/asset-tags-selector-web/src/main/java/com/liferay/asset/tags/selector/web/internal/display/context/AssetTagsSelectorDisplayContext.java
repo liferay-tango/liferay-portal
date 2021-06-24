@@ -15,7 +15,6 @@
 package com.liferay.asset.tags.selector.web.internal.display.context;
 
 import com.liferay.asset.kernel.model.AssetTag;
-import com.liferay.asset.kernel.model.AssetTagModel;
 import com.liferay.asset.kernel.service.AssetTagServiceUtil;
 import com.liferay.asset.tags.selector.web.internal.search.EntriesChecker;
 import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
@@ -77,7 +76,7 @@ public class AssetTagsSelectorDisplayContext {
 		return _eventName;
 	}
 
-	public String getNameAndGroup(AssetTagModel tag) {
+	public String getNameAndGroup(AssetTag tag) {
 		Group group = GroupLocalServiceUtil.fetchGroup(tag.getGroupId());
 
 		StringBundler sb = new StringBundler(5);
