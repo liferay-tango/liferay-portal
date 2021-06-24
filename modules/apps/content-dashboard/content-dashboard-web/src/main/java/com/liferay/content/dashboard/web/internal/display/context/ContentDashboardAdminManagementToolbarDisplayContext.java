@@ -18,6 +18,7 @@ import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetTag;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.asset.kernel.service.AssetTagServiceUtil;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.content.dashboard.web.internal.item.type.ContentDashboardItemType;
 import com.liferay.frontend.taglib.clay.servlet.taglib.display.context.SearchContainerManagementToolbarDisplayContext;
@@ -339,10 +340,10 @@ public class ContentDashboardAdminManagementToolbarDisplayContext
 						_getStatusLabel(status));
 			});
 
-		Set<String> assetTagNames =
-			_contentDashboardAdminDisplayContext.getAssetTagNames();
+		Set<Long> assetTagIds =
+			_contentDashboardAdminDisplayContext.getAssetTagIds();
 
-		for (String assetTagName : assetTagNames) {
+		for (long assetTagId : assetTagIds) {
 			labelItemListWrapper.add(
 				labelItem -> {
 					labelItem.putData(
@@ -352,24 +353,29 @@ public class ContentDashboardAdminManagementToolbarDisplayContext
 								PortletURLUtil.clone(
 									currentURLObj, liferayPortletResponse)
 							).setParameter(
-								"assetTagName",
+								"assetTagId",
 								() -> {
-									Stream<String> stream =
-										assetTagNames.stream();
+									Stream<Long> stream = assetTagIds.stream();
 
-									return stream.filter(
-										id -> !Objects.equals(id, assetTagName)
-									).toArray(
-										String[]::new
-									);
+									return StringUtil.merge(
+										stream.filter(
+											id -> !Objects.equals(
+												id, assetTagId)
+										).toArray(
+											Long[]::new
+										),
+										StringPool.COMMA);
 								}
 							).buildString()));
 
 					labelItem.setCloseable(true);
+
+					AssetTag assetTag = AssetTagServiceUtil.getTag(assetTagId);
+
 					labelItem.setLabel(
 						StringBundler.concat(
 							LanguageUtil.get(httpServletRequest, "tag"),
-							StringPool.COLON, assetTagName));
+							StringPool.COLON, assetTag.getName()));
 				});
 		}
 
