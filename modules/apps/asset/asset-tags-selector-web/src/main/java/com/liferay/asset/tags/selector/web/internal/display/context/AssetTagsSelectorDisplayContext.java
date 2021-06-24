@@ -64,18 +64,6 @@ public class AssetTagsSelectorDisplayContext {
 		_rowChecker = rowChecker;
 	}
 
-	public String getEventName() {
-		if (Validator.isNotNull(_eventName)) {
-			return _eventName;
-		}
-
-		_eventName = ParamUtil.getString(
-			_httpServletRequest, "eventName",
-			_renderResponse.getNamespace() + "selectTag");
-
-		return _eventName;
-	}
-
 	public String getAssetTagNameWithGroup(AssetTag tag) {
 		Group group = GroupLocalServiceUtil.fetchGroup(tag.getGroupId());
 
@@ -98,6 +86,18 @@ public class AssetTagsSelectorDisplayContext {
 		sb.append(StringPool.CLOSE_PARENTHESIS);
 
 		return sb.toString();
+	}
+
+	public String getEventName() {
+		if (Validator.isNotNull(_eventName)) {
+			return _eventName;
+		}
+
+		_eventName = ParamUtil.getString(
+			_httpServletRequest, "eventName",
+			_renderResponse.getNamespace() + "selectTag");
+
+		return _eventName;
 	}
 
 	public String getOrderByType() {
