@@ -16,12 +16,8 @@
 
 <%@ include file="/init.jsp" %>
 
-<%
-AssetTagsSelectorManagementToolbarDisplayContext assetTagsSelectorManagementToolbarDisplayContext = new AssetTagsSelectorManagementToolbarDisplayContext(request, liferayPortletRequest, liferayPortletResponse, assetTagsSelectorDisplayContext);
-%>
-
 <clay:management-toolbar
-	managementToolbarDisplayContext="<%= assetTagsSelectorManagementToolbarDisplayContext %>"
+	managementToolbarDisplayContext="<%= new AssetTagsSelectorManagementToolbarDisplayContext(request, liferayPortletRequest, liferayPortletResponse, assetTagsSelectorDisplayContext) %>"
 />
 
 <clay:container-fluid>
@@ -50,7 +46,7 @@ AssetTagsSelectorManagementToolbarDisplayContext assetTagsSelectorManagementTool
 						cssClass="content-column name-column title-column"
 						name="name"
 						truncate="<%= true %>"
-						value="<%= assetTagsSelectorManagementToolbarDisplayContext.getNameAndGroup(tag) %>"
+						value="<%= assetTagsSelectorDisplayContext.getNameAndGroup(tag) %>"
 					/>
 				</c:when>
 				<c:otherwise>

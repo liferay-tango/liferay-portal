@@ -15,10 +15,18 @@
 package com.liferay.asset.tags.selector.web.internal.display.context;
 
 import com.liferay.asset.kernel.model.AssetTag;
+import com.liferay.asset.kernel.model.AssetTagModel;
 import com.liferay.asset.kernel.service.AssetTagServiceUtil;
 import com.liferay.asset.tags.selector.web.internal.search.EntriesChecker;
 import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -67,6 +75,30 @@ public class AssetTagsSelectorDisplayContext {
 			_renderResponse.getNamespace() + "selectTag");
 
 		return _eventName;
+	}
+
+	public String getNameAndGroup(AssetTagModel tag) {
+		Group group = GroupLocalServiceUtil.fetchGroup(tag.getGroupId());
+
+		StringBundler sb = new StringBundler(5);
+
+		sb.append(tag.getName());
+		sb.append(StringPool.SPACE);
+		sb.append(StringPool.OPEN_PARENTHESIS);
+
+		try {
+			sb.append(
+				group.getDescriptiveName(_httpServletRequest.getLocale()));
+			_httpServletRequest.setAttribute("scopeId", tag.getGroupId());
+		}
+		catch (PortalException portalException) {
+			_log.error(portalException, portalException);
+			sb.append(group.getName());
+		}
+
+		sb.append(StringPool.CLOSE_PARENTHESIS);
+
+		return sb.toString();
 	}
 
 	public String getOrderByType() {
@@ -206,6 +238,9 @@ public class AssetTagsSelectorDisplayContext {
 
 		return _orderByCol;
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		AssetTagsSelectorDisplayContext.class);
 
 	private String _eventName;
 	private long[] _groupIds;

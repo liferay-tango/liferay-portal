@@ -14,18 +14,11 @@
 
 package com.liferay.asset.tags.selector.web.internal.display.context;
 
-import com.liferay.asset.kernel.model.AssetTagModel;
 import com.liferay.frontend.taglib.clay.servlet.taglib.display.context.SearchContainerManagementToolbarDisplayContext;
 import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
-import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 
 import javax.portlet.PortletURL;
 
@@ -62,29 +55,6 @@ public class AssetTagsSelectorManagementToolbarDisplayContext
 		return "assetTagsSelectorManagementToolbar";
 	}
 
-	public String getNameAndGroup(AssetTagModel tag) {
-		Group group = GroupLocalServiceUtil.fetchGroup(tag.getGroupId());
-
-		StringBundler sb = new StringBundler(5);
-
-		sb.append(tag.getName());
-		sb.append(StringPool.SPACE);
-		sb.append(StringPool.OPEN_PARENTHESIS);
-
-		try {
-			sb.append(group.getDescriptiveName(httpServletRequest.getLocale()));
-			httpServletRequest.setAttribute("scopeId", tag.getGroupId());
-		}
-		catch (PortalException portalException) {
-			_log.error(portalException, portalException);
-			sb.append(group.getName());
-		}
-
-		sb.append(StringPool.CLOSE_PARENTHESIS);
-
-		return sb.toString();
-	}
-
 	@Override
 	public String getSearchActionURL() {
 		PortletURL searchActionURL = getPortletURL();
@@ -106,8 +76,5 @@ public class AssetTagsSelectorManagementToolbarDisplayContext
 	protected String[] getOrderByKeys() {
 		return new String[] {"name"};
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		AssetTagsSelectorManagementToolbarDisplayContext.class);
 
 }
