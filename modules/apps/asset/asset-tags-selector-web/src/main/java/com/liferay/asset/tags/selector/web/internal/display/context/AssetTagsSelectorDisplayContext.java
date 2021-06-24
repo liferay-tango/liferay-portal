@@ -128,8 +128,8 @@ public class AssetTagsSelectorDisplayContext {
 		).build();
 	}
 
-	public String[] getSelectedTagIds() {
-		return ParamUtil.getStringValues(_renderRequest, "selectedTagIds");
+	public long[] getSelectedTagIds() {
+		return ParamUtil.getLongValues(_renderRequest, "selectedTagIds");
 	}
 
 	public String[] getSelectedTagNames() {
