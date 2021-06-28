@@ -192,24 +192,6 @@ public class SegmentsExperimentProductNavigationControlMenuEntry
 	}
 
 	public boolean isPanelStateOpen(HttpServletRequest httpServletRequest) {
-		String segmentsExperimentPanelState = SessionClicks.get(
-			httpServletRequest,
-			"com.liferay.segments.experiment.web_panelState", "closed");
-
-		if (Objects.equals(segmentsExperimentPanelState, "open")) {
-			return true;
-		}
-
-		HttpServletRequest originalHttpServletRequest =
-			_portal.getOriginalServletRequest(httpServletRequest);
-
-		String segmentsExperimentKey = ParamUtil.getString(
-			originalHttpServletRequest, "segmentsExperimentKey");
-
-		if (Validator.isNotNull(segmentsExperimentKey)) {
-			return true;
-		}
-
 		return false;
 	}
 
