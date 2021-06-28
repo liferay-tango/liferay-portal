@@ -271,14 +271,6 @@ public class LayoutReportsProductNavigationControlMenuEntry
 	}
 
 	private boolean _isPanelStateOpen(HttpServletRequest httpServletRequest) {
-		String layoutReportsPanelState = SessionClicks.get(
-			httpServletRequest,
-			"com.liferay.layout.reports.web_layoutReportsPanelState", "closed");
-
-		if (Objects.equals(layoutReportsPanelState, "open")) {
-			return true;
-		}
-
 		return false;
 	}
 
