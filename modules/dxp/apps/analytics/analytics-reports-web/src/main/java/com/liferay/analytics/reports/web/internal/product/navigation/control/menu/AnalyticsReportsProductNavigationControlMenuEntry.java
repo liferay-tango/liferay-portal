@@ -171,14 +171,6 @@ public class AnalyticsReportsProductNavigationControlMenuEntry
 	}
 
 	public boolean isPanelStateOpen(HttpServletRequest httpServletRequest) {
-		String analyticsReportsPanelState = SessionClicks.get(
-			httpServletRequest, "com.liferay.analytics.reports.web_panelState",
-			"closed");
-
-		if (Objects.equals(analyticsReportsPanelState, "open")) {
-			return true;
-		}
-
 		return false;
 	}
 
