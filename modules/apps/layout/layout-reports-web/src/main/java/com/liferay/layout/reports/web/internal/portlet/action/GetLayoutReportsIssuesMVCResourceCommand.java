@@ -225,6 +225,8 @@ public class GetLayoutReportsIssuesMVCResourceCommand
 					"screenNavigationEntryKey", "seo"
 				).setParameter(
 					"selPlid", layout.getPlid()
+				).setParameter(
+					"keepAuditPanelOpen", true
 				).buildString();
 			}
 		}
