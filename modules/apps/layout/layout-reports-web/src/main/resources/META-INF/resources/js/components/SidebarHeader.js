@@ -94,7 +94,7 @@ const IssueDetailSidebarHeader = () => {
 					title={Liferay.Language.get('go-back')}
 				/>
 
-				<span>{selectedIssue.title}</span>
+				<span className="font-weight-bold">{selectedIssue.title}</span>
 			</div>
 
 			<ClayButtonWithIcon
