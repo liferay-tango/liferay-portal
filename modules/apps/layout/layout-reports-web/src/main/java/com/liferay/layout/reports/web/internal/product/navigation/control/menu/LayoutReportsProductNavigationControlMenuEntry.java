@@ -271,6 +271,11 @@ public class LayoutReportsProductNavigationControlMenuEntry
 	}
 
 	private boolean _isPanelStateOpen(HttpServletRequest httpServletRequest) {
+		String keepAuditPanelOpen  = httpServletRequest.getParameter("keepAuditPanelOpen");
+
+		if (StringUtil.equalsIgnoreCase(keepAuditPanelOpen,"true"))
+			return true;
+
 		return false;
 	}
 

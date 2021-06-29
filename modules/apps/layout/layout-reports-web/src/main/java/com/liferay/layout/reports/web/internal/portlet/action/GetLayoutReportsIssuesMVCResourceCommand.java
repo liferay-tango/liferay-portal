@@ -42,6 +42,7 @@ import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
+import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
@@ -180,12 +181,16 @@ public class GetLayoutReportsIssuesMVCResourceCommand
 
 	private String _getCompleteURL(ThemeDisplay themeDisplay) {
 		try {
-			return _portal.getLayoutURL(themeDisplay);
+			String url = _portal.getLayoutURL(themeDisplay);
+			return HttpUtil.setParameter(
+				url, "keepAuditPanelOpen", true);
 		}
 		catch (PortalException portalException) {
 			_log.error(portalException, portalException);
 
-			return _portal.getCurrentCompleteURL(themeDisplay.getRequest());
+			String url = _portal.getCurrentCompleteURL(themeDisplay.getRequest());
+			return HttpUtil.setParameter(
+				url, "keepAuditPanelOpen", true);
 		}
 	}
 
@@ -225,8 +230,6 @@ public class GetLayoutReportsIssuesMVCResourceCommand
 					"screenNavigationEntryKey", "seo"
 				).setParameter(
 					"selPlid", layout.getPlid()
-				).setParameter(
-					"keepAuditPanelOpen", true
 				).buildString();
 			}
 		}
