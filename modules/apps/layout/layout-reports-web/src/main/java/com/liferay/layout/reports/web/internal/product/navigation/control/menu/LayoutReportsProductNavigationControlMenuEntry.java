@@ -44,7 +44,6 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
-import com.liferay.portal.kernel.util.SessionClicks;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.template.react.renderer.ComponentDescriptor;
@@ -61,7 +60,6 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -271,9 +269,11 @@ public class LayoutReportsProductNavigationControlMenuEntry
 	}
 
 	private boolean _isPanelStateOpen(HttpServletRequest httpServletRequest) {
-		String keepAuditPanelOpen  = httpServletRequest.getParameter("keepAuditPanelOpen");
+		String keepAuditPanelOpen = httpServletRequest.getParameter(
+			"keepAuditPanelOpen");
 
-		if (StringUtil.equalsIgnoreCase(keepAuditPanelOpen,"true"))
+		if (StringUtil.equalsIgnoreCase(keepAuditPanelOpen, "true"))
+
 			return true;
 
 		return false;
