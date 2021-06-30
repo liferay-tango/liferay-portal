@@ -58,7 +58,7 @@ public class SegmentsExperimentTemplateContextContributor
 		}
 
 		if (_segmentsExperimentProductNavigationControlMenuEntry.
-				isPanelStateOpen(httpServletRequest)) {
+				isPanelStateOpen()) {
 
 			String cssClass = GetterUtil.getString(
 				contextObjects.get("bodyCssClass"));

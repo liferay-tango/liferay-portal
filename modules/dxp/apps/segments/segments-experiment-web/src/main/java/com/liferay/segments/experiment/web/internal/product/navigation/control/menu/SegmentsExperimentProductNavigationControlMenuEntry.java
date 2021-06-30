@@ -129,7 +129,7 @@ public class SegmentsExperimentProductNavigationControlMenuEntry
 
 		Map<String, String> values = new HashMap<>();
 
-		if (isPanelStateOpen(httpServletRequest)) {
+		if (isPanelStateOpen()) {
 			values.put("cssClass", "active");
 			values.put("dataURL", StringPool.BLANK);
 		}
@@ -188,7 +188,7 @@ public class SegmentsExperimentProductNavigationControlMenuEntry
 		return true;
 	}
 
-	public boolean isPanelStateOpen(HttpServletRequest httpServletRequest) {
+	public boolean isPanelStateOpen() {
 		return false;
 	}
 
@@ -284,7 +284,7 @@ public class SegmentsExperimentProductNavigationControlMenuEntry
 
 			jspWriter.write("<div class=\"");
 
-			if (isPanelStateOpen(httpServletRequest)) {
+			if (isPanelStateOpen()) {
 				jspWriter.write(
 					"lfr-has-segments-experiment-panel open-admin-panel ");
 			}

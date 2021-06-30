@@ -108,7 +108,7 @@ public class SegmentsExperimentPortlet extends MVCPortlet {
 		renderRequest.setAttribute(
 			SegmentsExperimentWebKeys.SEGMENTS_EXPERIMENT_PANEL_STATE_OPEN,
 			_segmentsExperimentProductNavigationControlMenuEntry.
-				isPanelStateOpen(httpServletRequest));
+				isPanelStateOpen());
 
 		super.doDispatch(renderRequest, renderResponse);
 	}

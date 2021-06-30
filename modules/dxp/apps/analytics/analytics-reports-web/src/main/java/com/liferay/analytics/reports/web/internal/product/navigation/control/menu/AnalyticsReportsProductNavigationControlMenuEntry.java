@@ -115,7 +115,7 @@ public class AnalyticsReportsProductNavigationControlMenuEntry
 
 		Map<String, String> values = new HashMap<>();
 
-		if (isPanelStateOpen(httpServletRequest)) {
+		if (isPanelStateOpen()) {
 			values.put("analyticsReportsPanelURL", StringPool.BLANK);
 			values.put("cssClass", "active");
 		}
@@ -168,7 +168,7 @@ public class AnalyticsReportsProductNavigationControlMenuEntry
 		return true;
 	}
 
-	public boolean isPanelStateOpen(HttpServletRequest httpServletRequest) {
+	public boolean isPanelStateOpen() {
 		return false;
 	}
 
@@ -260,7 +260,7 @@ public class AnalyticsReportsProductNavigationControlMenuEntry
 
 			jspWriter.write("<div class=\"");
 
-			if (isPanelStateOpen(httpServletRequest)) {
+			if (isPanelStateOpen()) {
 				jspWriter.write(
 					"lfr-has-analytics-reports-panel open-admin-panel ");
 			}
