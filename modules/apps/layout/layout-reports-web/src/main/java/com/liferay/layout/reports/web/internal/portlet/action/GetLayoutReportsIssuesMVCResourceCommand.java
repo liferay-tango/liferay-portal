@@ -43,6 +43,7 @@ import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
+import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
@@ -182,15 +183,16 @@ public class GetLayoutReportsIssuesMVCResourceCommand
 	private String _getCompleteURL(ThemeDisplay themeDisplay) {
 		try {
 			String url = _portal.getLayoutURL(themeDisplay);
-			return HttpUtil.setParameter(
-				url, "keepAuditPanelOpen", true);
+
+			return _http.addParameter(url, "keepAuditPanelOpen", true);
 		}
 		catch (PortalException portalException) {
 			_log.error(portalException, portalException);
 
-			String url = _portal.getCurrentCompleteURL(themeDisplay.getRequest());
-			return HttpUtil.setParameter(
-				url, "keepAuditPanelOpen", true);
+			String url = _portal.getCurrentCompleteURL(
+				themeDisplay.getRequest());
+
+			return _http.addParameter(url, "keepAuditPanelOpen", true);
 		}
 	}
 
@@ -310,6 +312,9 @@ public class GetLayoutReportsIssuesMVCResourceCommand
 
 	@Reference
 	private GroupLocalService _groupLocalService;
+
+	@Reference
+	private Http _http;
 
 	@Reference
 	private Language _language;
