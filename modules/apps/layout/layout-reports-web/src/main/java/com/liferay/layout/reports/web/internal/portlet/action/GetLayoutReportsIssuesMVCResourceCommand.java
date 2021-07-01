@@ -182,17 +182,15 @@ public class GetLayoutReportsIssuesMVCResourceCommand
 
 	private String _getCompleteURL(ThemeDisplay themeDisplay) {
 		try {
-			String url = _portal.getLayoutURL(themeDisplay);
-
-			return _http.addParameter(url, "keepAuditPanelOpen", true);
+			return _http.addParameter(
+				_portal.getLayoutURL(themeDisplay), "keepAuditPanelOpen", true);
 		}
 		catch (PortalException portalException) {
 			_log.error(portalException, portalException);
 
-			String url = _portal.getCurrentCompleteURL(
-				themeDisplay.getRequest());
-
-			return _http.addParameter(url, "keepAuditPanelOpen", true);
+			return _http.addParameter(
+				_portal.getCurrentCompleteURL(themeDisplay.getRequest()),
+				"keepAuditPanelOpen", true);
 		}
 	}
 
