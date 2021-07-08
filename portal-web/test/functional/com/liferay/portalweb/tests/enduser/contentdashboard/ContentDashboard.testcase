@@ -1273,7 +1273,6 @@ definition {
 	@priority = "5"
 	test IconEdit {
 		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "ContentDashboard#IconEdit";
 
 		task ("Create a Web Content ") {
 			JSONWebcontent.addWebContent(
@@ -1289,6 +1288,8 @@ definition {
 				portlet = "Content Dashboard");
 
 			Click.clickNoMouseOver(locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED_MODIFIED_DATE");
+
+
 		}
 	}
 
@@ -1296,7 +1297,6 @@ definition {
 	@priority = "5"
 	test IconInfo {
 		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "ContentDashboard#IconInfo";
 
 		task ("Add Display Page and mark it as default") {
 			JSONLayoutpagetemplate.addDisplayPageTemplateEntry(
@@ -1330,6 +1330,9 @@ definition {
 			Click.clickNoMouseOver(locator1 = "ContentDashboard#ROW_PANEL_WC");
 
 			Click(locator1 = "ContentDashboard#ICON_INFO_LISTED_MODIFIED_DATE");
+
+
+
 		}
 	}
 
@@ -1337,7 +1340,6 @@ definition {
 	@priority = "5"
 	test IconView {
 		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "ContentDashboard#IconView";
 
 		task ("Add Display Page and mark it as default") {
 			JSONLayoutpagetemplate.addDisplayPageTemplateEntry(
@@ -1371,6 +1373,9 @@ definition {
 			Click.clickNoMouseOver(locator1 = "ContentDashboard#ROW_PANEL_WC");
 
 			Click(locator1 = "ContentDashboard#ICON_VIEW_LISTED_MODIFIED_DATE");
+			
+
+			
 		}
 	}
 

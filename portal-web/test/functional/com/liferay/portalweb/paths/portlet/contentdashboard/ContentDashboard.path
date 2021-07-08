@@ -205,7 +205,6 @@
 	<td></td>
 </tr>
 <tr>
-
 	<td>FIRST_ELEMENT_LISTED_TAGS</td>
 	<td>//*[contains(@class, 'text-truncate') and contains(text(),'Web Content Title')]</td>
 	<td></td>
