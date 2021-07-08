@@ -1288,8 +1288,6 @@ definition {
 				portlet = "Content Dashboard");
 
 			Click.clickNoMouseOver(locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED_MODIFIED_DATE");
-
-
 		}
 	}
 
@@ -1330,9 +1328,6 @@ definition {
 			Click.clickNoMouseOver(locator1 = "ContentDashboard#ROW_PANEL_WC");
 
 			Click(locator1 = "ContentDashboard#ICON_INFO_LISTED_MODIFIED_DATE");
-
-
-
 		}
 	}
 
@@ -1373,9 +1368,6 @@ definition {
 			Click.clickNoMouseOver(locator1 = "ContentDashboard#ROW_PANEL_WC");
 
 			Click(locator1 = "ContentDashboard#ICON_VIEW_LISTED_MODIFIED_DATE");
-			
-
-			
 		}
 	}
 
