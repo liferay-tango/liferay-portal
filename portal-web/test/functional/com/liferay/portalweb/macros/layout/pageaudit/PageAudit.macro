@@ -93,7 +93,6 @@ definition {
 
 			AssertElementPresent(locator1 = "PageAudit#PROGRESS_BAR");
 		}
-			
 	}
 
 	macro openPanelBeforeConfiguration {
