@@ -76,8 +76,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td>PANEL_PAGE_TITLE</td>
-	<td>//*[contains(@class, 'text-truncate') and contains(@title, '${pageName}')]</td>
+	<td>PAGE_AUDIT_PANEL_TITLE</td>
+	<td>//*[contains(@class, 'font-weight-bold') and contains(text(), 'Page Audit')]</td>
 	<td></td>
 </tr>
 <tr>
