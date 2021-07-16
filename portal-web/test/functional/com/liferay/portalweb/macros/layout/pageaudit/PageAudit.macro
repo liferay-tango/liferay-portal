@@ -79,7 +79,7 @@ definition {
 	}
 
 	macro openPanelAfterConfiguration {
-		while (IsElementNotPresent(locator1 = "PageAudit#PAGE_AUDIT_PANEL_TITLE")) {
+		if (IsElementNotPresent(locator1 = "PageAudit#PAGE_AUDIT_PANEL_TITLE")) {
 			Click(locator1 = "PageAudit#PAGE_AUDIT_BUTTON");
 		}
 
@@ -93,6 +93,32 @@ definition {
 	macro openPanelBeforeConfiguration {
 		if (IsElementNotPresent(locator1 = "PageAudit#CONNECT_TO_GOOGLE_PAGESPEED_BUTTON")) {
 			Click(locator1 = "PageAudit#PAGE_AUDIT_BUTTON");
+		}
+	}
+
+	macro setAPIViaConfigureButton {
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
+
+		if (IsElementNotPresent(locator1 = "PageAudit#PAGE_AUDIT_PANEL_TITLE")) {
+			Click(locator1 = "PageAudit#PAGE_AUDIT_BUTTON");
+		}
+
+		ClickNoError(
+			key_text = "Configure",
+			locator1 = "Button#ANY");
+
+		Click(locator1 = "PageAudit#API_FIELD");
+
+		Type(
+			locator1 = "PageAudit#API_FIELD",
+			value1 = "${apiKey}");
+
+		if (IsElementPresent(locator1 = "Button#SAVE")) {
+			Click(locator1 = "Button#SAVE");
+		}
+
+		if (IsElementPresent(locator1 = "Button#UPDATE")) {
+			Click(locator1 = "Button#UPDATE");
 		}
 	}
 

@@ -53,10 +53,10 @@ definition {
 		}
 
 		task ("Set Google PageSpeed API") {
-			PageAudit.setAPIViaSystemSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
-		}
+			PageAudit.setAPIViaConfigureButton(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
+			PageAudit.backToPageBackButton();
+		}
 
 		task ("Open Page Audit panel and assert the progress bar") {
 			PageAudit.openPanelAfterConfiguration(pageName = "Content Page");
@@ -86,12 +86,12 @@ definition {
 		task ("Set Google PageSpeed API") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+			PageAudit.setAPIViaConfigureButton(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+
+			PageAudit.backToPageBackButton();
 		}
 
 		task ("Open Page Audit panel and navigate to the second level of an issue") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
 			PageAudit.openPanelAfterConfiguration(pageName = "Content Page");
 
 			PageAudit.goToDetailView(failingCheckName = "Illegible Font Sizes");
@@ -123,12 +123,12 @@ definition {
 		task ("Set Google PageSpeed API") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+			PageAudit.setAPIViaConfigureButton(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+
+			PageAudit.backToPageBackButton();
 		}
 
 		task ("Open Page Audit panel and navigate to the second level of an issue") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
 			PageAudit.openPanelAfterConfiguration(pageName = "Content Page");
 
 			PageAudit.goToDetailView(failingCheckName = "Incorrect Image Aspect Ratios");
@@ -172,12 +172,12 @@ definition {
 		task ("Set Google PageSpeed API") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+			PageAudit.setAPIViaConfigureButton(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+
+			PageAudit.backToPageBackButton();
 		}
 
 		task ("Open Page Audit panel and navigate to the second level of an issue") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
 			PageAudit.openPanelAfterConfiguration(pageName = "Content Page");
 
 			PageAudit.goToDetailView(failingCheckName = "Invalid Canonical URL");
@@ -209,12 +209,12 @@ definition {
 		task ("Set Google PageSpeed API") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+			PageAudit.setAPIViaConfigureButton(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+
+			PageAudit.backToPageBackButton();
 		}
 
 		task ("Open Page Audit panel and navigate to the second level of an issue") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
 			PageAudit.openPanelAfterConfiguration(pageName = "Content Page");
 
 			PageAudit.goToDetailView(failingCheckName = "Invalid Hreflang");
@@ -250,12 +250,12 @@ definition {
 		task ("Set Google PageSpeed API") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+			PageAudit.setAPIViaConfigureButton(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+
+			PageAudit.backToPageBackButton();
 		}
 
 		task ("Open Page Audit panel and navigate to the second level of an issue") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
 			PageAudit.openPanelAfterConfiguration(pageName = "Content Page");
 
 			PageAudit.goToDetailView(failingCheckName = "Not All Links Are Crawlable");
@@ -291,12 +291,12 @@ definition {
 		task ("Set Google PageSpeed API") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+			PageAudit.setAPIViaConfigureButton(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+
+			PageAudit.backToPageBackButton();
 		}
 
 		task ("Open Page Audit panel and navigate to the second level of an issue") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
 			PageAudit.openPanelAfterConfiguration(pageName = "Content Page");
 
 			PageAudit.goToDetailView(failingCheckName = "Link Texts");
@@ -336,12 +336,12 @@ definition {
 		task ("Set Google PageSpeed API") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+			PageAudit.setAPIViaConfigureButton(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+
+			PageAudit.backToPageBackButton();
 		}
 
 		task ("Open Page Audit panel and navigate to the second level of an issue") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
 			PageAudit.openPanelAfterConfiguration(pageName = "Content Page");
 
 			PageAudit.goToDetailView(failingCheckName = "Low Contrast Ratio");
@@ -377,12 +377,12 @@ definition {
 		task ("Set Google PageSpeed API") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+			PageAudit.setAPIViaConfigureButton(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+
+			PageAudit.backToPageBackButton();
 		}
 
 		task ("Open Page Audit panel and navigate to the second level of an issue") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
 			PageAudit.openPanelAfterConfiguration(pageName = "Content Page");
 
 			PageAudit.goToDetailView(failingCheckName = "Missing Img ALT Attributes");
@@ -418,12 +418,12 @@ definition {
 		task ("Set Google PageSpeed API") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+			PageAudit.setAPIViaConfigureButton(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+
+			PageAudit.backToPageBackButton();
 		}
 
 		task ("Open Page Audit panel and navigate to the second level of an issue") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
 			PageAudit.openPanelAfterConfiguration(pageName = "Content Page");
 
 			PageAudit.goToDetailView(failingCheckName = "Missing Input ALT Attributes");
@@ -459,12 +459,12 @@ definition {
 		task ("Set Google PageSpeed API") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+			PageAudit.setAPIViaConfigureButton(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+
+			PageAudit.backToPageBackButton();
 		}
 
 		task ("Open Page Audit panel and navigate to the second level of an issue") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
 			PageAudit.openPanelAfterConfiguration(pageName = "Content Page");
 
 			PageAudit.goToDetailView(failingCheckName = "Missing Meta Description");
@@ -500,12 +500,12 @@ definition {
 		task ("Set Google PageSpeed API") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+			PageAudit.setAPIViaConfigureButton(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+
+			PageAudit.backToPageBackButton();
 		}
 
 		task ("Open Page Audit panel and navigate to the second level of an issue") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
 			PageAudit.openPanelAfterConfiguration(pageName = "Content Page");
 
 			PageAudit.goToDetailView(failingCheckName = "Missing <title> Element");
@@ -541,12 +541,12 @@ definition {
 		task ("Set Google PageSpeed API") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+			PageAudit.setAPIViaConfigureButton(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+
+			PageAudit.backToPageBackButton();
 		}
 
 		task ("Open Page Audit panel and navigate to the second level of an issue") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
 			PageAudit.openPanelAfterConfiguration(pageName = "Content Page");
 
 			PageAudit.goToDetailView(failingCheckName = "Page Blocked from Indexing");
@@ -582,12 +582,12 @@ definition {
 		task ("Set Google PageSpeed API") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+			PageAudit.setAPIViaConfigureButton(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+
+			PageAudit.backToPageBackButton();
 		}
 
 		task ("Open Page Audit panel and navigate to the second level of an issue") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
 			PageAudit.openPanelAfterConfiguration(pageName = "Content Page");
 
 			PageAudit.goToDetailView(failingCheckName = "Small Tap Targets");
@@ -623,12 +623,12 @@ definition {
 		task ("Set Google PageSpeed API") {
 			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+			PageAudit.setAPIViaConfigureButton(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+
+			PageAudit.backToPageBackButton();
 		}
 
 		task ("Open Page Audit panel and navigate to the second level of an issue") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
 			PageAudit.openPanelAfterConfiguration(pageName = "Content Page");
 
 			PageAudit.goToDetailView(failingCheckName = "Low Contrast Ratio");
@@ -990,10 +990,12 @@ definition {
 		}
 
 		task ("Set Google PageSpeed API") {
-			PageAudit.setAPIViaSystemSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
-		}
+			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-		Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
+			PageAudit.setAPIViaConfigureButton(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+
+			PageAudit.backToPageBackButton();
+		}
 
 		task ("Open Page Audit panel and assert there are no issues") {
 			PageAudit.openPanelAfterConfiguration(pageName = "Content Page");
