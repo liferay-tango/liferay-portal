@@ -69,7 +69,7 @@ const ErrorAlert = () => {
 				{pageCanNotBeAudited && (
 					<span>
 						{`${Liferay.Language.get(
-							'page-is-not-accessible-from-the-internet-or-is-not-indexed'
+							'private-local-or-intranet-pages-cannot-be-audited-as-they-are-not-accessible-from-the-internet'
 						)} `}
 					</span>
 				)}
