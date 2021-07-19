@@ -206,6 +206,11 @@ describe('Error Alert', () => {
 			expect(
 				getByText('this-page-cannot-be-audited')
 			).toBeInTheDocument();
+			expect(
+				getByText(
+					'private-local-or-intranet-pages-cannot-be-audited-as-they-are-not-accessible-from-the-internet'
+				)
+			).toBeInTheDocument();
 			expect(getByText('show-details')).toBeInTheDocument();
 
 			const {className} = getByRole('alert');
@@ -229,6 +234,11 @@ describe('Error Alert', () => {
 
 			expect(
 				getByText('this-page-cannot-be-audited')
+			).toBeInTheDocument();
+			expect(
+				getByText(
+					'private-local-or-intranet-pages-cannot-be-audited-as-they-are-not-accessible-from-the-internet'
+				)
 			).toBeInTheDocument();
 			expect(queryByText('show-details')).not.toBeInTheDocument();
 
