@@ -23,7 +23,7 @@ const ErrorAlertExtendedInfo = ({error = {}}) => {
 	}
 
 	return (
-		<dl className="mb-0 p-0">
+		<dl className="mb-0 mt-2 p-0">
 			{statusCode && (
 				<>
 					<dt>{Liferay.Language.get('error-code')}</dt>{' '}

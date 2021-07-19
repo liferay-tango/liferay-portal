@@ -64,18 +64,18 @@ const ErrorAlert = () => {
 						pageCanNotBeAudited ? 'font-weight-bold' : undefined
 					}
 				>
-					{title}
+					{`${title} `}
 				</span>
 				{pageCanNotBeAudited && (
-					<span className="ml-1">
-						{Liferay.Language.get(
+					<span>
+						{`${Liferay.Language.get(
 							'page-is-not-accessible-from-the-internet-or-is-not-indexed'
-						)}
+						)} `}
 					</span>
 				)}
 				{(apiKeyError || serverError) && (
 					<ClayButton
-						className="font-weight-bold link-primary ml-1"
+						className="font-weight-bold link-primary"
 						displayType="unstyled"
 						onClick={expandInfoHandler}
 					>
@@ -95,7 +95,7 @@ const ErrorAlert = () => {
 				</ClayAlert.Footer>
 			)}
 			{userHasNotPrivileges && apiKeyError && (
-				<p>
+				<p className="mb-0">
 					{Liferay.Language.get(
 						'you-can-set-the-api-key-from-site-settings-pages-google-pagespeed-insights'
 					)}
