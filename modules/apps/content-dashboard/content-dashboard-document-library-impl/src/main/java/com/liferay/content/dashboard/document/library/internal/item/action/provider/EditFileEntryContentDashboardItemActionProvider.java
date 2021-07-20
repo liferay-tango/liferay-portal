@@ -51,9 +51,11 @@ public class EditFileEntryContentDashboardItemActionProvider
 		}
 
 		return new EditFileEntryContentDashboardItemAction(
+			fileEntry,
+			httpServletRequest,
 			_infoEditURLProviderTracker.getInfoEditURLProvider(
 				FileEntry.class.getName()),
-			httpServletRequest, fileEntry, _language, _portal,
+			 _language, _portal,
 			_portletLocalService);
 	}
 
