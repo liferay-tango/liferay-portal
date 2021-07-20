@@ -56,33 +56,32 @@ const ErrorAlert = () => {
 	return (
 		<ClayAlert
 			displayType={apiKeyError || unknownError ? 'danger' : 'warning'}
+			title={title}
 			variant="stripe"
 		>
-			<p className="mb-0">
-				<span
-					className={
-						pageCanNotBeAudited ? 'font-weight-bold' : undefined
-					}
-				>
-					{`${title} `}
+			{pageCanNotBeAudited && (
+				<span>
+					{`${Liferay.Language.get(
+						'private-local-or-intranet-pages-cannot-be-audited-as-they-are-not-accessible-from-the-internet'
+					)} `}
 				</span>
-				{pageCanNotBeAudited && (
-					<span>
-						{`${Liferay.Language.get(
-							'private-local-or-intranet-pages-cannot-be-audited-as-they-are-not-accessible-from-the-internet'
-						)} `}
-					</span>
-				)}
-				{(apiKeyError || serverError) && (
-					<ClayButton
-						className="font-weight-bold link-primary"
-						displayType="unstyled"
-						onClick={expandInfoHandler}
-					>
-						{actionTitle}
-					</ClayButton>
-				)}
-			</p>
+			)}
+			{userHasNotPrivileges && apiKeyError && (
+				<span>
+					{`${Liferay.Language.get(
+						'you-can-set-the-api-key-from-site-settings-pages-google-pagespeed-insights'
+					)} `}
+				</span>
+			)}
+			{(apiKeyError || serverError) && (
+				<ClayButton
+					className="link-primary"
+					displayType="unstyled"
+					onClick={expandInfoHandler}
+				>
+					{actionTitle}
+				</ClayButton>
+			)}
 			{showErrorInfo && <ErrorAlertExtendedInfo error={error} />}
 			{apiKeyError && data?.configureGooglePageSpeedURL && (
 				<ClayAlert.Footer>
@@ -93,13 +92,6 @@ const ErrorAlert = () => {
 						{Liferay.Language.get('set-api-key')}
 					</ClayLink>
 				</ClayAlert.Footer>
-			)}
-			{userHasNotPrivileges && apiKeyError && (
-				<p className="mb-0">
-					{Liferay.Language.get(
-						'you-can-set-the-api-key-from-site-settings-pages-google-pagespeed-insights'
-					)}
-				</p>
 			)}
 		</ClayAlert>
 	);
