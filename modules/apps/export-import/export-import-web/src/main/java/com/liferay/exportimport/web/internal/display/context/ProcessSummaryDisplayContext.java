@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.model.LayoutSetBranch;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutRevisionLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutSetLocalServiceUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.util.ArrayList;
@@ -53,16 +54,20 @@ public class ProcessSummaryDisplayContext {
 
 		for (long selectedLayoutId : selectedLayoutIds) {
 			_addPageNames(
-				groupId, privateLayout, selectedLayoutId, pageNames,
-				languageId);
+				groupId, privateLayout, selectedLayoutIds, selectedLayoutId,
+				pageNames, languageId);
 		}
 
 		return new ArrayList<>(pageNames);
 	}
 
 	private void _addPageNames(
-		long groupId, boolean privateLayout, long selectedLayoutId,
-		Set<String> pageNames, String languageId) {
+		long groupId, boolean privateLayout, long[] selectedLayoutIds,
+		long selectedLayoutId, Set<String> pageNames, String languageId) {
+
+		if (!ArrayUtil.contains(selectedLayoutIds, selectedLayoutId)) {
+			return;
+		}
 
 		Layout layout = LayoutLocalServiceUtil.fetchLayout(
 			groupId, privateLayout, selectedLayoutId);
@@ -83,8 +88,8 @@ public class ProcessSummaryDisplayContext {
 				layout = LayoutLocalServiceUtil.getParentLayout(layout);
 
 				_addPageNames(
-					groupId, privateLayout, layout.getLayoutId(), pageNames,
-					languageId);
+					groupId, privateLayout, selectedLayoutIds,
+					layout.getLayoutId(), pageNames, languageId);
 
 				sb.insert(0, layout.getName() + StringPool.FORWARD_SLASH);
 			}
