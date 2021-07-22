@@ -28,6 +28,7 @@ AUI.add(
 		var KaleoDesignerUtils = {};
 
 		var KaleoDesignerStrings = {
+			account: Liferay.Language.get('account'),
 			action: Liferay.Language.get('action'),
 			actions: Liferay.Language.get('actions'),
 			actionsType: Liferay.Language.get('actions-type'),

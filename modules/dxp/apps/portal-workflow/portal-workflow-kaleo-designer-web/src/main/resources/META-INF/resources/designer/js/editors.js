@@ -615,6 +615,10 @@ AUI.add(
 
 						return [
 							{
+								label: strings.account,
+								value: 'account',
+							},
+							{
 								label: strings.depot,
 								value: 'depot',
 							},
