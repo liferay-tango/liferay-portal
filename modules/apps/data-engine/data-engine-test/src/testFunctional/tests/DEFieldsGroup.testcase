@@ -71,8 +71,7 @@ definition {
 			fieldName = "Numeric",
 			targetFieldLabel = "Text");
 
-		DataEngine.delete(
-			fieldFieldLabel = "Text");
+		DataEngine.delete(fieldFieldLabel = "Text");
 
 		WebContentStructures.saveCP();
 
@@ -84,16 +83,71 @@ definition {
 			fieldGroupDepth = "1",
 			fieldGroupLabel = "Fields Group",
 			fieldsLabelList = "Numeric");
-
 	}
 
 	@description = "This is a stubbed description"
-	@ignore = "true"
 	@priority = "5"
 	test CanEditLabelHelpTextPlaceholderOfFields {
+		NavItem.gotoStructures();
 
-		// TODO pending implementation
+		WebContentStructures.addCP(structureName = "WC Structure Title");
 
+		DataEngine.addField(
+			fieldFieldLabel = "Text",
+			fieldName = "Text");
+
+		DataEngine.addFieldNested(
+			fieldFieldLabel = "Numeric",
+			fieldName = "Numeric",
+			targetFieldLabel = "Text");
+
+		DataEngine.editFieldTip(
+			fieldFieldLabel = "Text",
+			fieldHelp = "Help Text",
+			fieldPlaceholder = "Placeholder");
+
+		DataEngine.editFieldTip(
+			fieldFieldLabel = "Numeric",
+			fieldHelp = "Help Text",
+			fieldPlaceholder = "Placeholder");
+
+		WebContentStructures.saveCP();
+
+		WebContentNavigator.gotoEditStructure(structureName = "WC Structure Title");
+
+		DataEngine.editFieldLabel(
+			fieldFieldLabel = "Text",
+			fieldFieldLabelEdit = "Text Edited");
+
+		DataEngine.editFieldLabel(
+			fieldFieldLabel = "Numeric",
+			fieldFieldLabelEdit = "Numeric Edited");
+
+		DataEngine.editFieldTip(
+			fieldFieldLabel = "Text Edited",
+			fieldHelp = "Help Text Edited",
+			fieldPlaceholder = "Placeholder Edited");
+
+		DataEngine.editFieldTip(
+			fieldFieldLabel = "Numeric Edited",
+			fieldHelp = "Help Text Edited",
+			fieldPlaceholder = "Placeholder Edited");
+
+		WebContentStructures.saveCP();
+
+		WebContentNavigator.gotoEditStructure(structureName = "WC Structure Title");
+
+		DataEngine.viewField(
+			fieldFieldLabel = "Text Edited",
+			fieldHelp = "Help Text Edited",
+			fieldName = "Text",
+			fieldPlaceholder = "Placeholder Edited");
+
+		DataEngine.viewField(
+			fieldFieldLabel = "Numeric Edited",
+			fieldHelp = "Help Text Edited",
+			fieldName = "Numeric",
+			fieldPlaceholder = "Placeholder Edited");
 	}
 
 	@description = "This is a stubbed description"
