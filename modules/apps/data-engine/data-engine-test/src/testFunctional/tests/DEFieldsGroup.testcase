@@ -55,15 +55,6 @@ definition {
 
 	@description = "This is a stubbed description"
 	@ignore = "true"
-	@priority = "5"
-	test CanFieldsBeDuplicatedDeleted {
-
-		// TODO pending implementation
-
-	}
-
-	@description = "This is a stubbed description"
-	@ignore = "true"
 	@priority = "4"
 	test CanEditLabelHelpTextPlaceholderOfNestedFieldsGroupFields {
 
@@ -73,8 +64,8 @@ definition {
 
 	@description = "This is a stubbed description"
 	@ignore = "true"
-	@priority = "3"
-	test CanNestedFieldsGroupFieldsBeDuplicatedDeleted {
+	@priority = "5"
+	test CanFieldsBeDuplicatedDeleted {
 
 		// TODO pending implementation
 
@@ -84,6 +75,15 @@ definition {
 	@ignore = "true"
 	@priority = "3"
 	test CanNestedFieldsGRoupBeDeleted {
+
+		// TODO pending implementation
+
+	}
+
+	@description = "This is a stubbed description"
+	@ignore = "true"
+	@priority = "3"
+	test CanNestedFieldsGroupFieldsBeDuplicatedDeleted {
 
 		// TODO pending implementation
 

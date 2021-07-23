@@ -1,5 +1,22 @@
 definition {
 
+	macro addCreatedFieldToFiedNested {
+		if (isSet(targetFieldGroupLabel)) {
+			DragAndDrop.javaScriptDragAndDropToObject(
+				key_fieldFieldGroupLabel = "${targetFieldGroupLabel}",
+				key_fieldFieldLabel = "${fieldFieldLabel}",
+				locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER",
+				locator2 = "DDMEditStructure#FORM_FIELD_GROUP_TARGET");
+		}
+		else {
+			DragAndDrop.javaScriptDragAndDropToObject(
+				key_targetFieldLabel = "${targetFieldLabel}",
+				locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_TARGET",
+				key_fieldFieldLabel = "${fieldFieldLabel}",
+				locator2 = "DDMEditStructure#FORM_FIELD_CONTAINER");
+		}
+	}
+
 	macro addField {
 		Navigator.gotoSidebarTab(tabName = "Builder");
 
