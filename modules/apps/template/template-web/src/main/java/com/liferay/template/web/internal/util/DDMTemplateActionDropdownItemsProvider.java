@@ -93,7 +93,7 @@ public class DDMTemplateActionDropdownItemsProvider {
 					_themeDisplay.getURLCurrent()
 				).setParameter(
 					"ddmTemplateId", _ddmTemplate.getTemplateId()
-				).build());
+				).buildPortletURL());
 			dropdownItem.setLabel(
 				LanguageUtil.get(_httpServletRequest, "copy"));
 		};
@@ -133,7 +133,7 @@ public class DDMTemplateActionDropdownItemsProvider {
 					_themeDisplay.getURLCurrent()
 				).setParameter(
 					"ddmTemplateId", _ddmTemplate.getTemplateId()
-				).build());
+				).buildPortletURL());
 			dropdownItem.setLabel(
 				LanguageUtil.get(_httpServletRequest, "edit"));
 		};

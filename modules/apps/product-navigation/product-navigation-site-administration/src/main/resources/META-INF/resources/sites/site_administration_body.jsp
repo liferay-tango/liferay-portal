@@ -127,7 +127,7 @@ Group group = siteAdministrationPanelCategoryDisplayContext.getGroup();
 		"selPpid", portletDisplay.getId()
 	).setWindowState(
 		LiferayWindowState.EXCLUSIVE
-	).build();
+	).buildPortletURL();
 	%>
 
 	<aui:script sandbox="<%= true %>">
