@@ -305,7 +305,7 @@ definition {
 			fieldFieldLabel = "Single Selection",
 			fieldName = "Single Selection");
 
-		DataEngine.assertFieldOptionLabels(
+		DEStructure.assertFieldOptionLabels(
 			fieldFieldLabel = "Single Selection",
 			optionLabelList = "Option 1,Option 2,Option 3");
 	}

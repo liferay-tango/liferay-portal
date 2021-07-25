@@ -106,7 +106,7 @@ definition {
 			fieldFieldLabel = "Select from List",
 			fieldName = "Select from List");
 
-		DataEngine.assertFieldOptionLabels(
+		DEStructure.assertFieldOptionLabels(
 			fieldFieldLabel = "Select from List",
 			optionLabelList = "Option 1,Option 2,Option 3,Option 4,Option 5");
 
@@ -122,7 +122,7 @@ definition {
 
 		WebContentNavigator.gotoEditStructure(structureName = "WC Structure Title");
 
-		DataEngine.assertFieldOptionLabels(
+		DEStructure.assertFieldOptionLabels(
 			fieldFieldLabel = "Select from List",
 			optionLabelList = "Option 1,Option 2,Option 3");
 
@@ -317,7 +317,7 @@ definition {
 			fieldFieldLabel = "Select from List",
 			fieldName = "Select from List");
 
-		DataEngine.assertFieldOptionLabels(
+		DEStructure.assertFieldOptionLabels(
 			fieldFieldLabel = "Select from List",
 			optionLabelList = "Option 1,Option 2,Option 3");
 	}

@@ -207,12 +207,12 @@ definition {
 			fieldFieldLabel = "Grid",
 			fieldName = "Grid");
 
-		DataEngine.assertFieldOptionLabels(
+		DEStructure.assertFieldOptionLabels(
 			fieldFieldLabel = "Grid",
 			optionFieldLabel = "Rows",
 			optionLabelList = "Option 1,Option 2,Option 3");
 
-		DataEngine.assertFieldOptionLabels(
+		DEStructure.assertFieldOptionLabels(
 			fieldFieldLabel = "Grid",
 			optionFieldLabel = "Columns",
 			optionLabelList = "Option 1,Option 2,Option 3");

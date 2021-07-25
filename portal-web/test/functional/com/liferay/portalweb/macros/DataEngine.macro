@@ -585,54 +585,6 @@ definition {
 		}
 	}
 
-	macro assertFieldOptionLabels {
-		Navigator.gotoSidebarTab(tabName = "Builder");
-
-		AssertClick.assertPartialTextClickAt(
-			key_fieldFieldLabel = "${fieldFieldLabel}",
-			locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL",
-			value1 = "${fieldFieldLabel}");
-
-		if (IsTextEqual(locator1 = "DataEngineBuilder#SIDEBAR_FIELD_NAME_BUTTON", value1 = "Grid")) {
-			var index = "1";
-
-			for (var optionLabel : list "${optionLabelList}") {
-				AssertTextEquals(
-					index = "${index}",
-					key_optionFieldLabel = "${optionFieldLabel}",
-					locator1 = "Sidebar#OPTION_INPUT",
-					value1 = "${optionLabel}");
-
-				var index = ${index} + 1;
-			}
-		}
-		else if (IsTextEqual(locator1 = "DataEngineBuilder#SIDEBAR_FIELD_NAME_BUTTON", value1 = "Select from List")) {
-			var index = "1";
-
-			for (var optionLabel : list "${optionLabelList}") {
-				AssertTextEquals(
-					index = "${index}",
-					locator1 = "Sidebar#OPTION_INPUT_WITHOUT_LABEL",
-					value1 = "${optionLabel}");
-
-				var index = ${index} + 1;
-			}
-		}
-		else {
-			var index = "1";
-
-			for (var optionLabel : list "${optionLabelList}") {
-				AssertTextEquals(
-					index = "${index}",
-					key_optionFieldLabel = "Options",
-					locator1 = "Sidebar#OPTION_INPUT",
-					value1 = "${optionLabel}");
-
-				var index = ${index} + 1;
-			}
-		}
-	}
-
 	macro assertFieldOptionLabelsNotPresent {
 		if (isSet(fieldFieldLabel)) {
 			AssertClick.assertPartialTextClickAt(
