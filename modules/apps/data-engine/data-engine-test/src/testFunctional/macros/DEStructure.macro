@@ -159,6 +159,12 @@ definition {
 		Click(locator1 = "Sidebar#BACK");
 	}
 
+	macro assertFieldType {
+		AssertTextEquals(
+			locator1 = "DataEngineBuilder#SIDEBAR_FIELD_NAME_BUTTON",
+			value1 = "${fieldType}");
+	}
+
 	macro assertOptionReferences {
 		if (!(isSet(index))) {
 			var index = "1";
