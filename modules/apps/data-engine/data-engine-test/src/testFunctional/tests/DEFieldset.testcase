@@ -54,4 +54,34 @@ definition {
 			optionLabelList = "Option 1,Option 2,Option 3");
 	}
 
+	@description = "This is a test for LRQA-68940. This test verifies that is not possible to delete a Fieldset that is being used on a Structure."
+	@priority = "4"
+	test CanNotDeleteUsedFieldset {
+		NavItem.gotoStructures();
+
+		WebContentStructures.addCP(structureName = "WC Structure Title");
+
+		DataEngine.gotoCreateNewFieldset();
+
+		FormViewBuilder.editFieldSetName(fieldSetName = "New Fieldset");
+
+		DEStructure.addField(
+			fieldLabel = "Text",
+			fieldName = "Text");
+
+		Modal.save();
+
+		DataEngine.addFieldsetToBuilder(fieldsetName = "New Fieldset");
+
+		WebContentStructures.saveCP();
+
+		WebContentNavigator.gotoEditStructure(structureName = "WC Structure Title");
+
+		DataEngine.gotoFieldsetItemEllipsis(fieldsetName = "New Fieldset");
+
+		MenuItem.click(menuItem = "Delete");
+
+		DEStructure.assertDeleteIsDisabled();
+	}
+
 }
