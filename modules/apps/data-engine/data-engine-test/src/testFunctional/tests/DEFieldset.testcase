@@ -26,13 +26,32 @@ definition {
 		}
 	}
 
-	@description = "This is a stubbed description"
-	@ignore = "true"
-	@priority = "3"
-	test CanEditLabelPlaceholderAndHelpText {
+	@description = "This is a test for LRQA-68940. This test verifies that is possible to add multiple options for a field with options on the Fieldset modal."
+	@priority = "5"
+	test CanAddMultipleOptions {
+		NavItem.gotoStructures();
 
-		// TODO pending implementation
+		WebContentStructures.addCP();
 
+		DataEngine.gotoCreateNewFieldset();
+
+		FormViewBuilder.editFieldSetName(fieldSetName = "New Fieldset");
+
+		DEStructure.addField(
+			fieldLabel = "Single Selection",
+			fieldName = "Single Selection");
+
+		DEStructure.addFieldOptions(
+			fieldLabel = "Single Selection",
+			optionValueList = "Option 1,Option 2,Option 3");
+
+		Modal.save();
+
+		DataEngine.gotoEditFieldset(fieldsetName = "New Fieldset");
+
+		DEStructure.assertFieldOptionLabels(
+			fieldFieldLabel = "Single Selection",
+			optionLabelList = "Option 1,Option 2,Option 3");
 	}
 
 }
