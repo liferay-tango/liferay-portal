@@ -84,4 +84,32 @@ definition {
 		DEStructure.assertDeleteIsDisabled();
 	}
 
+	@description = "This is a test for LRQA-68940. This test verifies that is not possible to edit fields inside a Fieldset from the builder."
+	@priority = "4"
+	test CanNotEditFieldsetFieldsFromBuilder {
+		NavItem.gotoStructures();
+
+		WebContentStructures.addCP(structureName = "WC Structure Title");
+
+		DataEngine.gotoCreateNewFieldset();
+
+		FormViewBuilder.editFieldSetName(fieldSetName = "New Fieldset");
+
+		DEStructure.addField(
+			fieldLabel = "Text",
+			fieldName = "Text");
+
+		Modal.save();
+
+		DataEngine.addFieldsetToBuilder(fieldsetName = "New Fieldset");
+
+		WebContentStructures.saveCP();
+
+		WebContentNavigator.gotoEditStructure(structureName = "WC Structure Title");
+
+		DEStructure.openField(fieldLabel = "Text");
+
+		DEStructure.assertFieldType(fieldType = "Fields Group");
+	}
+
 }
