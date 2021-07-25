@@ -273,13 +273,17 @@ public class FragmentLink implements Serializable {
 
 		@JsonCreator
 		public static Target create(String value) {
+			if ((value == null) || value.equals("")) {
+				return null;
+			}
+
 			for (Target target : values()) {
 				if (Objects.equals(target.getValue(), value)) {
 					return target;
 				}
 			}
 
-			return null;
+			throw new IllegalArgumentException("Invalid enum value: " + value);
 		}
 
 		@JsonValue

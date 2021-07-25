@@ -201,13 +201,17 @@ public class CollectionConfig implements Serializable {
 
 		@JsonCreator
 		public static CollectionType create(String value) {
+			if ((value == null) || value.equals("")) {
+				return null;
+			}
+
 			for (CollectionType collectionType : values()) {
 				if (Objects.equals(collectionType.getValue(), value)) {
 					return collectionType;
 				}
 			}
 
-			return null;
+			throw new IllegalArgumentException("Invalid enum value: " + value);
 		}
 
 		@JsonValue

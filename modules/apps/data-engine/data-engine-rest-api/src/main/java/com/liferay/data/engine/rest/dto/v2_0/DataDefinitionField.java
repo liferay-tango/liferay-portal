@@ -755,13 +755,17 @@ public class DataDefinitionField implements Serializable {
 
 		@JsonCreator
 		public static IndexType create(String value) {
+			if ((value == null) || value.equals("")) {
+				return null;
+			}
+
 			for (IndexType indexType : values()) {
 				if (Objects.equals(indexType.getValue(), value)) {
 					return indexType;
 				}
 			}
 
-			return null;
+			throw new IllegalArgumentException("Invalid enum value: " + value);
 		}
 
 		@JsonValue
