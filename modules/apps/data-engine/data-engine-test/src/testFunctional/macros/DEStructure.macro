@@ -58,6 +58,12 @@ definition {
 		Click(locator1 = "Sidebar#BACK");
 	}
 
+	macro assertDeleteIsDisabled {
+		AssertElementPresent(
+			key_text = "Delete",
+			locator1 = "Button#ANY_DISABLED");
+	}
+
 	macro assertFieldOptionLabels {
 		Navigator.gotoSidebarTab(tabName = "Builder");
 
