@@ -106,6 +106,35 @@ definition {
 		}
 	}
 
+	macro assertFieldOptionLabelsNotPresent {
+		if (isSet(fieldFieldLabel)) {
+			AssertClick.assertPartialTextClickAt(
+				key_fieldFieldLabel = "${fieldFieldLabel}",
+				locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER",
+				value1 = "${fieldFieldLabel}");
+		}
+
+		if (isSet(optionFieldLabel)) {
+			for (var optionLabel : list "${optionLabelList}") {
+				AssertElementNotPresent(
+					key_optionFieldLabel = "${optionFieldLabel}",
+					key_optionValue = "${optionLabel}",
+					locator1 = "DataEngineBuilder#OPTION_VALUE_INPUT_WITH_LABEL");
+			}
+		}
+		else {
+			for (var optionLabel : list "${optionLabelList}") {
+				AssertElementNotPresent(
+					key_optionValue = "${optionLabel}",
+					locator1 = "DataEngineBuilder#OPTION_VALUE_INPUT");
+			}
+		}
+
+		if (isSet(fieldFieldLabel)) {
+			Click(locator1 = "Sidebar#BACK");
+		}
+	}
+
 	macro assertFieldReference {
 		if (!(isSet(index))) {
 			var index = "1";

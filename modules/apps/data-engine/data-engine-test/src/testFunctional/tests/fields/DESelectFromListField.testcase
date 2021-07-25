@@ -126,7 +126,7 @@ definition {
 			fieldFieldLabel = "Select from List",
 			optionLabelList = "Option 1,Option 2,Option 3");
 
-		DataEngine.assertFieldOptionLabelsNotPresent(
+		DEStructure.assertFieldOptionLabelsNotPresent(
 			fieldFieldLabel = "Select from List",
 			optionLabelList = "Option 4,Option 5");
 	}
