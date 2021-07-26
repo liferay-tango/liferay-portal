@@ -54,6 +54,38 @@ definition {
 			optionLabelList = "Option 1,Option 2,Option 3");
 	}
 
+	@description = "This is a test for LRQA-68940. This test verifies that Fieldset Label can be edited."
+	@priority = "5"
+	test CanEditFieldsetLabel {
+		NavItem.gotoStructures();
+
+		WebContentStructures.addCP(structureName = "WC Structure Title");
+
+		DataEngine.gotoCreateNewFieldset();
+
+		FormViewBuilder.editFieldSetName(fieldSetName = "New Fieldset");
+
+		DEStructure.addField(
+			fieldLabel = "Text",
+			fieldName = "Text");
+
+		Modal.save();
+
+		DataEngine.addFieldsetToBuilder(fieldsetName = "New Fieldset");
+
+		DataEngine.editFieldsetsLabel(
+			fieldsetLabel = "New Fieldset",
+			fieldsetLabelEdit = "New Fieldset Edited");
+
+		WebContentStructures.saveCP();
+
+		WebContentNavigator.gotoEditStructure(structureName = "WC Structure Title");
+
+		DataEngine.viewFieldset(
+			fieldNameList = "Text",
+			fieldsetName = "New Fieldset Edited");
+	}
+
 	@description = "This is a test for LRQA-68940. This test verifies that is not possible to drag and drop fields from the sidebar into a Fieldset on the builder."
 	@priority = "4"
 	test CanNotAddFieldsIntoFieldsetFromBuilder {
