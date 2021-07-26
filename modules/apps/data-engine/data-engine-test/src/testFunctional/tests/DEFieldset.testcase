@@ -112,4 +112,32 @@ definition {
 		DEStructure.assertFieldType(fieldType = "Fields Group");
 	}
 
+	@description = "This is a test for LRQA-68940. This test verifies that is not possible remove fields from the Fieldset from the builder."
+	@priority = "4"
+	test CanNotRemoveFieldsetFieldsFromBuilder {
+		NavItem.gotoStructures();
+
+		WebContentStructures.addCP(structureName = "WC Structure Title");
+
+		DataEngine.gotoCreateNewFieldset();
+
+		FormViewBuilder.editFieldSetName(fieldSetName = "New Fieldset");
+
+		DEStructure.addField(
+			fieldLabel = "Text",
+			fieldName = "Text");
+
+		Modal.save();
+
+		DataEngine.addFieldsetToBuilder(fieldsetName = "New Fieldset");
+
+		WebContentStructures.saveCP();
+
+		WebContentNavigator.gotoEditStructure(structureName = "WC Structure Title");
+
+		DEStructure.openField(fieldLabel = "Text");
+
+		DEStructure.assertFieldActionsIsNotPresent(fieldLabel = "Text");
+	}
+
 }
