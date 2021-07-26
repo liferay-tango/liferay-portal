@@ -54,6 +54,43 @@ definition {
 			optionLabelList = "Option 1,Option 2,Option 3");
 	}
 
+	@description = "This is a test for LRQA-68940. This test verifies that is not possible to drag and drop fields from the sidebar into a Fieldset on the builder."
+	@priority = "4"
+	test CanNotAddFieldsIntoFieldsetFromBuilder {
+		NavItem.gotoStructures();
+
+		WebContentStructures.addCP(structureName = "WC Structure Title");
+
+		DataEngine.gotoCreateNewFieldset();
+
+		FormViewBuilder.editFieldSetName(fieldSetName = "New Fieldset");
+
+		DEStructure.addField(
+			fieldLabel = "Text",
+			fieldName = "Text");
+
+		Modal.save();
+
+		DataEngine.addFieldsetToBuilder(fieldsetName = "New Fieldset");
+
+		Navigator.gotoSidebarTab(tabName = "Builder");
+
+		Navigator.gotoNavTab(navTab = "Fields");
+
+		DragAndDrop.javaScriptDragAndDropToObject(
+			key_fieldFieldGroupLabel = "New Fieldset",
+			key_fieldName = "Numeric",
+			locator1 = "Sidebar#ADD_FIELD_NAME",
+			locator2 = "DDMEditStructure#FORM_FIELD_GROUP_TARGET",
+			value1 = "Numeric");
+
+		WebContentStructures.saveCP();
+
+		WebContentNavigator.gotoEditStructure(structureName = "WC Structure Title");
+
+		DataEngine.assertFieldNotPresent(fieldFieldLabel = "Numeric");
+	}
+
 	@description = "This is a test for LRQA-68940. This test verifies that is not possible to delete a Fieldset that is being used on a Structure."
 	@priority = "4"
 	test CanNotDeleteUsedFieldset {
