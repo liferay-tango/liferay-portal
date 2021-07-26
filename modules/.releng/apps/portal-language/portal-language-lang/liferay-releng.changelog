@@ -12,3 +12,8 @@
 # Bundle Version 1.0.4
 #
 7da7dbbda4fdc4101af08a1c548c45914fe9b2b8^..8ff7d2ffdd0a66161cfcdbd8a9d9b5da42dcbc0c=LPS-135650
+
+#
+# Bundle Version 1.0.5
+#
+8ff7d2ffdd0a66161cfcdbd8a9d9b5da42dcbc0c^..1749ca2055301e95dc4feaf8c55fa099cfdd0425=LPS-77699 LPS-135650 LPS-136014
