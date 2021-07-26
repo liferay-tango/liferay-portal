@@ -90,6 +90,31 @@ definition {
 		Click(locator1 = "Sidebar#BACK");
 	}
 
+	macro addFieldsetNestedToBuilder {
+		Navigator.gotoSidebarTab(tabName = "Builder");
+
+		Navigator.gotoNavTab(navTab = "Fieldsets");
+
+		if (isSet(targetFieldsGroupLabel)) {
+			DragAndDrop.javaScriptDragAndDropToObject(
+				key_fieldFieldGroupLabel = "${targetFieldsGroupLabel}",
+				key_fieldName = "${fieldsetName}",
+				locator1 = "Sidebar#ADD_FIELD_NAME",
+				locator2 = "DDMEditStructure#FORM_FIELD_GROUP_TARGET",
+				value1 = "${fieldsetName}");
+		}
+		else {
+			DragAndDrop.javaScriptDragAndDropToObject(
+				key_fieldFieldLabel = "${targetFieldLabel}",
+				key_fieldName = "${fieldsetName}",
+				locator1 = "Sidebar#ADD_FIELD_NAME",
+				locator2 = "DDMEditStructure#FORM_FIELD_CONTAINER",
+				value1 = "${fieldsetName}");
+		}
+
+		Click(locator1 = "Sidebar#BACK");
+	}
+
 	macro assertDeleteIsDisabled {
 		AssertElementPresent(
 			key_text = "Delete",
