@@ -140,6 +140,40 @@ definition {
 		DEStructure.assertFieldActionsIsNotPresent(fieldLabel = "Text");
 	}
 
+	@description = "This is a test for LRQA-68940. This test verifies that is not possible to remove fields from the Fieldset if the Fieldset is inside a Fields Group on the builder."
+	@priority = "3"
+	test CanNotRemoveFieldsInsideFieldsetInFieldsGroupFromBuilder {
+		NavItem.gotoStructures();
+
+		WebContentStructures.addCP(structureName = "WC Structure Title");
+
+		DEStructure.addField(
+			fieldLabel = "Text",
+			fieldName = "Text");
+
+		DataEngine.gotoCreateNewFieldset();
+
+		FormViewBuilder.editFieldSetName(fieldSetName = "New Fieldset");
+
+		DEStructure.addField(
+			fieldLabel = "Numeric",
+			fieldName = "Numeric");
+
+		Modal.save();
+
+		DEStructure.addFieldsetNestedToBuilder(
+			fieldsetName = "New Fieldset",
+			targetFieldLabel = "Text");
+
+		WebContentStructures.saveCP();
+
+		WebContentNavigator.gotoEditStructure(structureName = "WC Structure Title");
+
+		DEStructure.openField(fieldLabel = "Numeric");
+
+		DEStructure.assertFieldActionsIsNotPresent(fieldLabel = "Numeric");
+	}
+
 	@description = "This is a test for LRQA-68940. This test verifies that is not possible to remove fields that are inside a Fields Group on the Fieldset from the builder."
 	@priority = "3"
 	test CanNotRemoveFieldsInsideFieldsGroupFromBuilder {
