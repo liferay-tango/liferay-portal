@@ -108,7 +108,10 @@ export default function Translation({
 									</ClayTooltipProvider>
 								</ClayLayout.ContentCol>
 								{defaultLanguageId === languageId && (
-									<ClayLabel displayType="primary">
+									<ClayLabel
+										className="flex-shrink-0 ml-1"
+										displayType="primary"
+									>
 										{Liferay.Language.get('default')}
 									</ClayLabel>
 								)}
