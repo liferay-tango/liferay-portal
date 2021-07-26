@@ -140,6 +140,10 @@ public class GetContentDashboardItemInfoMVCResourceCommandTest {
 			contentDashboardItem.getTitle(LocaleUtil.US),
 			jsonObject.getString("title"));
 
+		Assert.assertEquals(
+			contentDashboardItem.getType(),
+			jsonObject.getString("Web Content"));
+
 		ContentDashboardItemType contentDashboardItemType =
 			contentDashboardItem.getContentDashboardItemType();
 
