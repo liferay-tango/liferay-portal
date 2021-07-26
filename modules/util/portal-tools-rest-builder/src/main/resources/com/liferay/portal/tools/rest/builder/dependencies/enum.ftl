@@ -34,7 +34,7 @@ public enum ${schemaName} {
 			}
 		}
 
-		throw new IllegalArgumentException("Enum value is invalid: " + value);
+		throw new IllegalArgumentException("Invalid enum value: " + value);
 	}
 
 	@JsonValue
