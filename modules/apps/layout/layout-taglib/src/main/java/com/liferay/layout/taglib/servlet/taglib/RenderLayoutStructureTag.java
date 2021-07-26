@@ -39,7 +39,7 @@ public class RenderLayoutStructureTag extends IncludeTag {
 		httpServletRequest.setAttribute(
 			RenderLayoutStructureDisplayContext.class.getName(),
 			new RenderLayoutStructureDisplayContext(
-				isShowPreview(),
+				getFieldValues(),
 				ServletContextUtil.getFragmentEntryProcessorHelper(),
 				ServletContextUtil.getFrontendTokenDefinitionRegistry(),
 				httpServletRequest,
@@ -51,9 +51,10 @@ public class RenderLayoutStructureTag extends IncludeTag {
 				ServletContextUtil.getLayoutListRetrieverTracker(),
 				getLayoutStructure(),
 				ServletContextUtil.getListObjectReferenceFactoryTracker(),
-				getFieldValues(), ServletContextUtil.getRequestContextMapper(),
-				ServletContextUtil.getSegmentsEntryRetriever(), getMainItemId(),
-				getMode()));
+				getMainItemId(), getMode(),
+				ServletContextUtil.getRequestContextMapper(),
+				ServletContextUtil.getSegmentsEntryRetriever(),
+				isShowPreview()));
 
 		return super.doStartTag();
 	}

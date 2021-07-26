@@ -57,14 +57,13 @@ public class JournalArticleContentDashboardItem
 	implements ContentDashboardItem<JournalArticle> {
 
 	public JournalArticleContentDashboardItem(
+		List<AssetCategory> assetCategories, List<AssetTag> assetTags,
 		ContentDashboardItemActionProviderTracker
 			contentDashboardItemActionProviderTracker,
 		ContentDashboardItemType contentDashboardItemType, Group group,
 		InfoItemFieldValuesProvider<JournalArticle> infoItemFieldValuesProvider,
-		JournalArticle journalArticle,
-		JournalArticle latestApprovedJournalArticle, Language language,
-		List<AssetCategory> assetCategories, List<AssetTag> assetTags,
-		Portal portal) {
+		JournalArticle journalArticle, Language language,
+		JournalArticle latestApprovedJournalArticle, Portal portal) {
 
 		if (ListUtil.isEmpty(assetCategories)) {
 			_assetCategories = Collections.emptyList();
@@ -86,6 +85,7 @@ public class JournalArticleContentDashboardItem
 		_group = group;
 		_infoItemFieldValuesProvider = infoItemFieldValuesProvider;
 		_journalArticle = journalArticle;
+		_language = language;
 
 		if (!journalArticle.equals(latestApprovedJournalArticle)) {
 			_latestApprovedJournalArticle = latestApprovedJournalArticle;
@@ -94,7 +94,6 @@ public class JournalArticleContentDashboardItem
 			_latestApprovedJournalArticle = null;
 		}
 
-		_language = language;
 		_portal = portal;
 	}
 

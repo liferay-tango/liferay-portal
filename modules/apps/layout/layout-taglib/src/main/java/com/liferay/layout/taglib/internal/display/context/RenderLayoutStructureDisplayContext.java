@@ -108,7 +108,7 @@ public class RenderLayoutStructureDisplayContext {
 	public static final String PAGINATION_TYPE_SIMPLE = "simple";
 
 	public RenderLayoutStructureDisplayContext(
-		boolean showPreview,
+		Map<String, Object> fieldValues,
 		FragmentEntryProcessorHelper fragmentEntryProcessorHelper,
 		FrontendTokenDefinitionRegistry frontendTokenDefinitionRegistry,
 		HttpServletRequest httpServletRequest,
@@ -119,12 +119,11 @@ public class RenderLayoutStructureDisplayContext {
 		LayoutListRetrieverTracker layoutListRetrieverTracker,
 		LayoutStructure layoutStructure,
 		ListObjectReferenceFactoryTracker listObjectReferenceFactoryTracker,
-		Map<String, Object> fieldValues,
+		String mainItemId, String mode,
 		RequestContextMapper requestContextMapper,
-		SegmentsEntryRetriever segmentsEntryRetriever, String mainItemId,
-		String mode) {
+		SegmentsEntryRetriever segmentsEntryRetriever, boolean showPreview) {
 
-		_showPreview = showPreview;
+		_fieldValues = fieldValues;
 		_fragmentEntryProcessorHelper = fragmentEntryProcessorHelper;
 		_frontendTokenDefinitionRegistry = frontendTokenDefinitionRegistry;
 		_httpServletRequest = httpServletRequest;
@@ -135,11 +134,11 @@ public class RenderLayoutStructureDisplayContext {
 		_layoutListRetrieverTracker = layoutListRetrieverTracker;
 		_layoutStructure = layoutStructure;
 		_listObjectReferenceFactoryTracker = listObjectReferenceFactoryTracker;
-		_fieldValues = fieldValues;
-		_requestContextMapper = requestContextMapper;
-		_segmentsEntryRetriever = segmentsEntryRetriever;
 		_mainItemId = mainItemId;
 		_mode = mode;
+		_requestContextMapper = requestContextMapper;
+		_segmentsEntryRetriever = segmentsEntryRetriever;
+		_showPreview = showPreview;
 
 		_themeDisplay = (ThemeDisplay)_httpServletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);

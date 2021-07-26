@@ -84,12 +84,12 @@ public class FileEntryContentDashboardItemFactory
 		DLFileEntry dlFileEntry = (DLFileEntry)fileEntry.getModel();
 
 		return new FileEntryContentDashboardItem(
+			assetEntry.getCategories(), assetEntry.getTags(),
 			_contentDashboardItemActionProviderTracker,
 			contentDashboardItemTypeFactory.create(
 				dlFileEntry.getFileEntryTypeId()),
 			fileEntry, _groupLocalService.fetchGroup(fileEntry.getGroupId()),
-			infoItemFieldValuesProvider, _language, assetEntry.getCategories(),
-			assetEntry.getTags(), _portal);
+			infoItemFieldValuesProvider, _language, _portal);
 	}
 
 	@Override
