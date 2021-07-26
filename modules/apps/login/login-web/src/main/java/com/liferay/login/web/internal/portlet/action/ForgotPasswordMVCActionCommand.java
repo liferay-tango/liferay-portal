@@ -337,10 +337,10 @@ public class ForgotPasswordMVCActionCommand extends BaseMVCActionCommand {
 
 		String authType = null;
 
-		PortletPreferences preferences = actionRequest.getPreferences();
+		PortletPreferences portletPreferences = actionRequest.getPreferences();
 
-		if (preferences != null) {
-			authType = preferences.getValue("authType", null);
+		if (portletPreferences != null) {
+			authType = portletPreferences.getValue("authType", null);
 		}
 
 		if (Validator.isNull(authType)) {
