@@ -1083,10 +1083,10 @@ public class LiferayRelengPlugin implements Plugin<Project> {
 								System.lineSeparator());
 
 					mergeArtifactsPublishCommandsMergeFilesTask.setInputFiles(
-						new File(
+						/*new File(
 							dir, WRITE_ARTIFACT_PUBLISH_COMMANDS + "-step1.sh"),
 						new File(
-							dir, WRITE_ARTIFACT_PUBLISH_COMMANDS + "-step2.sh"),
+							dir, WRITE_ARTIFACT_PUBLISH_COMMANDS + "-step2.sh"),*/
 						new File(
 							dir,
 							WRITE_ARTIFACT_PUBLISH_COMMANDS + "-step3.sh"));
