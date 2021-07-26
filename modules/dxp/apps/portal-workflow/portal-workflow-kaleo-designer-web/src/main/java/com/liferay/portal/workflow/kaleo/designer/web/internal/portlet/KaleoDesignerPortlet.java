@@ -327,7 +327,7 @@ public class KaleoDesignerPortlet extends MVCPortlet {
 		ThemeDisplay themeDisplay = (ThemeDisplay)resourceRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		List<Role> roles;
+		List<Role> roles = null;
 
 		long[] roleIds = ParamUtil.getLongValues(resourceRequest, "roleIds");
 
