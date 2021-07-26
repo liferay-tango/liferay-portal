@@ -136,7 +136,7 @@ public class JournalArticleLocalServiceTest {
 		JournalArticle oldArticle = JournalTestUtil.addArticle(
 			_group.getGroupId(),
 			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID, "Test-1",
-			"SomeContent");
+			RandomTestUtil.randomString());
 
 		JournalArticle thirdArticle = JournalTestUtil.addArticle(
 			_group.getGroupId(),
