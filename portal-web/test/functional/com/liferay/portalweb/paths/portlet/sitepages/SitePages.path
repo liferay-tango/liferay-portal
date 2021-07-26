@@ -16,6 +16,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>SITE_PENDING_STATUS</td>
+	<td>//span[contains(text(),'Pending')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td></td>
 	<td></td>
 	<td></td>
