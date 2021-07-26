@@ -11,6 +11,11 @@
 
 <tbody>
 <tr>
+	<td>FIELD_ACTIONS_CONTAINER_INDEXED</td>
+	<td>xpath=((//label[normalize-space(text())='${key_fieldLabel}'] | //legend[normalize-space(text())='${key_fieldLabel}'])[${index}])/ancestor::div[contains(@class,'ddm-field-container')][1]/div[contains(@class,'ddm-field-actions-container')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>FIELD_CONTAINER_IN_MODAL_INDEXED</td>
 	<td>xpath=(//div[contains(@class,'modal-dialog')]//div[contains(@class,'ddm-field-container')])[${index}]</td>
 	<td></td>
