@@ -64,6 +64,17 @@ definition {
 			locator1 = "Button#ANY_DISABLED");
 	}
 
+	macro assertFieldActionsIsNotPresent {
+		if (!(isSet(index))) {
+			var index = "1";
+		}
+
+		AssertElementNotPresent(
+			index = "${index}",
+			key_fieldLabel = "${fieldLabel}",
+			locator1 = "DataEngineBuilder#FIELD_ACTIONS_CONTAINER_INDEXED");
+	}
+
 	macro assertFieldOptionLabels {
 		Navigator.gotoSidebarTab(tabName = "Builder");
 
