@@ -305,7 +305,7 @@ definition {
 			fieldFieldLabel = "Single Selection",
 			fieldName = "Single Selection");
 
-		DEStructure.assertFieldOptionLabels(
+		DEBuilder.assertFieldOptionLabels(
 			fieldFieldLabel = "Single Selection",
 			optionLabelList = "Option 1,Option 2,Option 3");
 	}

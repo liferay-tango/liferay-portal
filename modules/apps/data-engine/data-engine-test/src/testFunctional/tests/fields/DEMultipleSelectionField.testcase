@@ -305,7 +305,7 @@ definition {
 			fieldFieldLabel = "Multiple Selection",
 			fieldName = "Multiple Selection");
 
-		DEStructure.assertFieldOptionLabels(
+		DEBuilder.assertFieldOptionLabels(
 			fieldFieldLabel = "Multiple Selection",
 			optionLabelList = "Option 1,Option 2,Option 3");
 	}

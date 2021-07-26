@@ -63,7 +63,7 @@ definition {
 			var index = "1";
 		}
 
-		DEStructure.openField(
+		DEBuilder.openField(
 			fieldLabel = "${fieldLabel}",
 			index = "${index}");
 
@@ -214,7 +214,7 @@ definition {
 			var index = "1";
 		}
 
-		DEStructure.openField(
+		DEBuilder.openField(
 			fieldLabel = "${fieldLabel}",
 			index = "${index}");
 
@@ -238,7 +238,7 @@ definition {
 			var index = "1";
 		}
 
-		DEStructure.openField(
+		DEBuilder.openField(
 			fieldLabel = "${fieldLabel}",
 			index = "${index}");
 
@@ -270,7 +270,7 @@ definition {
 			var index = "1";
 		}
 
-		DEStructure.openField(
+		DEBuilder.openField(
 			fieldLabel = "${fieldLabel}",
 			index = "${index}");
 
@@ -295,7 +295,7 @@ definition {
 			var index = "1";
 		}
 
-		DEStructure.openField(
+		DEBuilder.openField(
 			fieldLabel = "${fieldLabel}",
 			index = "${index}");
 
@@ -342,7 +342,7 @@ definition {
 			var index = "1";
 		}
 
-		DEStructure.openField(
+		DEBuilder.openField(
 			fieldLabel = "${fieldLabel}",
 			index = "${index}");
 
@@ -360,7 +360,7 @@ definition {
 			var index = "1";
 		}
 
-		DEStructure.openField(
+		DEBuilder.openField(
 			fieldLabel = "${fieldLabel}",
 			index = "${index}");
 

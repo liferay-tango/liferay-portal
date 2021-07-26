@@ -149,7 +149,7 @@ definition {
 
 		DMNavigator.gotoDocumentCP(dmDocumentTitle = "DM Document Type");
 
-		DEStructure.assertFieldReference(
+		DEBuilder.assertFieldReference(
 			fieldLabel = "Rich Text",
 			fieldReference = "TestValidReference");
 
@@ -162,7 +162,7 @@ definition {
 
 		DMNavigator.gotoDocumentCP(dmDocumentTitle = "DM Document Type");
 
-		DEStructure.assertFieldReference(
+		DEBuilder.assertFieldReference(
 			fieldLabel = "Rich Text",
 			fieldReference = "TestInvalidReference");
 	}

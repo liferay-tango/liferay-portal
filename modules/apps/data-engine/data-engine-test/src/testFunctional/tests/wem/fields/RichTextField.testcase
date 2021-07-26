@@ -235,7 +235,7 @@ definition {
 
 		WebContentNavigator.gotoEditStructure(structureName = "WC Structure Name");
 
-		DEStructure.assertFieldReference(
+		DEBuilder.assertFieldReference(
 			fieldLabel = "Rich Text",
 			fieldReference = "TestValidReference");
 
@@ -248,7 +248,7 @@ definition {
 
 		WebContentNavigator.gotoEditStructure(structureName = "WC Structure Name");
 
-		DEStructure.assertFieldReference(
+		DEBuilder.assertFieldReference(
 			fieldLabel = "Rich Text",
 			fieldReference = "TestInvalidReference");
 	}

@@ -88,7 +88,7 @@ definition {
 		}
 
 		for (var fieldName : list "Select from List,Single Selection,Multiple Selection") {
-			DEStructure.assertFieldOptionLabels(
+			DEBuilder.assertFieldOptionLabels(
 				fieldFieldLabel = "${fieldName}",
 				optionLabelList = "Option 1,Option 2,Option 3");
 		}
@@ -102,7 +102,7 @@ definition {
 		}
 
 		for (var fieldName : list "Select from List,Single Selection,Multiple Selection") {
-			DEStructure.assertFieldOptionLabels(
+			DEBuilder.assertFieldOptionLabels(
 				fieldFieldLabel = "${fieldName} - pt-BR",
 				optionLabelList = "Option 1 - pt-BR,Option 2 - pt-BR,Option 3 - pt-BR");
 		}
@@ -152,7 +152,7 @@ definition {
 		}
 
 		for (var fieldName : list "Select from List,Single Selection,Multiple Selection") {
-			DEStructure.assertFieldOptionLabels(
+			DEBuilder.assertFieldOptionLabels(
 				fieldFieldLabel = "${fieldName} - edited",
 				optionLabelList = "Option 1 - edited,Option 2 - edited,Option 3 - edited");
 		}
@@ -166,7 +166,7 @@ definition {
 		}
 
 		for (var fieldName : list "Select from List,Single Selection,Multiple Selection") {
-			DEStructure.assertFieldOptionLabels(
+			DEBuilder.assertFieldOptionLabels(
 				fieldFieldLabel = "${fieldName} - pt-BR edited",
 				optionLabelList = "Option 1 - pt-BR edited,Option 2 - pt-BR edited,Option 3 - pt-BR edited");
 		}

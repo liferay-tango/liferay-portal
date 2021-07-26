@@ -87,7 +87,7 @@ definition {
 
 		DMNavigator.gotoDocumentCP(dmDocumentTitle = "DM Document Type Name");
 
-		DEStructure.assertFieldReference(
+		DEBuilder.assertFieldReference(
 			fieldLabel = "Geolocation",
 			fieldReference = "GeolocationReference");
 
@@ -100,7 +100,7 @@ definition {
 
 		DMNavigator.gotoDocumentCP(dmDocumentTitle = "DM Document Type Name");
 
-		DEStructure.assertFieldReference(
+		DEBuilder.assertFieldReference(
 			fieldLabel = "Geolocation",
 			fieldReference = "GeolocationReferenceValidCharacters");
 	}

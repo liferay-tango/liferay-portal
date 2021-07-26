@@ -33,7 +33,7 @@ definition {
 
 		WebContentStructures.addCP(structureName = "WC Structure Title");
 
-		DEStructure.addField(
+		DEBuilder.addField(
 			fieldLabel = "Text",
 			fieldName = "Text");
 
@@ -41,7 +41,7 @@ definition {
 
 		WebContentNavigator.gotoEditStructure(structureName = "WC Structure Title");
 
-		DEStructure.editFieldReference(
+		DEBuilder.editFieldReference(
 			fieldLabel = "Text",
 			fieldReference = "TextReference");
 
@@ -49,7 +49,7 @@ definition {
 
 		WebContentNavigator.gotoEditStructure(structureName = "WC Structure Title");
 
-		DEStructure.assertFieldReference(
+		DEBuilder.assertFieldReference(
 			fieldLabel = "Text",
 			fieldReference = "TextReference");
 	}
@@ -61,11 +61,11 @@ definition {
 
 		WebContentStructures.addCP(structureName = "WC Structure Title");
 
-		DEStructure.addField(
+		DEBuilder.addField(
 			fieldLabel = "Single Selection",
 			fieldName = "Single Selection");
 
-		DEStructure.addFieldOptions(
+		DEBuilder.addFieldOptions(
 			fieldLabel = "Single Selection",
 			optionValueList = "Option 1,Option 2,Option 3");
 
@@ -73,7 +73,7 @@ definition {
 
 		WebContentNavigator.gotoEditStructure(structureName = "WC Structure Title");
 
-		DEStructure.editOptionReferences(
+		DEBuilder.editOptionReferences(
 			fieldLabel = "Single Selection",
 			optionReferenceList = "OptionReference1,OptionReference2,OptionReference3");
 
@@ -81,7 +81,7 @@ definition {
 
 		WebContentNavigator.gotoEditStructure(structureName = "WC Structure Title");
 
-		DEStructure.assertOptionReferences(
+		DEBuilder.assertOptionReferences(
 			fieldLabel = "Single Selection",
 			optionReferenceList = "OptionReference1,OptionReference2,OptionReference3");
 	}
@@ -93,13 +93,13 @@ definition {
 
 		WebContentStructures.addCP(structureName = "WC Structure Title");
 
-		DEStructure.addField(
+		DEBuilder.addField(
 			fieldLabel = "Text",
 			fieldName = "Text");
 
-		var originalFieldReference = DEStructure.getFieldReference(fieldLabel = "Text");
+		var originalFieldReference = DEBuilder.getFieldReference(fieldLabel = "Text");
 
-		DEStructure.editFieldReference(
+		DEBuilder.editFieldReference(
 			fieldLabel = "Text",
 			fieldReference = "");
 
@@ -107,7 +107,7 @@ definition {
 
 		WebContentNavigator.gotoEditStructure(structureName = "WC Structure Title");
 
-		DEStructure.assertFieldReference(
+		DEBuilder.assertFieldReference(
 			fieldLabel = "Text",
 			fieldReference = "${originalFieldReference}");
 	}
@@ -119,19 +119,19 @@ definition {
 
 		WebContentStructures.addCP(structureName = "WC Structure Title");
 
-		DEStructure.addField(
+		DEBuilder.addField(
 			fieldLabel = "Single Selection",
 			fieldName = "Single Selection");
 
-		DEStructure.addFieldOptions(
+		DEBuilder.addFieldOptions(
 			fieldLabel = "Single Selection",
 			optionValueList = "Option 1");
 
-		var originalOptionReference = DEStructure.getOptionReference(
+		var originalOptionReference = DEBuilder.getOptionReference(
 			fieldLabel = "Single Selection",
 			optionIndex = "1");
 
-		DEStructure.editOptionReferences(
+		DEBuilder.editOptionReferences(
 			fieldLabel = "Single Selection",
 			optionReferenceList = "");
 
@@ -139,7 +139,7 @@ definition {
 
 		WebContentNavigator.gotoEditStructure(structureName = "WC Structure Title");
 
-		DEStructure.assertOptionReferences(
+		DEBuilder.assertOptionReferences(
 			fieldLabel = "Single Selection",
 			optionReferenceList = "${originalOptionReference}");
 	}
@@ -151,21 +151,21 @@ definition {
 
 		WebContentStructures.addCP(structureName = "WC Structure Title");
 
-		DEStructure.addField(
+		DEBuilder.addField(
 			fieldLabel = "First Text",
 			fieldName = "Text");
 
-		DEStructure.editFieldReference(
+		DEBuilder.editFieldReference(
 			fieldLabel = "First Text",
 			fieldReference = "TextReference");
 
-		DEStructure.addField(
+		DEBuilder.addField(
 			fieldLabel = "Second Text",
 			fieldName = "Text");
 
-		var originalFieldReference = DEStructure.getFieldReference(fieldLabel = "Second Text");
+		var originalFieldReference = DEBuilder.getFieldReference(fieldLabel = "Second Text");
 
-		DEStructure.editFieldReference(
+		DEBuilder.editFieldReference(
 			assertErrorMessage = "This reference is already being used. Try a different one.",
 			fieldLabel = "Second Text",
 			fieldReference = "TextReference");
@@ -174,7 +174,7 @@ definition {
 
 		WebContentNavigator.gotoEditStructure(structureName = "WC Structure Title");
 
-		DEStructure.assertFieldReference(
+		DEBuilder.assertFieldReference(
 			fieldLabel = "Second Text",
 			fieldReference = "${originalFieldReference}");
 	}
@@ -188,19 +188,19 @@ definition {
 
 		WebContentStructures.addCP(structureName = "WC Structure Title");
 
-		DEStructure.addField(
+		DEBuilder.addField(
 			fieldLabel = "Single Selection",
 			fieldName = "Single Selection");
 
-		DEStructure.addFieldOptions(
+		DEBuilder.addFieldOptions(
 			fieldLabel = "Single Selection",
 			optionValueList = "Option 1,Option 2");
 
-		var originalOptionReference = DEStructure.getOptionReference(
+		var originalOptionReference = DEBuilder.getOptionReference(
 			fieldLabel = "Single Selection",
 			optionIndex = "2");
 
-		DEStructure.editOptionReferences(
+		DEBuilder.editOptionReferences(
 			assertErrorMessage = "This reference is already being used. Try a different one.",
 			assertOptionIndex = "2",
 			fieldLabel = "Single Selection",
@@ -210,7 +210,7 @@ definition {
 
 		WebContentNavigator.gotoEditStructure(structureName = "WC Structure Title");
 
-		DEStructure.assertOptionReferences(
+		DEBuilder.assertOptionReferences(
 			fieldLabel = "Single Selection",
 			optionReferenceList = "OptionReference,${originalOptionReference}");
 	}

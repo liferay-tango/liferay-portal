@@ -109,7 +109,7 @@ definition {
 
 		DMNavigator.gotoDocumentCP(dmDocumentTitle = "Document Type Name");
 
-		DEStructure.assertFieldReference(
+		DEBuilder.assertFieldReference(
 			fieldLabel = "Separator",
 			fieldReference = "${assertFieldReference}");
 
@@ -144,7 +144,7 @@ definition {
 
 		DMNavigator.gotoDocumentCP(dmDocumentTitle = "Document Type Name");
 
-		DEStructure.assertFieldReference(
+		DEBuilder.assertFieldReference(
 			fieldLabel = "Separator",
 			fieldReference = "${assertFieldReference}");
 

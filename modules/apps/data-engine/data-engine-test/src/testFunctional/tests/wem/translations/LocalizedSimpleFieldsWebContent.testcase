@@ -80,7 +80,7 @@ definition {
 		}
 
 		for (var fieldName : list "Select from List,Single Selection,Multiple Selection") {
-			DEStructure.assertFieldOptionLabels(
+			DEBuilder.assertFieldOptionLabels(
 				fieldFieldLabel = "${fieldName}",
 				optionLabelList = "Option 1,Option 2,Option 3");
 		}
@@ -94,7 +94,7 @@ definition {
 		}
 
 		for (var fieldName : list "Select from List,Single Selection,Multiple Selection") {
-			DEStructure.assertFieldOptionLabels(
+			DEBuilder.assertFieldOptionLabels(
 				fieldFieldLabel = "${fieldName} - pt-BR",
 				optionLabelList = "Option 1 - pt-BR,Option 2 - pt-BR,Option 3 - pt-BR");
 		}
@@ -144,7 +144,7 @@ definition {
 		}
 
 		for (var fieldName : list "Select from List,Single Selection,Multiple Selection") {
-			DEStructure.assertFieldOptionLabels(
+			DEBuilder.assertFieldOptionLabels(
 				fieldFieldLabel = "${fieldName} - edited",
 				optionLabelList = "Option 1 - edited,Option 2 - edited,Option 3 - edited");
 		}
@@ -158,7 +158,7 @@ definition {
 		}
 
 		for (var fieldName : list "Select from List,Single Selection,Multiple Selection") {
-			DEStructure.assertFieldOptionLabels(
+			DEBuilder.assertFieldOptionLabels(
 				fieldFieldLabel = "${fieldName} - pt-BR edited",
 				optionLabelList = "Option 1 - pt-BR edited,Option 2 - pt-BR edited,Option 3 - pt-BR edited");
 		}
@@ -947,12 +947,12 @@ definition {
 			fieldFieldLabel = "Grid",
 			fieldName = "Grid");
 
-		DEStructure.assertFieldOptionLabels(
+		DEBuilder.assertFieldOptionLabels(
 			fieldFieldLabel = "Grid",
 			optionFieldLabel = "Rows",
 			optionLabelList = "Option 1,Option 2,Option 3");
 
-		DEStructure.assertFieldOptionLabels(
+		DEBuilder.assertFieldOptionLabels(
 			fieldFieldLabel = "Grid",
 			optionFieldLabel = "Columns",
 			optionLabelList = "Option 1,Option 2,Option 3");
@@ -961,12 +961,12 @@ definition {
 			fieldFieldLabel = "Copy of Grid",
 			fieldName = "Grid");
 
-		DEStructure.assertFieldOptionLabels(
+		DEBuilder.assertFieldOptionLabels(
 			fieldFieldLabel = "Copy of Grid",
 			optionFieldLabel = "Rows",
 			optionLabelList = "Option 1,Option 2,Option 3");
 
-		DEStructure.assertFieldOptionLabels(
+		DEBuilder.assertFieldOptionLabels(
 			fieldFieldLabel = "Copy of Grid",
 			optionFieldLabel = "Columns",
 			optionLabelList = "Option 1,Option 2,Option 3");
@@ -977,12 +977,12 @@ definition {
 			fieldFieldLabel = "Grid - ca-ES",
 			fieldName = "Grid");
 
-		DEStructure.assertFieldOptionLabels(
+		DEBuilder.assertFieldOptionLabels(
 			fieldFieldLabel = "Grid - ca-ES",
 			optionFieldLabel = "Rows",
 			optionLabelList = "Option 1 - ca-ES,Option 2 - ca-ES,Option 3 - ca-ES");
 
-		DEStructure.assertFieldOptionLabels(
+		DEBuilder.assertFieldOptionLabels(
 			fieldFieldLabel = "Grid - ca-ES",
 			optionFieldLabel = "Columns",
 			optionLabelList = "Option 1 - ca-ES,Option 2 - ca-ES,Option 3 - ca-ES");
@@ -991,12 +991,12 @@ definition {
 			fieldFieldLabel = "Copy of Grid - ca-ES",
 			fieldName = "Grid");
 
-		DEStructure.assertFieldOptionLabels(
+		DEBuilder.assertFieldOptionLabels(
 			fieldFieldLabel = "Copy of Grid - ca-ES",
 			optionFieldLabel = "Rows",
 			optionLabelList = "Option 1 - ca-ES,Option 2 - ca-ES,Option 3 - ca-ES");
 
-		DEStructure.assertFieldOptionLabels(
+		DEBuilder.assertFieldOptionLabels(
 			fieldFieldLabel = "Copy of Grid - ca-ES",
 			optionFieldLabel = "Columns",
 			optionLabelList = "Option 1 - ca-ES,Option 2 - ca-ES,Option 3 - ca-ES");

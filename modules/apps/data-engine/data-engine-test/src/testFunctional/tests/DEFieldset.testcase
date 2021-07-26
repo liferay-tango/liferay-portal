@@ -37,11 +37,11 @@ definition {
 
 		FormViewBuilder.editFieldSetName(fieldSetName = "New Fieldset");
 
-		DEStructure.addField(
+		DEBuilder.addField(
 			fieldLabel = "Single Selection",
 			fieldName = "Single Selection");
 
-		DEStructure.addFieldOptions(
+		DEBuilder.addFieldOptions(
 			fieldLabel = "Single Selection",
 			optionValueList = "Option 1,Option 2,Option 3");
 
@@ -49,7 +49,7 @@ definition {
 
 		DataEngine.gotoEditFieldset(fieldsetName = "New Fieldset");
 
-		DEStructure.assertFieldOptionLabels(
+		DEBuilder.assertFieldOptionLabels(
 			fieldFieldLabel = "Single Selection",
 			optionLabelList = "Option 1,Option 2,Option 3");
 	}
@@ -65,7 +65,7 @@ definition {
 
 		FormViewBuilder.editFieldSetName(fieldSetName = "New Fieldset");
 
-		DEStructure.addField(
+		DEBuilder.addField(
 			fieldLabel = "Text",
 			fieldName = "Text");
 
@@ -97,7 +97,7 @@ definition {
 
 		FormViewBuilder.editFieldSetName(fieldSetName = "New Fieldset");
 
-		DEStructure.addField(
+		DEBuilder.addField(
 			fieldLabel = "Text",
 			fieldName = "Text");
 
@@ -134,7 +134,7 @@ definition {
 
 		FormViewBuilder.editFieldSetName(fieldSetName = "New Fieldset");
 
-		DEStructure.addField(
+		DEBuilder.addField(
 			fieldLabel = "Text",
 			fieldName = "Text");
 
@@ -150,7 +150,7 @@ definition {
 
 		MenuItem.click(menuItem = "Delete");
 
-		DEStructure.assertDeleteIsDisabled();
+		DEBuilder.assertDeleteIsDisabled();
 	}
 
 	@description = "This is a test for LRQA-68940. This test verifies that is not possible to edit fields inside a Fieldset from the builder."
@@ -164,7 +164,7 @@ definition {
 
 		FormViewBuilder.editFieldSetName(fieldSetName = "New Fieldset");
 
-		DEStructure.addField(
+		DEBuilder.addField(
 			fieldLabel = "Text",
 			fieldName = "Text");
 
@@ -176,9 +176,9 @@ definition {
 
 		WebContentNavigator.gotoEditStructure(structureName = "WC Structure Title");
 
-		DEStructure.openField(fieldLabel = "Text");
+		DEBuilder.openField(fieldLabel = "Text");
 
-		DEStructure.assertFieldType(fieldType = "Fields Group");
+		DEBuilder.assertFieldType(fieldType = "Fields Group");
 	}
 
 	@description = "This is a test for LRQA-68940. This test verifies that is not possible remove fields from the Fieldset from the builder."
@@ -192,7 +192,7 @@ definition {
 
 		FormViewBuilder.editFieldSetName(fieldSetName = "New Fieldset");
 
-		DEStructure.addField(
+		DEBuilder.addField(
 			fieldLabel = "Text",
 			fieldName = "Text");
 
@@ -204,9 +204,9 @@ definition {
 
 		WebContentNavigator.gotoEditStructure(structureName = "WC Structure Title");
 
-		DEStructure.openField(fieldLabel = "Text");
+		DEBuilder.openField(fieldLabel = "Text");
 
-		DEStructure.assertFieldActionsIsNotPresent(fieldLabel = "Text");
+		DEBuilder.assertFieldActionsIsNotPresent(fieldLabel = "Text");
 	}
 
 	@description = "This is a test for LRQA-68940. This test verifies that is not possible to remove fields from the Fieldset if the Fieldset is inside a Fields Group on the builder."
@@ -216,7 +216,7 @@ definition {
 
 		WebContentStructures.addCP(structureName = "WC Structure Title");
 
-		DEStructure.addField(
+		DEBuilder.addField(
 			fieldLabel = "Text",
 			fieldName = "Text");
 
@@ -224,13 +224,13 @@ definition {
 
 		FormViewBuilder.editFieldSetName(fieldSetName = "New Fieldset");
 
-		DEStructure.addField(
+		DEBuilder.addField(
 			fieldLabel = "Numeric",
 			fieldName = "Numeric");
 
 		Modal.save();
 
-		DEStructure.addFieldsetNestedToBuilder(
+		DEBuilder.addFieldsetNestedToBuilder(
 			fieldsetName = "New Fieldset",
 			targetFieldLabel = "Text");
 
@@ -238,9 +238,9 @@ definition {
 
 		WebContentNavigator.gotoEditStructure(structureName = "WC Structure Title");
 
-		DEStructure.openField(fieldLabel = "Numeric");
+		DEBuilder.openField(fieldLabel = "Numeric");
 
-		DEStructure.assertFieldActionsIsNotPresent(fieldLabel = "Numeric");
+		DEBuilder.assertFieldActionsIsNotPresent(fieldLabel = "Numeric");
 	}
 
 	@description = "This is a test for LRQA-68940. This test verifies that is not possible to remove fields that are inside a Fields Group on the Fieldset from the builder."
@@ -254,11 +254,11 @@ definition {
 
 		FormViewBuilder.editFieldSetName(fieldSetName = "New Fieldset");
 
-		DEStructure.addField(
+		DEBuilder.addField(
 			fieldLabel = "Text",
 			fieldName = "Text");
 
-		DEStructure.addFieldNested(
+		DEBuilder.addFieldNested(
 			fieldLabel = "Numeric",
 			fieldName = "Numeric",
 			targetFieldLabel = "Text");
@@ -271,13 +271,13 @@ definition {
 
 		WebContentNavigator.gotoEditStructure(structureName = "WC Structure Title");
 
-		DEStructure.openField(fieldLabel = "Text");
+		DEBuilder.openField(fieldLabel = "Text");
 
-		DEStructure.assertFieldActionsIsNotPresent(fieldLabel = "Text");
+		DEBuilder.assertFieldActionsIsNotPresent(fieldLabel = "Text");
 
-		DEStructure.openField(fieldLabel = "Numeric");
+		DEBuilder.openField(fieldLabel = "Numeric");
 
-		DEStructure.assertFieldActionsIsNotPresent(fieldLabel = "Numeric");
+		DEBuilder.assertFieldActionsIsNotPresent(fieldLabel = "Numeric");
 	}
 
 }
