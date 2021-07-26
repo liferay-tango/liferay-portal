@@ -334,9 +334,6 @@ definition {
 			portlet = "Pages");
 
 		AssertElementPresent(locator1 = "SitePages#SITE_PENDING_STATUS");
-
-
-		
 	}
 
 }
