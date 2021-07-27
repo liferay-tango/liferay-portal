@@ -205,34 +205,6 @@ public class ObjectEntry implements Serializable {
 	protected String externalReferenceCode;
 
 	@Schema
-	public Long getGroupId() {
-		return groupId;
-	}
-
-	public void setGroupId(Long groupId) {
-		this.groupId = groupId;
-	}
-
-	@JsonIgnore
-	public void setGroupId(
-		UnsafeSupplier<Long, Exception> groupIdUnsafeSupplier) {
-
-		try {
-			groupId = groupIdUnsafeSupplier.get();
-		}
-		catch (RuntimeException re) {
-			throw re;
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected Long groupId;
-
-	@Schema
 	public Long getId() {
 		return id;
 	}
@@ -380,16 +352,6 @@ public class ObjectEntry implements Serializable {
 			sb.append(_escape(externalReferenceCode));
 
 			sb.append("\"");
-		}
-
-		if (groupId != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"groupId\": ");
-
-			sb.append(groupId);
 		}
 
 		if (id != null) {
