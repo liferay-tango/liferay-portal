@@ -71,6 +71,10 @@ definition {
 			fieldName = "Numeric",
 			targetFieldLabel = "Text");
 
+		WebContentStructures.saveCP();
+
+		WebContentNavigator.gotoEditStructure(structureName = "WC Structure Title");
+
 		DataEngine.delete(fieldFieldLabel = "Text");
 
 		WebContentStructures.saveCP();
