@@ -283,14 +283,18 @@ definition {
 
 		DataEngine.editFieldsGroupLabel(
 			fieldsGroupLabel = "Fields Group",
-			fieldsGroupLabelEdit = "Fields Group Edited");
+			fieldsGroupLabelEdit = "Fields Group 1");
 
 		DEBuilder.addFieldNested(
 			fieldLabel = "Date",
 			fieldName = "Date",
 			targetFieldLabel = "Numeric");
 
-		DataEngine.duplicate(fieldsGroupLabel = "Fields Group");
+		DataEngine.editFieldsGroupLabel(
+			fieldsGroupLabel = "Fields Group",
+			fieldsGroupLabelEdit = "Fields Group 2");
+
+		DataEngine.duplicate(fieldsGroupLabel = "Fields Group 2");
 
 		WebContentStructures.saveCP();
 
@@ -298,12 +302,12 @@ definition {
 
 		DataEngine.assertFieldsGroup(
 			fieldGroupDepth = "2",
-			fieldGroupLabel = "Fields Group",
+			fieldGroupLabel = "Fields Group 2",
 			fieldsLabelList = "Numeric,Date");
 
 		DataEngine.assertFieldsGroup(
 			fieldGroupDepth = "2",
-			fieldGroupLabel = "Copy of Fields Group",
+			fieldGroupLabel = "Copy of Fields Group 2",
 			fieldsLabelList = "Copy of Numeric,Copy of Date");
 	}
 
