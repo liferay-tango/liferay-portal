@@ -202,13 +202,12 @@ NumberFormat numberFormat = NumberFormat.getNumberInstance(locale);
 							}
 
 							for (int i = pagesIteratorBegin; i <= pagesIteratorEnd; i++) {
-								String curParamURL = HttpUtil.setParameter(url + urlAnchor, namespace + curParam, i);
 							%>
 
 								<liferay-ui:icon
 									message="<%= String.valueOf(i) %>"
 									onClick='<%= forcePost ? _getOnClick(namespace, curParam, i) : "" %>'
-									url="<%= HtmlUtil.escapeJSLink(curParamURL) %>"
+									url="<%= HtmlUtil.escapeJSLink(HttpUtil.setParameter(url + urlAnchor, namespace + curParam, i)) %>"
 								/>
 
 							<%
