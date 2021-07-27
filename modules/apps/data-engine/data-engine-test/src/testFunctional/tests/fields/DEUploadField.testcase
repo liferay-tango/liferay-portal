@@ -81,7 +81,6 @@ definition {
 	}
 
 	@description = "This is a test for LRQA-68656. This test verifies that Label and Help text can be edited"
-	@ignore = "true"
 	@priority = "5"
 	test CanEditLabelAndHelpText {
 		NavItem.gotoStructures();
