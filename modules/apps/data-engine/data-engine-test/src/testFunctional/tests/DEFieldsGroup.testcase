@@ -26,8 +26,62 @@ definition {
 
 	@description = "This is a stubbed description"
 	@ignore = "true"
+	@priority = "5"
+	test CanBeCreatedWithFieldsOnBuilder {
+
+		// TODO pending implementation
+
+	}
+
+	@description = "This is a stubbed description"
+	@ignore = "true"
+	@priority = "4"
+	test CanBeRemovedField {
+
+		// TODO pending implementation
+
+	}
+
+	@description = "This is a stubbed description"
+	@ignore = "true"
+	@priority = "5"
+	test CanEditLabelHelpTextPlaceholderOfFields {
+
+		// TODO pending implementation
+
+	}
+
+	@description = "This is a stubbed description"
+	@ignore = "true"
+	@priority = "5"
+	test CanFieldsBeDuplicatedDeleted {
+
+		// TODO pending implementation
+
+	}
+
+	@description = "This is a stubbed description"
+	@ignore = "true"
+	@priority = "4"
+	test CanEditLabelHelpTextPlaceholderOfNestedFieldsGroupFields {
+
+		// TODO pending implementation
+
+	}
+
+	@description = "This is a stubbed description"
+	@ignore = "true"
 	@priority = "3"
-	test CanBeCreated {
+	test CanNestedFieldsGroupFieldsBeDuplicatedDeleted {
+
+		// TODO pending implementation
+
+	}
+
+	@description = "This is a stubbed description"
+	@ignore = "true"
+	@priority = "3"
+	test CanNestedFieldsGRoupBeDeleted {
 
 		// TODO pending implementation
 
