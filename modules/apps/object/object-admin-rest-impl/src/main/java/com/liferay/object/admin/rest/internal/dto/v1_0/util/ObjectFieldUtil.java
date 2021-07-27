@@ -24,17 +24,19 @@ import com.liferay.portal.kernel.util.GetterUtil;
 public class ObjectFieldUtil {
 
 	public static ObjectField toObjectField(
-		com.liferay.object.model.ObjectField objectField) {
+		com.liferay.object.model.ObjectField serviceBuilderObjectField) {
 
 		return new ObjectField() {
 			{
-				id = objectField.getObjectFieldId();
-				indexed = objectField.getIndexed();
-				indexedAsKeyword = objectField.getIndexedAsKeyword();
-				indexedLanguageId = objectField.getIndexedLanguageId();
-				name = objectField.getName();
-				required = objectField.isRequired();
-				type = objectField.getType();
+				id = serviceBuilderObjectField.getObjectFieldId();
+				indexed = serviceBuilderObjectField.getIndexed();
+				indexedAsKeyword =
+					serviceBuilderObjectField.getIndexedAsKeyword();
+				indexedLanguageId =
+					serviceBuilderObjectField.getIndexedLanguageId();
+				name = serviceBuilderObjectField.getName();
+				required = serviceBuilderObjectField.isRequired();
+				type = serviceBuilderObjectField.getType();
 			}
 		};
 	}
