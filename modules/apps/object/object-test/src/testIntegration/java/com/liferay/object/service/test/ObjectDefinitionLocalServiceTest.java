@@ -27,6 +27,7 @@ import com.liferay.object.service.ObjectFieldLocalServiceUtil;
 import com.liferay.object.system.BaseSystemObjectDefinitionMetadata;
 import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
+import com.liferay.portal.kernel.service.ResourceActionLocalServiceUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -162,7 +163,7 @@ public class ObjectDefinitionLocalServiceTest {
 				duplicateObjectDefinitionException.getMessage());
 		}
 
-		// Database table name and status
+		// Database table, resources, and status
 
 		objectDefinition =
 			ObjectDefinitionLocalServiceUtil.addCustomObjectDefinition(
@@ -171,15 +172,39 @@ public class ObjectDefinitionLocalServiceTest {
 					_createObjectField("able", "String"),
 					_createObjectField("baker", "String")));
 
+		// Before publish, database table
+
 		Assert.assertEquals(
 			false, _hasTable(objectDefinition.getDBTableName()));
+
+		// Before publish, resources
+
+		Assert.assertEquals(
+			0,
+			ResourceActionLocalServiceUtil.getResourceActionsCount(
+				objectDefinition.getClassName()));
+		Assert.assertEquals(
+			0,
+			ResourceActionLocalServiceUtil.getResourceActionsCount(
+				objectDefinition.getPortletId()));
+		Assert.assertEquals(
+			0,
+			ResourceActionLocalServiceUtil.getResourceActionsCount(
+				objectDefinition.getResourceName()));
+
+		// Before publish, status
+
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_DRAFT, objectDefinition.getStatus());
+
+		// Publish
 
 		objectDefinition =
 			ObjectDefinitionLocalServiceUtil.publishCustomObjectDefinition(
 				TestPropsValues.getUserId(),
 				objectDefinition.getObjectDefinitionId());
+
+		// After publish, database table
 
 		Assert.assertEquals(
 			false, _hasColumn(objectDefinition.getDBTableName(), "able"));
@@ -190,6 +215,24 @@ public class ObjectDefinitionLocalServiceTest {
 		Assert.assertEquals(
 			true, _hasColumn(objectDefinition.getDBTableName(), "baker_"));
 		Assert.assertEquals(true, _hasTable(objectDefinition.getDBTableName()));
+
+		// After publish, resources
+
+		Assert.assertEquals(
+			4,
+			ResourceActionLocalServiceUtil.getResourceActionsCount(
+				objectDefinition.getClassName()));
+		Assert.assertEquals(
+			6,
+			ResourceActionLocalServiceUtil.getResourceActionsCount(
+				objectDefinition.getPortletId()));
+		Assert.assertEquals(
+			2,
+			ResourceActionLocalServiceUtil.getResourceActionsCount(
+				objectDefinition.getResourceName()));
+
+		// After publish, status
+
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_APPROVED, objectDefinition.getStatus());
 	}
@@ -446,17 +489,56 @@ public class ObjectDefinitionLocalServiceTest {
 				objectDefinitionVersionException.getMessage());
 		}
 
-		// Database table name and status
+		// Database table, resources, and status
 
 		ObjectDefinition objectDefinition =
 			ObjectDefinitionLocalServiceUtil.addSystemObjectDefinition(
 				TestPropsValues.getUserId(), null, _randomName(), null, null, 1,
 				Collections.<ObjectField>emptyList());
 
+		// Database table
+
 		Assert.assertEquals(
 			false, _hasTable(objectDefinition.getDBTableName()));
+
+		// Resources
+
+		try {
+			ResourceActionLocalServiceUtil.getResourceActionsCount(
+				objectDefinition.getClassName());
+
+			Assert.fail();
+		}
+		catch (UnsupportedOperationException unsupportedOperationException) {
+			Assert.assertNotNull(unsupportedOperationException);
+		}
+
+		try {
+			ResourceActionLocalServiceUtil.getResourceActionsCount(
+				objectDefinition.getPortletId());
+
+			Assert.fail();
+		}
+		catch (UnsupportedOperationException unsupportedOperationException) {
+			Assert.assertNotNull(unsupportedOperationException);
+		}
+
+		try {
+			ResourceActionLocalServiceUtil.getResourceActionsCount(
+				objectDefinition.getResourceName());
+
+			Assert.fail();
+		}
+		catch (UnsupportedOperationException unsupportedOperationException) {
+			Assert.assertNotNull(unsupportedOperationException);
+		}
+
+		// Status
+
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_APPROVED, objectDefinition.getStatus());
+
+		// Publish
 
 		try {
 			ObjectDefinitionLocalServiceUtil.publishCustomObjectDefinition(
