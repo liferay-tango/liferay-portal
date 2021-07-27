@@ -210,6 +210,12 @@ definition {
 		WebContentNavigator.gotoEditStructure(structureName = "WC Structure Title");
 
 		DataEngine.viewField(
+			fieldFieldLabel = "Numeric Edited",
+			fieldHelp = "Help Text Edited",
+			fieldName = "Numeric",
+			fieldPlaceholder = "Placeholder Edited");
+
+		DataEngine.viewField(
 			fieldFieldLabel = "Date Edited",
 			fieldHelp = "Help Text Edited",
 			fieldName = "Date");
