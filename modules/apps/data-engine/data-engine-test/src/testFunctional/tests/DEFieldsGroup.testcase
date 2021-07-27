@@ -49,7 +49,7 @@ definition {
 
 		WebContentNavigator.gotoEditStructure(structureName = "WC Structure Title");
 
-		DataEngine.assertFieldsGroup(
+		DEBuilder.assertFieldsGroup(
 			fieldGroupDepth = "1",
 			fieldGroupLabel = "Fields Group",
 			fieldsLabelList = "Text,Numeric");
@@ -83,7 +83,7 @@ definition {
 
 		DataEngine.assertFieldNotPresent(fieldFieldLabel = "Text");
 
-		DataEngine.assertFieldsGroup(
+		DEBuilder.assertFieldsGroup(
 			fieldGroupDepth = "1",
 			fieldGroupLabel = "Fields Group",
 			fieldsLabelList = "Numeric");
@@ -259,7 +259,7 @@ definition {
 
 		DataEngine.assertFieldNotPresent(fieldFieldLabel = "Copy of Text");
 
-		DataEngine.assertFieldsGroup(
+		DEBuilder.assertFieldsGroup(
 			fieldGroupDepth = "1",
 			fieldGroupLabel = "Fields Group",
 			fieldsLabelList = "Text,Numeric");
@@ -300,12 +300,12 @@ definition {
 
 		WebContentNavigator.gotoEditStructure(structureName = "WC Structure Title");
 
-		DataEngine.assertFieldsGroup(
+		DEBuilder.assertFieldsGroup(
 			fieldGroupDepth = "2",
 			fieldGroupLabel = "Fields Group 2",
 			fieldsLabelList = "Numeric,Date");
 
-		DataEngine.assertFieldsGroup(
+		DEBuilder.assertFieldsGroup(
 			fieldGroupDepth = "2",
 			fieldGroupLabel = "Copy of Fields Group 2",
 			fieldsLabelList = "Copy of Numeric,Copy of Date");

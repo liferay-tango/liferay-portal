@@ -84,7 +84,7 @@ definition {
 
 		DMNavigator.gotoEditDocumentType(dmDocumentTypeName = "DM Document Type Name");
 
-		DataEngine.assertFieldsGroup(
+		DEBuilder.assertFieldsGroup(
 			fieldGroupDepth = "1",
 			fieldGroupLabel = "Fields Group",
 			fieldsLabelList = "Text,Numeric");
@@ -224,7 +224,7 @@ definition {
 
 		DMNavigator.gotoDocumentCP(dmDocumentTitle = "DM Document Type Name");
 
-		DataEngine.assertFieldsGroup(
+		DEBuilder.assertFieldsGroup(
 			fieldGroupDepth = "2",
 			fieldGroupLabel = "Copy of Fields Group",
 			fieldsLabelList = "Copy of Date,Copy of Numeric");
@@ -248,7 +248,7 @@ definition {
 
 		LexiconEntry.gotoEntry(rowEntry = "DM Document Type Name");
 
-		DataEngine.assertFieldsGroup(
+		DEBuilder.assertFieldsGroup(
 			fieldGroupDepth = "1",
 			fieldGroupLabel = "Fields Group Edited",
 			fieldsLabelList = "Text,Numeric");
@@ -345,12 +345,12 @@ definition {
 
 		DMNavigator.gotoDocumentCP(dmDocumentTitle = "DM Document Type Name");
 
-		DataEngine.assertFieldsGroup(
+		DEBuilder.assertFieldsGroup(
 			fieldGroupDepth = "1",
 			fieldGroupLabel = "Fields Group Edited",
 			fieldsLabelList = "Text");
 
-		DataEngine.assertFieldsGroup(
+		DEBuilder.assertFieldsGroup(
 			fieldGroupDepth = "2",
 			fieldGroupLabel = "Fields Group",
 			fieldsLabelList = "Numeric,Date");

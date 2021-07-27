@@ -105,17 +105,17 @@ definition {
 
 		WebContentNavigator.gotoEditStructure(structureName = "WC Structure Name");
 
-		DataEngine.assertFieldsGroup(
+		DEBuilder.assertFieldsGroup(
 			fieldGroupDepth = "1",
 			fieldGroupLabel = "Fields Group 1",
 			fieldsLabelList = "Text,Fields Group 2");
 
-		DataEngine.assertFieldsGroup(
+		DEBuilder.assertFieldsGroup(
 			fieldGroupDepth = "2",
 			fieldGroupLabel = "Fields Group 2",
 			fieldsLabelList = "Numeric,Fields Group 3");
 
-		DataEngine.assertFieldsGroup(
+		DEBuilder.assertFieldsGroup(
 			fieldGroupDepth = "3",
 			fieldGroupLabel = "Fields Group 3",
 			fieldsLabelList = "Date,Color");
@@ -130,17 +130,17 @@ definition {
 
 		WebContentNavigator.gotoEditStructure(structureName = "WC Structure Name");
 
-		DataEngine.assertFieldsGroup(
+		DEBuilder.assertFieldsGroup(
 			fieldGroupDepth = "1",
 			fieldGroupLabel = "Fields Group 1",
 			fieldsLabelList = "Edited Text,Fields Group 2");
 
-		DataEngine.assertFieldsGroup(
+		DEBuilder.assertFieldsGroup(
 			fieldGroupDepth = "2",
 			fieldGroupLabel = "Fields Group 2",
 			fieldsLabelList = "Edited Numeric,Fields Group 3");
 
-		DataEngine.assertFieldsGroup(
+		DEBuilder.assertFieldsGroup(
 			fieldGroupDepth = "3",
 			fieldGroupLabel = "Fields Group 3",
 			fieldsLabelList = "Edited Date,Edited Color");
