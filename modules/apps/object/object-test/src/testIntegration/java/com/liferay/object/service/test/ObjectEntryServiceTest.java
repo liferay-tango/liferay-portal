@@ -155,25 +155,8 @@ public class ObjectEntryServiceTest {
 	public void testSearchObjectEntries() throws Exception {
 		_setUser(_user);
 
-		ObjectEntryLocalServiceUtil.addObjectEntry(
-			_user.getUserId(), 0, _objectDefinition.getObjectDefinitionId(),
-			HashMapBuilder.<String, Serializable>put(
-				"firstName", RandomStringUtils.randomAlphabetic(5)
-			).put(
-				"LastName", RandomStringUtils.randomAlphabetic(5)
-			).build(),
-			ServiceContextTestUtil.getServiceContext(
-				TestPropsValues.getGroupId(), _user.getUserId()));
-
-		ObjectEntryLocalServiceUtil.addObjectEntry(
-			_user.getUserId(), 0, _objectDefinition.getObjectDefinitionId(),
-			HashMapBuilder.<String, Serializable>put(
-				"firstName", RandomStringUtils.randomAlphabetic(5)
-			).put(
-				"LastName", RandomStringUtils.randomAlphabetic(5)
-			).build(),
-			ServiceContextTestUtil.getServiceContext(
-				TestPropsValues.getGroupId(), _user.getUserId()));
+		_addObjectEntry(_user);
+		_addObjectEntry(_user);
 
 		_setUser(_user);
 
@@ -189,6 +172,18 @@ public class ObjectEntryServiceTest {
 			_objectDefinition.getObjectDefinitionId(), null, 0, 20);
 
 		Assert.assertEquals(0, baseModelSearchResult.getLength());
+	}
+
+	private ObjectEntry _addObjectEntry(User user) throws Exception {
+		return ObjectEntryLocalServiceUtil.addObjectEntry(
+			user.getUserId(), 0, _objectDefinition.getObjectDefinitionId(),
+			HashMapBuilder.<String, Serializable>put(
+				"firstName", RandomStringUtils.randomAlphabetic(5)
+			).put(
+				"LastName", RandomStringUtils.randomAlphabetic(5)
+			).build(),
+			ServiceContextTestUtil.getServiceContext(
+				TestPropsValues.getGroupId(), user.getUserId()));
 	}
 
 	private ObjectField _createObjectField(
@@ -244,15 +239,7 @@ public class ObjectEntryServiceTest {
 		try {
 			_setUser(user);
 
-			objectEntry = ObjectEntryLocalServiceUtil.addObjectEntry(
-				user.getUserId(), 0, _objectDefinition.getObjectDefinitionId(),
-				HashMapBuilder.<String, Serializable>put(
-					"firstName", RandomStringUtils.randomAlphabetic(5)
-				).put(
-					"LastName", RandomStringUtils.randomAlphabetic(5)
-				).build(),
-				ServiceContextTestUtil.getServiceContext(
-					TestPropsValues.getGroupId(), user.getUserId()));
+			objectEntry = _addObjectEntry(user);
 
 			deleteObjectEntry = ObjectEntryServiceUtil.deleteObjectEntry(
 				objectEntry.getObjectEntryId());
@@ -270,15 +257,7 @@ public class ObjectEntryServiceTest {
 		try {
 			_setUser(user);
 
-			objectEntry = ObjectEntryLocalServiceUtil.addObjectEntry(
-				user.getUserId(), 0, _objectDefinition.getObjectDefinitionId(),
-				HashMapBuilder.<String, Serializable>put(
-					"firstName", RandomStringUtils.randomAlphabetic(5)
-				).put(
-					"LastName", RandomStringUtils.randomAlphabetic(5)
-				).build(),
-				ServiceContextTestUtil.getServiceContext(
-					TestPropsValues.getGroupId(), user.getUserId()));
+			objectEntry = _addObjectEntry(user);
 
 			ObjectEntryServiceUtil.getObjectEntry(
 				objectEntry.getObjectEntryId());
