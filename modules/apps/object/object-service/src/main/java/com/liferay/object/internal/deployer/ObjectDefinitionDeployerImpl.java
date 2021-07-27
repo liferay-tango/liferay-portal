@@ -65,6 +65,9 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 	public List<ServiceRegistration<?>> deploy(
 		ObjectDefinition objectDefinition) {
 
+		_persistedModelLocalServiceRegistry.register(
+			objectDefinition.getClassName(), _objectEntryLocalService);
+
 		try {
 			_readResourceActions(objectDefinition);
 		}
@@ -72,19 +75,15 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 			return ReflectionUtil.throwException(exception);
 		}
 
-		PortletResourcePermission portletResourcePermission =
-			PortletResourcePermissionFactory.create(
-				objectDefinition.getResourceName(),
-				new ObjectEntryPortletResourcePermissionLogic());
-
 		ObjectEntryModelIndexerWriterContributor
 			objectEntryModelIndexerWriterContributor =
 				new ObjectEntryModelIndexerWriterContributor(
 					_dynamicQueryBatchIndexingActionableFactory,
 					_objectEntryLocalService);
-
-		_persistedModelLocalServiceRegistry.register(
-			objectDefinition.getClassName(), _objectEntryLocalService);
+		PortletResourcePermission portletResourcePermission =
+			PortletResourcePermissionFactory.create(
+				objectDefinition.getResourceName(),
+				new ObjectEntryPortletResourcePermissionLogic());
 
 		return Arrays.asList(
 			_bundleContext.registerService(
@@ -92,6 +91,13 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 				new ObjectEntrySingleFormVariationInfoCollectionProvider(
 					objectDefinition, _objectEntryLocalService),
 				null),
+			_bundleContext.registerService(
+				KeywordQueryContributor.class,
+				new ObjectEntryKeywordQueryContributor(
+					_objectFieldLocalService),
+				HashMapDictionaryBuilder.<String, Object>put(
+					"indexer.class.name", objectDefinition.getClassName()
+				).build()),
 			_bundleContext.registerService(
 				ModelDocumentContributor.class,
 				new ObjectEntryModelDocumentContributor(
@@ -107,24 +113,12 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 					"indexer.class.name", objectDefinition.getClassName()
 				).build()),
 			_bundleContext.registerService(
-				KeywordQueryContributor.class,
-				new ObjectEntryKeywordQueryContributor(
-					_objectFieldLocalService),
-				HashMapDictionaryBuilder.<String, Object>put(
-					"indexer.class.name", objectDefinition.getClassName()
-				).build()),
-			_bundleContext.registerService(
 				ModelPreFilterContributor.class,
 				new ObjectEntryModelPreFilterContributor(
 					_workflowStatusModelPreFilterContributor),
 				HashMapDictionaryBuilder.<String, Object>put(
 					"indexer.class.name", objectDefinition.getClassName()
 				).build()),
-			_modelSearchRegistrarHelper.register(
-				objectDefinition.getClassName(), _bundleContext,
-				modelSearchDefinition ->
-					modelSearchDefinition.setModelIndexWriteContributor(
-						objectEntryModelIndexerWriterContributor)),
 			_bundleContext.registerService(
 				ModelResourcePermission.class,
 				new ObjectEntryModelResourcePermission(
@@ -148,7 +142,12 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 					objectDefinition, _objectEntryLocalService),
 				HashMapDictionaryBuilder.<String, Object>put(
 					"model.class.name", objectDefinition.getClassName()
-				).build()));
+				).build()),
+			_modelSearchRegistrarHelper.register(
+				objectDefinition.getClassName(), _bundleContext,
+				modelSearchDefinition ->
+					modelSearchDefinition.setModelIndexWriteContributor(
+						objectEntryModelIndexerWriterContributor)));
 	}
 
 	@Override
