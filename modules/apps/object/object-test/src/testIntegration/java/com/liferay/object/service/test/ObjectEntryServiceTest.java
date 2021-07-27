@@ -158,8 +158,6 @@ public class ObjectEntryServiceTest {
 		_addObjectEntry(_user);
 		_addObjectEntry(_user);
 
-		_setUser(_user);
-
 		BaseModelSearchResult<ObjectEntry> baseModelSearchResult =
 			ObjectEntryLocalServiceUtil.searchObjectEntries(
 				_objectDefinition.getObjectDefinitionId(), null, 0, 20);
