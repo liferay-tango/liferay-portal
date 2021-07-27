@@ -55,7 +55,6 @@ public class ObjectEntryDTOConverter
 				dateCreated = objectEntry.getCreateDate();
 				dateModified = objectEntry.getModifiedDate();
 				externalReferenceCode = objectEntry.getExternalReferenceCode();
-				groupId = objectEntry.getGroupId();
 				id = objectEntry.getObjectEntryId();
 				properties = (Map)objectEntry.getValues();
 			}

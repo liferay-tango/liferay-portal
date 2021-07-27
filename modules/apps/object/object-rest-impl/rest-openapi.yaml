@@ -22,9 +22,6 @@ components:
                 externalReferenceCode:
                     readOnly: true
                     type: string
-                groupId:
-                    format: int64
-                    type: integer
                 id:
                     format: int64
                     type: integer
