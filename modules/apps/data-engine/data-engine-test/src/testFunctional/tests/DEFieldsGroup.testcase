@@ -33,12 +33,12 @@ definition {
 
 		WebContentStructures.addCP(structureName = "WC Structure Title");
 
-		DataEngine.addField(
-			fieldFieldLabel = "Text",
+		DEBuilder.addField(
+			fieldLabel = "Text",
 			fieldName = "Text");
 
-		DataEngine.addField(
-			fieldFieldLabel = "Numeric",
+		DEBuilder.addField(
+			fieldLabel = "Numeric",
 			fieldName = "Numeric");
 
 		DEBuilder.nestCreatedFields(
@@ -62,12 +62,12 @@ definition {
 
 		WebContentStructures.addCP(structureName = "WC Structure Title");
 
-		DataEngine.addField(
-			fieldFieldLabel = "Text",
+		DEBuilder.addField(
+			fieldLabel = "Text",
 			fieldName = "Text");
 
-		DataEngine.addFieldNested(
-			fieldFieldLabel = "Numeric",
+		DEBuilder.addFieldNested(
+			fieldLabel = "Numeric",
 			fieldName = "Numeric",
 			targetFieldLabel = "Text");
 
@@ -92,12 +92,12 @@ definition {
 
 		WebContentStructures.addCP(structureName = "WC Structure Title");
 
-		DataEngine.addField(
-			fieldFieldLabel = "Text",
+		DEBuilder.addField(
+			fieldLabel = "Text",
 			fieldName = "Text");
 
-		DataEngine.addFieldNested(
-			fieldFieldLabel = "Numeric",
+		DEBuilder.addFieldNested(
+			fieldLabel = "Numeric",
 			fieldName = "Numeric",
 			targetFieldLabel = "Text");
 
@@ -157,17 +157,17 @@ definition {
 
 		WebContentStructures.addCP(structureName = "WC Structure Title");
 
-		DataEngine.addField(
-			fieldFieldLabel = "Text",
+		DEBuilder.addField(
+			fieldLabel = "Text",
 			fieldName = "Text");
 
-		DataEngine.addFieldNested(
-			fieldFieldLabel = "Numeric",
+		DEBuilder.addFieldNested(
+			fieldLabel = "Numeric",
 			fieldName = "Numeric",
 			targetFieldLabel = "Text");
 
-		DataEngine.addFieldNested(
-			fieldFieldLabel = "Date",
+		DEBuilder.addFieldNested(
+			fieldLabel = "Date",
 			fieldName = "Date",
 			targetFieldLabel = "Numeric");
 
@@ -218,12 +218,12 @@ definition {
 
 		WebContentStructures.addCP(structureName = "WC Structure Title");
 
-		DataEngine.addField(
-			fieldFieldLabel = "Text",
+		DEBuilder.addField(
+			fieldLabel = "Text",
 			fieldName = "Text");
 
-		DataEngine.addFieldNested(
-			fieldFieldLabel = "Numeric",
+		DEBuilder.addFieldNested(
+			fieldLabel = "Numeric",
 			fieldName = "Numeric",
 			targetFieldLabel = "Text");
 
@@ -262,12 +262,12 @@ definition {
 
 		WebContentStructures.addCP(structureName = "WC Structure Title");
 
-		DataEngine.addField(
-			fieldFieldLabel = "Text",
+		DEBuilder.addField(
+			fieldLabel = "Text",
 			fieldName = "Text");
 
-		DataEngine.addFieldNested(
-			fieldFieldLabel = "Numeric",
+		DEBuilder.addFieldNested(
+			fieldLabel = "Numeric",
 			fieldName = "Numeric",
 			targetFieldLabel = "Text");
 
@@ -275,8 +275,8 @@ definition {
 			fieldsGroupLabel = "Fields Group",
 			fieldsGroupLabelEdit = "Fields Group Edited");
 
-		DataEngine.addFieldNested(
-			fieldFieldLabel = "Date",
+		DEBuilder.addFieldNested(
+			fieldLabel = "Date",
 			fieldName = "Date",
 			targetFieldLabel = "Numeric");
 
@@ -304,17 +304,17 @@ definition {
 
 		WebContentStructures.addCP(structureName = "WC Structure Title");
 
-		DataEngine.addField(
-			fieldFieldLabel = "Text",
+		DEBuilder.addField(
+			fieldLabel = "Text",
 			fieldName = "Text");
 
-		DataEngine.addFieldNested(
-			fieldFieldLabel = "Numeric",
+		DEBuilder.addFieldNested(
+			fieldLabel = "Numeric",
 			fieldName = "Numeric",
 			targetFieldLabel = "Text");
 
-		DataEngine.addFieldNested(
-			fieldFieldLabel = "Date",
+		DEBuilder.addFieldNested(
+			fieldLabel = "Date",
 			fieldName = "Date",
 			targetFieldLabel = "Numeric");
 
