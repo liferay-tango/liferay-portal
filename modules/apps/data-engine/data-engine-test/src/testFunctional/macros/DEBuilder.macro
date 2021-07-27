@@ -379,6 +379,23 @@ definition {
 		return "${optionReference}";
 	}
 
+	macro nestCreatedFields {
+		if (isSet(targetFieldGroupLabel)) {
+			DragAndDrop.javaScriptDragAndDropToObject(
+				key_fieldFieldGroupLabel = "${targetFieldGroupLabel}",
+				key_fieldFieldLabel = "${fieldLabel}",
+				locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER",
+				locator2 = "DDMEditStructure#FORM_FIELD_GROUP_TARGET");
+		}
+		else {
+			DragAndDrop.javaScriptDragAndDropToObject(
+				key_fieldFieldLabel = "${fieldLabel}",
+				key_targetFieldLabel = "${targetFieldLabel}",
+				locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_TARGET",
+				locator2 = "DDMEditStructure#FORM_FIELD_CONTAINER");
+		}
+	}
+
 	macro openField {
 		if (!(isSet(index))) {
 			var index = "1";

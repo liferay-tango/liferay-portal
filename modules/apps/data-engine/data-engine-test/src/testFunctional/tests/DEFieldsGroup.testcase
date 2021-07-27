@@ -41,8 +41,8 @@ definition {
 			fieldFieldLabel = "Numeric",
 			fieldName = "Numeric");
 
-		DataEngine.addCreatedFieldToFiedNested(
-			fieldFieldLabel = "Numeric",
+		DEBuilder.nestCreatedFields(
+			fieldLabel = "Numeric",
 			targetFieldLabel = "Text");
 
 		WebContentStructures.saveCP();
