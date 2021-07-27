@@ -29,10 +29,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Marco Leo
  */
-@Component(
-	immediate = true, property = "service.ranking:Integer=1000",
-	service = DocumentContributor.class
-)
+@Component(immediate = true, service = DocumentContributor.class)
 public class ObjectEntryDocumentContributor
 	implements DocumentContributor<ObjectEntry> {
 
