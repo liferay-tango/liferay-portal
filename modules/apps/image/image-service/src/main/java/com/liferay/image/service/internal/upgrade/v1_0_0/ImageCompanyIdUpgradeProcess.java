@@ -28,6 +28,7 @@ import java.util.function.Supplier;
 
 /**
  * @author Adolfo Pérez
+ * @see    com.liferay.commerce.image.service.internal.upgrade.v1_0_0.CommerceImageCompanyIdUpgradeProcess
  */
 public class ImageCompanyIdUpgradeProcess<T> extends UpgradeProcess {
 
