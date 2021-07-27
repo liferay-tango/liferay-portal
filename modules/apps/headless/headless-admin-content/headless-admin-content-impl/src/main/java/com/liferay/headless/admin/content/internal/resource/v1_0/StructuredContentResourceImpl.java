@@ -158,7 +158,7 @@ public class StructuredContentResourceImpl
 						BooleanClauseOccur.MUST);
 				}
 			},
-			filter, JournalArticle.class, search, pagination,
+			filter, JournalArticle.class.getName(), search, pagination,
 			queryConfig -> queryConfig.setSelectedFieldNames(
 				Field.ARTICLE_ID, Field.SCOPE_GROUP_ID,
 				Field.ROOT_ENTRY_CLASS_PK),

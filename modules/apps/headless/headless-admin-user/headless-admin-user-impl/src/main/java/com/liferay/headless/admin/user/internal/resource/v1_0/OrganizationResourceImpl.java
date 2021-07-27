@@ -424,7 +424,8 @@ public class OrganizationResourceImpl
 						BooleanClauseOccur.MUST);
 				}
 			},
-			filter, com.liferay.portal.kernel.model.Organization.class,
+			filter,
+			com.liferay.portal.kernel.model.Organization.class.getName(),
 			keywords, pagination,
 			queryConfig -> queryConfig.setSelectedFieldNames(
 				Field.ENTRY_CLASS_PK),

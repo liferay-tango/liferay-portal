@@ -153,7 +153,7 @@ public class DataListViewResourceImpl
 			Collections.emptyMap(),
 			booleanQuery -> {
 			},
-			null, DEDataListView.class, keywords, pagination,
+			null, DEDataListView.class.getName(), keywords, pagination,
 			queryConfig -> queryConfig.setSelectedFieldNames(
 				Field.ENTRY_CLASS_PK),
 			searchContext -> {

@@ -130,7 +130,7 @@ public class TaxonomyVocabularyResourceImpl
 			).build(),
 			booleanQuery -> {
 			},
-			filter, AssetVocabulary.class, search, pagination,
+			filter, AssetVocabulary.class.getName(), search, pagination,
 			queryConfig -> queryConfig.setSelectedFieldNames(
 				Field.ASSET_VOCABULARY_ID),
 			searchContext -> {

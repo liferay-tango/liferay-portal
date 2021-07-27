@@ -218,8 +218,8 @@ public class DataRecordResourceImpl
 					new QueryFilter(ddmContentBooleanQuery),
 					BooleanClauseOccur.MUST);
 			},
-			_getBooleanFilter(dataListViewId, ddlRecordSet), DDLRecord.class,
-			null, pagination,
+			_getBooleanFilter(dataListViewId, ddlRecordSet),
+			DDLRecord.class.getName(), null, pagination,
 			queryConfig -> queryConfig.setSelectedFieldNames(
 				Field.ENTRY_CLASS_PK),
 			searchContext -> {

@@ -130,7 +130,7 @@ public class AccountUserResourceImpl
 						"accountEntryIds", String.valueOf(accountId)),
 					BooleanClauseOccur.MUST);
 			},
-			filter, User.class, search, pagination,
+			filter, User.class.getName(), search, pagination,
 			queryConfig -> queryConfig.setSelectedFieldNames(
 				Field.ENTRY_CLASS_PK),
 			searchContext -> searchContext.setCompanyId(

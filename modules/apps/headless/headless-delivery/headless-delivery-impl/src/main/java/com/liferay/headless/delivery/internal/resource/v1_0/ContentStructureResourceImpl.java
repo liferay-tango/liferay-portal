@@ -88,7 +88,7 @@ public class ContentStructureResourceImpl
 			Collections.emptyMap(),
 			booleanQuery -> {
 			},
-			filter, DDMStructure.class, search, pagination,
+			filter, DDMStructure.class.getName(), search, pagination,
 			queryConfig -> queryConfig.setSelectedFieldNames(
 				Field.ENTRY_CLASS_PK),
 			searchContext -> {

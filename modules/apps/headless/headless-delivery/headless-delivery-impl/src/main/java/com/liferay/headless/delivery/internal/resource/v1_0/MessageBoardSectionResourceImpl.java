@@ -290,8 +290,8 @@ public class MessageBoardSectionResourceImpl
 
 		return SearchUtil.search(
 			actions, booleanQueryUnsafeConsumer,
-			FilterUtil.processFilter(_ddmIndexer, filter), MBCategory.class,
-			keywords, pagination,
+			FilterUtil.processFilter(_ddmIndexer, filter),
+			MBCategory.class.getName(), keywords, pagination,
 			queryConfig -> queryConfig.setSelectedFieldNames(
 				Field.ENTRY_CLASS_PK),
 			searchContext -> {

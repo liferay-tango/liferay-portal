@@ -74,6 +74,7 @@ import com.liferay.portal.vulcan.util.SearchUtil;
 
 import java.io.IOException;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -204,8 +205,9 @@ public class AccountResourceImpl
 		throws Exception {
 
 		return SearchUtil.search(
+			Collections.emptyMap(),
 			booleanQuery -> booleanQuery.getPreBooleanFilter(), filter,
-			AccountEntry.class, search, pagination,
+			AccountEntry.class.getName(), search, pagination,
 			queryConfig -> queryConfig.setSelectedFieldNames(
 				Field.ENTRY_CLASS_PK),
 			new UnsafeConsumer() {
@@ -217,10 +219,10 @@ public class AccountResourceImpl
 				}
 
 			},
+			sorts,
 			document -> _toAccount(
 				_commerceAccountService.fetchCommerceAccount(
-					GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK)))),
-			sorts);
+					GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK)))));
 	}
 
 	@Override

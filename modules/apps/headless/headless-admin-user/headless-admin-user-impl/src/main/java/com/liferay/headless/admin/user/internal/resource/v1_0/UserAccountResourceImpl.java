@@ -490,8 +490,8 @@ public class UserAccountResourceImpl
 		throws Exception {
 
 		return SearchUtil.search(
-			actions, booleanQueryUnsafeConsumer, filter, User.class, search,
-			pagination,
+			actions, booleanQueryUnsafeConsumer, filter, User.class.getName(),
+			search, pagination,
 			queryConfig -> queryConfig.setSelectedFieldNames(
 				Field.ENTRY_CLASS_PK),
 			searchContext -> searchContext.setCompanyId(

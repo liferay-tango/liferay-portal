@@ -308,8 +308,8 @@ public class DocumentFolderResourceImpl
 						BooleanClauseOccur.MUST);
 				}
 			},
-			FilterUtil.processFilter(_ddmIndexer, filter), DLFolder.class,
-			keywords, pagination,
+			FilterUtil.processFilter(_ddmIndexer, filter),
+			DLFolder.class.getName(), keywords, pagination,
 			queryConfig -> queryConfig.setSelectedFieldNames(
 				Field.ENTRY_CLASS_PK),
 			searchContext -> {

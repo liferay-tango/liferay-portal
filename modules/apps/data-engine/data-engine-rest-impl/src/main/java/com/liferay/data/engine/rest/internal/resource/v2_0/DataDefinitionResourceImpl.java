@@ -396,7 +396,7 @@ public class DataDefinitionResourceImpl
 			Collections.emptyMap(),
 			booleanQuery -> {
 			},
-			null, DDMStructure.class, keywords, pagination,
+			null, DDMStructure.class.getName(), keywords, pagination,
 			queryConfig -> queryConfig.setSelectedFieldNames(
 				Field.CLASS_NAME_ID, Field.ENTRY_CLASS_PK),
 			searchContext -> {

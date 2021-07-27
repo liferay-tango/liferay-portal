@@ -147,7 +147,7 @@ public class WikiPageResourceImpl
 					BooleanClauseOccur.MUST);
 			},
 			FilterUtil.processFilter(_ddmIndexer, filter),
-			com.liferay.wiki.model.WikiPage.class, search, pagination,
+			com.liferay.wiki.model.WikiPage.class.getName(), search, pagination,
 			queryConfig -> queryConfig.setSelectedFieldNames(
 				Field.ENTRY_CLASS_PK),
 			searchContext -> {

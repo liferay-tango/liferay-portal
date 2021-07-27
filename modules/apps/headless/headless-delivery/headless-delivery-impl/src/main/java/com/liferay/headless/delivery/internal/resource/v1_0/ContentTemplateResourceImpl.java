@@ -100,7 +100,7 @@ public class ContentTemplateResourceImpl
 					Group.class.getName(), siteId)),
 			booleanQuery -> {
 			},
-			filter, DDMTemplate.class, search, pagination,
+			filter, DDMTemplate.class.getName(), search, pagination,
 			queryConfig -> queryConfig.setSelectedFieldNames(
 				Field.ENTRY_CLASS_PK),
 			searchContext -> {

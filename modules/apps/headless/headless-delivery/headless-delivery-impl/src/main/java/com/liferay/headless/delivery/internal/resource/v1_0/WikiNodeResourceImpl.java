@@ -109,7 +109,8 @@ public class WikiNodeResourceImpl
 					new TermFilter(Field.GROUP_ID, String.valueOf(siteId)),
 					BooleanClauseOccur.MUST);
 			},
-			filter, com.liferay.wiki.model.WikiNode.class, search, pagination,
+			filter, com.liferay.wiki.model.WikiNode.class.getName(), search,
+			pagination,
 			queryConfig -> queryConfig.setSelectedFieldNames(
 				Field.ENTRY_CLASS_PK),
 			searchContext -> {

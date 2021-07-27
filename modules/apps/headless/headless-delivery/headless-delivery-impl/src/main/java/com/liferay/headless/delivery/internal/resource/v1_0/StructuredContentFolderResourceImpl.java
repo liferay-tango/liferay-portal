@@ -324,8 +324,8 @@ public class StructuredContentFolderResourceImpl
 						BooleanClauseOccur.MUST);
 				}
 			},
-			FilterUtil.processFilter(_ddmIndexer, filter), JournalFolder.class,
-			keywords, pagination,
+			FilterUtil.processFilter(_ddmIndexer, filter),
+			JournalFolder.class.getName(), keywords, pagination,
 			queryConfig -> queryConfig.setSelectedFieldNames(
 				Field.ENTRY_CLASS_PK),
 			searchContext -> {

@@ -157,7 +157,7 @@ public class BlogPostingResourceImpl
 			).build(),
 			booleanQuery -> {
 			},
-			filter, BlogsEntry.class, search, pagination,
+			filter, BlogsEntry.class.getName(), search, pagination,
 			queryConfig -> queryConfig.setSelectedFieldNames(
 				Field.ENTRY_CLASS_PK),
 			searchContext -> {

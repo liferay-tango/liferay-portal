@@ -173,7 +173,7 @@ public class SitePageResourceImpl extends BaseSitePageResourceImpl {
 					new TermFilter(Field.GROUP_ID, String.valueOf(siteId)),
 					BooleanClauseOccur.MUST);
 			},
-			filter, Layout.class, search, pagination,
+			filter, Layout.class.getName(), search, pagination,
 			queryConfig -> queryConfig.setSelectedFieldNames(
 				Field.ENTRY_CLASS_PK),
 			searchContext -> {

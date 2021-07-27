@@ -422,8 +422,8 @@ public class TaxonomyCategoryResourceImpl
 		throws Exception {
 
 		return SearchUtil.search(
-			actions, booleanQueryUnsafeConsumer, filter, AssetCategory.class,
-			keywords, pagination,
+			actions, booleanQueryUnsafeConsumer, filter,
+			AssetCategory.class.getName(), keywords, pagination,
 			queryConfig -> queryConfig.setSelectedFieldNames(
 				Field.ASSET_CATEGORY_ID),
 			searchContext -> searchContext.setCompanyId(

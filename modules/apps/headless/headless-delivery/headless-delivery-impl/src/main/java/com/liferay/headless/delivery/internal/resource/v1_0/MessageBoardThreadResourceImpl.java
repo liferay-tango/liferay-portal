@@ -629,8 +629,8 @@ public class MessageBoardThreadResourceImpl
 		throws Exception {
 
 		return SearchUtil.search(
-			actions, booleanQueryUnsafeConsumer, filter, MBMessage.class,
-			keywords, pagination,
+			actions, booleanQueryUnsafeConsumer, filter,
+			MBMessage.class.getName(), keywords, pagination,
 			queryConfig -> queryConfig.setSelectedFieldNames(
 				Field.ENTRY_CLASS_PK),
 			searchContext -> {

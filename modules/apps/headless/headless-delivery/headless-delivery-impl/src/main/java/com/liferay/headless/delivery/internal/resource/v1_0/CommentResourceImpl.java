@@ -339,7 +339,7 @@ public class CommentResourceImpl
 						"parentMessageId", String.valueOf(commentId)),
 					BooleanClauseOccur.MUST);
 			},
-			filter, MBMessage.class, search, pagination,
+			filter, MBMessage.class.getName(), search, pagination,
 			queryConfig -> queryConfig.setSelectedFieldNames(
 				Field.ENTRY_CLASS_PK),
 			searchContext -> {

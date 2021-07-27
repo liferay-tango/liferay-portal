@@ -626,8 +626,8 @@ public class DocumentResourceImpl
 
 		return SearchUtil.search(
 			actions, booleanQueryUnsafeConsumer,
-			FilterUtil.processFilter(_ddmIndexer, filter), DLFileEntry.class,
-			keywords, pagination,
+			FilterUtil.processFilter(_ddmIndexer, filter),
+			DLFileEntry.class.getName(), keywords, pagination,
 			queryConfig -> queryConfig.setSelectedFieldNames(
 				Field.ENTRY_CLASS_PK),
 			searchContext -> {

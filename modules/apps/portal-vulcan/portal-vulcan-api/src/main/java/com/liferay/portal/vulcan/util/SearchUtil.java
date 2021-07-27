@@ -53,8 +53,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -83,24 +81,6 @@ public class SearchUtil {
 		queryDefinition.setStart(pagination.getStartPosition());
 
 		return queryDefinition;
-	}
-
-	public static <T> Page<T> search(
-			Map<String, Map<String, String>> actions,
-			UnsafeConsumer<BooleanQuery, Exception> booleanQueryUnsafeConsumer,
-			Filter filter, Class<?> indexerClass, String keywords,
-			Pagination pagination,
-			UnsafeConsumer<QueryConfig, Exception> queryConfigUnsafeConsumer,
-			UnsafeConsumer<SearchContext, Exception>
-				searchContextUnsafeConsumer,
-			Sort[] sorts,
-			UnsafeFunction<Document, T, Exception> transformUnsafeFunction)
-		throws Exception {
-
-		return search(
-			actions, booleanQueryUnsafeConsumer, filter, indexerClass.getName(),
-			keywords, pagination, queryConfigUnsafeConsumer,
-			searchContextUnsafeConsumer, sorts, transformUnsafeFunction);
 	}
 
 	public static <T> Page<T> search(
@@ -156,66 +136,6 @@ public class SearchUtil {
 		return Page.of(
 			actions, _getFacets(searchContext), items, pagination,
 			indexer.searchCount(searchContext));
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #search(Map,
-	 *             UnsafeConsumer, Filter, Class, String, Pagination,
-	 *             UnsafeConsumer, UnsafeConsumer, Sort[], UnsafeFunction)}
-	 */
-	@Deprecated
-	public static <T> Page<T> search(
-			UnsafeConsumer<BooleanQuery, Exception> booleanQueryUnsafeConsumer,
-			Filter filter, Class<?> indexerClass, String keywords,
-			Pagination pagination,
-			UnsafeConsumer<QueryConfig, Exception> queryConfigUnsafeConsumer,
-			UnsafeConsumer
-				<com.liferay.portal.kernel.search.SearchContext, Exception>
-					searchContextUnsafeConsumer,
-			UnsafeFunction<Document, T, Exception> transformUnsafeFunction,
-			Sort[] sorts)
-		throws Exception {
-
-		return search(
-			Collections.emptyMap(), booleanQueryUnsafeConsumer, filter,
-			indexerClass, keywords, pagination, queryConfigUnsafeConsumer,
-			searchContextUnsafeConsumer::accept, sorts,
-			transformUnsafeFunction);
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #search(Map,
-	 *             UnsafeConsumer, Filter, Class, String, Pagination,
-	 *             UnsafeConsumer, UnsafeConsumer, Sort[], UnsafeFunction)}
-	 */
-	@Deprecated
-	public static <T> Page<T> search(
-			UnsafeConsumer<BooleanQuery, Exception> booleanQueryUnsafeConsumer,
-			Filter filter, Class<?> indexerClass, String keywords,
-			Pagination pagination,
-			UnsafeConsumer<QueryConfig, Exception> queryConfigUnsafeConsumer,
-			UnsafeConsumer
-				<com.liferay.portal.kernel.search.SearchContext, Exception>
-					searchContextUnsafeConsumer,
-			UnsafeFunction<Document, T, Exception> transformUnsafeFunction,
-			Sort[] sorts, Map<String, Map<String, String>> actions)
-		throws Exception {
-
-		Set<Map.Entry<String, Map<String, String>>> entries =
-			actions.entrySet();
-
-		Stream<Map.Entry<String, Map<String, String>>> stream =
-			entries.stream();
-
-		return search(
-			stream.collect(
-				Collectors.toMap(
-					Map.Entry::getKey,
-					entry -> (Map<String, String>)entry.getValue())),
-			booleanQueryUnsafeConsumer, filter, indexerClass, keywords,
-			pagination, queryConfigUnsafeConsumer,
-			searchContextUnsafeConsumer::accept, sorts,
-			transformUnsafeFunction);
 	}
 
 	public static class SearchContext

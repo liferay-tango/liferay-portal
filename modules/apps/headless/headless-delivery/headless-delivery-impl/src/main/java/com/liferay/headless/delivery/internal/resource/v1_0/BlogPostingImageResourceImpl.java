@@ -93,7 +93,7 @@ public class BlogPostingImageResourceImpl
 			Collections.emptyMap(),
 			booleanQuery -> {
 			},
-			filter, DLFileEntry.class, search, pagination,
+			filter, DLFileEntry.class.getName(), search, pagination,
 			queryConfig -> queryConfig.setSelectedFieldNames(
 				Field.ENTRY_CLASS_PK),
 			searchContext -> {

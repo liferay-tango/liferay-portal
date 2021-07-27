@@ -52,6 +52,7 @@ import com.liferay.portal.vulcan.permission.PermissionUtil;
 import com.liferay.portal.vulcan.util.SearchUtil;
 import com.liferay.portal.vulcan.util.TransformUtil;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -330,9 +331,10 @@ public class DataRecordCollectionResourceImpl
 		}
 
 		return SearchUtil.search(
+			Collections.emptyMap(),
 			booleanQuery -> {
 			},
-			null, DDLRecordSet.class, keywords, pagination,
+			null, DDLRecordSet.class.getName(), keywords, pagination,
 			queryConfig -> queryConfig.setSelectedFieldNames(
 				Field.ENTRY_CLASS_PK),
 			searchContext -> {
@@ -346,10 +348,10 @@ public class DataRecordCollectionResourceImpl
 				searchContext.setGroupIds(
 					new long[] {ddmStructure.getGroupId()});
 			},
+			null,
 			document -> DataRecordCollectionUtil.toDataRecordCollection(
 				_ddlRecordSetLocalService.getRecordSet(
-					GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK)))),
-			null);
+					GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK)))));
 	}
 
 	private String _getResourceName(DDLRecordSet ddlRecordSet)

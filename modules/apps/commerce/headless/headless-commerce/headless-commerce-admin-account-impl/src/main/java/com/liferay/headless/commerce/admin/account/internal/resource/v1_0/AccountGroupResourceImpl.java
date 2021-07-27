@@ -42,7 +42,7 @@ import java.util.Map;
 
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
-
+import java.util.Collections;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ServiceScope;
@@ -125,9 +125,10 @@ public class AccountGroupResourceImpl
 		throws Exception {
 
 		return SearchUtil.search(
+			Collections.emptyMap(),
 			booleanQuery -> booleanQuery.getPreBooleanFilter(), filter,
-			com.liferay.account.model.AccountGroup.class, StringPool.BLANK,
-			pagination,
+			com.liferay.account.model.AccountGroup.class.getName(),
+			StringPool.BLANK, pagination,
 			queryConfig -> queryConfig.setSelectedFieldNames(
 				Field.ENTRY_CLASS_PK),
 			new UnsafeConsumer() {
@@ -139,10 +140,10 @@ public class AccountGroupResourceImpl
 				}
 
 			},
+			sorts,
 			document -> _toAccountGroup(
 				_commerceAccountGroupService.getCommerceAccountGroup(
-					GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK)))),
-			sorts);
+					GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK)))));
 	}
 
 	@Override

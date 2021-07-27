@@ -79,7 +79,7 @@ public class ShipmentResourceImpl extends BaseShipmentResourceImpl {
 
 		return SearchUtil.search(
 			null, booleanQuery -> booleanQuery.getPreBooleanFilter(), filter,
-			CommerceShipment.class, search, pagination,
+			CommerceShipment.class.getName(), search, pagination,
 			queryConfig -> queryConfig.setSelectedFieldNames(
 				Field.ENTRY_CLASS_PK),
 			new UnsafeConsumer() {

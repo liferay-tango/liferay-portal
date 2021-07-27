@@ -151,7 +151,7 @@ public class KeywordResourceImpl
 			).build(),
 			booleanQuery -> {
 			},
-			filter, AssetTag.class, search, pagination,
+			filter, AssetTag.class.getName(), search, pagination,
 			queryConfig -> queryConfig.setSelectedFieldNames(
 				Field.ENTRY_CLASS_PK),
 			searchContext -> {
