@@ -194,9 +194,11 @@ public class ObjectEntryLocalServiceImpl
 
 		objectEntry.setExternalReferenceCode(externalReferenceCode);
 
+		objectEntry = objectEntryPersistence.update(objectEntry);
+
 		_reindex(objectEntry);
 
-		return objectEntryPersistence.update(objectEntry);
+		return objectEntry;
 	}
 
 	@Override
