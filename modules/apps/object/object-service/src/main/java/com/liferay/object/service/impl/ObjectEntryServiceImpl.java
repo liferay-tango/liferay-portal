@@ -15,7 +15,6 @@
 package com.liferay.object.service.impl;
 
 import com.liferay.object.constants.ObjectActionKeys;
-import com.liferay.object.exception.NoSuchObjectEntryException;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
@@ -106,13 +105,8 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 	public ObjectEntry getObjectEntry(long objectEntryId)
 		throws PortalException {
 
-		ObjectEntry objectEntry = objectEntryLocalService.fetchObjectEntry(
+		ObjectEntry objectEntry = objectEntryLocalService.getObjectEntry(
 			objectEntryId);
-
-		if (objectEntry == null) {
-			throw new NoSuchObjectEntryException(
-				"No ObjectEntry exists with the primary key " + objectEntryId);
-		}
 
 		_checkModelResourcePermission(
 			objectEntry.getObjectDefinitionId(), objectEntry.getObjectEntryId(),
