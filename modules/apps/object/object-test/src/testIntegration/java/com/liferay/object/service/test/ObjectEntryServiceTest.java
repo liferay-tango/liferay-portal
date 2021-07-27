@@ -31,7 +31,6 @@ import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUti
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -56,7 +55,6 @@ import org.junit.runner.RunWith;
 /**
  * @author Marco Leo
  */
-@DataGuard(scope = DataGuard.Scope.METHOD)
 @RunWith(Arquillian.class)
 public class ObjectEntryServiceTest {
 
@@ -153,8 +151,8 @@ public class ObjectEntryServiceTest {
 	public void testSearchObjectEntries() throws Exception {
 		_setUser(_user);
 
-		_addObjectEntry(_user);
-		_addObjectEntry(_user);
+		ObjectEntry objectEntry1 = _addObjectEntry(_user);
+		ObjectEntry objectEntry2 = _addObjectEntry(_user);
 
 		BaseModelSearchResult<ObjectEntry> baseModelSearchResult =
 			ObjectEntryLocalServiceUtil.searchObjectEntries(
@@ -168,6 +166,9 @@ public class ObjectEntryServiceTest {
 			_objectDefinition.getObjectDefinitionId(), null, 0, 20);
 
 		Assert.assertEquals(0, baseModelSearchResult.getLength());
+
+		ObjectEntryLocalServiceUtil.deleteObjectEntry(objectEntry1);
+		ObjectEntryLocalServiceUtil.deleteObjectEntry(objectEntry2);
 	}
 
 	private ObjectEntry _addObjectEntry(User user) throws Exception {
