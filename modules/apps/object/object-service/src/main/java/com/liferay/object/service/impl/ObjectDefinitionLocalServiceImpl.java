@@ -220,14 +220,15 @@ public class ObjectDefinitionLocalServiceImpl
 
 		objectDefinitionPersistence.remove(objectDefinition);
 
-		resourceLocalService.deleteResource(
-			objectDefinition.getCompanyId(), ObjectDefinition.class.getName(),
-			ResourceConstants.SCOPE_INDIVIDUAL,
-			objectDefinition.getObjectDefinitionId());
-
 		if ((objectDefinition.getStatus() ==
 				WorkflowConstants.STATUS_APPROVED) &&
 			!objectDefinition.isSystem()) {
+
+			resourceLocalService.deleteResource(
+				objectDefinition.getCompanyId(),
+				ObjectDefinition.class.getName(),
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				objectDefinition.getObjectDefinitionId());
 
 			for (ResourceAction resourceAction :
 					_resourceActionLocalService.getResourceActions(
@@ -337,6 +338,11 @@ public class ObjectDefinitionLocalServiceImpl
 		objectDefinition.setStatus(WorkflowConstants.STATUS_APPROVED);
 
 		objectDefinition = objectDefinitionPersistence.update(objectDefinition);
+
+		resourceLocalService.addResources(
+			objectDefinition.getCompanyId(), 0, objectDefinition.getUserId(),
+			ObjectDefinition.class.getName(),
+			objectDefinition.getObjectDefinitionId(), false, true, true);
 
 		List<ObjectField> objectFields =
 			_objectFieldPersistence.findByObjectDefinitionId(
@@ -566,11 +572,6 @@ public class ObjectDefinitionLocalServiceImpl
 					objectField.isRequired(), objectField.getType());
 			}
 		}
-
-		resourceLocalService.addResources(
-			objectDefinition.getCompanyId(), 0, objectDefinition.getUserId(),
-			ObjectDefinition.class.getName(),
-			objectDefinition.getObjectDefinitionId(), false, true, true);
 
 		return objectDefinition;
 	}
