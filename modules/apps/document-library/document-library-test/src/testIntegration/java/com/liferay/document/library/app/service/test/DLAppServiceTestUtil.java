@@ -98,7 +98,8 @@ public class DLAppServiceTestUtil {
 			).build();
 
 		return new ConfigurationTemporarySwapper(
-			DL_CONFIGURATION_PID, dictionary);
+			"com.liferay.document.library.configuration.DLConfiguration",
+			dictionary);
 	}
 
 	protected static AtomicInteger registerDLSyncEventProcessorMessageListener(
@@ -207,9 +208,6 @@ public class DLAppServiceTestUtil {
 			TestDataConstants.TEST_BYTE_ARRAY, expirationDate, reviewDate,
 			ServiceContextTestUtil.getServiceContext(groupId));
 	}
-
-	protected static final String DL_CONFIGURATION_PID =
-		"com.liferay.document.library.configuration.DLConfiguration";
 
 	protected static final String FILE_NAME = "Title.txt";
 

@@ -34,10 +34,8 @@ public class DLFileEntryServiceTestUtil {
 			).build();
 
 		return new ConfigurationTemporarySwapper(
-			DL_CONFIGURATION_PID, dictionary);
+			"com.liferay.document.library.configuration.DLConfiguration",
+			dictionary);
 	}
-
-	protected static final String DL_CONFIGURATION_PID =
-		"com.liferay.document.library.configuration.DLConfiguration";
 
 }
