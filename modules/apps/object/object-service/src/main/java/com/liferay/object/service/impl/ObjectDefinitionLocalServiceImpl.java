@@ -19,6 +19,7 @@ import com.liferay.object.exception.DuplicateObjectDefinitionException;
 import com.liferay.object.exception.ObjectDefinitionNameException;
 import com.liferay.object.exception.ObjectDefinitionStatusException;
 import com.liferay.object.exception.ObjectDefinitionVersionException;
+import com.liferay.object.internal.deployer.ObjectDefinitionDeployerImpl;
 import com.liferay.object.internal.petra.sql.dsl.DynamicObjectDefinitionTable;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
@@ -39,13 +40,20 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.permission.ResourceActions;
+import com.liferay.portal.kernel.service.PersistedModelLocalServiceRegistry;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TextFormatter;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.search.batch.DynamicQueryBatchIndexingActionableFactory;
+import com.liferay.portal.search.spi.model.query.contributor.ModelPreFilterContributor;
+import com.liferay.portal.search.spi.model.registrar.ModelSearchRegistrarHelper;
 
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -327,6 +335,13 @@ public class ObjectDefinitionLocalServiceImpl
 	public void setAopProxy(Object aopProxy) {
 		super.setAopProxy(aopProxy);
 
+		_addingObjectDefinitionDeployer(
+			new ObjectDefinitionDeployerImpl(
+				_bundleContext, _dynamicQueryBatchIndexingActionableFactory,
+				_modelSearchRegistrarHelper, _objectEntryLocalService,
+				_objectFieldLocalService, _persistedModelLocalServiceRegistry,
+				_resourceActions, _workflowStatusModelPreFilterContributor));
+
 		_objectDefinitionDeployerServiceTracker = new ServiceTracker<>(
 			_bundleContext, ObjectDefinitionDeployer.class,
 			new ServiceTrackerCustomizer
@@ -337,28 +352,8 @@ public class ObjectDefinitionLocalServiceImpl
 					ServiceReference<ObjectDefinitionDeployer>
 						serviceReference) {
 
-					ObjectDefinitionDeployer objectDefinitionDeployer =
-						_bundleContext.getService(serviceReference);
-
-					Map<Long, List<ServiceRegistration<?>>>
-						serviceRegistrationsMap = new ConcurrentHashMap<>();
-
-					List<ObjectDefinition> objectDefinitions =
-						objectDefinitionLocalService.getCustomObjectDefinitions(
-							WorkflowConstants.STATUS_APPROVED);
-
-					for (ObjectDefinition objectDefinition :
-							objectDefinitions) {
-
-						serviceRegistrationsMap.put(
-							objectDefinition.getObjectDefinitionId(),
-							objectDefinitionDeployer.deploy(objectDefinition));
-					}
-
-					_serviceRegistrationsMaps.put(
-						objectDefinitionDeployer, serviceRegistrationsMap);
-
-					return objectDefinitionDeployer;
+					return _addingObjectDefinitionDeployer(
+						_bundleContext.getService(serviceReference));
 				}
 
 				@Override
@@ -444,6 +439,28 @@ public class ObjectDefinitionLocalServiceImpl
 		if (_objectDefinitionDeployerServiceTracker != null) {
 			_objectDefinitionDeployerServiceTracker.close();
 		}
+	}
+
+	private ObjectDefinitionDeployer _addingObjectDefinitionDeployer(
+		ObjectDefinitionDeployer objectDefinitionDeployer) {
+
+		Map<Long, List<ServiceRegistration<?>>> serviceRegistrationsMap =
+			new ConcurrentHashMap<>();
+
+		List<ObjectDefinition> objectDefinitions =
+			objectDefinitionLocalService.getCustomObjectDefinitions(
+				WorkflowConstants.STATUS_APPROVED);
+
+		for (ObjectDefinition objectDefinition : objectDefinitions) {
+			serviceRegistrationsMap.put(
+				objectDefinition.getObjectDefinitionId(),
+				objectDefinitionDeployer.deploy(objectDefinition));
+		}
+
+		_serviceRegistrationsMaps.put(
+			objectDefinitionDeployer, serviceRegistrationsMap);
+
+		return objectDefinitionDeployer;
 	}
 
 	private ObjectDefinition _addObjectDefinition(
@@ -642,6 +659,14 @@ public class ObjectDefinitionLocalServiceImpl
 		ObjectDefinitionLocalServiceImpl.class);
 
 	private BundleContext _bundleContext;
+
+	@Reference
+	private DynamicQueryBatchIndexingActionableFactory
+		_dynamicQueryBatchIndexingActionableFactory;
+
+	@Reference
+	private ModelSearchRegistrarHelper _modelSearchRegistrarHelper;
+
 	private ServiceTracker<ObjectDefinitionDeployer, ObjectDefinitionDeployer>
 		_objectDefinitionDeployerServiceTracker;
 
@@ -657,11 +682,22 @@ public class ObjectDefinitionLocalServiceImpl
 	@Reference
 	private ObjectFieldPersistence _objectFieldPersistence;
 
+	@Reference
+	private PersistedModelLocalServiceRegistry
+		_persistedModelLocalServiceRegistry;
+
+	@Reference
+	private ResourceActions _resourceActions;
+
 	private final Map
 		<ObjectDefinitionDeployer, Map<Long, List<ServiceRegistration<?>>>>
-			_serviceRegistrationsMaps = new ConcurrentHashMap<>();
+			_serviceRegistrationsMaps = Collections.synchronizedMap(
+				new LinkedHashMap<>());
 
 	@Reference
 	private UserLocalService _userLocalService;
+
+	@Reference(target = "(model.pre.filter.contributor.id=WorkflowStatus)")
+	private ModelPreFilterContributor _workflowStatusModelPreFilterContributor;
 
 }

@@ -49,18 +49,36 @@ import java.util.List;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Brian Wing Shun Chan
+ * @author Marco Leo
  */
-@Component(
-	immediate = true, property = "service.ranking:Integer=" + Integer.MAX_VALUE,
-	service = ObjectDefinitionDeployer.class
-)
 public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
+
+	public ObjectDefinitionDeployerImpl(
+		BundleContext bundleContext,
+		DynamicQueryBatchIndexingActionableFactory
+			dynamicQueryBatchIndexingActionableFactory,
+		ModelSearchRegistrarHelper modelSearchRegistrarHelper,
+		ObjectEntryLocalService objectEntryLocalService,
+		ObjectFieldLocalService objectFieldLocalService,
+		PersistedModelLocalServiceRegistry persistedModelLocalServiceRegistry,
+		ResourceActions resourceActions,
+		ModelPreFilterContributor workflowStatusModelPreFilterContributor) {
+
+		_bundleContext = bundleContext;
+		_dynamicQueryBatchIndexingActionableFactory =
+			dynamicQueryBatchIndexingActionableFactory;
+		_modelSearchRegistrarHelper = modelSearchRegistrarHelper;
+		_objectEntryLocalService = objectEntryLocalService;
+		_objectFieldLocalService = objectFieldLocalService;
+		_persistedModelLocalServiceRegistry =
+			persistedModelLocalServiceRegistry;
+		_resourceActions = resourceActions;
+		_workflowStatusModelPreFilterContributor =
+			workflowStatusModelPreFilterContributor;
+	}
 
 	public List<ServiceRegistration<?>> deploy(
 		ObjectDefinition objectDefinition) {
@@ -156,11 +174,6 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 			objectDefinition.getClassName());
 	}
 
-	@Activate
-	protected void activate(BundleContext bundleContext) {
-		_bundleContext = bundleContext;
-	}
-
 	private void _readResourceActions(ObjectDefinition objectDefinition)
 		throws Exception {
 
@@ -181,29 +194,16 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 					})));
 	}
 
-	private BundleContext _bundleContext;
-
-	@Reference
-	private DynamicQueryBatchIndexingActionableFactory
+	private final BundleContext _bundleContext;
+	private final DynamicQueryBatchIndexingActionableFactory
 		_dynamicQueryBatchIndexingActionableFactory;
-
-	@Reference
-	private ModelSearchRegistrarHelper _modelSearchRegistrarHelper;
-
-	@Reference
-	private ObjectEntryLocalService _objectEntryLocalService;
-
-	@Reference
-	private ObjectFieldLocalService _objectFieldLocalService;
-
-	@Reference
-	private PersistedModelLocalServiceRegistry
+	private final ModelSearchRegistrarHelper _modelSearchRegistrarHelper;
+	private final ObjectEntryLocalService _objectEntryLocalService;
+	private final ObjectFieldLocalService _objectFieldLocalService;
+	private final PersistedModelLocalServiceRegistry
 		_persistedModelLocalServiceRegistry;
-
-	@Reference
-	private ResourceActions _resourceActions;
-
-	@Reference(target = "(model.pre.filter.contributor.id=WorkflowStatus)")
-	private ModelPreFilterContributor _workflowStatusModelPreFilterContributor;
+	private final ResourceActions _resourceActions;
+	private final ModelPreFilterContributor
+		_workflowStatusModelPreFilterContributor;
 
 }

@@ -41,10 +41,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Brian Wing Shun Chan
  */
-@Component(
-	immediate = true, property = "service.ranking:Integer=100",
-	service = ObjectDefinitionDeployer.class
-)
+@Component(immediate = true, service = ObjectDefinitionDeployer.class)
 public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 
 	@Override
