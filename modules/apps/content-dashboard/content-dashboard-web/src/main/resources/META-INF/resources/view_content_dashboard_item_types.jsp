@@ -22,7 +22,11 @@ ContentDashboardItemTypeItemSelectorViewManagementToolbarDisplayContext contentD
 ContentDashboardItemTypeItemSelectorViewDisplayContext contentDashboardItemTypeItemSelectorViewDisplayContext = (ContentDashboardItemTypeItemSelectorViewDisplayContext)request.getAttribute(ContentDashboardItemTypeItemSelectorViewDisplayContext.class.getName());
 %>
 
-<clay:management-toolbar
+<react:component
+	module="js/SelectTypeAndSubtype"
+/>
+
+<!-- <clay:management-toolbar
 	managementToolbarDisplayContext="<%= contentDashboardItemTypeItemSelectorViewManagementToolbarDisplayContext %>"
 />
 
@@ -59,4 +63,4 @@ ContentDashboardItemTypeItemSelectorViewDisplayContext contentDashboardItemTypeI
 			markupView="lexicon"
 		/>
 	</liferay-ui:search-container>
-</clay:container-fluid>
+</clay:container-fluid> -->
