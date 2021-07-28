@@ -141,7 +141,7 @@ public class GetContentDashboardItemInfoMVCResourceCommandTest {
 			jsonObject.getString("title"));
 
 		Assert.assertEquals(
-			contentDashboardItem.getType(),
+			contentDashboardItem.getType(LocaleUtil.US),
 			jsonObject.getString("Web Content"));
 
 		ContentDashboardItemType contentDashboardItemType =
@@ -287,7 +287,7 @@ public class GetContentDashboardItemInfoMVCResourceCommandTest {
 			}
 
 			@Override
-			public String getType() {
+			public String getType(Locale locale) {
 				return "Web Content";
 			}
 
