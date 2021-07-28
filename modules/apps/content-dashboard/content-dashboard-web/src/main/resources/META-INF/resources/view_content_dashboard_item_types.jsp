@@ -22,6 +22,10 @@ ContentDashboardItemTypeItemSelectorViewManagementToolbarDisplayContext contentD
 ContentDashboardItemTypeItemSelectorViewDisplayContext contentDashboardItemTypeItemSelectorViewDisplayContext = (ContentDashboardItemTypeItemSelectorViewDisplayContext)request.getAttribute(ContentDashboardItemTypeItemSelectorViewDisplayContext.class.getName());
 %>
 
+<liferay-util:html-top>
+	<link href="<%= PortalUtil.getStaticResourceURL(request, application.getContextPath() + "/css/tree.css") %>" rel="stylesheet" type="text/css" />
+</liferay-util:html-top>
+
 <react:component
 	module="js/SelectTypeAndSubtype"
 />

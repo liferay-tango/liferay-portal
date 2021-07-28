@@ -85,7 +85,7 @@ function SelectTypeAndSubtype() {
     return (
     <div className="select-type-and-subtype">
         <form
-            className="mb-3 mt-3"
+            className="mb-4 pb-3 pt-3 select-type-and-subtype-filter"
             onSubmit={(event) => event.preventDefault()}
             role="search"
         >
