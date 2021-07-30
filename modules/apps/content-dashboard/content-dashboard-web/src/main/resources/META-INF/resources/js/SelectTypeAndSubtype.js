@@ -14,7 +14,7 @@
 
 import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
-import React, {useMemo, useState} from 'react';
+import React, {useMemo, useRef, useState} from 'react';
 import {Treeview} from 'frontend-js-components-web';
 
 function visit(nodes, callback) {
@@ -39,12 +39,8 @@ function getFilter(filterQuery) {
 		node.name.toLowerCase().indexOf(filterQueryLowerCase) !== -1;
 }
 
-const handleSelectionChange = (selectedNodes) => {
-    // TODO
-};
-
 function SelectTypeAndSubtype() {
-    /* Mocked values */
+    /* Mocked values, should be props */
     const namespace = "mynamespace";
     const nodes = [
         { "expanded":true,
@@ -65,10 +61,13 @@ function SelectTypeAndSubtype() {
          "icon":"folder",
          "name":"Document",
          "id":"1"}
-         ]
+         ];
+    const itemSelectorSaveEvent = "_com_liferay_content_dashboard_web_portlet_ContentDashboardAdminPortlet_selectedAssetType";
     /* End mocked values */
 
     const [filterQuery, setFilterQuery] = useState('');
+
+    const selectedNodesRef = useRef(null);
 
     const initialSelectedNodeIds = useMemo(() => {
 		const selectedNodes = [];
@@ -81,6 +80,40 @@ function SelectTypeAndSubtype() {
 
 		return selectedNodes;
 	}, [nodes]);
+
+    const handleSelectionChange = (selectedNodes) => {
+        const data = {};
+
+        // // Mark newly selected nodes as selected.
+        visit(nodes, (node) => {
+            if (selectedNodes.has(node.id)) {
+                data[node.id] = {
+                    subtypeId: node.children ? 0 : node.id,
+                    nodePath: node.nodePath,
+                    value: node.name,
+                    typeId: node.children ? node.id : 0,
+                };
+            }
+        });
+
+        // Mark unselected nodes as unchecked.
+        if (selectedNodesRef.current) {
+            Object.entries(selectedNodesRef.current).forEach(([id, node]) => {
+                if (!selectedNodes.has(id)) {
+                    data[id] = {
+                        ...node,
+                        unchecked: true,
+                    };
+                }
+            });
+        }
+
+        selectedNodesRef.current = data;
+
+        const openerWindow = Liferay.Util.getOpener();
+
+        openerWindow.Liferay.fire(itemSelectorSaveEvent, {data});
+    };
 
     return (
     <div className="select-type-and-subtype">
@@ -123,6 +156,7 @@ function SelectTypeAndSubtype() {
                             multiSelection={true}
                             nodes={nodes}
                             onSelectedNodesChange={handleSelectionChange}
+                            inheritSelection={true}
                         />
                     ) : (
                         <div className="border-0 pt-0 sheet taglib-empty-result-message">
