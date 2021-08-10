@@ -298,45 +298,6 @@ public class FileEntryContentDashboardItem
 	}
 
 	@Override
-	public String getDownloadURL() {
-		InfoItemFieldValues infoItemFieldValues =
-			_infoItemFieldValuesProvider.getInfoItemFieldValues(_fileEntry);
-
-		InfoFieldValue<Object> infoFieldValue =
-			infoItemFieldValues.getInfoFieldValue("downloadURL");
-
-		if (infoFieldValue == null) {
-			return StringPool.BLANK;
-		}
-
-		Object downloadURL = infoFieldValue.getValue();
-
-		return downloadURL.toString();
-	}
-
-	@Override
-	public String getExtension() {
-		InfoItemFieldValues infoItemFieldValues =
-			_infoItemFieldValuesProvider.getInfoItemFieldValues(_fileEntry);
-
-		InfoFieldValue<Object> infoFieldValue =
-			infoItemFieldValues.getInfoFieldValue("fileName");
-
-		if (infoFieldValue == null) {
-			return StringPool.BLANK;
-		}
-
-		Object fileName = infoFieldValue.getValue();
-
-		return FileUtil.getExtension(fileName.toString());
-	}
-
-	@Override
-	public String getFileName() {
-		return _fileEntry.getFileName();
-	}
-
-	@Override
 	public InfoItemReference getInfoItemReference() {
 		return new InfoItemReference(
 			FileEntry.class.getName(), _fileEntry.getFileEntryId());
@@ -345,21 +306,6 @@ public class FileEntryContentDashboardItem
 	@Override
 	public Date getModifiedDate() {
 		return _fileEntry.getModifiedDate();
-	}
-
-	@Override
-	public Object getPreviewImage() {
-		InfoItemFieldValues infoItemFieldValues =
-			_infoItemFieldValuesProvider.getInfoItemFieldValues(_fileEntry);
-
-		InfoFieldValue<Object> infoFieldValue =
-			infoItemFieldValues.getInfoFieldValue("previewImage");
-
-		if (infoFieldValue == null) {
-			return StringPool.BLANK;
-		}
-
-		return infoFieldValue.getValue();
 	}
 
 	@Override
@@ -383,23 +329,6 @@ public class FileEntryContentDashboardItem
 	}
 
 	@Override
-	public String getSize() {
-		InfoItemFieldValues infoItemFieldValues =
-			_infoItemFieldValuesProvider.getInfoItemFieldValues(_fileEntry);
-
-		InfoFieldValue<Object> infoFieldValue =
-			infoItemFieldValues.getInfoFieldValue("size");
-
-		if (infoFieldValue == null) {
-			return StringPool.BLANK;
-		}
-
-		Object size = infoFieldValue.getValue();
-
-		return size.toString();
-	}
-
-	@Override
 	public JSONObject getSpecificInformationJSONObject(
 		Locale locale, LiferayPortletResponse liferayPortletResponse,
 		String back) {
@@ -407,15 +336,15 @@ public class FileEntryContentDashboardItem
 		return JSONUtil.put(
 			"description", getDescription(locale)
 		).put(
-			"downloadURL", getDownloadURL()
+			"downloadURL", _getDownloadURL()
 		).put(
-			"extension", getExtension()
+			"extension", _getExtension()
 		).put(
-			"fileName", getFileName()
+			"fileName", _getFileName()
 		).put(
-			"preview", getPreviewImage()
+			"preview", _getPreviewImage()
 		).put(
-			"size", getSize()
+			"size", _getSize()
 		).put(
 			"viewURL", getViewURL(liferayPortletResponse, back)
 		);
@@ -519,10 +448,76 @@ public class FileEntryContentDashboardItem
 		);
 	}
 
+	private String _getDownloadURL() {
+		InfoItemFieldValues infoItemFieldValues =
+			_infoItemFieldValuesProvider.getInfoItemFieldValues(_fileEntry);
+
+		InfoFieldValue<Object> infoFieldValue =
+			infoItemFieldValues.getInfoFieldValue("downloadURL");
+
+		if (infoFieldValue == null) {
+			return StringPool.BLANK;
+		}
+
+		Object downloadURL = infoFieldValue.getValue();
+
+		return downloadURL.toString();
+	}
+
+	private String _getExtension() {
+		InfoItemFieldValues infoItemFieldValues =
+			_infoItemFieldValuesProvider.getInfoItemFieldValues(_fileEntry);
+
+		InfoFieldValue<Object> infoFieldValue =
+			infoItemFieldValues.getInfoFieldValue("fileName");
+
+		if (infoFieldValue == null) {
+			return StringPool.BLANK;
+		}
+
+		Object fileName = infoFieldValue.getValue();
+
+		return FileUtil.getExtension(fileName.toString());
+	}
+
+	private String _getFileName() {
+		return _fileEntry.getFileName();
+	}
+
 	private Version _getLastVersion(Locale locale) {
 		List<Version> versions = getVersions(locale);
 
 		return versions.get(versions.size() - 1);
+	}
+
+	private Object _getPreviewImage() {
+		InfoItemFieldValues infoItemFieldValues =
+			_infoItemFieldValuesProvider.getInfoItemFieldValues(_fileEntry);
+
+		InfoFieldValue<Object> infoFieldValue =
+			infoItemFieldValues.getInfoFieldValue("previewImage");
+
+		if (infoFieldValue == null) {
+			return StringPool.BLANK;
+		}
+
+		return infoFieldValue.getValue();
+	}
+
+	private String _getSize() {
+		InfoItemFieldValues infoItemFieldValues =
+			_infoItemFieldValuesProvider.getInfoItemFieldValues(_fileEntry);
+
+		InfoFieldValue<Object> infoFieldValue =
+			infoItemFieldValues.getInfoFieldValue("size");
+
+		if (infoFieldValue == null) {
+			return StringPool.BLANK;
+		}
+
+		Object size = infoFieldValue.getValue();
+
+		return size.toString();
 	}
 
 	private ContentDashboardItemAction _toContentDashboardItemAction(

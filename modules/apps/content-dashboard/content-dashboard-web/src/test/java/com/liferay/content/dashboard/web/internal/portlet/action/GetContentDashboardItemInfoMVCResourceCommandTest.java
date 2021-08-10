@@ -274,21 +274,6 @@ public class GetContentDashboardItemInfoMVCResourceCommandTest {
 			}
 
 			@Override
-			public String getDownloadURL() {
-				return "Download/url/test";
-			}
-
-			@Override
-			public String getExtension() {
-				return "extension";
-			}
-
-			@Override
-			public String getFileName() {
-				return "FileName";
-			}
-
-			@Override
 			public InfoItemReference getInfoItemReference() {
 				return new InfoItemReference(className, classPK);
 			}
@@ -299,18 +284,8 @@ public class GetContentDashboardItemInfoMVCResourceCommandTest {
 			}
 
 			@Override
-			public Object getPreviewImage() {
-				return new Object();
-			}
-
-			@Override
 			public String getScopeName(Locale locale) {
 				return RandomTestUtil.randomString();
-			}
-
-			@Override
-			public String getSize() {
-				return "123";
 			}
 
 			@Override
