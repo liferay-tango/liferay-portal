@@ -143,6 +143,8 @@ const SidebarPanelInfoView = ({
 		!!extension &&
 		parseInt(size?.split(' ')[0], 10) > 0;
 
+	const documentUsesPreview = !!preview || documentIsAFile;
+
 	const showTaxonomies = !!categories?.length || !!tags?.length;
 
 	return (
@@ -171,7 +173,7 @@ const SidebarPanelInfoView = ({
 					))}
 				</div>
 
-				<div className="sidebar-dl sidebar-section">
+				<div className="sidebar-dl sidebar-section sidebar-section--spaced">
 					<ClaySticker
 						className={classnames('sticker-user-icon', {
 							[`user-icon-color-${stickerColor}`]: !user.url,
@@ -191,7 +193,7 @@ const SidebarPanelInfoView = ({
 					<span className="ml-2 text-secondary">{user.name}</span>
 				</div>
 
-				{preview && (
+				{documentUsesPreview && (
 					<DocumentPreview
 						documentSrc={preview}
 						documentTitle={title}

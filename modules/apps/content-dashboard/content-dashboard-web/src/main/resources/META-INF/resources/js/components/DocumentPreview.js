@@ -28,22 +28,24 @@ const DocumentPreview = ({
 
 	return (
 		<div className="document-preview sidebar-section sidebar-section--spaced">
-			<figure className="document-preview-figure">
-				<a
-					className="align-items-center c-focus-inset d-flex h-100"
-					href={viewURLWithBackURLParam}
-					target="_blank"
-				>
-					<img alt={documentTitle} src={documentSrc} />
-					<ClayIcon
-						className="document-preview-icon"
-						symbol="shortcut"
-					/>
-				</a>
-			</figure>
+			{documentSrc && (
+				<figure className="document-preview-figure">
+					<a
+						className="align-items-center c-focus-inset d-flex h-100"
+						href={viewURLWithBackURLParam}
+						target="_blank"
+					>
+						<img alt={documentTitle} src={documentSrc} />
+						<ClayIcon
+							className="document-preview-icon"
+							symbol="shortcut"
+						/>
+					</a>
+				</figure>
+			)}
 			<div>
 				{isFile && (
-					<ClayLink className="btn btn-secondary" href={downloadURL}>
+					<ClayLink className="btn btn-primary" href={downloadURL}>
 						{Liferay.Language.get('download')}
 					</ClayLink>
 				)}
