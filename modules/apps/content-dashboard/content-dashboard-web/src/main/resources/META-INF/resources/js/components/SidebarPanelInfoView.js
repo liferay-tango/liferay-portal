@@ -18,8 +18,8 @@ import ClaySticker from '@clayui/sticker';
 import classnames from 'classnames';
 import React, {useMemo} from 'react';
 
-import DocumentLanguages from './DocumentLanguages';
 import DocumentPreview from './DocumentPreview';
+import ItemLanguages from './ItemLanguages';
 import Sidebar from './Sidebar';
 
 const formatDate = (date, languageTag) => {
@@ -90,7 +90,7 @@ const SidebarPanelInfoView = ({
 		viewURL,
 	} = specificFields;
 
-	const documentDates = [
+	const itemDates = [
 		{
 			text: formatDate(data['display-date']?.value, languageTag),
 			title: Liferay.Language.get('display-date'),
@@ -263,8 +263,8 @@ const SidebarPanelInfoView = ({
 					</div>
 				)}
 
-				{!!documentDates.length &&
-					documentDates.map(
+				{!!itemDates.length &&
+					itemDates.map(
 						({text, title}) =>
 							text &&
 							title && (
@@ -282,7 +282,7 @@ const SidebarPanelInfoView = ({
 					)}
 
 				{!!sortedViewURLS.length && (
-					<DocumentLanguages urls={sortedViewURLS} />
+					<ItemLanguages urls={sortedViewURLS} />
 				)}
 			</Sidebar.Body>
 		</>
