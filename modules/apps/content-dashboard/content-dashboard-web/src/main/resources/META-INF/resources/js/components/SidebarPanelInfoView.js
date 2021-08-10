@@ -39,26 +39,6 @@ const formatDate = (date, languageTag) => {
 
 const _cleanFileURL = (url) => url.slice(0, url.lastIndexOf('/'));
 
-const _formatBytes = (bytes, decimals = 2) => {
-	const numBytes = parseInt(bytes, 10);
-
-	if (numBytes === 0 || numBytes <= 0) {
-		return;
-	}
-
-	const K = 1024;
-	const dm = decimals < 0 ? 0 : decimals;
-	const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-
-	const i = Math.floor(Math.log(numBytes) / Math.log(K));
-
-	return (
-		parseFloat((numBytes / Math.pow(K, i)).toFixed(dm).toLocaleString()) +
-		' ' +
-		sizes[i]
-	);
-};
-
 const SidebarPanelInfoView = ({
 	categories = [],
 	classPK,
@@ -279,9 +259,7 @@ const SidebarPanelInfoView = ({
 						<h5 className="font-weight-semi-bold mb-1">
 							{Liferay.Language.get('size')}
 						</h5>
-						<p className="text-secondary">
-							{_formatBytes(size, 3)}
-						</p>
+						<p className="text-secondary">{size}</p>
 					</div>
 				)}
 
