@@ -22,7 +22,6 @@ import com.liferay.content.dashboard.web.internal.item.ContentDashboardItemFacto
 import com.liferay.content.dashboard.web.internal.item.ContentDashboardItemFactoryTracker;
 import com.liferay.content.dashboard.web.internal.item.type.ContentDashboardItemSubtype;
 import com.liferay.content.dashboard.web.internal.item.type.ContentDashboardItemSubtypeFactory;
-import com.liferay.dynamic.data.mapping.kernel.DDMStructure;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.info.type.WebImage;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -291,7 +290,7 @@ public class GetContentDashboardItemInfoMVCResourceCommandTest {
 			@Override
 			public JSONObject getSpecificInformationJSONObject(
 				Locale locale, LiferayPortletResponse liferayPortletResponse,
-				String back) {
+				String backURL) {
 
 				return null;
 			}
