@@ -37,8 +37,6 @@ const formatDate = (date, languageTag) => {
 	);
 };
 
-const _cleanFileURL = (url) => url.slice(0, url.lastIndexOf('/'));
-
 const SidebarPanelInfoView = ({
 	categories = [],
 	classPK,
@@ -86,6 +84,7 @@ const SidebarPanelInfoView = ({
 		extension,
 		fileName,
 		preview,
+		previewURL,
 		size,
 		viewURL,
 	} = specificFields;
@@ -247,9 +246,7 @@ const SidebarPanelInfoView = ({
 						<h5 className="font-weight-semi-bold mb-1">
 							{Liferay.Language.get('url')}
 						</h5>
-						<p className="text-secondary">
-							{_cleanFileURL(downloadURL)}
-						</p>
+						<p className="text-secondary">{previewURL}</p>
 
 						<h5 className="font-weight-semi-bold mb-1">
 							{Liferay.Language.get('extension')}
