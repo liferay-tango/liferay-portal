@@ -1630,6 +1630,136 @@ definition {
 			webContentTitle = "WC Title");
 	}
 
+	@description = "LPS-120676 When a user clicks on a gray bar of the audit graph, the filter corresponding to the category in that bar is applied, it is shown as a filter label in the management tool bar and the list of contents is filtered by it"
+	@priority = "3"
+	test FilterByBar {
+		property portal.acceptance = "true";
+
+		task ("Create a list of Audiences") {
+			for (var count : list "1,2,3") {
+				JSONCategory.addCategory(
+					groupName = "Global",
+					title = "S ${count}",
+					vocabularyName = "Audience");
+			}
+		}
+
+		task ("Create a list of Stages") {
+			for (var count : list "1,2,3") {
+				JSONCategory.addCategory(
+					groupName = "Global",
+					title = "test ${count}",
+					vocabularyName = "Stage");
+			}
+		}
+
+		task ("Create a new vocabulary") {
+			JSONCategory.addVocabulary(
+				groupName = "Global",
+				title = "Vocabulary Name");
+
+			var categoryId = JSONCategory.addCategory(
+				groupName = "Global",
+				title = "Test",
+				vocabularyName = "Vocabulary Name");
+		}
+
+		task ("Create a list of Web Content") {
+			for (var count : list "1,2,3") {
+				JSONWebcontent.addWebContent(
+					content = "Webcontent Content",
+					groupName = "Test Site Name",
+					title = "Webcontent Title ${count}");
+			}
+
+			JSONWebcontent.addWebContent(
+				content = "Webcontent Content",
+				groupName = "Test Site Name",
+				title = "WC 3");
+		}
+
+		task ("Select list of categories") {
+			ContentDashboard.selectListofCategoriesForAudienceAndStage();
+
+			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
+
+			WebContentNavigator.gotoEditCP(webContentTitle = "WC 4");
+
+			for (var count : list "1,2") {
+				WebContent.selectCategory(
+					categoryName = "S ${count}",
+					vocabularyName = "Audience");
+			}
+
+			WebContent.selectCategory(
+				categoryName = "Test",
+				vocabularyName = "Vocabulary Name");
+
+			PortletEntry.publish();
+		}
+		task ("Go to Content Dashboard and click on a gray bar of the audit graph") {}
+		ApplicationsMenu.gotoPortlet(
+			category = "Content",
+			panel = "Applications",
+			portlet = "Content Dashboard");
+
+		Click.clickNoMouseOver(
+			color = "CDCED9",
+			locator1 = "ContentDashboard#BAR_COLOR");
+	}
+
+	@description = "LPS-120676 When there are filters already applied and the user clicks in a bar, the new filters corresponding to the categories in that bar are applied, they are shown as filter labels in the management tool bar and the list of contents is filtered by them"
+	@priority = "3"
+	test FilterByBarAndByNavigation {
+		property portal.acceptance = "true";
+
+		task ("Create a list of Audiences") {
+			for (var count : list "1,2,3") {
+				JSONCategory.addCategory(
+					groupName = "Global",
+					title = "S ${count}",
+					vocabularyName = "Audience");
+			}
+		}
+
+		task ("Create a list of Stages") {
+			for (var count : list "1,2,3") {
+				JSONCategory.addCategory(
+					groupName = "Global",
+					title = "test ${count}",
+					vocabularyName = "Stage");
+			}
+		}
+
+		task ("Create a list of Web Content") {
+			for (var count : list "1,2,3") {
+				JSONWebcontent.addWebContent(
+					content = "Webcontent Content",
+					groupName = "Test Site Name",
+					title = "Webcontent Title ${count}");
+			}
+		}
+
+		task ("Select list of categories") {
+			ContentDashboard.selectListofCategoriesForAudienceAndStage();
+		}
+
+		task ("Go to Content Dashboard,and perform a filter through the navigation and one through the click on the bar ") {
+			ApplicationsMenu.gotoPortlet(
+				category = "Content",
+				panel = "Applications",
+				portlet = "Content Dashboard");
+
+			ContentDashboard.filterByCategory(
+				categoryName = "S 1",
+				filterOption = "Categories");
+
+			Click.clickNoMouseOver(
+				color = "4B9FFF",
+				locator1 = "ContentDashboard#BAR_COLOR");
+		}
+	}
+
 	@description = "Validate if the user can filter by category"
 	@priority = "5"
 	test FilterByCategory {
@@ -3036,137 +3166,6 @@ definition {
 		JSONWebcontent.deleteWebContent(
 			groupName = "Test Site Name",
 			title = "WC Title");
-	}
-
-	@description = "LPS-120676 When a user clicks on a gray bar of the audit graph, the filter corresponding to the category in that bar is applied, it is shown as a filter label in the management tool bar and the list of contents is filtered by it"
-	@priority = "3"
-	test FilterByBar {
-	property portal.acceptance = "true";
-
-		task ("Create a list of Audiences") {
-			for (var count : list "1,2,3") {
-				JSONCategory.addCategory(
-					groupName = "Global",
-					title = "S ${count}",
-					vocabularyName = "Audience");
-			}
-		}
-
-		task ("Create a list of Stages") {
-			for (var count : list "1,2,3") {
-				JSONCategory.addCategory(
-					groupName = "Global",
-					title = "test ${count}",
-					vocabularyName = "Stage");
-			}
-
-		}
-        
-		task ("Create a new vocabulary"){
-			JSONCategory.addVocabulary(
-					groupName = "Global",
-					title = "Vocabulary Name");
-
-				var categoryId = JSONCategory.addCategory(
-						groupName = "Global",
-						title = "Test",
-						vocabularyName = "Vocabulary Name");
-		}
-
-		task ("Create a list of Web Content") {
-			for (var count : list "1,2,3") {
-				JSONWebcontent.addWebContent(
-					content = "Webcontent Content",
-					groupName = "Test Site Name",
-					title = "Webcontent Title ${count}");
-			}
-		
-			JSONWebcontent.addWebContent(
-					content = "Webcontent Content",
-					groupName = "Test Site Name",
-					title = "WC 3");
-		}
-
-			task ("Select list of categories") {
-			ContentDashboard.selectListofCategoriesForAudienceAndStage();
-		
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-			WebContentNavigator.gotoEditCP(webContentTitle = "WC 4");
-
-				for (var count : list "1,2") {
-					WebContent.selectCategory(
-						categoryName = "S ${count}",
-						vocabularyName = "Audience");
-				}
-
-				WebContent.selectCategory(
-						categoryName = "Test",
-						vocabularyName = "Vocabulary Name");
-			
-				PortletEntry.publish();
-		}
-		   task ("Go to Content Dashboard and click on a gray bar of the audit graph"){}
-			ApplicationsMenu.gotoPortlet(
-				category = "Content",
-				panel = "Applications",
-				portlet = "Content Dashboard");
-
-			Click.clickNoMouseOver(locator1 = "ContentDashboard#BAR_COLOR",
-			color = "CDCED9" );		
-		
-	}
-
-	@description = "LPS-120676 When there are filters already applied and the user clicks in a bar, the new filters corresponding to the categories in that bar are applied, they are shown as filter labels in the management tool bar and the list of contents is filtered by them"
-	@priority = "3"
-	test FilterByBarAndByNavigation {
-	property portal.acceptance = "true";
-        
-		task ("Create a list of Audiences") {
-			for (var count : list "1,2,3") {
-				JSONCategory.addCategory(
-					groupName = "Global",
-					title = "S ${count}",
-					vocabularyName = "Audience");
-			}
-		}
-
-		task ("Create a list of Stages") {
-			for (var count : list "1,2,3") {
-				JSONCategory.addCategory(
-					groupName = "Global",
-					title = "test ${count}",
-					vocabularyName = "Stage");
-			}
-
-		}
-
-		task ("Create a list of Web Content") {
-			for (var count : list "1,2,3") {
-				JSONWebcontent.addWebContent(
-					content = "Webcontent Content",
-					groupName = "Test Site Name",
-					title = "Webcontent Title ${count}");
-			}
-		}
-
-		task ("Select list of categories") {
-			ContentDashboard.selectListofCategoriesForAudienceAndStage();
-		}
-
-		task ("Go to Content Dashboard,and perform a filter through the navigation and one through the click on the bar "){
-			ApplicationsMenu.gotoPortlet(
-				category = "Content",
-				panel = "Applications",
-				portlet = "Content Dashboard");
-
-			ContentDashboard.filterByCategory(
-			categoryName = "S 1",
-			filterOption = "Categories");	
-
-			Click.clickNoMouseOver(locator1 = "ContentDashboard#BAR_COLOR",
-			color = "4B9FFF");		
-		}
 	}
 
 }
