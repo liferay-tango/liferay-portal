@@ -334,6 +334,11 @@
 	<td>//*[contains(@title,'View')]</td>
 	<td></td>
 </tr>
+<tr>
+	<td>BAR_COLOR</td>
+	<td>//*[contains(@fill,'${color}')]</td>
+	<td></td>
+</tr>
 </tbody>
 </table>
 </body>
