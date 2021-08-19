@@ -138,7 +138,7 @@ definition {
 
 	@description = "LPS-132234: Given the page audit panel detail view
 	When there are images on the page with a displayed ratio different from the actual one
-	Then the users will see the matching failing elements, with its source link and the occurrences separately, and the Displayed Aspect Ratio and the Actual Aspect Ratio  for each one of them"
+	Then the users will see the matching failing elements, with its source link and the occurrences separately, and the Displayed Aspect Ratio and the Actual Aspect Ratio for each one of them"
 
 	@priority = "4"
 	@uitest
@@ -223,7 +223,7 @@ definition {
 	}
 
 	@description = "LPS-132234: Given the page audit panel detail view and a user with permissions for editing the page
-	When the page has any invalid hreflang link 
+	When the page has any invalid hreflang link
 	Then the users will see the matching failing elements, with the incorrect hreflang links"
 
 	@priority = "4"
@@ -305,799 +305,800 @@ definition {
 	}
 
 	@description = "LPS-132234: Given the page audit panel detail view and a user with permissions for editing the page
-	When  the link texts are not title as the link text
+	When the link texts are not title as the link text
 	Then the users will see the link text and the link destination URL"
-	
-	@priority = "4"
-	@uitest
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#CheckLinksTexts";
-
-		task ("Set a custom page as canonical URL to have data already loaded") {
-			PageAudit.setSEOcanonicalURL(URL = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
-		}
-
-		task ("Enable Google PageSpeed") {
-			PageAudit.enableGooglePageSpeed();
-		}
-
-		task ("Set Google PageSpeed API") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
-		}
-
-		task ("Open Page Audit panel and navigate to the second level of an issue") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.openPanelAfterConfiguration(pageName = "Content Page");
-
-			PageAudit.goToDetailView(failingCheckName = "Link Texts");
-
-			AssertTextPresent(
-				locator1 = "PageAudit#FAILING_CHECK_TITLE",
-				value1 = "Link Texts");
-
-			AssertElementPresent(
-				failingText = "Link Text",
-				locator1 = "PageAudit#FAILING_ELEMENT_TEXT");
-
-			AssertElementPresent(
-				failingText = "Link Destination URL",
-				locator1 = "PageAudit#FAILING_ELEMENT_TEXT");
-		}
-	}
-
-	@description = "LPS-132234: Given the page audit panel detail view
-	When there are texts on the page with insufficient contrast ratio
-	Then the users will see the matching failing elements, with its current ratio, foreground color code, background color code, font size, font weight and expected ratio"	
 
 	@priority = "4"
 	@uitest
-	test CheckLowContrastRatio {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#CheckLowContrastRatio";
+	property portal.acceptance = "true";
+	property test.name.skip.portal.instance = "PageAudit#CheckLinksTexts";
 
-		task ("Set a custom page as canonical URL to have data already loaded") {
-			PageAudit.setSEOcanonicalURL(URL = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
-		}
-
-		task ("Enable Google PageSpeed") {
-			PageAudit.enableGooglePageSpeed();
-		}
-
-		task ("Set Google PageSpeed API") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
-		}
-
-		task ("Open Page Audit panel and navigate to the second level of an issue") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.openPanelAfterConfiguration(pageName = "Content Page");
-
-			PageAudit.goToDetailView(failingCheckName = "Low Contrast Ratio");
-
-			AssertTextPresent(
-				locator1 = "PageAudit#FAILING_CHECK_TITLE",
-				value1 = "Low Contrast Ratio");
-
-			AssertTextPresent(
-				locator1 = "PageAudit#FAILING_ELEMENT_NAME",
-				value1 = "color-contrast");
-		}
+	task ("Set a custom page as canonical URL to have data already loaded") {
+		PageAudit.setSEOcanonicalURL(URL = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
 	}
 
-	@description = "LPS-132234: Given the page audit panel detail view
-	When there are images on the page with no alt text
-	Then the users will see the matching failing elements, and the current code snippet "	
-
-	@priority = "4"
-	@uitest
-	test CheckMissingImgALTAttributes {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#CheckMissingImgALTAttributes";
-
-		task ("Set a custom page as canonical URL to have data already loaded") {
-			PageAudit.setSEOcanonicalURL(URL = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
-		}
-
-		task ("Enable Google PageSpeed") {
-			PageAudit.enableGooglePageSpeed();
-		}
-
-		task ("Set Google PageSpeed API") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
-		}
-
-		task ("Open Page Audit panel and navigate to the second level of an issue") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.openPanelAfterConfiguration(pageName = "Content Page");
-
-			PageAudit.goToDetailView(failingCheckName = "Missing Img ALT Attributes");
-
-			AssertTextPresent(
-				locator1 = "PageAudit#FAILING_CHECK_TITLE",
-				value1 = "Missing Img ALT Attributes");
-
-			AssertTextPresent(
-				locator1 = "PageAudit#FAILING_ELEMENT_NAME",
-				value1 = "img");
-		}
+	task ("Enable Google PageSpeed") {
+		PageAudit.enableGooglePageSpeed();
 	}
 
-	@description = "LPS-132234: Given the page audit panel detail view
-	When there are input-type images on the page with no alt text
-	Then the users will see the matching failing elements, and the current code snippet"
-
-	@priority = "4"
-	@uitest
-	test CheckMissingInputALTAttributes {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#CheckMissingInputALTAttributes";
-
-		task ("Set a custom page as canonical URL to have data already loaded") {
-			PageAudit.setSEOcanonicalURL(URL = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
-		}
-
-		task ("Enable Google PageSpeed") {
-			PageAudit.enableGooglePageSpeed();
-		}
-
-		task ("Set Google PageSpeed API") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
-		}
-
-		task ("Open Page Audit panel and navigate to the second level of an issue") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.openPanelAfterConfiguration(pageName = "Content Page");
-
-			PageAudit.goToDetailView(failingCheckName = "Missing Input ALT Attributes");
-
-			AssertTextPresent(
-				locator1 = "PageAudit#FAILING_CHECK_TITLE",
-				value1 = "Missing Input ALT Attributes");
-
-			AssertTextPresent(
-				locator1 = "PageAudit#FAILING_ELEMENT_NAME",
-				value1 = "input");
-		}
-	}
-
-	@description = "LPS-132234: Given the page audit panel detail view and a user with permissions for editing the page
-	When there is no meta description for the page
-	Then the users will see a text with a link to the configuration section: Add a meta-description from the Configuration section of this page."
-
-	@priority = "4"
-	@uitest
-	test CheckMissingMetaDescription {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#CheckMissingMetaDescription";
-
-		task ("Set a custom page as canonical URL to have data already loaded") {
-			PageAudit.setSEOcanonicalURL(URL = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
-		}
-
-		task ("Enable Google PageSpeed") {
-			PageAudit.enableGooglePageSpeed();
-		}
-
-		task ("Set Google PageSpeed API") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
-		}
-
-		task ("Open Page Audit panel and navigate to the second level of an issue") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.openPanelAfterConfiguration(pageName = "Content Page");
-
-			PageAudit.goToDetailView(failingCheckName = "Missing Meta Description");
-
-			AssertTextPresent(
-				locator1 = "PageAudit#FAILING_CHECK_TITLE",
-				value1 = "Missing Meta Description");
-
-			AssertElementPresent(
-				failingText = "Add a description",
-				locator1 = "PageAudit#FAILING_ELEMENT_TEXT");
-		}
-	}
-
-	@description = "LPS-132234: Given the page audit panel detail view and a user with permissions for editing the page
-	When there is no title for the page
-	Then the users will see a text with a link to the configuration section: Add a title from the Configuration section of this page."
-
-	@priority = "4"
-	@uitest
-	test CheckMissingTitleElement {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#CheckMissingTitleElement";
-
-		task ("Set a custom page as canonical URL to have data already loaded") {
-			PageAudit.setSEOcanonicalURL(URL = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
-		}
-
-		task ("Enable Google PageSpeed") {
-			PageAudit.enableGooglePageSpeed();
-		}
-
-		task ("Set Google PageSpeed API") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
-		}
-
-		task ("Open Page Audit panel and navigate to the second level of an issue") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.openPanelAfterConfiguration(pageName = "Content Page");
-
-			PageAudit.goToDetailView(failingCheckName = "Missing <title> Element");
-
-			AssertTextPresent(
-				locator1 = "PageAudit#FAILING_CHECK_TITLE",
-				value1 = "Missing <title> Element");
-
-			AssertElementPresent(
-				failingText = "Add a title",
-				locator1 = "PageAudit#FAILING_ELEMENT_TEXT");
-		}
-	}
-
-	@description = "LPS-134760: Given the Page Audit panel in a private page
-	Then the reload button won't be visible."
-
-	@priority = "3"
-	test CheckNotVisibleReloadbButtonInPrivatePage {
-		task ("Create a Private Page") {
-			JSONLayout.addPrivateLayout(
-				groupName = "Test Site Name",
-				layoutName = "Private Page Name");
-		}
-
-		task ("Go to Private Page") {
-			Navigator.gotoPrivateSitePage(
-				pageName = "Private Page Name",
-				siteName = "Test Site Name");
-		}
-
-		task ("Open Page Audit tab and Assert reload button id not present") {
-			PageAudit.openPanelBeforeConfiguration();
-
-			IsElementPresent(locator1 = "PageAudit#ERROR_WARNING_BOX");
-
-			IsElementNotPresent(locator1 = "PageAudit#RELAUNCH_PAGE_AUDIT_BUTTON");
-		}
-	}
-
-	@description = "LPS-132234: Given the page audit panel detail view and a user with permissions for editing the page
-	When the page is blocked from indexing
-	Then the users will see a text with a link to the configuration section: Change the robots.txt setting from the Configuration section of this page"
-
-	@priority = "4"
-	@uitest
-	test CheckPageBlockedFromIndexing {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#CheckPageBlockedFromIndexing";
-
-		task ("Set a custom page as canonical URL to have data already loaded") {
-			PageAudit.setSEOcanonicalURL(URL = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
-		}
-
-		task ("Enable Google PageSpeed") {
-			PageAudit.enableGooglePageSpeed();
-		}
-
-		task ("Set Google PageSpeed API") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
-		}
-
-		task ("Open Page Audit panel and navigate to the second level of an issue") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.openPanelAfterConfiguration(pageName = "Content Page");
-
-			PageAudit.goToDetailView(failingCheckName = "Page Blocked from Indexing");
-
-			AssertTextPresent(
-				locator1 = "PageAudit#FAILING_CHECK_TITLE",
-				value1 = "Page Blocked from Indexing");
-
-			AssertElementPresent(
-				failingText = "Change the robots.txt setting",
-				locator1 = "PageAudit#FAILING_ELEMENT_TEXT");
-		}
-	}
-
-	@description = "LPS-132234: Given the page audit panel detail view
-	When there tap targets on the page that are too small or are overlapping with others
-	Then the users will see the matching failing elements, with the tap target snippet, size and Overlapping Target if there is one"
-
-	@priority = "4"
-	@uitest
-	test CheckSmallTapTargets {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#CheckSmallTapTargets";
-
-		task ("Set a custom page as canonical URL to have data already loaded") {
-			PageAudit.setSEOcanonicalURL(URL = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
-		}
-
-		task ("Enable Google PageSpeed") {
-			PageAudit.enableGooglePageSpeed();
-		}
-
-		task ("Set Google PageSpeed API") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
-		}
-
-		task ("Open Page Audit panel and navigate to the second level of an issue") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.openPanelAfterConfiguration(pageName = "Content Page");
-
-			PageAudit.goToDetailView(failingCheckName = "Small Tap Targets");
-
-			AssertTextPresent(
-				locator1 = "PageAudit#FAILING_CHECK_TITLE",
-				value1 = "Small Tap Targets");
-
-			AssertTextPresent(
-				locator1 = "PageAudit#FAILING_ELEMENT_NAME",
-				value1 = "a");
-		}
-	}
-
-	@description = "LPS-127668: Given the page audit panel
-	When the users access the second level
-	Then they can see the title of the issue, the description and tips sections"
-
-	@priority = "4"
-	@uitest
-	test NavigateToSecondLevel {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#NavigateToSecondLevel";
-
-		task ("Set a custom page as canonical URL to have data already loaded") {
-			PageAudit.setSEOcanonicalURL(URL = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
-		}
-
-		task ("Enable Google PageSpeed") {
-			PageAudit.enableGooglePageSpeed();
-		}
-
-		task ("Set Google PageSpeed API") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
-		}
-
-		task ("Open Page Audit panel and navigate to the second level of an issue") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.openPanelAfterConfiguration(pageName = "Content Page");
-
-			PageAudit.goToDetailView(failingCheckName = "Low Contrast Ratio");
-
-			AssertTextPresent(
-				locator1 = "PageAudit#FAILING_CHECK_TITLE",
-				value1 = "Low Contrast Ratio");
-
-			AssertTextPresent(
-				locator1 = "PageAudit#PANEL_TITLE",
-				value1 = "DESCRIPTION");
-
-			AssertTextPresent(
-				locator1 = "PageAudit#PANEL_TITLE",
-				value1 = "TIPS");
-
-			AssertElementPresent(
-				badgeValue = "1",
-				locator1 = "PageAudit#BADGE_NUMBER");
-
-			AssertTextPresent(
-				locator1 = "PageAudit#FAILING_ELEMENT_NAME",
-				value1 = "color-contrast");
-		}
-	}
-
-	@description = "LPS-135681: Given the Page Audit panel in its initial state (no API Key configured)
-	When the user clicks on the Configure button
-	Then the user navigates to Site settings > Pages > Google PageSpeed Insights tab"
-
-	@priority = "4"
-	test NavigateToSiteSettingsWhenApiKeyNotConfigured {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#NavigateToSiteSettingsWhenApiKeyNotConfigured";
-
-		task ("Open Page Audit panel") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			PageAudit.openPanelBeforeConfiguration();
-
-			AssertTextPresent(
-				locator1 = "PageAudit#CHECK_ISSUES_TEXT",
-				value1 = "Check issues that impact on your page's accessibility and SEO.");
-		}
-
-		task ("Go to Site settings > Pages throught the 'Configure' button in panel and Assert page") {
-			PageAudit.connectToGooglePageAudit();
-
-			AssertElementPresent(
-				key_breadcrumbName = "Site Settings",
-				locator1 = "Breadcrumb#BREADCRUMB_ENTRY_LINK");
-
-			AssertTextPresent(
-				locator1 = "Breadcrumb#BREADCRUMB_ENTRY_ACTIVE_ENTRY",
-				value1 = "Pages");
-
-			AssertTextPresent(
-				locator1 = "PageAudit#GOOGLE_PAGESPEED_TITLE",
-				value1 = "Google PageSpeed Insights");
-		}
-	}
-
-	@description = "LPS-119068: When the user, after s/he has clicked on the Connect with Page Speed (button) and being led to Site Settings > Pages > Google PageSpeed, clicks on Back button, s/he is led to the page view again"
-	@priority = "3"
-	test PageAuditBackButton {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#PageAuditBackButton";
-
-		task ("Enable Google PageSpeed") {
-			PageAudit.enableGooglePageSpeed();
-		}
-
-		task ("Add Content Page") {
-			JSONLayout.addPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Content Page",
-				type = "content");
-
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-		}
-
-		task ("Open Page Audit panel") {
-			PageAudit.openPanelBeforeConfiguration();
-
-			AssertTextPresent(
-				locator1 = "PageAudit#CHECK_ISSUES_TEXT",
-				value1 = "Check issues that impact on your page's accessibility and SEO.");
-		}
-
-		task ("Go to Google PageSpeed throught the button in panel") {
-			PageAudit.connectToGooglePageAudit();
-
-			AssertTextPresent(
-				locator1 = "PageAudit#GOOGLE_PAGESPEED_TITLE",
-				value1 = "Google PageSpeed Insights");
-		}
-
-		task ("Go back to the panel throught the back button") {
-			PageAudit.backToPageBackButton();
-
-			AssertTextPresent(
-				locator1 = "PageAudit#CHECK_ISSUES_TEXT",
-				value1 = "Check issues that impact on your page's accessibility and SEO.");
-		}
-	}
-
-	@description = "LPS-119068: When the user, after s/he has clicked on the Connect with Page Speed (button) and being led to Site Settings > Pages > Google PageSpeed, clicks on Cancel button, s/he is led to the page view again"
-	@priority = "3"
-	test PageAuditCancelButton {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#PageAuditCancelButton";
-
-		task ("Enable Google PageSpeed") {
-			PageAudit.enableGooglePageSpeed();
-		}
-
-		task ("Add Content Page") {
-			JSONLayout.addPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Content Page",
-				type = "content");
-
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-		}
-
-		task ("Open Page Audit panel") {
-			PageAudit.openPanelBeforeConfiguration();
-
-			AssertTextPresent(
-				locator1 = "PageAudit#CHECK_ISSUES_TEXT",
-				value1 = "Check issues that impact on your page's accessibility and SEO.");
-		}
-
-		task ("Go to Google PageSpeed throught the button in panel") {
-			PageAudit.connectToGooglePageAudit();
-
-			AssertTextPresent(
-				locator1 = "PageAudit#GOOGLE_PAGESPEED_TITLE",
-				value1 = "Google PageSpeed Insights");
-		}
-
-		task ("Go back to the panel throught the cancel button") {
-			PageAudit.backToPageCancelButton();
-
-			AssertTextPresent(
-				locator1 = "PageAudit#CHECK_ISSUES_TEXT",
-				value1 = "Check issues that impact on your page's accessibility and SEO.");
-		}
-	}
-
-	@description = "LPS-119068: When the Enable Page Audit check in System Settings is on and a user with permissions to view page visits the view mode of a content page, the issue icon for displaying the page audit panel shows"
-	@priority = "5"
-	test PageAuditContentPage {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#PageAuditContentPage";
-
-		task ("Enable Google PageSpeed") {
-			PageAudit.enableGooglePageSpeed();
-		}
-
-		task ("Add Content Page") {
-			JSONLayout.addPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Content Page",
-				type = "content");
-
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-		}
-
-		task ("Open Page Audit panel") {
-			PageAudit.openPanelBeforeConfiguration();
-
-			AssertTextPresent(
-				locator1 = "PageAudit#CHECK_ISSUES_TEXT",
-				value1 = "Check issues that impact on your page's accessibility and SEO.");
-		}
-
-		task ("Go to Google PageSpeed throught the button in panel") {
-			PageAudit.connectToGooglePageAudit();
-
-			AssertTextPresent(
-				locator1 = "PageAudit#GOOGLE_PAGESPEED_TITLE",
-				value1 = "Google PageSpeed Insights");
-		}
-	}
-
-	@description = "LPS-119068: When the Enable Page Audit check in System Settings is off, the issue icon to display the page audit panel in the content pages doesn't show"
-	@priority = "3"
-	test PageAuditContentPageDisabled {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#PageAuditContentPageDisabled";
-
-		task ("Disable Google PageSpeed") {
-			PageAudit.disableGooglePageSpeed();
-		}
-
-		task ("Add Content Page") {
-			JSONLayout.addPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Content Page",
-				type = "content");
-		}
-
-		task ("Go to the Content Page and assert the Page Audit panel is not shown") {
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-
-			AssertElementNotPresent(locator1 = "PageAudit#PAGE_AUDIT_BUTTON");
-		}
-	}
-
-	@description = "LPS-119068: When the Enable Page Audit check in System Settings is on and a user with permissions to view page visits the view mode of a display page, the issue icon for displaying the page audit panel shows"
-	@priority = "5"
-	test PageAuditDisplayPage {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#PageAuditDisplayPage";
-
-		task ("Enable Google PageSpeed") {
-			PageAudit.enableGooglePageSpeed();
-		}
-
-		task ("Add Display Page and mark it as default") {
-			JSONLayoutpagetemplate.addDisplayPageTemplateEntry(
-				contentType = "Web Content Article",
-				displayPageTemplateEntryName = "Display Page Name",
-				groupName = "Test Site Name",
-				subType = "Basic Web Content");
-
-			DisplayPageTemplatesAdmin.openDisplayPagesAdmin(siteURLKey = "test-site-name");
-
-			DisplayPageTemplatesAdmin.gotoDisplayPage(displayPageName = "Display Page Name");
-
-			Button.clickPublish();
-
-			DisplayPageTemplatesAdmin.openDisplayPagesAdmin(siteURLKey = "test-site-name");
-
-			DisplayPageTemplatesAdmin.markDisplayPageAsDefault(displayPageName = "Display Page Name");
-		}
-
-		task ("Add Web Content and check it in its display page") {
-			JSONWebcontent.addWebContent(
-				content = "WC Content",
-				groupName = "Test Site Name",
-				title = "WC Title");
-
-			ApplicationsMenu.gotoPortlet(
-				category = "Content",
-				panel = "Applications",
-				portlet = "Content Dashboard");
-
-			LexiconTable.clickTableEntryColumnLink(
-				columnName = "title",
-				tableEntry = "");
-		}
-
-		task ("Open Page Audit panel") {
-			PageAudit.openPanelBeforeConfiguration();
-
-			AssertTextPresent(
-				locator1 = "PageAudit#CHECK_ISSUES_TEXT",
-				value1 = "Check issues that impact on your page's accessibility and SEO.");
-		}
-
-		task ("Go to Google PageSpeed throught the button in panel") {
-			PageAudit.connectToGooglePageAudit();
-
-			AssertTextPresent(
-				locator1 = "PageAudit#GOOGLE_PAGESPEED_TITLE",
-				value1 = "Google PageSpeed Insights");
-		}
-	}
-
-	@description = "LPS-119068: When the Enable Page Audit check in System Settings is off, the issue icon to display the page audit panel in the display pages doesn't show"
-	@priority = "3"
-	test PageAuditDisplayPageDisabled {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#PageAuditDisplayPageDisabled";
-
-		task ("Disable Google PageSpeed") {
-			PageAudit.disableGooglePageSpeed();
-		}
-
-		task ("Add Display Page and mark it as default") {
-			JSONLayoutpagetemplate.addDisplayPageTemplateEntry(
-				contentType = "Web Content Article",
-				displayPageTemplateEntryName = "Display Page Name",
-				groupName = "Test Site Name",
-				subType = "Basic Web Content");
-
-			DisplayPageTemplatesAdmin.openDisplayPagesAdmin(siteURLKey = "test-site-name");
-
-			DisplayPageTemplatesAdmin.gotoDisplayPage(displayPageName = "Display Page Name");
-
-			Button.clickPublish();
-
-			DisplayPageTemplatesAdmin.openDisplayPagesAdmin(siteURLKey = "test-site-name");
-
-			DisplayPageTemplatesAdmin.markDisplayPageAsDefault(displayPageName = "Display Page Name");
-		}
-
-		task ("Add Web Content and check it in its display page") {
-			JSONWebcontent.addWebContent(
-				content = "WC Content",
-				groupName = "Test Site Name",
-				title = "WC Title");
-
-			ApplicationsMenu.gotoPortlet(
-				category = "Content",
-				panel = "Applications",
-				portlet = "Content Dashboard");
-
-			LexiconTable.clickTableEntryColumnLink(
-				columnName = "title",
-				tableEntry = "");
-		}
-
-		task ("Assert the Page Audit panel is not shown") {
-			AssertElementNotPresent(locator1 = "PageAudit#PAGE_AUDIT_BUTTON");
-		}
-	}
-
-	@description = "LPS-119068: When the Enable Page Audit check in System Settings is on and a user with permissions to view page visits the view mode of a widget page, the issue icon for displaying the page audit panel shows"
-	@priority = "5"
-	test PageAuditWidgetPage {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#PageAuditWidgetPage";
-
-		task ("Enable Google PageSpeed") {
-			PageAudit.enableGooglePageSpeed();
-		}
-
-		task ("Add Widget Page") {
-			JSONLayout.addPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Widget Page");
-
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/widget-page");
-		}
-
-		task ("Open Page Audit panel") {
-			PageAudit.openPanelBeforeConfiguration();
-
-			AssertTextPresent(
-				locator1 = "PageAudit#CHECK_ISSUES_TEXT",
-				value1 = "Check issues that impact on your page's accessibility and SEO.");
-		}
-
-		task ("Go to Google PageSpeed throught the button in panel") {
-			PageAudit.connectToGooglePageAudit();
-
-			AssertTextPresent(
-				locator1 = "PageAudit#GOOGLE_PAGESPEED_TITLE",
-				value1 = "Google PageSpeed Insights");
-		}
-	}
-
-	@description = "LPS-119068: When the Enable Page Audit check in System Settings is off, the issue icon to display the page audit panel in the widget pages doesn't show"
-	@priority = "3"
-	test PageAuditWidgetPageDisabled {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#PageAuditWidgetPageDisabled";
-
-		task ("Disable Google PageSpeed") {
-			PageAudit.disableGooglePageSpeed();
-		}
-
-		task ("Add Widget Page") {
-			JSONLayout.addPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Widget Page");
-
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/widget-page");
-		}
-
-		task ("Assert the Page Audit panel is not shown") {
-			AssertElementNotPresent(locator1 = "PageAudit#PAGE_AUDIT_BUTTON");
-		}
-	}
-
-	@description = "LPS-132232: Given the Page Audit Panel
-	When the user opens it and there are no failing elements retrieved for any of the checks
-	Then a message "Your page has no issues" and the matching image show, the two sections SEO and Accessibility show and they are collapsed by default"
-	@priority = "3"
-	@uitest
-	test PageWithNoIssues {
-		property portal.acceptance = "true";
-		property test.name.skip.portal.instance = "PageAudit#PageWithNoIssues";
-
-		task ("Set a custom page as canonical URL to have data already loaded") {
-			PageAudit.setSEOcanonicalURL(URL = "https://liferay-tango.github.io/liferay-portal/page-audit-test-no-issues");
-		}
-
-		task ("Enable Google PageSpeed") {
-			PageAudit.enableGooglePageSpeed();
-		}
-
-		task ("Set Google PageSpeed API") {
-			PageAudit.setAPIViaSystemSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
-		}
-
+	task ("Set Google PageSpeed API") {
 		Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
 
-		task ("Open Page Audit panel and assert there are no issues") {
-			PageAudit.openPanelAfterConfiguration(pageName = "Content Page");
-
-			AssertElementPresent(locator1 = "PageAudit#SUCCESS_IMAGE");
-
-			AssertTextPresent(
-				locator1 = "PageAudit#NO_ISSUES_MESSAGE",
-				value1 = "Your page has no issues.");
-		}
+		PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
 	}
+
+	task ("Open Page Audit panel and navigate to the second level of an issue") {
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
+
+		PageAudit.openPanelAfterConfiguration(pageName = "Content Page");
+
+		PageAudit.goToDetailView(failingCheckName = "Link Texts");
+
+		AssertTextPresent(
+			locator1 = "PageAudit#FAILING_CHECK_TITLE",
+			value1 = "Link Texts");
+
+		AssertElementPresent(
+			failingText = "Link Text",
+			locator1 = "PageAudit#FAILING_ELEMENT_TEXT");
+
+		AssertElementPresent(
+			failingText = "Link Destination URL",
+			locator1 = "PageAudit#FAILING_ELEMENT_TEXT");
+	}
+}
+
+@description = "LPS-132234: Given the page audit panel detail view
+When there are texts on the page with insufficient contrast ratio
+Then the users will see the matching failing elements, with its current ratio, foreground color code, background color code, font size, font weight and expected ratio"
+
+@priority = "4"
+@uitest
+test CheckLowContrastRatio {
+	property portal.acceptance = "true";
+	property test.name.skip.portal.instance = "PageAudit#CheckLowContrastRatio";
+
+	task ("Set a custom page as canonical URL to have data already loaded") {
+		PageAudit.setSEOcanonicalURL(URL = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
+	}
+
+	task ("Enable Google PageSpeed") {
+		PageAudit.enableGooglePageSpeed();
+	}
+
+	task ("Set Google PageSpeed API") {
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
+
+		PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+	}
+
+	task ("Open Page Audit panel and navigate to the second level of an issue") {
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
+
+		PageAudit.openPanelAfterConfiguration(pageName = "Content Page");
+
+		PageAudit.goToDetailView(failingCheckName = "Low Contrast Ratio");
+
+		AssertTextPresent(
+			locator1 = "PageAudit#FAILING_CHECK_TITLE",
+			value1 = "Low Contrast Ratio");
+
+		AssertTextPresent(
+			locator1 = "PageAudit#FAILING_ELEMENT_NAME",
+			value1 = "color-contrast");
+	}
+}
+
+@description = "LPS-132234: Given the page audit panel detail view
+When there are images on the page with no alt text
+Then the users will see the matching failing elements, and the current code snippet "
+
+@priority = "4"
+@uitest
+test CheckMissingImgALTAttributes {
+	property portal.acceptance = "true";
+	property test.name.skip.portal.instance = "PageAudit#CheckMissingImgALTAttributes";
+
+	task ("Set a custom page as canonical URL to have data already loaded") {
+		PageAudit.setSEOcanonicalURL(URL = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
+	}
+
+	task ("Enable Google PageSpeed") {
+		PageAudit.enableGooglePageSpeed();
+	}
+
+	task ("Set Google PageSpeed API") {
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
+
+		PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+	}
+
+	task ("Open Page Audit panel and navigate to the second level of an issue") {
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
+
+		PageAudit.openPanelAfterConfiguration(pageName = "Content Page");
+
+		PageAudit.goToDetailView(failingCheckName = "Missing Img ALT Attributes");
+
+		AssertTextPresent(
+			locator1 = "PageAudit#FAILING_CHECK_TITLE",
+			value1 = "Missing Img ALT Attributes");
+
+		AssertTextPresent(
+			locator1 = "PageAudit#FAILING_ELEMENT_NAME",
+			value1 = "img");
+	}
+}
+
+@description = "LPS-132234: Given the page audit panel detail view
+When there are input-type images on the page with no alt text
+Then the users will see the matching failing elements, and the current code snippet"
+
+@priority = "4"
+@uitest
+test CheckMissingInputALTAttributes {
+	property portal.acceptance = "true";
+	property test.name.skip.portal.instance = "PageAudit#CheckMissingInputALTAttributes";
+
+	task ("Set a custom page as canonical URL to have data already loaded") {
+		PageAudit.setSEOcanonicalURL(URL = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
+	}
+
+	task ("Enable Google PageSpeed") {
+		PageAudit.enableGooglePageSpeed();
+	}
+
+	task ("Set Google PageSpeed API") {
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
+
+		PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+	}
+
+	task ("Open Page Audit panel and navigate to the second level of an issue") {
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
+
+		PageAudit.openPanelAfterConfiguration(pageName = "Content Page");
+
+		PageAudit.goToDetailView(failingCheckName = "Missing Input ALT Attributes");
+
+		AssertTextPresent(
+			locator1 = "PageAudit#FAILING_CHECK_TITLE",
+			value1 = "Missing Input ALT Attributes");
+
+		AssertTextPresent(
+			locator1 = "PageAudit#FAILING_ELEMENT_NAME",
+			value1 = "input");
+	}
+}
+
+@description = "LPS-132234: Given the page audit panel detail view and a user with permissions for editing the page
+When there is no meta description for the page
+Then the users will see a text with a link to the configuration section: Add a meta-description from the Configuration section of this page."
+
+@priority = "4"
+@uitest
+test CheckMissingMetaDescription {
+	property portal.acceptance = "true";
+	property test.name.skip.portal.instance = "PageAudit#CheckMissingMetaDescription";
+
+	task ("Set a custom page as canonical URL to have data already loaded") {
+		PageAudit.setSEOcanonicalURL(URL = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
+	}
+
+	task ("Enable Google PageSpeed") {
+		PageAudit.enableGooglePageSpeed();
+	}
+
+	task ("Set Google PageSpeed API") {
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
+
+		PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+	}
+
+	task ("Open Page Audit panel and navigate to the second level of an issue") {
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
+
+		PageAudit.openPanelAfterConfiguration(pageName = "Content Page");
+
+		PageAudit.goToDetailView(failingCheckName = "Missing Meta Description");
+
+		AssertTextPresent(
+			locator1 = "PageAudit#FAILING_CHECK_TITLE",
+			value1 = "Missing Meta Description");
+
+		AssertElementPresent(
+			failingText = "Add a description",
+			locator1 = "PageAudit#FAILING_ELEMENT_TEXT");
+	}
+}
+
+@description = "LPS-132234: Given the page audit panel detail view and a user with permissions for editing the page
+When there is no title for the page
+Then the users will see a text with a link to the configuration section: Add a title from the Configuration section of this page."
+
+@priority = "4"
+@uitest
+test CheckMissingTitleElement {
+	property portal.acceptance = "true";
+	property test.name.skip.portal.instance = "PageAudit#CheckMissingTitleElement";
+
+	task ("Set a custom page as canonical URL to have data already loaded") {
+		PageAudit.setSEOcanonicalURL(URL = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
+	}
+
+	task ("Enable Google PageSpeed") {
+		PageAudit.enableGooglePageSpeed();
+	}
+
+	task ("Set Google PageSpeed API") {
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
+
+		PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+	}
+
+	task ("Open Page Audit panel and navigate to the second level of an issue") {
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
+
+		PageAudit.openPanelAfterConfiguration(pageName = "Content Page");
+
+		PageAudit.goToDetailView(failingCheckName = "Missing <title> Element");
+
+		AssertTextPresent(
+			locator1 = "PageAudit#FAILING_CHECK_TITLE",
+			value1 = "Missing <title> Element");
+
+		AssertElementPresent(
+			failingText = "Add a title",
+			locator1 = "PageAudit#FAILING_ELEMENT_TEXT");
+	}
+}
+
+@description = "LPS-134760: Given the Page Audit panel in a private page
+Then the reload button won't be visible."
+
+@priority = "3"
+test CheckNotVisibleReloadbButtonInPrivatePage {
+	task ("Create a Private Page") {
+		JSONLayout.addPrivateLayout(
+			groupName = "Test Site Name",
+			layoutName = "Private Page Name");
+	}
+
+	task ("Go to Private Page") {
+		Navigator.gotoPrivateSitePage(
+			pageName = "Private Page Name",
+			siteName = "Test Site Name");
+	}
+
+	task ("Open Page Audit tab and Assert reload button id not present") {
+		PageAudit.openPanelBeforeConfiguration();
+
+		IsElementPresent(locator1 = "PageAudit#ERROR_WARNING_BOX");
+
+		IsElementNotPresent(locator1 = "PageAudit#RELAUNCH_PAGE_AUDIT_BUTTON");
+	}
+}
+
+@description = "LPS-132234: Given the page audit panel detail view and a user with permissions for editing the page
+When the page is blocked from indexing
+Then the users will see a text with a link to the configuration section: Change the robots.txt setting from the Configuration section of this page"
+
+@priority = "4"
+@uitest
+test CheckPageBlockedFromIndexing {
+	property portal.acceptance = "true";
+	property test.name.skip.portal.instance = "PageAudit#CheckPageBlockedFromIndexing";
+
+	task ("Set a custom page as canonical URL to have data already loaded") {
+		PageAudit.setSEOcanonicalURL(URL = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
+	}
+
+	task ("Enable Google PageSpeed") {
+		PageAudit.enableGooglePageSpeed();
+	}
+
+	task ("Set Google PageSpeed API") {
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
+
+		PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+	}
+
+	task ("Open Page Audit panel and navigate to the second level of an issue") {
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
+
+		PageAudit.openPanelAfterConfiguration(pageName = "Content Page");
+
+		PageAudit.goToDetailView(failingCheckName = "Page Blocked from Indexing");
+
+		AssertTextPresent(
+			locator1 = "PageAudit#FAILING_CHECK_TITLE",
+			value1 = "Page Blocked from Indexing");
+
+		AssertElementPresent(
+			failingText = "Change the robots.txt setting",
+			locator1 = "PageAudit#FAILING_ELEMENT_TEXT");
+	}
+}
+
+@description = "LPS-132234: Given the page audit panel detail view
+When there tap targets on the page that are too small or are overlapping with others
+Then the users will see the matching failing elements, with the tap target snippet, size and Overlapping Target if there is one"
+
+@priority = "4"
+@uitest
+test CheckSmallTapTargets {
+	property portal.acceptance = "true";
+	property test.name.skip.portal.instance = "PageAudit#CheckSmallTapTargets";
+
+	task ("Set a custom page as canonical URL to have data already loaded") {
+		PageAudit.setSEOcanonicalURL(URL = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
+	}
+
+	task ("Enable Google PageSpeed") {
+		PageAudit.enableGooglePageSpeed();
+	}
+
+	task ("Set Google PageSpeed API") {
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
+
+		PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+	}
+
+	task ("Open Page Audit panel and navigate to the second level of an issue") {
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
+
+		PageAudit.openPanelAfterConfiguration(pageName = "Content Page");
+
+		PageAudit.goToDetailView(failingCheckName = "Small Tap Targets");
+
+		AssertTextPresent(
+			locator1 = "PageAudit#FAILING_CHECK_TITLE",
+			value1 = "Small Tap Targets");
+
+		AssertTextPresent(
+			locator1 = "PageAudit#FAILING_ELEMENT_NAME",
+			value1 = "a");
+	}
+}
+
+@description = "LPS-127668: Given the page audit panel
+When the users access the second level
+Then they can see the title of the issue, the description and tips sections"
+
+@priority = "4"
+@uitest
+test NavigateToSecondLevel {
+	property portal.acceptance = "true";
+	property test.name.skip.portal.instance = "PageAudit#NavigateToSecondLevel";
+
+	task ("Set a custom page as canonical URL to have data already loaded") {
+		PageAudit.setSEOcanonicalURL(URL = "https://liferay-tango.github.io/liferay-portal/page-audit-test");
+	}
+
+	task ("Enable Google PageSpeed") {
+		PageAudit.enableGooglePageSpeed();
+	}
+
+	task ("Set Google PageSpeed API") {
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
+
+		PageAudit.setAPIViaSiteSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+	}
+
+	task ("Open Page Audit panel and navigate to the second level of an issue") {
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
+
+		PageAudit.openPanelAfterConfiguration(pageName = "Content Page");
+
+		PageAudit.goToDetailView(failingCheckName = "Low Contrast Ratio");
+
+		AssertTextPresent(
+			locator1 = "PageAudit#FAILING_CHECK_TITLE",
+			value1 = "Low Contrast Ratio");
+
+		AssertTextPresent(
+			locator1 = "PageAudit#PANEL_TITLE",
+			value1 = "DESCRIPTION");
+
+		AssertTextPresent(
+			locator1 = "PageAudit#PANEL_TITLE",
+			value1 = "TIPS");
+
+		AssertElementPresent(
+			badgeValue = "1",
+			locator1 = "PageAudit#BADGE_NUMBER");
+
+		AssertTextPresent(
+			locator1 = "PageAudit#FAILING_ELEMENT_NAME",
+			value1 = "color-contrast");
+	}
+}
+
+@description = "LPS-135681: Given the Page Audit panel in its initial state (no API Key configured)
+When the user clicks on the Configure button
+Then the user navigates to Site settings > Pages > Google PageSpeed Insights tab"
+
+@priority = "4"
+test NavigateToSiteSettingsWhenApiKeyNotConfigured {
+	property portal.acceptance = "true";
+	property test.name.skip.portal.instance = "PageAudit#NavigateToSiteSettingsWhenApiKeyNotConfigured";
+
+	task ("Open Page Audit panel") {
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
+
+		PageAudit.openPanelBeforeConfiguration();
+
+		AssertTextPresent(
+			locator1 = "PageAudit#CHECK_ISSUES_TEXT",
+			value1 = "Check issues that impact on your page's accessibility and SEO.");
+	}
+
+	task ("Go to Site settings > Pages throught the 'Configure' button in panel and Assert page") {
+		PageAudit.connectToGooglePageAudit();
+
+		AssertElementPresent(
+			key_breadcrumbName = "Site Settings",
+			locator1 = "Breadcrumb#BREADCRUMB_ENTRY_LINK");
+
+		AssertTextPresent(
+			locator1 = "Breadcrumb#BREADCRUMB_ENTRY_ACTIVE_ENTRY",
+			value1 = "Pages");
+
+		AssertTextPresent(
+			locator1 = "PageAudit#GOOGLE_PAGESPEED_TITLE",
+			value1 = "Google PageSpeed Insights");
+	}
+}
+
+@description = "LPS-119068: When the user, after s/he has clicked on the Connect with Page Speed (button) and being led to Site Settings > Pages > Google PageSpeed, clicks on Back button, s/he is led to the page view again"
+@priority = "3"
+test PageAuditBackButton {
+	property portal.acceptance = "true";
+	property test.name.skip.portal.instance = "PageAudit#PageAuditBackButton";
+
+	task ("Enable Google PageSpeed") {
+		PageAudit.enableGooglePageSpeed();
+	}
+
+	task ("Add Content Page") {
+		JSONLayout.addPublicLayout(
+			groupName = "Test Site Name",
+			layoutName = "Content Page",
+			type = "content");
+
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
+	}
+
+	task ("Open Page Audit panel") {
+		PageAudit.openPanelBeforeConfiguration();
+
+		AssertTextPresent(
+			locator1 = "PageAudit#CHECK_ISSUES_TEXT",
+			value1 = "Check issues that impact on your page's accessibility and SEO.");
+	}
+
+	task ("Go to Google PageSpeed throught the button in panel") {
+		PageAudit.connectToGooglePageAudit();
+
+		AssertTextPresent(
+			locator1 = "PageAudit#GOOGLE_PAGESPEED_TITLE",
+			value1 = "Google PageSpeed Insights");
+	}
+
+	task ("Go back to the panel throught the back button") {
+		PageAudit.backToPageBackButton();
+
+		AssertTextPresent(
+			locator1 = "PageAudit#CHECK_ISSUES_TEXT",
+			value1 = "Check issues that impact on your page's accessibility and SEO.");
+	}
+}
+
+@description = "LPS-119068: When the user, after s/he has clicked on the Connect with Page Speed (button) and being led to Site Settings > Pages > Google PageSpeed, clicks on Cancel button, s/he is led to the page view again"
+@priority = "3"
+test PageAuditCancelButton {
+	property portal.acceptance = "true";
+	property test.name.skip.portal.instance = "PageAudit#PageAuditCancelButton";
+
+	task ("Enable Google PageSpeed") {
+		PageAudit.enableGooglePageSpeed();
+	}
+
+	task ("Add Content Page") {
+		JSONLayout.addPublicLayout(
+			groupName = "Test Site Name",
+			layoutName = "Content Page",
+			type = "content");
+
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
+	}
+
+	task ("Open Page Audit panel") {
+		PageAudit.openPanelBeforeConfiguration();
+
+		AssertTextPresent(
+			locator1 = "PageAudit#CHECK_ISSUES_TEXT",
+			value1 = "Check issues that impact on your page's accessibility and SEO.");
+	}
+
+	task ("Go to Google PageSpeed throught the button in panel") {
+		PageAudit.connectToGooglePageAudit();
+
+		AssertTextPresent(
+			locator1 = "PageAudit#GOOGLE_PAGESPEED_TITLE",
+			value1 = "Google PageSpeed Insights");
+	}
+
+	task ("Go back to the panel throught the cancel button") {
+		PageAudit.backToPageCancelButton();
+
+		AssertTextPresent(
+			locator1 = "PageAudit#CHECK_ISSUES_TEXT",
+			value1 = "Check issues that impact on your page's accessibility and SEO.");
+	}
+}
+
+@description = "LPS-119068: When the Enable Page Audit check in System Settings is on and a user with permissions to view page visits the view mode of a content page, the issue icon for displaying the page audit panel shows"
+@priority = "5"
+test PageAuditContentPage {
+	property portal.acceptance = "true";
+	property test.name.skip.portal.instance = "PageAudit#PageAuditContentPage";
+
+	task ("Enable Google PageSpeed") {
+		PageAudit.enableGooglePageSpeed();
+	}
+
+	task ("Add Content Page") {
+		JSONLayout.addPublicLayout(
+			groupName = "Test Site Name",
+			layoutName = "Content Page",
+			type = "content");
+
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
+	}
+
+	task ("Open Page Audit panel") {
+		PageAudit.openPanelBeforeConfiguration();
+
+		AssertTextPresent(
+			locator1 = "PageAudit#CHECK_ISSUES_TEXT",
+			value1 = "Check issues that impact on your page's accessibility and SEO.");
+	}
+
+	task ("Go to Google PageSpeed throught the button in panel") {
+		PageAudit.connectToGooglePageAudit();
+
+		AssertTextPresent(
+			locator1 = "PageAudit#GOOGLE_PAGESPEED_TITLE",
+			value1 = "Google PageSpeed Insights");
+	}
+}
+
+@description = "LPS-119068: When the Enable Page Audit check in System Settings is off, the issue icon to display the page audit panel in the content pages doesn't show"
+@priority = "3"
+test PageAuditContentPageDisabled {
+	property portal.acceptance = "true";
+	property test.name.skip.portal.instance = "PageAudit#PageAuditContentPageDisabled";
+
+	task ("Disable Google PageSpeed") {
+		PageAudit.disableGooglePageSpeed();
+	}
+
+	task ("Add Content Page") {
+		JSONLayout.addPublicLayout(
+			groupName = "Test Site Name",
+			layoutName = "Content Page",
+			type = "content");
+	}
+
+	task ("Go to the Content Page and assert the Page Audit panel is not shown") {
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
+
+		AssertElementNotPresent(locator1 = "PageAudit#PAGE_AUDIT_BUTTON");
+	}
+}
+
+@description = "LPS-119068: When the Enable Page Audit check in System Settings is on and a user with permissions to view page visits the view mode of a display page, the issue icon for displaying the page audit panel shows"
+@priority = "5"
+test PageAuditDisplayPage {
+	property portal.acceptance = "true";
+	property test.name.skip.portal.instance = "PageAudit#PageAuditDisplayPage";
+
+	task ("Enable Google PageSpeed") {
+		PageAudit.enableGooglePageSpeed();
+	}
+
+	task ("Add Display Page and mark it as default") {
+		JSONLayoutpagetemplate.addDisplayPageTemplateEntry(
+			contentType = "Web Content Article",
+			displayPageTemplateEntryName = "Display Page Name",
+			groupName = "Test Site Name",
+			subType = "Basic Web Content");
+
+		DisplayPageTemplatesAdmin.openDisplayPagesAdmin(siteURLKey = "test-site-name");
+
+		DisplayPageTemplatesAdmin.gotoDisplayPage(displayPageName = "Display Page Name");
+
+		Button.clickPublish();
+
+		DisplayPageTemplatesAdmin.openDisplayPagesAdmin(siteURLKey = "test-site-name");
+
+		DisplayPageTemplatesAdmin.markDisplayPageAsDefault(displayPageName = "Display Page Name");
+	}
+
+	task ("Add Web Content and check it in its display page") {
+		JSONWebcontent.addWebContent(
+			content = "WC Content",
+			groupName = "Test Site Name",
+			title = "WC Title");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Content",
+			panel = "Applications",
+			portlet = "Content Dashboard");
+
+		LexiconTable.clickTableEntryColumnLink(
+			columnName = "title",
+			tableEntry = "");
+	}
+
+	task ("Open Page Audit panel") {
+		PageAudit.openPanelBeforeConfiguration();
+
+		AssertTextPresent(
+			locator1 = "PageAudit#CHECK_ISSUES_TEXT",
+			value1 = "Check issues that impact on your page's accessibility and SEO.");
+	}
+
+	task ("Go to Google PageSpeed throught the button in panel") {
+		PageAudit.connectToGooglePageAudit();
+
+		AssertTextPresent(
+			locator1 = "PageAudit#GOOGLE_PAGESPEED_TITLE",
+			value1 = "Google PageSpeed Insights");
+	}
+}
+
+@description = "LPS-119068: When the Enable Page Audit check in System Settings is off, the issue icon to display the page audit panel in the display pages doesn't show"
+@priority = "3"
+test PageAuditDisplayPageDisabled {
+	property portal.acceptance = "true";
+	property test.name.skip.portal.instance = "PageAudit#PageAuditDisplayPageDisabled";
+
+	task ("Disable Google PageSpeed") {
+		PageAudit.disableGooglePageSpeed();
+	}
+
+	task ("Add Display Page and mark it as default") {
+		JSONLayoutpagetemplate.addDisplayPageTemplateEntry(
+			contentType = "Web Content Article",
+			displayPageTemplateEntryName = "Display Page Name",
+			groupName = "Test Site Name",
+			subType = "Basic Web Content");
+
+		DisplayPageTemplatesAdmin.openDisplayPagesAdmin(siteURLKey = "test-site-name");
+
+		DisplayPageTemplatesAdmin.gotoDisplayPage(displayPageName = "Display Page Name");
+
+		Button.clickPublish();
+
+		DisplayPageTemplatesAdmin.openDisplayPagesAdmin(siteURLKey = "test-site-name");
+
+		DisplayPageTemplatesAdmin.markDisplayPageAsDefault(displayPageName = "Display Page Name");
+	}
+
+	task ("Add Web Content and check it in its display page") {
+		JSONWebcontent.addWebContent(
+			content = "WC Content",
+			groupName = "Test Site Name",
+			title = "WC Title");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Content",
+			panel = "Applications",
+			portlet = "Content Dashboard");
+
+		LexiconTable.clickTableEntryColumnLink(
+			columnName = "title",
+			tableEntry = "");
+	}
+
+	task ("Assert the Page Audit panel is not shown") {
+		AssertElementNotPresent(locator1 = "PageAudit#PAGE_AUDIT_BUTTON");
+	}
+}
+
+@description = "LPS-119068: When the Enable Page Audit check in System Settings is on and a user with permissions to view page visits the view mode of a widget page, the issue icon for displaying the page audit panel shows"
+@priority = "5"
+test PageAuditWidgetPage {
+	property portal.acceptance = "true";
+	property test.name.skip.portal.instance = "PageAudit#PageAuditWidgetPage";
+
+	task ("Enable Google PageSpeed") {
+		PageAudit.enableGooglePageSpeed();
+	}
+
+	task ("Add Widget Page") {
+		JSONLayout.addPublicLayout(
+			groupName = "Test Site Name",
+			layoutName = "Widget Page");
+
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/widget-page");
+	}
+
+	task ("Open Page Audit panel") {
+		PageAudit.openPanelBeforeConfiguration();
+
+		AssertTextPresent(
+			locator1 = "PageAudit#CHECK_ISSUES_TEXT",
+			value1 = "Check issues that impact on your page's accessibility and SEO.");
+	}
+
+	task ("Go to Google PageSpeed throught the button in panel") {
+		PageAudit.connectToGooglePageAudit();
+
+		AssertTextPresent(
+			locator1 = "PageAudit#GOOGLE_PAGESPEED_TITLE",
+			value1 = "Google PageSpeed Insights");
+	}
+}
+
+@description = "LPS-119068: When the Enable Page Audit check in System Settings is off, the issue icon to display the page audit panel in the widget pages doesn't show"
+@priority = "3"
+test PageAuditWidgetPageDisabled {
+	property portal.acceptance = "true";
+	property test.name.skip.portal.instance = "PageAudit#PageAuditWidgetPageDisabled";
+
+	task ("Disable Google PageSpeed") {
+		PageAudit.disableGooglePageSpeed();
+	}
+
+	task ("Add Widget Page") {
+		JSONLayout.addPublicLayout(
+			groupName = "Test Site Name",
+			layoutName = "Widget Page");
+
+		Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/widget-page");
+	}
+
+	task ("Assert the Page Audit panel is not shown") {
+		AssertElementNotPresent(locator1 = "PageAudit#PAGE_AUDIT_BUTTON");
+	}
+}
+
+@description = "LPS-132232: Given the Page Audit Panel
+When the user opens it and there are no failing elements retrieved for any of the checks
+Then a message "Your page has no issues" and the matching image show, the two sections SEO and Accessibility show and they are collapsed by default"
+
+@priority = "3"
+@uitest
+test PageWithNoIssues {
+	property portal.acceptance = "true";
+	property test.name.skip.portal.instance = "PageAudit#PageWithNoIssues";
+
+	task ("Set a custom page as canonical URL to have data already loaded") {
+		PageAudit.setSEOcanonicalURL(URL = "https://liferay-tango.github.io/liferay-portal/page-audit-test-no-issues");
+	}
+
+	task ("Enable Google PageSpeed") {
+		PageAudit.enableGooglePageSpeed();
+	}
+
+	task ("Set Google PageSpeed API") {
+		PageAudit.setAPIViaSystemSettings(apiKey = "AIzaSyAq-oKsvIhlYHdk1UXCFy63h74ECIgbgbE");
+	}
+
+	Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
+
+	task ("Open Page Audit panel and assert there are no issues") {
+		PageAudit.openPanelAfterConfiguration(pageName = "Content Page");
+
+		AssertElementPresent(locator1 = "PageAudit#SUCCESS_IMAGE");
+
+		AssertTextPresent(
+			locator1 = "PageAudit#NO_ISSUES_MESSAGE",
+			value1 = "Your page has no issues.");
+	}
+}
 
 }
