@@ -73,6 +73,92 @@ definition {
 		}
 	}
 
+	@description = "LPS-119966 Given the Content Dashboard when a document is listed in the assets list then the following metadata are shown: Title, Author (Owner), Subtype, Site or Asset Library, Status, Category 1, Category 2, Modified Date"
+	@priority = "3"
+	test AssetListContent {
+		property portal.acceptance = "true";
+
+		task ("Create Category 1 and 2") {
+			JSONCategory.addVocabulary(
+				groupName = "Test Site Name",
+				title = "Vocabulary Name");
+
+			var categoryId1 = JSONCategory.addCategory(
+				groupName = "Test Site Name",
+				title = "Category 1",
+				vocabularyName = "Vocabulary Name");
+
+			var categoryId2 = JSONCategory.addCategory(
+				groupName = "Test Site Name",
+				title = "Category 2",
+				vocabularyName = "Vocabulary Name");
+		}
+		task ("Create WC via JSON and select categories") {
+			JSONWebcontent.addWebContent(
+				content = "WC WebContent Content",
+				groupName = "Test Site Name",
+				title = "WC WebContent Title");
+
+			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
+
+			WebContentNavigator.gotoEditCP(webContentTitle = "WC WebContent Title");
+
+			WebContent.selectCategory(
+				categoryName = "Category 1",
+				vocabularyName = "Vocabulary Name");
+
+			WebContent.selectCategory(
+				categoryName = "Category 2",
+				vocabularyName = "Vocabulary Name");
+
+			PortletEntry.publish();
+		}
+		task ("Navigate to content Dashboard and check Title, Author (Owner), Subtype, Site or Asset Library, Status, Category 1, Category 2, Modified Date") {
+			ApplicationsMenu.gotoPortlet(
+				category = "Content",
+				panel = "Applications",
+				portlet = "Content Dashboard");
+
+			ContentDashboard.filterByCategory(
+				categoryName = "Category 1",
+				filterOption = "Categories");
+
+			ContentDashboard.filterByCategory(
+				categoryName = "Category 2",
+				filterOption = "Categories");
+
+			AssertTextPresent(
+				locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED",
+				value1 = "WC WebContent Title");
+
+			AssertElementPresent(
+				authorName = "Test Test",
+				locator1 = "ContentDashboard#AUTHOR_LIBRARY_COLUMN");
+
+			AssertElementPresent(
+				locator1 = "ContentDashboard#SUBTYPE_LIBRARY_COLUMN",
+				subtypeName = "Basic Web Content");
+
+			AssertElementPresent(
+				locator1 = "ContentDashboard#SITE_ASSET_LIBRARY_COLUMN",
+				siteAssetValue = "Test Site Name");
+
+			AssertElementPresent(
+				key_status = "Approved",
+				locator1 = "WCEditWebContent#WORKFLOW_STATUS");
+
+			AssertTextPresent(
+				locator1 = "ContentDashboard#FILTER_TEXT",
+				value1 = "Category:Category 1");
+
+			AssertTextPresent(
+				locator1 = "ContentDashboard#FILTER_TEXT",
+				value1 = "Category:Category 2");
+
+			AssertElementPresent(locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED_MODIFIED_DATE");
+		}
+	}
+
 	@description = "LPS-122873 When all the web content is unassigned from a Vocab1's category, the relative ordering of the rest of the categories remain the same"
 	@priority = "3"
 	test AssigningSomeAudienceCategoriesAndCheckingTheOrder {
@@ -2902,10 +2988,6 @@ definition {
 		}
 	}
 
-	@description = "LPS-131187 Given the Content Dashboard table
-	When a document is added
-	Then its type will be shown in the Type column"
-
 	@priority = "3"
 	test TypeColumnForDocument {
 		property osgi.module.configuration.file.names = "com.liferay.content.dashboard.web.internal.configuration.FFContentDashboardDocumentConfiguration.config";
@@ -2934,10 +3016,6 @@ definition {
 				value1 = "Document");
 		}
 	}
-
-	@description = "LPS-131187 Given the Content Dashboard table
-	When a web content is added
-	Then its type will be shown in the Type column"
 
 	@priority = "3"
 	test TypeColumnForWebContent {

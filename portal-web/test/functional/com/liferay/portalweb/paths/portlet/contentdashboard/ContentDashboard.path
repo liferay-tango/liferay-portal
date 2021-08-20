@@ -339,6 +339,17 @@
 	<td>//button[contains(@class,'component-action quick-action-item btn btn-monospaced btn-sm btn-unstyled')] //*[contains(@class,'circle')]</td>
 	<td></td>
 </tr>
+<tr>
+	<td>AUTHOR_LIBRARY_COLUMN</td>
+	<td>//*[contains(@class,'text-center lfr-author-column')]//*[contains(@title,'${authorName}')]</td>
+	<td></td>
+</tr>
+
+<tr>
+	<td>SUBTYPE_LIBRARY_COLUMN</td>
+	<td>//td[contains(@class,'lfr-subtype-column') and contains (.,'${subtypeName}')]</td>
+	<td></td>
+</tr>
 </tbody>
 </table>
 </body>
