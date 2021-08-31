@@ -1,0 +1,5 @@
+.download-csv-button {
+	&--loading.btn-outline-secondary:disabled {
+		background-color: $cadmin-light;
+	}
+}

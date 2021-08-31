@@ -14,22 +14,43 @@
 
 import ClayButton from '@clayui/button';
 import ClayIcon from '@clayui/icon';
+import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {ClayTooltipProvider} from '@clayui/tooltip';
-import React from 'react';
+import classnames from 'classnames';
+import React, {useState} from 'react';
 
 const DownloadCSVButton = () => {
+	const [loading, setLoading] = useState(false);
+
+	const buttonTextKey = loading
+		? Liferay.Language.get('generating-csv')
+		: Liferay.Language.get('csv');
+
+	const handleClick = () => {
+		setLoading((prev) => !prev);
+	};
+
 	return (
 		<ClayTooltipProvider>
 			<ClayButton
 				borderless
+				className={classnames('download-csv-button', {
+					'download-csv-button--loading': loading,
+				})}
 				data-tooltip-align="top"
+				disabled={loading}
 				displayType="secondary"
+				onClick={handleClick}
 				title={Liferay.Language.get('download-your-data-in-a-csv-file')}
 			>
 				<span className="inline-item inline-item-before">
-					<ClayIcon symbol="download" />
+					{loading ? (
+						<ClayLoadingIndicator small />
+					) : (
+						<ClayIcon symbol="download" />
+					)}
 				</span>
-				{Liferay.Language.get('csv')}
+				{buttonTextKey}
 			</ClayButton>
 		</ClayTooltipProvider>
 	);
