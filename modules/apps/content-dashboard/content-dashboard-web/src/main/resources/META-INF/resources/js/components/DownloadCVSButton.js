@@ -12,7 +12,7 @@
  * details.
  */
 
-import ClayButton from '@clayui/button';
+import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
 import ClayIcon from '@clayui/icon';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {ClayTooltipProvider} from '@clayui/tooltip';
@@ -27,32 +27,53 @@ const DownloadCSVButton = () => {
 		: Liferay.Language.get('csv');
 
 	const handleClick = () => {
-		setLoading((prev) => !prev);
+		setLoading(true);
+	};
+
+	const handleCancel = () => {
+		setLoading(false);
 	};
 
 	return (
-		<ClayTooltipProvider>
-			<ClayButton
-				borderless
-				className={classnames('download-csv-button', {
-					'download-csv-button--loading': loading,
-				})}
-				data-tooltip-align="top"
-				disabled={loading}
-				displayType="secondary"
-				onClick={handleClick}
-				title={Liferay.Language.get('download-your-data-in-a-csv-file')}
-			>
-				<span className="inline-item inline-item-before">
-					{loading ? (
-						<ClayLoadingIndicator small />
-					) : (
-						<ClayIcon symbol="download" />
+		<>
+			<ClayTooltipProvider>
+				<ClayButton
+					borderless
+					className={classnames('download-csv-button', {
+						'download-csv-button--loading': loading,
+					})}
+					data-tooltip-align="top"
+					disabled={loading}
+					displayType="secondary"
+					onClick={handleClick}
+					title={Liferay.Language.get(
+						'download-your-data-in-a-csv-file'
 					)}
-				</span>
-				{buttonTextKey}
-			</ClayButton>
-		</ClayTooltipProvider>
+				>
+					<span className="inline-item inline-item-before">
+						{loading ? (
+							<ClayLoadingIndicator small />
+						) : (
+							<ClayIcon symbol="download" />
+						)}
+					</span>
+					{buttonTextKey}
+				</ClayButton>
+			</ClayTooltipProvider>
+			{loading && (
+				<ClayTooltipProvider>
+					<ClayButtonWithIcon
+						borderless
+						className="ml-2"
+						data-tooltip-align="top"
+						displayType="secondary"
+						onClick={handleCancel}
+						symbol="times-circle"
+						title={Liferay.Language.get('cancel-csv')}
+					/>
+				</ClayTooltipProvider>
+			)}
+		</>
 	);
 };
 
