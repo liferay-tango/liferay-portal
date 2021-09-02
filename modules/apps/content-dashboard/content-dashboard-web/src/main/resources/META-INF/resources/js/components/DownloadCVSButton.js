@@ -12,6 +12,7 @@
  * details.
  */
 
+import ClayAlert from '@clayui/alert';
 import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
 import ClayIcon from '@clayui/icon';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
@@ -19,8 +20,16 @@ import {ClayTooltipProvider} from '@clayui/tooltip';
 import classnames from 'classnames';
 import React, {useState} from 'react';
 
+const initialToastState = {
+	content: null,
+	show: false,
+	title: null,
+	type: null,
+};
+
 const DownloadCSVButton = () => {
 	const [loading, setLoading] = useState(false);
+	const [toastMessage, setToastMessage] = useState(initialToastState);
 
 	const buttonTextKey = loading
 		? Liferay.Language.get('generating-csv')
@@ -28,10 +37,39 @@ const DownloadCSVButton = () => {
 
 	const handleClick = () => {
 		setLoading(true);
+
+		try {
+
+			// TODO implement CSV fetch
+
+			setToastMessage({
+				content: Liferay.Language.get('was-successfully-generated'),
+				show: true,
+				title: Liferay.Language.get('csv'),
+				type: 'success',
+			});
+		}
+		catch {
+			setToastMessage({
+				content: Liferay.Language.get(
+					'generation-has-failed-try-again'
+				),
+				show: true,
+				title: Liferay.Language.get('csv'),
+				type: 'danger',
+			});
+		}
+		finally {
+			setTimeout(() => setLoading(false), 5000);
+		}
 	};
 
-	const handleCancel = () => {
+	const handleCancelRequest = () => {
 		setLoading(false);
+	};
+
+	const handleToastClose = () => {
+		setToastMessage(initialToastState);
 	};
 
 	return (
@@ -60,6 +98,7 @@ const DownloadCSVButton = () => {
 					{buttonTextKey}
 				</ClayButton>
 			</ClayTooltipProvider>
+
 			{loading && (
 				<ClayTooltipProvider>
 					<ClayButtonWithIcon
@@ -67,11 +106,25 @@ const DownloadCSVButton = () => {
 						className="ml-2"
 						data-tooltip-align="top"
 						displayType="secondary"
-						onClick={handleCancel}
+						onClick={handleCancelRequest}
 						symbol="times-circle"
 						title={Liferay.Language.get('cancel-csv')}
 					/>
 				</ClayTooltipProvider>
+			)}
+
+			{toastMessage.show && (
+				<ClayAlert.ToastContainer>
+					<ClayAlert
+						autoClose={5000}
+						className="download-csv-button__alert"
+						displayType={toastMessage.type}
+						onClose={handleToastClose}
+						title={toastMessage.title}
+					>
+						{toastMessage.content}
+					</ClayAlert>
+				</ClayAlert.ToastContainer>
 			)}
 		</>
 	);

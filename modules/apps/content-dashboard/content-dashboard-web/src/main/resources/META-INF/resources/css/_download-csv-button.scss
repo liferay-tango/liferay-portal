@@ -2,4 +2,9 @@
 	&--loading.btn-outline-secondary:disabled {
 		background-color: $cadmin-light;
 	}
+
+	&__alert {
+		font-weight: 400;
+		line-height: 1.5;
+	}
 }
