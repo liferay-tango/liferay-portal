@@ -12,16 +12,19 @@
  * details.
  */
 
-package com.liferay.portal.workflow.kaleo.model;
+import {UPDATE_COLLECTION_DISPLAY_COLLECTION} from './types';
 
-/**
- * @author     Michael C. Han
- * @deprecated As of Athanasius (7.3.x), replaced by {@link
- *             com.liferay.portal.workflow.kaleo.constants.KaleoInstanceTokenConstants}
- */
-@Deprecated
-public class KaleoInstanceTokenConstants {
-
-	public static final long PARENT_KALEO_INSTANCE_TOKEN_ID_DEFAULT = 0;
-
+export default function updateCollectionDisplayCollection({
+	fragmentEntryLinks,
+	itemId,
+	layoutData,
+	pageContents,
+}) {
+	return {
+		fragmentEntryLinks,
+		itemId,
+		layoutData,
+		pageContents,
+		type: UPDATE_COLLECTION_DISPLAY_COLLECTION,
+	};
 }

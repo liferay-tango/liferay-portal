@@ -527,6 +527,11 @@ public class ContentPageEditorDisplayContext {
 				getResourceURL(
 					"/layout_content_page_editor/get_fragment_entry_link")
 			).put(
+				"restoreCollectionDisplayConfigURL",
+				getFragmentEntryActionURL(
+					"/layout_content_page_editor" +
+						"/restore_collection_display_config")
+			).put(
 				"searchContainerPageMaxDelta",
 				PropsValues.SEARCH_CONTAINER_PAGE_MAX_DELTA
 			).put(
@@ -565,6 +570,11 @@ public class ContentPageEditorDisplayContext {
 				"unmarkItemForDeletionURL",
 				getFragmentEntryActionURL(
 					"/layout_content_page_editor/unmark_item_for_deletion")
+			).put(
+				"updateCollectionDisplayConfigURL",
+				getFragmentEntryActionURL(
+					"/layout_content_page_editor" +
+						"/update_collection_display_config")
 			).put(
 				"updateConfigurationValuesURL",
 				getFragmentEntryActionURL(

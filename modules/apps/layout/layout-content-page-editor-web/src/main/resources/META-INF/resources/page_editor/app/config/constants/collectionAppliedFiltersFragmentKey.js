@@ -12,18 +12,5 @@
  * details.
  */
 
-package com.liferay.portal.workflow.kaleo.runtime.notification.recipient.script;
-
-/**
- * @author     Michael C. Han
- * @deprecated As of Athanasius (7.3.x), replaced by {@link
- *             com.liferay.portal.workflow.kaleo.runtime.notification.recipient.script.constants.ScriptingNotificationRecipientConstants}
- */
-@Deprecated
-public interface ScriptingNotificationRecipientConstants {
-
-	public static final String ROLES_RECIPIENT = "roles";
-
-	public static final String USER_RECIPIENT = "user";
-
-}
+export const COLLECTION_APPLIED_FILTERS_FRAGMENT_ENTRY_KEY =
+	'com.liferay.fragment.renderer.collection.filter.internal.CollectionAppliedFiltersFragmentRenderer';
