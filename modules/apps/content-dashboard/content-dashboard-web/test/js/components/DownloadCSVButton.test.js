@@ -17,18 +17,18 @@ import React from 'react';
 
 import '@testing-library/jest-dom/extend-expect';
 
-import DownloadCVSButton from '../../../src/main/resources/META-INF/resources/js/components/DownloadCVSButton';
+import DownloadCSVButton from '../../../src/main/resources/META-INF/resources/js/components/DownloadCSVButton';
 
 const getComponent = () => {
-	return <DownloadCVSButton />;
+	return <DownloadCSVButton />;
 };
 
-describe('DownloadCVSButton', () => {
+describe('DownloadCSVButton', () => {
 	afterEach(() => {
 		cleanup();
 	});
 
-	it('renders a DownloadCVSButton component...', () => {
+	it('renders a DownloadCSVButton component...', () => {
 		const {getByText} = render(getComponent());
 
 		expect(getByText('csv')).toBeInTheDocument();
