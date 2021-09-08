@@ -18,6 +18,7 @@ import com.liferay.content.dashboard.web.internal.display.context.ContentDashboa
 import com.liferay.content.dashboard.web.internal.item.selector.criteria.content.dashboard.file.extension.criterion.ContentDashboardFileExtensionItemSelectorCriterion;
 import com.liferay.content.dashboard.web.internal.searcher.ContentDashboardSearchRequestBuilderFactory;
 import com.liferay.document.library.configuration.DLConfiguration;
+import com.liferay.document.library.display.context.DLMimeTypeDisplayContext;
 import com.liferay.item.selector.ItemSelectorReturnType;
 import com.liferay.item.selector.ItemSelectorView;
 import com.liferay.item.selector.criteria.UUIDItemSelectorReturnType;
@@ -216,6 +217,8 @@ public class ContentDashboardFileExtensionItemSelectorView
 					Stream<String> fileExtensionsStream =
 						fileExtensions.stream();
 
+					List<String> mimeTypes = fileExtensionGroup.getMimeTypes();
+
 					return JSONUtil.put(
 						"fileExtensions",
 						JSONUtil.putAll(
@@ -231,6 +234,10 @@ public class ContentDashboardFileExtensionItemSelectorView
 							).toArray())
 					).put(
 						"icon", fileExtensionGroup.getIcon()
+					).put(
+						"iconCssClass",
+						_dlMimeTypeDisplayContext.getCssClassFileMimeType(
+							mimeTypes.get(0))
 					).put(
 						"label",
 						LanguageUtil.get(
@@ -289,6 +296,10 @@ public class ContentDashboardFileExtensionItemSelectorView
 		_contentDashboardSearchRequestBuilderFactory;
 
 	private volatile DLConfiguration _dlConfiguration;
+
+	@Reference
+	private DLMimeTypeDisplayContext _dlMimeTypeDisplayContext;
+
 	private volatile Map<String, String> _fileExtensionFileExtensionGroupKeys =
 		new HashMap<>();
 	private volatile List<FileExtensionGroup> _fileExtensionGroups =
