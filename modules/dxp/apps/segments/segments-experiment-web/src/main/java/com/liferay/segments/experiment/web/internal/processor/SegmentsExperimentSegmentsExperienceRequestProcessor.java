@@ -62,6 +62,19 @@ import org.osgi.service.component.annotations.Reference;
 public class SegmentsExperimentSegmentsExperienceRequestProcessor
 	implements SegmentsExperienceRequestProcessor {
 
+	public void cleanLogoutAction(
+		HttpServletRequest httpServletRequest,
+		HttpServletResponse httpServletResponse) {
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		_unsetCookie(
+			httpServletRequest, httpServletResponse,
+			themeDisplay.getURLCurrent());
+	}
+
 	@Override
 	public long[] getSegmentsExperienceIds(
 		HttpServletRequest httpServletRequest,
