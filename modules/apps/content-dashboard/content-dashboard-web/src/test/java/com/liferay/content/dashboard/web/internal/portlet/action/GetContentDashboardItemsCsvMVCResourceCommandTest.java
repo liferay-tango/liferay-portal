@@ -258,13 +258,19 @@ public class GetContentDashboardItemsCsvMVCResourceCommandTest {
 				JSONObject jsonObject = new JSONObjectImpl();
 
 				jsonObject.put(
+					"creationDate", "Thu Sep 23 12:49:44 GMT 2021"
+				).put(
 					"description", "My very important description"
+				).put(
+					"displayDate", "Thu Sep 23 12:47:04 GMT 2021"
 				).put(
 					"downloadURL", "www.download.url.com/download"
 				).put(
 					"extension", ".pdf"
 				).put(
 					"fileName", "MyDocument"
+				).put(
+					"languagesTranslatedInto", "Spanish and German"
 				).put(
 					"previewImageURL", "www.previewImage.url.com/previewImage"
 				).put(
@@ -386,31 +392,49 @@ public class GetContentDashboardItemsCsvMVCResourceCommandTest {
 		);
 
 		when(
-			language.get(
-				Matchers.any(Locale.class), Matchers.eq("description"))
+			language.get(Matchers.any(Locale.class), Matchers.eq("description"))
 		).thenReturn(
 			"Description"
 		);
 
 		when(
-			language.get(
-				Matchers.any(Locale.class), Matchers.eq("extension"))
+			language.get(Matchers.any(Locale.class), Matchers.eq("extension"))
 		).thenReturn(
 			"Extension"
 		);
 
 		when(
-			language.get(
-				Matchers.any(Locale.class), Matchers.eq("file-name"))
+			language.get(Matchers.any(Locale.class), Matchers.eq("file-name"))
 		).thenReturn(
 			"File Name"
 		);
 
 		when(
-			language.get(
-				Matchers.any(Locale.class), Matchers.eq("size"))
+			language.get(Matchers.any(Locale.class), Matchers.eq("size"))
 		).thenReturn(
 			"Size"
+		);
+
+		when(
+			language.get(
+				Matchers.any(Locale.class), Matchers.eq("display-date"))
+		).thenReturn(
+			"Display Date"
+		);
+
+		when(
+			language.get(
+				Matchers.any(Locale.class), Matchers.eq("creation-date"))
+		).thenReturn(
+			"Creation Date"
+		);
+
+		when(
+			language.get(
+				Matchers.any(Locale.class),
+				Matchers.eq("languages-translated-into"))
+		).thenReturn(
+			"Languages translated into"
 		);
 
 		languageUtil.setLanguage(language);

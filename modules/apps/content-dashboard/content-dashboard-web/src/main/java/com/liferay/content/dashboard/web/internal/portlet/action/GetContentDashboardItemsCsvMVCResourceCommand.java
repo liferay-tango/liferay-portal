@@ -33,7 +33,6 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 
 import java.util.Date;
 import java.util.List;
@@ -99,8 +98,9 @@ public class GetContentDashboardItemsCsvMVCResourceCommand
 				HttpServletRequest httpServletRequest =
 					_portal.getHttpServletRequest(resourceRequest);
 
-				ThemeDisplay themeDisplay = (ThemeDisplay) httpServletRequest.getAttribute(
-					WebKeys.THEME_DISPLAY);
+				ThemeDisplay themeDisplay =
+					(ThemeDisplay)httpServletRequest.getAttribute(
+						WebKeys.THEME_DISPLAY);
 
 				int cellIndex = _createBasicDataRow(
 					0, locale, row, contentDashboardItem);
@@ -270,6 +270,7 @@ public class GetContentDashboardItemsCsvMVCResourceCommand
 				themeDisplay);
 
 		if (fileSpecificDataJSONObject == null)
+
 			return cellIndex;
 
 		String fileDescription = fileSpecificDataJSONObject.get(
@@ -321,12 +322,11 @@ public class GetContentDashboardItemsCsvMVCResourceCommand
 		headerRowCellIndex = _createFileHeaderRow(
 			headerRow, headerRowCellIndex, locale);
 
-		_createJournalArticleHeaderRow(
-			headerRow, headerRowCellIndex, locale);
-		
+		_createJournalArticleHeaderRow(headerRow, headerRowCellIndex, locale);
 	}
 
-	private void _createJournalArticleHeaderRow(Row headerRow, int headerRowCellIndex, Locale locale) {
+	private void _createJournalArticleHeaderRow(
+		Row headerRow, int headerRowCellIndex, Locale locale) {
 
 		Cell displayDateCell = headerRow.createCell(headerRowCellIndex++);
 
@@ -334,11 +334,13 @@ public class GetContentDashboardItemsCsvMVCResourceCommand
 
 		Cell creationDateCell = headerRow.createCell(headerRowCellIndex++);
 
-		creationDateCell.setCellValue(LanguageUtil.get(locale, "creation-date"));
+		creationDateCell.setCellValue(
+			LanguageUtil.get(locale, "creation-date"));
 
 		Cell languagesTranslatedCell = headerRow.createCell(headerRowCellIndex);
 
-		languagesTranslatedCell.setCellValue(LanguageUtil.get(locale, "languages-translated-into"));
+		languagesTranslatedCell.setCellValue(
+			LanguageUtil.get(locale, "languages-translated-into"));
 	}
 
 	private void _createJournalArticleSpecificDataRow(
@@ -353,6 +355,7 @@ public class GetContentDashboardItemsCsvMVCResourceCommand
 				themeDisplay);
 
 		if (journalArticleSpecificDataJSONObject == null)
+
 			return;
 
 		String displayDate = journalArticleSpecificDataJSONObject.get(
@@ -378,7 +381,6 @@ public class GetContentDashboardItemsCsvMVCResourceCommand
 		Cell journalLanguagesTranslatedCell = row.createCell(cellIndex);
 
 		journalLanguagesTranslatedCell.setCellValue(languagesTranslated);
-
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

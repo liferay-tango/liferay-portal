@@ -329,9 +329,9 @@ public class JournalArticleContentDashboardItem
 		Locale locale, ThemeDisplay themeDisplay) {
 
 		return JSONUtil.put(
-			"displayDate", _journalArticle.getDisplayDate()
-		).put(
 			"creationDate", _journalArticle.getCreateDate()
+		).put(
+			"displayDate", _journalArticle.getDisplayDate()
 		).put(
 			"languagesTranslated", _journalArticle.getAvailableLanguageIds()
 		);
