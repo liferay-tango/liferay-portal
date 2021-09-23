@@ -14,8 +14,8 @@
 
 package com.liferay.content.dashboard.web.internal.portlet.action;
 
-import static org.mockito.Matchers;
-import static org.mockito.Mockito;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
 
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetTag;
@@ -383,6 +383,34 @@ public class GetContentDashboardItemsCsvMVCResourceCommandTest {
 				Matchers.any(Locale.class), Matchers.eq("modified-date"))
 		).thenReturn(
 			"Modified Date"
+		);
+
+		when(
+			language.get(
+				Matchers.any(Locale.class), Matchers.eq("description"))
+		).thenReturn(
+			"Description"
+		);
+
+		when(
+			language.get(
+				Matchers.any(Locale.class), Matchers.eq("extension"))
+		).thenReturn(
+			"Extension"
+		);
+
+		when(
+			language.get(
+				Matchers.any(Locale.class), Matchers.eq("file-name"))
+		).thenReturn(
+			"File Name"
+		);
+
+		when(
+			language.get(
+				Matchers.any(Locale.class), Matchers.eq("size"))
+		).thenReturn(
+			"Size"
 		);
 
 		languageUtil.setLanguage(language);
