@@ -18,6 +18,7 @@ import com.liferay.content.dashboard.web.internal.constants.ContentDashboardPort
 import com.liferay.content.dashboard.web.internal.display.context.ContentDashboardAdminDisplayContext;
 import com.liferay.content.dashboard.web.internal.item.ContentDashboardItem;
 import com.liferay.content.dashboard.web.internal.item.type.ContentDashboardItemSubtype;
+import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -29,6 +30,7 @@ import com.liferay.portal.kernel.util.Portal;
 
 import java.io.ByteArrayOutputStream;
 
+import java.io.FileOutputStream;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -39,6 +41,7 @@ import javax.portlet.ResourceResponse;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -69,14 +72,81 @@ public class GetContentDashboardItemsCsvMVCResourceCommand
 
 		Sheet sheet = workbook.createSheet("Content Dashboard Data");
 
-		int headerRowIndex = 0;
+		Locale locale = _portal.getLocale(resourceRequest);
+
+		_createHeaderRow(locale, sheet, workbook);
+
+		resourceResponse.setContentType("application/vnd.ms-excel");
+		resourceResponse.setProperty(
+			"Content-Disposition",
+			"attachment; filename=\"ContentDashboardItemsData.xls\"");
+
+		SearchContainer searchContainer =
+			_contentDashboardAdminDisplayContext.getSearchContainer();
+
+		List<ContentDashboardItem<?>> items = searchContainer.getResults();
+
+		try {
+			CellStyle cellStyle = _createCellStyle(
+				true, "Helvetica", (short)14, workbook);
+
+			for (ContentDashboardItem<?> contentDashboardItem : items) {
+				int cellIndex = 0;
+
+				_createRowPerItem(
+					cellIndex, cellStyle, contentDashboardItem, locale, sheet);
+			}
+
+						FileOutputStream
+							fileOut = new
+					FileOutputStream( "WhaaatContentDashboardItemsData.xlsx");
+						workbook.write(fileOut);
+						fileOut.close();
+
+			ByteArrayOutputStream byteArrayOutputStream =
+				new ByteArrayOutputStream();
+
+			workbook.write(byteArrayOutputStream);
+
+			PortletResponseUtil.sendFile(
+				resourceRequest, resourceResponse,
+				"ContentDashboardItemsData.xlsx",
+				byteArrayOutputStream.toByteArray(),
+				ContentTypes.APPLICATION_VND_MS_EXCEL);
+		}
+		catch (Exception exception) {
+			_log.error(exception, exception);
+		}
+	}
+
+		private CellStyle _createCellStyle(
+			boolean bold, String fontName, short heightInPoints,
+			Workbook workbook) {
+
+			Font font = workbook.createFont();
+
+
+			font.setBold(bold);
+			font.setFontHeightInPoints(heightInPoints);
+			font.setFontName(fontName);
+
+			CellStyle style = workbook.createCellStyle();
+
+
+			style.setFont(font);
+
+			return style;
+		}
+
+	private void _createHeaderRow(
+		Locale locale, Sheet sheet, Workbook workbook) {
 
 		Row headerRow = sheet.createRow((short)0);
 
-		headerRow.setRowStyle(
-			createCellStyle(workbook, true, "Helvetica", (short)11));
+		int headerRowIndex = 0;
 
-		Locale locale = _portal.getLocale(resourceRequest);
+		headerRow.setRowStyle(
+			_createCellStyle(true, "Helvetica", (short)11, workbook));
 
 		Cell titleCell = headerRow.createCell(headerRowIndex++);
 
@@ -107,87 +177,56 @@ public class GetContentDashboardItemsCsvMVCResourceCommand
 
 		modifiedDateCell.setCellValue(
 			LanguageUtil.get(locale, "modified-date"));
-
-		resourceResponse.setContentType("application/vnd.ms-excel");
-		resourceResponse.setProperty(
-			"Content-Disposition",
-			"attachment; filename=\"ContentDashboardItemsData.xls\"");
-
-		Object searchContainer =
-			_contentDashboardAdminDisplayContext.getSearchContainer();
-
-		List<ContentDashboardItem<?>> items = searchContainer.getResults();
-
-		try {
-			CellStyle cellStyle = createCellStyle(
-				workbook, true, "Helvetica", (short)14);
-
-			for (ContentDashboardItem<?> contentDashboardItem : items) {
-				int cellIndex = 0;
-
-				Row row = sheet.createRow((short)1);
-
-				row.setRowStyle(cellStyle);
-
-				Cell titleDataCell = row.createCell(cellIndex++);
-
-				titleDataCell.setCellValue(
-					contentDashboardItem.getTitle(locale));
-
-				Cell authorDataCell = row.createCell(cellIndex++);
-
-				authorDataCell.setCellValue(contentDashboardItem.getUserName());
-
-				Cell typeDataCell = row.createCell(cellIndex++);
-
-				typeDataCell.setCellValue(
-					contentDashboardItem.getTypeLabel(locale));
-
-				Cell subtypeDataCell = row.createCell(cellIndex++);
-
-				ContentDashboardItemSubtype contentDashboardItemSubtype =
-					contentDashboardItem.getContentDashboardItemSubtype();
-
-				subtypeDataCell.setCellValue(
-					contentDashboardItemSubtype.getLabel(locale));
-
-				Cell assetDataCell = row.createCell(cellIndex++);
-
-				assetDataCell.setCellValue(
-					contentDashboardItem.getScopeName(locale));
-
-				List<ContentDashboardItem.Version> versions =
-					contentDashboardItem.getVersions(locale);
-
-				Cell statusDataCell = row.createCell(cellIndex++);
-
-				ContentDashboardItem.Version latestVersion = versions.get(0);
-
-				statusDataCell.setCellValue(latestVersion.getLabel());
-
-				Cell modifiedDateDataCell = row.createCell(cellIndex);
-
-				Date modifiedDate = contentDashboardItem.getModifiedDate();
-
-				modifiedDateDataCell.setCellValue(modifiedDate.toString());
-			}
-
-			ByteArrayOutputStream byteArrayOutputStream =
-				new ByteArrayOutputStream();
-
-			workbook.write(byteArrayOutputStream);
-
-			PortletResponseUtil.sendFile(
-				resourceRequest, resourceResponse,
-				"ContentDashboardItemsData.xlsx",
-				byteArrayOutputStream.toByteArray(),
-				ContentTypes.APPLICATION_VND_MS_EXCEL);
-		}
-		catch (Exception exception) {
-			_log.error(exception, exception);
-		}
 	}
 
+	private void _createRowPerItem(
+		int cellIndex, CellStyle cellStyle,
+		ContentDashboardItem<?> contentDashboardItem, Locale locale,
+		Sheet sheet) {
+
+		Row row = sheet.createRow((short)1);
+
+		row.setRowStyle(cellStyle);
+
+		Cell titleDataCell = row.createCell(cellIndex++);
+
+		titleDataCell.setCellValue(contentDashboardItem.getTitle(locale));
+
+		Cell authorDataCell = row.createCell(cellIndex++);
+
+		authorDataCell.setCellValue(contentDashboardItem.getUserName());
+
+		Cell typeDataCell = row.createCell(cellIndex++);
+
+		typeDataCell.setCellValue(contentDashboardItem.getTypeLabel(locale));
+
+		Cell subtypeDataCell = row.createCell(cellIndex++);
+
+		ContentDashboardItemSubtype contentDashboardItemSubtype =
+			contentDashboardItem.getContentDashboardItemSubtype();
+
+		subtypeDataCell.setCellValue(
+			contentDashboardItemSubtype.getLabel(locale));
+
+		Cell assetDataCell = row.createCell(cellIndex++);
+
+		assetDataCell.setCellValue(contentDashboardItem.getScopeName(locale));
+
+		List<ContentDashboardItem.Version> versions =
+			contentDashboardItem.getVersions(locale);
+
+		Cell statusDataCell = row.createCell(cellIndex++);
+
+		ContentDashboardItem.Version latestVersion = versions.get(0);
+
+		statusDataCell.setCellValue(latestVersion.getLabel());
+
+		Cell modifiedDateDataCell = row.createCell(cellIndex);
+
+		Date modifiedDate = contentDashboardItem.getModifiedDate();
+
+		modifiedDateDataCell.setCellValue(modifiedDate.toString());
+	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		GetContentDashboardItemsCsvMVCResourceCommand.class);
