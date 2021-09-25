@@ -130,6 +130,8 @@ definition {
 
 		Button.click(button = "Review Order");
 
+		AssertVisible(locator1 = "CommerceAccelerators#ORDERS_SUBMIT_BUTTON");
+
 		Click(locator1 = "CommerceAccelerators#ORDERS_SUBMIT_BUTTON");
 
 		User.logoutAndLoginPG(
@@ -525,6 +527,8 @@ definition {
 		AssertElementPresent(
 			key_status = "Draft",
 			locator1 = "CommerceEntry#WORKFLOW_STATUS");
+
+		AssertVisible(locator1 = "CommerceAccelerators#ORDERS_SUBMIT_BUTTON");
 
 		Click(locator1 = "CommerceAccelerators#ORDERS_SUBMIT_BUTTON");
 
