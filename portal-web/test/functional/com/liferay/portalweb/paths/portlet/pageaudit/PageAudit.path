@@ -41,11 +41,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>ERROR_WARNING_BOX</td>
-	<td>//div[contains(@class, 'alert')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>FAILING_CHECK_NAME</td>
 	<td>//span[contains(@class, 'text-secondary') and contains(@class, 'w-100') and contains(@class, 'c-inner') and contains (text(), '${failingCheckName}')]</td>
 	<td></td>
