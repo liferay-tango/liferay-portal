@@ -14,6 +14,9 @@
 
 package com.liferay.content.dashboard.web.internal.portlet.action;
 
+import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.asset.kernel.model.AssetTag;
+import com.liferay.asset.kernel.model.AssetTagModel;
 import com.liferay.content.dashboard.web.internal.constants.ContentDashboardPortletKeys;
 import com.liferay.content.dashboard.web.internal.display.context.ContentDashboardAdminDisplayContext;
 import com.liferay.content.dashboard.web.internal.item.ContentDashboardItem;
@@ -37,12 +40,15 @@ import java.io.ByteArrayOutputStream;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -102,16 +108,9 @@ public class GetContentDashboardItemsCsvMVCResourceCommand
 					(ThemeDisplay)httpServletRequest.getAttribute(
 						WebKeys.THEME_DISPLAY);
 
-				int cellIndex = _createBasicDataRow(
-					0, locale, row, contentDashboardItem);
-
-				cellIndex = _createFileSpecificDataRow(
-					cellIndex, locale, resourceResponse, resourceRequest, row,
-					themeDisplay, contentDashboardItem);
-
-				_createJournalArticleSpecificDataRow(
-					cellIndex, locale, resourceResponse, resourceRequest, row,
-					themeDisplay, contentDashboardItem);
+				_createDataRow(
+					resourceRequest, resourceResponse, locale,
+					contentDashboardItem, row, themeDisplay);
 			}
 
 			ByteArrayOutputStream byteArrayOutputStream =
@@ -135,86 +134,107 @@ public class GetContentDashboardItemsCsvMVCResourceCommand
 		}
 	}
 
-	private int _createBasicDataHeaderRow(
+	private int _createBasicDataCells(
+		int cellIndex, Locale locale, Row row,
+		ContentDashboardItem<?> contentDashboardItem) {
+
+		cellIndex = _createCell(
+			cellIndex, row, contentDashboardItem.getTitle(locale));
+		cellIndex = _createCell(
+			cellIndex, row, contentDashboardItem.getUserName());
+		cellIndex = _createCell(
+			cellIndex, row, contentDashboardItem.getTypeLabel(locale));
+
+		ContentDashboardItemSubtype contentDashboardItemSubtype =
+			contentDashboardItem.getContentDashboardItemSubtype();
+
+		cellIndex = _createCell(
+			cellIndex, row, contentDashboardItemSubtype.getLabel(locale));
+
+		cellIndex = _createCell(
+			cellIndex, row, contentDashboardItem.getScopeName(locale));
+
+		List<ContentDashboardItem.Version> versions =
+			contentDashboardItem.getVersions(locale);
+
+		ContentDashboardItem.Version latestVersion = versions.get(0);
+
+		cellIndex = _createCell(cellIndex, row, latestVersion.getLabel());
+
+		List<AssetCategory> categories =
+			contentDashboardItem.getAssetCategories();
+
+		Stream<AssetCategory> assetCategoryStream = categories.stream();
+
+		cellIndex = _createCell(
+			cellIndex, row,
+			StringUtils.joinWith(
+				", ",
+				assetCategoryStream.map(
+					x -> x.getTitle(locale)
+				).collect(
+					Collectors.toList()
+				)));
+
+		List<AssetTag> assetTags = contentDashboardItem.getAssetTags();
+
+		Stream<AssetTag> assetTagsStream = assetTags.stream();
+
+		cellIndex = _createCell(
+			cellIndex, row,
+			StringUtils.joinWith(
+				", ",
+				assetTagsStream.map(
+					AssetTagModel::getName
+				).collect(
+					Collectors.toList()
+				)));
+
+		Date modifiedDate = contentDashboardItem.getModifiedDate();
+
+		return _createCell(cellIndex, row, modifiedDate.toString());
+	}
+
+	private int _createBasicDataHeaderCells(
 		Locale locale, int headerRowCellIndex, Row headerRow) {
 
-		Cell titleCell = headerRow.createCell(headerRowCellIndex++);
+		headerRowCellIndex = _createCell(
+			headerRowCellIndex, headerRow, LanguageUtil.get(locale, "title"));
 
-		titleCell.setCellValue(LanguageUtil.get(locale, "title"));
+		headerRowCellIndex = _createCell(
+			headerRowCellIndex, headerRow, LanguageUtil.get(locale, "author"));
 
-		Cell authorCell = headerRow.createCell(headerRowCellIndex++);
+		headerRowCellIndex = _createCell(
+			headerRowCellIndex, headerRow, LanguageUtil.get(locale, "type"));
 
-		authorCell.setCellValue(LanguageUtil.get(locale, "author"));
+		headerRowCellIndex = _createCell(
+			headerRowCellIndex, headerRow, LanguageUtil.get(locale, "subtype"));
 
-		Cell typeCell = headerRow.createCell(headerRowCellIndex++);
-
-		typeCell.setCellValue(LanguageUtil.get(locale, "type"));
-
-		Cell subtypeCell = headerRow.createCell(headerRowCellIndex++);
-
-		subtypeCell.setCellValue(LanguageUtil.get(locale, "subtype"));
-
-		Cell assetCell = headerRow.createCell(headerRowCellIndex++);
-
-		assetCell.setCellValue(
+		headerRowCellIndex = _createCell(
+			headerRowCellIndex, headerRow,
 			LanguageUtil.get(locale, "site-or-asset-library"));
 
-		Cell statusCell = headerRow.createCell(headerRowCellIndex++);
+		headerRowCellIndex = _createCell(
+			headerRowCellIndex, headerRow, LanguageUtil.get(locale, "status"));
 
-		statusCell.setCellValue(LanguageUtil.get(locale, "status"));
+		headerRowCellIndex = _createCell(
+			headerRowCellIndex, headerRow,
+			LanguageUtil.get(locale, "categories"));
 
-		Cell modifiedDateCell = headerRow.createCell(headerRowCellIndex++);
+		headerRowCellIndex = _createCell(
+			headerRowCellIndex, headerRow, LanguageUtil.get(locale, "tags"));
 
-		modifiedDateCell.setCellValue(
+		headerRowCellIndex = _createCell(
+			headerRowCellIndex, headerRow,
 			LanguageUtil.get(locale, "modified-date"));
 
 		return headerRowCellIndex;
 	}
 
-	private int _createBasicDataRow(
-		int cellIndex, Locale locale, Row row,
-		ContentDashboardItem<?> contentDashboardItem) {
-
+	private int _createCell(int cellIndex, Row row, String value) {
 		Cell titleDataCell = row.createCell(cellIndex++);
 
-		titleDataCell.setCellValue(contentDashboardItem.getTitle(locale));
-
-		Cell authorDataCell = row.createCell(cellIndex++);
-
-		authorDataCell.setCellValue(contentDashboardItem.getUserName());
-
-		Cell typeDataCell = row.createCell(cellIndex++);
-
-		typeDataCell.setCellValue(contentDashboardItem.getTypeLabel(locale));
-
-		Cell subtypeDataCell = row.createCell(cellIndex++);
-
-		ContentDashboardItemSubtype contentDashboardItemSubtype =
-			contentDashboardItem.getContentDashboardItemSubtype();
-
-		subtypeDataCell.setCellValue(
-			contentDashboardItemSubtype.getLabel(locale));
-
-		Cell assetDataCell = row.createCell(cellIndex++);
-
-		assetDataCell.setCellValue(contentDashboardItem.getScopeName(locale));
-
-		List<ContentDashboardItem.Version> versions =
-			contentDashboardItem.getVersions(locale);
-
-		Cell statusDataCell = row.createCell(cellIndex++);
-
-		ContentDashboardItem.Version latestVersion = versions.get(0);
-
-		statusDataCell.setCellValue(latestVersion.getLabel());
-
-		//TO DO: Add MultipleVocabularies
-
-		Cell modifiedDateDataCell = row.createCell(cellIndex++);
-
-		Date modifiedDate = contentDashboardItem.getModifiedDate();
-
-		modifiedDateDataCell.setCellValue(modifiedDate.toString());
+		titleDataCell.setCellValue(value);
 
 		return cellIndex;
 	}
@@ -236,29 +256,45 @@ public class GetContentDashboardItemsCsvMVCResourceCommand
 		return style;
 	}
 
-	private int _createFileHeaderRow(
+	private void _createDataRow(
+		ResourceRequest resourceRequest, ResourceResponse resourceResponse,
+		Locale locale, ContentDashboardItem<?> contentDashboardItem, Row row,
+		ThemeDisplay themeDisplay) {
+
+		int cellIndex = _createBasicDataCells(
+			0, locale, row, contentDashboardItem);
+
+		cellIndex = _createFileSpecificDataCells(
+			cellIndex, locale, resourceResponse, resourceRequest, row,
+			themeDisplay, contentDashboardItem);
+
+		_createJournalArticleSpecificDataCells(
+			cellIndex, locale, resourceResponse, resourceRequest, row,
+			themeDisplay, contentDashboardItem);
+	}
+
+	private int _createFileHeaderCells(
 		Row headerRow, int headerRowCellIndex, Locale locale) {
 
-		Cell descriptionCell = headerRow.createCell(headerRowCellIndex++);
+		headerRowCellIndex = _createCell(
+			headerRowCellIndex, headerRow,
+			LanguageUtil.get(locale, "description"));
 
-		descriptionCell.setCellValue(LanguageUtil.get(locale, "description"));
+		headerRowCellIndex = _createCell(
+			headerRowCellIndex, headerRow,
+			LanguageUtil.get(locale, "extension"));
 
-		Cell extensionCell = headerRow.createCell(headerRowCellIndex++);
+		headerRowCellIndex = _createCell(
+			headerRowCellIndex, headerRow,
+			LanguageUtil.get(locale, "file-name"));
 
-		extensionCell.setCellValue(LanguageUtil.get(locale, "extension"));
-
-		Cell fileNameCell = headerRow.createCell(headerRowCellIndex++);
-
-		fileNameCell.setCellValue(LanguageUtil.get(locale, "file-name"));
-
-		Cell sizeCell = headerRow.createCell(headerRowCellIndex++);
-
-		sizeCell.setCellValue(LanguageUtil.get(locale, "size"));
+		headerRowCellIndex = _createCell(
+			headerRowCellIndex, headerRow, LanguageUtil.get(locale, "size"));
 
 		return headerRowCellIndex;
 	}
 
-	private int _createFileSpecificDataRow(
+	private int _createFileSpecificDataCells(
 		int cellIndex, Locale locale, ResourceResponse resourceResponse,
 		ResourceRequest resourceRequest, Row row, ThemeDisplay themeDisplay,
 		ContentDashboardItem<?> contentDashboardItem) {
@@ -277,35 +313,25 @@ public class GetContentDashboardItemsCsvMVCResourceCommand
 			"description"
 		).toString();
 
-		Cell fileDescriptionCell = row.createCell(cellIndex++);
-
-		fileDescriptionCell.setCellValue(fileDescription);
+		cellIndex = _createCell(cellIndex, row, fileDescription);
 
 		String extension = fileSpecificDataJSONObject.get(
 			"extension"
 		).toString();
 
-		Cell fileExtensionCell = row.createCell(cellIndex++);
-
-		fileExtensionCell.setCellValue(extension);
+		cellIndex = _createCell(cellIndex, row, extension);
 
 		String fileName = fileSpecificDataJSONObject.get(
 			"fileName"
 		).toString();
 
-		Cell fileFileNameCell = row.createCell(cellIndex++);
-
-		fileFileNameCell.setCellValue(fileName);
+		cellIndex = _createCell(cellIndex, row, fileName);
 
 		String size = fileSpecificDataJSONObject.get(
 			"size"
 		).toString();
 
-		Cell fileSizeCell = row.createCell(cellIndex++);
-
-		fileSizeCell.setCellValue(size);
-
-		return cellIndex;
+		return _createCell(cellIndex, row, size);
 	}
 
 	private void _createHeaderRow(
@@ -316,10 +342,10 @@ public class GetContentDashboardItemsCsvMVCResourceCommand
 		headerRow.setRowStyle(
 			_createCellStyle(true, "Helvetica", (short)11, workbook));
 
-		int headerRowCellIndex = _createBasicDataHeaderRow(
+		int headerRowCellIndex = _createBasicDataHeaderCells(
 			locale, 0, headerRow);
 
-		headerRowCellIndex = _createFileHeaderRow(
+		headerRowCellIndex = _createFileHeaderCells(
 			headerRow, headerRowCellIndex, locale);
 
 		_createJournalArticleHeaderRow(headerRow, headerRowCellIndex, locale);
@@ -328,22 +354,20 @@ public class GetContentDashboardItemsCsvMVCResourceCommand
 	private void _createJournalArticleHeaderRow(
 		Row headerRow, int headerRowCellIndex, Locale locale) {
 
-		Cell displayDateCell = headerRow.createCell(headerRowCellIndex++);
+		headerRowCellIndex = _createCell(
+			headerRowCellIndex, headerRow,
+			LanguageUtil.get(locale, "display-date"));
 
-		displayDateCell.setCellValue(LanguageUtil.get(locale, "display-date"));
-
-		Cell creationDateCell = headerRow.createCell(headerRowCellIndex++);
-
-		creationDateCell.setCellValue(
+		headerRowCellIndex = _createCell(
+			headerRowCellIndex, headerRow,
 			LanguageUtil.get(locale, "creation-date"));
 
-		Cell languagesTranslatedCell = headerRow.createCell(headerRowCellIndex);
-
-		languagesTranslatedCell.setCellValue(
+		_createCell(
+			headerRowCellIndex, headerRow,
 			LanguageUtil.get(locale, "languages-translated-into"));
 	}
 
-	private void _createJournalArticleSpecificDataRow(
+	private void _createJournalArticleSpecificDataCells(
 		int cellIndex, Locale locale, ResourceResponse resourceResponse,
 		ResourceRequest resourceRequest, Row row, ThemeDisplay themeDisplay,
 		ContentDashboardItem<?> contentDashboardItem) {
@@ -362,25 +386,19 @@ public class GetContentDashboardItemsCsvMVCResourceCommand
 			"displayDate"
 		).toString();
 
-		Cell journalDisplayDateCell = row.createCell(cellIndex++);
-
-		journalDisplayDateCell.setCellValue(displayDate);
+		cellIndex = _createCell(cellIndex, row, displayDate);
 
 		String creationDate = journalArticleSpecificDataJSONObject.get(
 			"creationDate"
 		).toString();
 
-		Cell journalCreationDateCell = row.createCell(cellIndex++);
-
-		journalCreationDateCell.setCellValue(creationDate);
+		cellIndex = _createCell(cellIndex, row, creationDate);
 
 		String languagesTranslated = journalArticleSpecificDataJSONObject.get(
 			"languagesTranslatedInto"
 		).toString();
 
-		Cell journalLanguagesTranslatedCell = row.createCell(cellIndex);
-
-		journalLanguagesTranslatedCell.setCellValue(languagesTranslated);
+		_createCell(cellIndex, row, languagesTranslated);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

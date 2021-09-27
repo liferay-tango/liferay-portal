@@ -14,9 +14,6 @@
 
 package com.liferay.content.dashboard.web.internal.portlet.action;
 
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
-
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetTag;
 import com.liferay.content.dashboard.item.action.ContentDashboardItemAction;
@@ -65,7 +62,7 @@ import org.mockito.Matchers;
 import org.mockito.Mockito;
 
 /**
- * @author Cristina González
+ * @author Yurena Cabrera
  */
 public class GetContentDashboardItemsCsvMVCResourceCommandTest {
 
@@ -136,9 +133,9 @@ public class GetContentDashboardItemsCsvMVCResourceCommandTest {
 
 			@Override
 			public List<AssetCategory> getAssetCategories() {
-				AssetCategory assetCategory = mock(AssetCategory.class);
+				AssetCategory assetCategory = Mockito.mock(AssetCategory.class);
 
-				when(
+				Mockito.when(
 					assetCategory.getTitle(Mockito.any(Locale.class))
 				).thenReturn(
 					assetCategoryTitle
@@ -154,9 +151,9 @@ public class GetContentDashboardItemsCsvMVCResourceCommandTest {
 
 			@Override
 			public List<AssetTag> getAssetTags() {
-				AssetTag assetCategory = mock(AssetTag.class);
+				AssetTag assetCategory = Mockito.mock(AssetTag.class);
 
-				when(
+				Mockito.when(
 					assetCategory.getName()
 				).thenReturn(
 					assetTagName
@@ -183,10 +180,10 @@ public class GetContentDashboardItemsCsvMVCResourceCommandTest {
 			public ContentDashboardItemSubtype
 				getContentDashboardItemSubtype() {
 
-				ContentDashboardItemSubtype contentDashboardItemSubtype = mock(
-					ContentDashboardItemSubtype.class);
+				ContentDashboardItemSubtype contentDashboardItemSubtype =
+					Mockito.mock(ContentDashboardItemSubtype.class);
 
-				when(
+				Mockito.when(
 					contentDashboardItemSubtype.getLabel(
 						Mockito.any(Locale.class))
 				).thenReturn(
@@ -345,96 +342,108 @@ public class GetContentDashboardItemsCsvMVCResourceCommandTest {
 	private void _setUpLanguageUtil() {
 		LanguageUtil languageUtil = new LanguageUtil();
 
-		Language language = mock(Language.class);
+		Language language = Mockito.mock(Language.class);
 
-		when(
+		Mockito.when(
 			language.get(Matchers.any(Locale.class), Matchers.eq("title"))
 		).thenReturn(
 			"Title"
 		);
 
-		when(
+		Mockito.when(
 			language.get(Matchers.any(Locale.class), Matchers.eq("author"))
 		).thenReturn(
 			"Author"
 		);
 
-		when(
+		Mockito.when(
 			language.get(Matchers.any(Locale.class), Matchers.eq("type"))
 		).thenReturn(
 			"Type"
 		);
 
-		when(
+		Mockito.when(
 			language.get(Matchers.any(Locale.class), Matchers.eq("subtype"))
 		).thenReturn(
 			"Subtype"
 		);
 
-		when(
+		Mockito.when(
 			language.get(
 				Matchers.any(Locale.class),
 				Matchers.eq("site-or-asset-library"))
 		).thenReturn(
 			"Asset Type or Library"
 		);
-		when(
+		Mockito.when(
 			language.get(Matchers.any(Locale.class), Matchers.eq("status"))
 		).thenReturn(
 			"Status"
 		);
 
-		when(
+		Mockito.when(
 			language.get(
 				Matchers.any(Locale.class), Matchers.eq("modified-date"))
 		).thenReturn(
 			"Modified Date"
 		);
 
-		when(
+		Mockito.when(
 			language.get(Matchers.any(Locale.class), Matchers.eq("description"))
 		).thenReturn(
 			"Description"
 		);
 
-		when(
+		Mockito.when(
 			language.get(Matchers.any(Locale.class), Matchers.eq("extension"))
 		).thenReturn(
 			"Extension"
 		);
 
-		when(
+		Mockito.when(
 			language.get(Matchers.any(Locale.class), Matchers.eq("file-name"))
 		).thenReturn(
 			"File Name"
 		);
 
-		when(
+		Mockito.when(
 			language.get(Matchers.any(Locale.class), Matchers.eq("size"))
 		).thenReturn(
 			"Size"
 		);
 
-		when(
+		Mockito.when(
 			language.get(
 				Matchers.any(Locale.class), Matchers.eq("display-date"))
 		).thenReturn(
 			"Display Date"
 		);
 
-		when(
+		Mockito.when(
 			language.get(
 				Matchers.any(Locale.class), Matchers.eq("creation-date"))
 		).thenReturn(
 			"Creation Date"
 		);
 
-		when(
+		Mockito.when(
 			language.get(
 				Matchers.any(Locale.class),
 				Matchers.eq("languages-translated-into"))
 		).thenReturn(
 			"Languages translated into"
+		);
+
+		Mockito.when(
+			language.get(Matchers.any(Locale.class), Matchers.eq("categories"))
+		).thenReturn(
+			"Categories"
+		);
+
+		Mockito.when(
+			language.get(Matchers.any(Locale.class), Matchers.eq("tags"))
+		).thenReturn(
+			"Tags"
 		);
 
 		languageUtil.setLanguage(language);
