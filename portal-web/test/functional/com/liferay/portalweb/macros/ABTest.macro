@@ -77,7 +77,7 @@ definition {
 		Click(locator1 = "ABTest#VIEW_DATA_ANALYTICS_CLOUD_BUTTON");
 
 		SelectWindow(locator1 = "name=undefined");
-		
+
 		AnalyticsCloud.loginAnalyticsCloud(
 			emailAddress = "test@liferay.com",
 			password = "test");
