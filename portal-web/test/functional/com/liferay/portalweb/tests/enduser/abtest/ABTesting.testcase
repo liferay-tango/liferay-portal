@@ -234,34 +234,34 @@ definition {
 	}
 
 	@description = "LPS-96781: Validate if, when the A/B Testing changes in the Liferay DXP, information about the Liferay DXP context, the changes are reflected in the test in Analytics Cloud"
-    @priority = "4"
-    test CheckTestChangesInAC {
-        task ("Create AB test, create variant and run the test") {
-            ABTest.createABTest(
-                goal = "Bounce Rate",
-                testTitle = "AB test title");
-				
-            ABTest.createVariant(variantName = "Variant name");
+	@priority = "4"
+	test CheckTestChangesInAC {
+		task ("Create AB test, create variant and run the test") {
+			ABTest.createABTest(
+				goal = "Bounce Rate",
+				testTitle = "AB test title");
 
-            ABTest.runTest();
-        }
+			ABTest.createVariant(variantName = "Variant name");
 
-        task ("Check the info is correct in Analytics Cloud") {
+			ABTest.runTest();
+		}
+
+		task ("Check the info is correct in Analytics Cloud") {
 			ABTest.openABTestInAC();
 
 			ABTest.statusABTestInAC(status = "Test Is Running");
-        }
+		}
 
-        task ("Go back to DXP") {
-            Navigator.openURL();
+		task ("Go back to DXP") {
+			Navigator.openURL();
 
-            Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
-        }
+			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/content-page");
+		}
 
-        task ("Terminate the AB test") {
-            ABTest.terminateTest();
-        }
-    }
+		task ("Terminate the AB test") {
+			ABTest.terminateTest();
+		}
+	}
 
 	@description = "LPS-97195: Validate if the variant for A/B Test that was added on Liferay portal is visible in the Analytics Cloud"
 	@ignore = "true"
