@@ -145,6 +145,11 @@
 	<td>//*[contains(@class,'btn-secondary') and contains(text(),'View Data in Analytics Cloud')]</td>
 	<td></td>
 </tr>
+<tr>
+	<td>VIEW_TEST_STATUS_ANALYTICS_CLOUD</td>
+	<td>//h3[contains(.,'t') and contains(text(),'${status}')]</td>
+	<td></td>
+</tr>
 </tbody>
 </table>
 </body>

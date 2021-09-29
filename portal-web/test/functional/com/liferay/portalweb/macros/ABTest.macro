@@ -120,4 +120,18 @@ definition {
 			value1 = "${elementId}");
 	}
 
+	macro statusABTestInAC {
+        AssertTextEquals(
+			status = "${status}",
+            locator1 = "ABTest#VIEW_TEST_STATUS_ANALYTICS_CLOUD",
+			value1 = "${status}");
+    }
+
+	macro openABTestInAC {
+		Click(locator1 = "ABTest#VIEW_DATA_ANALYTICS_CLOUD_BUTTON");
+				SelectWindow(locator1 = "name=undefined");
+				AnalyticsCloud.loginAnalyticsCloud(
+					emailAddress = "test@liferay.com",
+					password = "test");
+	}
 }
