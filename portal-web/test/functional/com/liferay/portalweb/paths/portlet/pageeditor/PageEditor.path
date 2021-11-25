@@ -331,6 +331,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>EXPERIENCE_SEGMENT_PREVIEW_MODAL</td>
+	<td>//select[contains(@id,'_com_liferay_layout_content_page_editor_web_internal_portlet_ContentPageEditorPortlet__useId')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>EXPERIENCE_SELECT_ITEM</td>
 	<td>//div[contains(@class,'toolbar-experience')]//ul//*[text()='${key_experienceName}']</td>
 	<td></td>
