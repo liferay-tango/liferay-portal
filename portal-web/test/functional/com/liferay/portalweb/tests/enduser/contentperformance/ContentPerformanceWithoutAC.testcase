@@ -20,6 +20,13 @@ definition {
 
 	tearDown {
 		var testPortalInstance = PropsUtil.get("test.portal.instance");
+
+		if ("${testPortalInstance}" == "true") {
+			PortalInstances.tearDownCP();
+		}
+		else {
+			JSONGroup.deleteGroupByName(groupName = "Test Site Name");
+		}
 	}
 
 	@description = "LPS-132406: Given the Content Performance Panel
@@ -91,11 +98,53 @@ definition {
 	}
 
 	@description = "LPS-118006: When the DXP is not connected to AC, if the user clicks on the Metrics button, the sidebar panel shows up and displays a button titled Dont show me this again and a message informing the user that the panel will show up again if AC is connected"
-	@ignore = "true"
 	@priority = "4"
 	test MetricsInContentDashboardACDisabled {
+		task ("Create a Web Content and set a Display Page") {
+			JSONWebcontent.addWebContent(
+				content = "Webcontent Content",
+				groupName = "Test Site Name",
+				title = "WC Content");
+		}
 
-		// TODO LPS-139257 MetricsInContentDashboardACDisabled pending implementation
+		task ("Create and Publish a Display Page Template with Fragment") {
+			JSONLayoutpagetemplate.addDisplayPageTemplateEntry(
+				contentType = "Web Content Article",
+				displayPageTemplateEntryName = "Display Page Name",
+				groupName = "Test Site Name",
+				subType = "Basic Web Content");
+
+			DisplayPageTemplatesAdmin.openDisplayPagesAdmin(siteURLKey = "test-site-name");
+
+			DisplayPageTemplatesAdmin.gotoDisplayPage(displayPageName = "Display Page Name");
+
+			Button.clickPublish();
+
+			DisplayPageTemplatesAdmin.openDisplayPagesAdmin(siteURLKey = "test-site-name");
+
+			DisplayPageTemplatesAdmin.markDisplayPageAsDefault(displayPageName = "Display Page Name");
+		}
+
+		task ("Check in Content Dashboard and open Content Performance Panel") {
+			ApplicationsMenu.gotoPortlet(
+				category = "Content",
+				panel = "Applications",
+				portlet = "Content Dashboard");
+
+			Click.clickNoMouseOver(locator1 = "ContentDashboard#ROW_PANEL_WC");
+
+			Click(locator1 = "ContentPerformance#ICON_VIEW_METRICS");
+		}
+
+		task ("Check if elements present") {
+			AssertElementPresent(
+				locator1 = "ContentPerformance#CONTENT_PERFORMANCE_START_FREE_TRIAL",
+				value1 = "Start Free Trial");
+
+			AssertElementPresent(
+				locator1 = "ContentPerformance#CONTENT_PERFORMANCE_DO_NOT_SHOW_AGAIN",
+				value1 = "Do not show me this again.");
+		}
 
 	}
 

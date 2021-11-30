@@ -75,6 +75,11 @@
 	<td>//*[contains(@class,'font-weight') and contains(text(),'Sync to Liferay Analytics Cloud')]</td>
 	<td></td>
 </tr>
+<tr>
+	<td>ICON_VIEW_METRICS</td>
+	<td>//button[contains(@label,'View Metrics')]</td>
+	<td></td>
+</tr>
 </tbody>
 </table>
 </body>
