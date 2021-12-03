@@ -133,7 +133,10 @@ const BackURL = () => {
 
 	useEffect(() => {
 		if (backLinkElement && backLinkURL && segmentsExperienceId) {
-			backLinkURL.searchParams.set('p_s_e_id', segmentsExperienceId);
+			backLinkURL.searchParams.set(
+				'segmentsExperienceId',
+				segmentsExperienceId
+			);
 			backLinkElement.href = backLinkURL.toString();
 
 			const currentURL = new URL(window.location.href);

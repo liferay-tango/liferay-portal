@@ -480,7 +480,7 @@ public class SegmentsExperimentDisplayContext {
 			_portal.getOriginalServletRequest(_httpServletRequest);
 
 		long selectedSegmentsExperienceId = ParamUtil.getLong(
-			originalHttpServletRequest, "p_s_e_id", -1);
+			originalHttpServletRequest, "segmentsExperienceId", -1);
 
 		if (selectedSegmentsExperienceId != -1) {
 			_segmentsExperienceId = selectedSegmentsExperienceId;
