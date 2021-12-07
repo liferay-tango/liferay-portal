@@ -519,10 +519,6 @@ public class PortalImpl implements Portal {
 
 		_reservedParams.add("p_j_a_id"); // LPS-16418
 
-		// Portal segments
-
-		_reservedParams.add("segmentsExperienceId"); // LPS-143333
-
 		// Miscellaneous
 
 		_reservedParams.add("saveLastPath");
