@@ -235,7 +235,7 @@ public class RenderFragmentLayoutTag extends IncludeTag {
 		HttpServletRequest httpServletRequest = getRequest();
 
 		long[] selectedSegmentsExperienceIds = ParamUtil.getLongValues(
-			httpServletRequest, "segmentsExperienceId");
+			httpServletRequest, "p_s_e_id");
 
 		if (selectedSegmentsExperienceIds.length > 0) {
 			return selectedSegmentsExperienceIds;

@@ -145,11 +145,11 @@ public class EditLayoutModeProductNavigationControlMenuEntry
 			redirect = _http.setParameter(redirect, "p_l_mode", Constants.EDIT);
 
 			long segmentsExperienceId = ParamUtil.getLong(
-				httpServletRequest, "segmentsExperienceId", -1);
+				httpServletRequest, "p_s_e_id", -1);
 
 			if (segmentsExperienceId != -1) {
 				redirect = _http.setParameter(
-					redirect, "segmentsExperienceId", segmentsExperienceId);
+					redirect, "p_s_e_id", segmentsExperienceId);
 			}
 
 			return redirect;
