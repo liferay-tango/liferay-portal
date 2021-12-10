@@ -25,6 +25,7 @@ import com.liferay.content.dashboard.web.internal.item.FileEntryContentDashboard
 import com.liferay.content.dashboard.web.internal.item.JournalArticleContentDashboardItem;
 import com.liferay.content.dashboard.web.internal.item.type.ContentDashboardItemSubtype;
 import com.liferay.content.dashboard.web.internal.searcher.ContentDashboardSearchRequestBuilderFactory;
+import com.liferay.info.item.InfoItemReference;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -91,6 +92,8 @@ public class GetContentDashboardItemsXlsMVCResourceCommand
 			locale, "Content Dashboard Data");
 
 		workbookBuilder.localizedCell(
+			"ID"
+		).localizedCell(
 			"title"
 		).localizedCell(
 			"author"
@@ -138,9 +141,14 @@ public class GetContentDashboardItemsXlsMVCResourceCommand
 		for (ContentDashboardItem<?> contentDashboardItem :
 				searchContainer.getResults()) {
 
+			InfoItemReference infoItemReference =
+				contentDashboardItem.getInfoItemReference();
+
 			workbookBuilder.row();
 
 			workbookBuilder.cell(
+				String.valueOf(infoItemReference.getClassPK())
+			).cell(
 				contentDashboardItem.getTitle(locale)
 			).cell(
 				contentDashboardItem.getUserName()
