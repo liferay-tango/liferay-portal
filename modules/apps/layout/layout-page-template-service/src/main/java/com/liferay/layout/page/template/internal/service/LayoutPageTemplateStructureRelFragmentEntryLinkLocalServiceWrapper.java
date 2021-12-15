@@ -17,6 +17,9 @@ package com.liferay.layout.page.template.internal.service;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.fragment.service.FragmentEntryLinkLocalServiceWrapper;
+import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
+import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
+import com.liferay.layout.page.template.service.LayoutPageTemplateStructureRelLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.LayoutLocalService;
@@ -47,6 +50,19 @@ public class LayoutPageTemplateStructureRelFragmentEntryLinkLocalServiceWrapper
 			WorkflowConstants.STATUS_DRAFT,
 			ServiceContextThreadLocal.getServiceContext());
 
+		LayoutPageTemplateStructure layoutPageTemplateStructure =
+			_layoutPageTemplateStructureLocalService.
+				fetchLayoutPageTemplateStructure(
+					fragmentEntryLink.getGroupId(),
+					fragmentEntryLink.getPlid());
+
+		_layoutPageTemplateStructureRelLocalService.updateStatus(
+			PrincipalThreadLocal.getUserId(),
+			layoutPageTemplateStructure.getLayoutPageTemplateStructureId(),
+			fragmentEntryLink.getSegmentsExperienceId(),
+			WorkflowConstants.STATUS_DRAFT,
+			ServiceContextThreadLocal.getServiceContext());
+
 		return fragmentEntryLink;
 	}
 
@@ -55,5 +71,13 @@ public class LayoutPageTemplateStructureRelFragmentEntryLinkLocalServiceWrapper
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;
+
+	@Reference
+	private LayoutPageTemplateStructureLocalService
+		_layoutPageTemplateStructureLocalService;
+
+	@Reference
+	private LayoutPageTemplateStructureRelLocalService
+		_layoutPageTemplateStructureRelLocalService;
 
 }

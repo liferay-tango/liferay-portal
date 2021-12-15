@@ -22,6 +22,7 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
 import com.liferay.layout.page.template.model.LayoutPageTemplateStructureRel;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
+import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureRelLocalService;
 import com.liferay.layout.page.template.service.base.LayoutPageTemplateStructureLocalServiceBaseImpl;
 import com.liferay.layout.page.template.util.LayoutPageTemplateStructureHelperUtil;
@@ -111,7 +112,8 @@ public class LayoutPageTemplateStructureLocalServiceImpl
 				groupId, plid);
 
 		if (count > 0) {
-			_updateLayoutStatus(userId, plid);
+			_updateLayoutStatus(
+				userId, groupId, plid, SegmentsExperienceConstants.ID_DEFAULT);
 		}
 
 		// Layout page template structure rel
@@ -350,7 +352,9 @@ public class LayoutPageTemplateStructureLocalServiceImpl
 					segmentsExperienceId, data);
 		}
 
-		_updateLayoutStatus(PrincipalThreadLocal.getUserId(), plid);
+		_updateLayoutStatus(
+			PrincipalThreadLocal.getUserId(), groupId, plid,
+			segmentsExperienceId);
 
 		return layoutPageTemplateStructure;
 	}
@@ -390,11 +394,22 @@ public class LayoutPageTemplateStructureLocalServiceImpl
 		return LayoutPageTemplateEntryTypeConstants.TYPE_BASIC;
 	}
 
-	private void _updateLayoutStatus(long userId, long plid)
+	private void _updateLayoutStatus(
+			long userId, long groupId, long plid, long segmentsExperienceId)
 		throws PortalException {
 
 		_layoutLocalService.updateStatus(
 			userId, plid, WorkflowConstants.STATUS_DRAFT,
+			ServiceContextThreadLocal.getServiceContext());
+
+		LayoutPageTemplateStructure layoutPageTemplateStructure =
+			_layoutPageTemplateStructureLocalService.
+				fetchLayoutPageTemplateStructure(groupId, plid);
+
+		_layoutPageTemplateStructureRelLocalService.updateStatus(
+			userId,
+			layoutPageTemplateStructure.getLayoutPageTemplateStructureId(),
+			segmentsExperienceId, WorkflowConstants.STATUS_DRAFT,
 			ServiceContextThreadLocal.getServiceContext());
 	}
 
@@ -407,6 +422,10 @@ public class LayoutPageTemplateStructureLocalServiceImpl
 	@Reference
 	private LayoutPageTemplateEntryLocalService
 		_layoutPageTemplateEntryLocalService;
+
+	@Reference
+	private LayoutPageTemplateStructureLocalService
+		_layoutPageTemplateStructureLocalService;
 
 	@Reference
 	private LayoutPageTemplateStructureRelLocalService
