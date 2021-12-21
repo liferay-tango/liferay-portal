@@ -14,11 +14,9 @@
 
 package com.liferay.content.dashboard.web.internal.portlet.action.test;
 
-/**
- * @author Yurena Cabrera
- */
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.content.dashboard.web.test.util.ContentDashboardTestUtil;
+import com.liferay.counter.kernel.service.CounterLocalService;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
@@ -86,6 +84,9 @@ public class GetContentDashboardItemsXlsMVCResourceCommandTest {
 		System.setProperty("user.name", "test");
 
 		try {
+			_counterLocalService.reset(
+				"com.liferay.counter.kernel.model.Counter");
+
 			Date date = new Date(150000);
 
 			FileEntry fileEntry = DLAppLocalServiceUtil.addFileEntry(
@@ -165,6 +166,9 @@ public class GetContentDashboardItemsXlsMVCResourceCommandTest {
 		return (ByteArrayOutputStream)
 			mockLiferayResourceResponse.getPortletOutputStream();
 	}
+
+	@Inject
+	private CounterLocalService _counterLocalService;
 
 	@DeleteAfterTestRun
 	private Group _group;

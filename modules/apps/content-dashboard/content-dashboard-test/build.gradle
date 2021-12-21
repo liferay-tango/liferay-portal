@@ -5,6 +5,7 @@ dependencies {
 	testIntegrationCompile group: "org.apache.poi", name: "poi", version: "4.1.2"
 	testIntegrationCompile group: "org.apache.poi", name: "poi-ooxml", version: "4.1.2"
 	testIntegrationCompile group: "org.apache.poi", name: "poi-ooxml-schemas", version: "4.1.2"
+	testIntegrationCompile group: "org.springframework.data", name: "spring-data-jpa", version: "2.6.0"
 	testIntegrationCompile project(":apps:application-list:application-list-api")
 	testIntegrationCompile project(":apps:content-dashboard:content-dashboard-web")
 	testIntegrationCompile project(":apps:dynamic-data-mapping:dynamic-data-mapping-api")
