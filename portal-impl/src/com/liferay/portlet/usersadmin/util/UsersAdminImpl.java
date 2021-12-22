@@ -539,6 +539,25 @@ public class UsersAdminImpl implements UsersAdmin {
 	}
 
 	@Override
+	public List<UserGroupRole> getDeletedUserGroupRoles(
+			PortletRequest portletRequest) throws PortalException {
+		User user = PortalUtil.getSelectedUser(portletRequest);
+
+		if (user == null) {
+			return Collections.emptyList();
+		}
+
+		Set<UserGroupRole> deletedUserGroupRoles = new HashSet<>();
+
+		deletedUserGroupRoles.addAll(
+			getUserGroupRoles(
+				portletRequest, user, "deleteGroupRolesGroupIds",
+				"deleteGroupRolesRoleIds"));
+
+		return new ArrayList<>(deletedUserGroupRoles);
+	}
+
+	@Override
 	public List<EmailAddress> getEmailAddresses(ActionRequest actionRequest) {
 		return getEmailAddresses(
 			actionRequest, Collections.<EmailAddress>emptyList());
