@@ -15,11 +15,13 @@
 package com.liferay.users.admin.web.internal.portlet.action;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.exception.ContactNameException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.RequiredRoleException;
 import com.liferay.portal.kernel.exception.UserEmailAddressException;
 import com.liferay.portal.kernel.exception.UserScreenNameException;
+import com.liferay.portal.kernel.model.ClassName;
 import com.liferay.portal.kernel.model.Contact;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
@@ -32,6 +34,7 @@ import com.liferay.portal.kernel.security.membershippolicy.MembershipPolicyExcep
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.RoleService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
@@ -47,6 +50,11 @@ import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.segments.SegmentsEntryRetriever;
+import com.liferay.segments.criteria.Criteria;
+import com.liferay.segments.model.SegmentsEntry;
+import com.liferay.segments.service.SegmentsEntryLocalService;
+import com.liferay.segments.service.SegmentsEntryRelLocalService;
 import com.liferay.users.admin.constants.UsersAdminPortletKeys;
 import com.liferay.users.admin.kernel.util.UsersAdmin;
 
@@ -108,6 +116,50 @@ public class UpdateUserRolesMVCActionCommand extends BaseMVCActionCommand {
 				"deleteGroupRolesGroupIds");
 			String deleteGroupRolesRoleIds = actionRequest.getParameter(
 				"deleteGroupRolesRoleIds");
+
+			if ((deleteGroupRolesGroupIds != null) ||
+					(deleteGroupRolesRoleIds != null)) {
+
+				List<UserGroupRole> deletedUserGroupRoles = _usersAdmin.getDeletedUserGroupRoles(actionRequest);
+
+				long[] userGroupIDs = user.getGroupIds();
+
+				for (long groupId : userGroupIDs) {
+					
+					for (UserGroupRole deletedUserGroupRole : deletedUserGroupRoles) {
+						
+						if (deletedUserGroupRole.getGroupId() == groupId) {
+							
+							long[] userSegmentIDsInGroup = _segmentsEntryRetriever.getSegmentsEntryIds(
+									groupId, user.getUserId(), null);
+							
+							for (long userSegmentIDInGroup : userSegmentIDsInGroup) {
+								SegmentsEntry userSegment = 
+									_segmentsEntryLocalService.fetchSegmentsEntry(userSegmentIDInGroup);
+								
+								Criteria criteria = userSegment.getCriteriaObj();
+								
+								Map<String, String> filterStrings = criteria.getFilterStrings();
+								
+								for(String key : filterStrings.keySet()) {
+									long deletedUserGroupRoleRoleID = deletedUserGroupRole.getRoleId();
+									String filterString = filterStrings.get(key);
+									
+									if ((filterString.contains("userGroupRoleIds")) &&
+										(filterString.contains(String.valueOf(deletedUserGroupRoleRoleID)))) {
+										
+										ClassName className = _classNameLocalService.getClassName("com.liferay.portal.kernel.model.User");
+										long classNameId = className.getClassNameId();
+										_segmentsEntryRelLocalService.deleteSegmentsEntryRel(
+												userSegmentIDInGroup, classNameId, user.getUserId());
+									}
+								}
+							}
+						}
+					}
+				}
+
+			}
 
 			if ((addGroupRolesGroupIds != null) ||
 				(addGroupRolesRoleIds != null) ||
@@ -258,6 +310,9 @@ public class UpdateUserRolesMVCActionCommand extends BaseMVCActionCommand {
 	}
 
 	@Reference
+	private ClassNameLocalService _classNameLocalService;
+
+	@Reference
 	private Http _http;
 
 	@Reference
@@ -265,6 +320,15 @@ public class UpdateUserRolesMVCActionCommand extends BaseMVCActionCommand {
 
 	@Reference
 	private RoleService _roleService;
+
+	@Reference
+	private SegmentsEntryLocalService _segmentsEntryLocalService;
+
+	@Reference
+	private SegmentsEntryRelLocalService _segmentsEntryRelLocalService;
+
+	@Reference
+	private SegmentsEntryRetriever _segmentsEntryRetriever;
 
 	@Reference
 	private UsersAdmin _usersAdmin;
