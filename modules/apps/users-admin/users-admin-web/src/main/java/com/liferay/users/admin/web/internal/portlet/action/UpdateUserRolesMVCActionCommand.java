@@ -137,21 +137,30 @@ public class UpdateUserRolesMVCActionCommand extends BaseMVCActionCommand {
 								SegmentsEntry userSegment = 
 									_segmentsEntryLocalService.fetchSegmentsEntry(userSegmentIDInGroup);
 								
-								Criteria criteria = userSegment.getCriteriaObj();
-								
-								Map<String, String> filterStrings = criteria.getFilterStrings();
-								
-								for(String key : filterStrings.keySet()) {
-									long deletedUserGroupRoleRoleID = deletedUserGroupRole.getRoleId();
-									String filterString = filterStrings.get(key);
+								if (userSegment != null) {
 									
-									if ((filterString.contains("userGroupRoleIds")) &&
-										(filterString.contains(String.valueOf(deletedUserGroupRoleRoleID)))) {
+									Criteria criteria = userSegment.getCriteriaObj();
+									
+									Map<String, String> filterStrings = criteria.getFilterStrings();
+									
+									for(String key : filterStrings.keySet()) {
+										long deletedUserGroupRoleRoleID = deletedUserGroupRole.getRoleId();
+										String filterString = filterStrings.get(key);
 										
-										ClassName className = _classNameLocalService.getClassName("com.liferay.portal.kernel.model.User");
-										long classNameId = className.getClassNameId();
-										_segmentsEntryRelLocalService.deleteSegmentsEntryRel(
-												userSegmentIDInGroup, classNameId, user.getUserId());
+										if ((filterString.contains("userGroupRoleIds")) &&
+											(filterString.contains(String.valueOf(deletedUserGroupRoleRoleID)))) {
+											
+											ClassName className = _classNameLocalService.getClassName("com.liferay.portal.kernel.model.User");
+											long classNameId = className.getClassNameId();
+											
+											if (_segmentsEntryRelLocalService.hasSegmentsEntryRel(
+													userSegmentIDInGroup, classNameId, user.getUserId())) {
+												
+												_segmentsEntryRelLocalService.deleteSegmentsEntryRel(
+														userSegmentIDInGroup, classNameId, user.getUserId());
+											}
+											
+										}
 									}
 								}
 							}
