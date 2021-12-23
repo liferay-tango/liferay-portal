@@ -15,9 +15,9 @@
 package com.liferay.users.admin.web.internal.portlet.action;
 
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.exception.ContactNameException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.RequiredRoleException;
 import com.liferay.portal.kernel.exception.UserEmailAddressException;
 import com.liferay.portal.kernel.exception.UserScreenNameException;
@@ -117,59 +117,6 @@ public class UpdateUserRolesMVCActionCommand extends BaseMVCActionCommand {
 			String deleteGroupRolesRoleIds = actionRequest.getParameter(
 				"deleteGroupRolesRoleIds");
 
-			if ((deleteGroupRolesGroupIds != null) ||
-					(deleteGroupRolesRoleIds != null)) {
-
-				List<UserGroupRole> deletedUserGroupRoles = _usersAdmin.getDeletedUserGroupRoles(actionRequest);
-
-				long[] userGroupIDs = user.getGroupIds();
-
-				for (long groupId : userGroupIDs) {
-					
-					for (UserGroupRole deletedUserGroupRole : deletedUserGroupRoles) {
-						
-						if (deletedUserGroupRole.getGroupId() == groupId) {
-							
-							long[] userSegmentIDsInGroup = _segmentsEntryRetriever.getSegmentsEntryIds(
-									groupId, user.getUserId(), null);
-							
-							for (long userSegmentIDInGroup : userSegmentIDsInGroup) {
-								SegmentsEntry userSegment = 
-									_segmentsEntryLocalService.fetchSegmentsEntry(userSegmentIDInGroup);
-								
-								if (userSegment != null) {
-									
-									Criteria criteria = userSegment.getCriteriaObj();
-									
-									Map<String, String> filterStrings = criteria.getFilterStrings();
-									
-									for(String key : filterStrings.keySet()) {
-										long deletedUserGroupRoleRoleID = deletedUserGroupRole.getRoleId();
-										String filterString = filterStrings.get(key);
-										
-										if ((filterString.contains("userGroupRoleIds")) &&
-											(filterString.contains(String.valueOf(deletedUserGroupRoleRoleID)))) {
-											
-											ClassName className = _classNameLocalService.getClassName("com.liferay.portal.kernel.model.User");
-											long classNameId = className.getClassNameId();
-											
-											if (_segmentsEntryRelLocalService.hasSegmentsEntryRel(
-													userSegmentIDInGroup, classNameId, user.getUserId())) {
-												
-												_segmentsEntryRelLocalService.deleteSegmentsEntryRel(
-														userSegmentIDInGroup, classNameId, user.getUserId());
-											}
-											
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-
-			}
-
 			if ((addGroupRolesGroupIds != null) ||
 				(addGroupRolesRoleIds != null) ||
 				(deleteGroupRolesGroupIds != null) ||
@@ -200,6 +147,12 @@ public class UpdateUserRolesMVCActionCommand extends BaseMVCActionCommand {
 
 			User currentUser = _userService.getCurrentUser();
 
+			if ((deleteGroupRolesGroupIds != null) ||
+				(deleteGroupRolesRoleIds != null)) {
+
+				_deleteUserGroupRoleSegmentData(actionRequest, user);
+			}
+
 			if (currentUser.getUserId() == user.getUserId()) {
 				String redirect = _getRedirect(actionRequest, currentUser);
 
@@ -229,6 +182,73 @@ public class UpdateUserRolesMVCActionCommand extends BaseMVCActionCommand {
 			}
 			else {
 				throw exception;
+			}
+		}
+	}
+
+	private void _deleteUserGroupRoleSegmentData(
+			ActionRequest actionRequest, User user)
+		throws PortalException {
+
+		List<UserGroupRole> deletedUserGroupRoles =
+			_usersAdmin.getDeletedUserGroupRoles(actionRequest);
+
+		long[] userGroupIDs = user.getGroupIds();
+
+		for (long groupId : userGroupIDs) {
+			for (UserGroupRole deletedUserGroupRole : deletedUserGroupRoles) {
+				if (deletedUserGroupRole.getGroupId() == groupId) {
+					long[] userSegmentIDsInGroup =
+						_segmentsEntryRetriever.getSegmentsEntryIds(
+							groupId, user.getUserId(), null);
+
+					for (long userSegmentIDInGroup : userSegmentIDsInGroup) {
+						SegmentsEntry userSegment =
+							_segmentsEntryLocalService.fetchSegmentsEntry(
+								userSegmentIDInGroup);
+
+						if (userSegment != null) {
+							Criteria criteria = userSegment.getCriteriaObj();
+
+							Map<String, String> filterStrings =
+								criteria.getFilterStrings();
+
+							for (Map.Entry<String, String> entry :
+									filterStrings.entrySet()) {
+
+								long deletedUserGroupRoleRoleID =
+									deletedUserGroupRole.getRoleId();
+								String filterString = entry.getValue();
+
+								if (filterString.contains("userGroupRoleIds") &&
+									filterString.contains(
+										String.valueOf(
+											deletedUserGroupRoleRoleID))) {
+
+									ClassName className =
+										_classNameLocalService.getClassName(
+											"com.liferay.portal.kernel.model." +
+												"User");
+
+									long classNameId =
+										className.getClassNameId();
+
+									if (_segmentsEntryRelLocalService.
+											hasSegmentsEntryRel(
+												userSegmentIDInGroup,
+												classNameId,
+												user.getUserId())) {
+
+										_segmentsEntryRelLocalService.
+											deleteSegmentsEntryRel(
+												userSegmentIDInGroup,
+												classNameId, user.getUserId());
+									}
+								}
+							}
+						}
+					}
+				}
 			}
 		}
 	}
