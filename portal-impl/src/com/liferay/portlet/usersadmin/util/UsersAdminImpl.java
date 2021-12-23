@@ -540,7 +540,9 @@ public class UsersAdminImpl implements UsersAdmin {
 
 	@Override
 	public List<UserGroupRole> getDeletedUserGroupRoles(
-			PortletRequest portletRequest) throws PortalException {
+			PortletRequest portletRequest)
+		throws PortalException {
+
 		User user = PortalUtil.getSelectedUser(portletRequest);
 
 		if (user == null) {

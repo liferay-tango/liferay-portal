@@ -299,7 +299,8 @@ public interface UsersAdmin {
 		ActionRequest actionRequest, List<Address> defaultAddresses);
 
 	public List<UserGroupRole> getDeletedUserGroupRoles(
-		PortletRequest portletRequest)	throws PortalException;
+			PortletRequest portletRequest)
+		throws PortalException;
 
 	public List<EmailAddress> getEmailAddresses(ActionRequest actionRequest);
 
