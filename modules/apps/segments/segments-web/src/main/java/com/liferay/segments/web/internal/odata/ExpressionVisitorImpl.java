@@ -40,6 +40,7 @@ import com.liferay.portal.odata.filter.expression.UnaryExpression;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -239,27 +240,24 @@ public class ExpressionVisitorImpl implements ExpressionVisitor<Object> {
 		BinaryExpression.Operation operation, JSONObject leftJSONObject,
 		JSONObject rightJSONObject) {
 
-		String conjunctionName = leftJSONObject.getString("conjunctionName");
+		String conjunctionName = rightJSONObject.getString("conjunctionName");
+
+		_groupCount++;
 
 		if (Validator.isNotNull(conjunctionName) &&
-			Objects.equals(conjunctionName, operation.toString())) {
+			Objects.equals(conjunctionName.toLowerCase(Locale.ROOT), operation.toString().toLowerCase(
+				Locale.ROOT))) {
 
 			return JSONUtil.put(
 				"conjunctionName",
 				StringUtil.lowerCase(String.valueOf(operation))
 			).put(
-				"groupId", leftJSONObject.getString("groupId")
+				"groupId", "group_" + _groupCount
 			).put(
 				"items",
-				leftJSONObject.getJSONArray(
-					"items"
-				).put(
-					rightJSONObject
-				)
+					rightJSONObject.getJSONArray("items").put(leftJSONObject)
 			);
 		}
-
-		_groupCount++;
 
 		return JSONUtil.put(
 			"conjunctionName", StringUtil.lowerCase(String.valueOf(operation))
