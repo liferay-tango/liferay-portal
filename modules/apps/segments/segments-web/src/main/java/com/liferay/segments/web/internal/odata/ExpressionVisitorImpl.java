@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.odata.entity.CollectionEntityField;
@@ -40,7 +41,6 @@ import com.liferay.portal.odata.filter.expression.UnaryExpression;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -244,19 +244,27 @@ public class ExpressionVisitorImpl implements ExpressionVisitor<Object> {
 
 		_groupCount++;
 
-		if (Validator.isNotNull(conjunctionName) &&
-			Objects.equals(conjunctionName.toLowerCase(Locale.ROOT), operation.toString().toLowerCase(
-				Locale.ROOT))) {
+		if (Validator.isNotNull(conjunctionName)) {
+			String OperationString = operation.toString();
 
-			return JSONUtil.put(
-				"conjunctionName",
-				StringUtil.lowerCase(String.valueOf(operation))
-			).put(
-				"groupId", "group_" + _groupCount
-			).put(
-				"items",
-					rightJSONObject.getJSONArray("items").put(leftJSONObject)
-			);
+			if (Objects.equals(
+					conjunctionName.toLowerCase(LocaleUtil.ROOT),
+					OperationString.toLowerCase(LocaleUtil.ROOT))) {
+
+				return JSONUtil.put(
+					"conjunctionName",
+					StringUtil.lowerCase(String.valueOf(operation))
+				).put(
+					"groupId", "group_" + _groupCount
+				).put(
+					"items",
+					rightJSONObject.getJSONArray(
+						"items"
+					).put(
+						leftJSONObject
+					)
+				);
+			}
 		}
 
 		return JSONUtil.put(

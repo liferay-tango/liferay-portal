@@ -55,9 +55,124 @@ public class ExpressionVisitorImplTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Before
-	public void init(){
-		_expressionVisitorImpl =
-			new ExpressionVisitorImpl(0, _entityModel);
+	public void setUp() {
+		_expressionVisitorImpl = new ExpressionVisitorImpl(0, _entityModel);
+	}
+
+	@Test
+	public void testMultipleNotNestedOperationsWithSameTitle()
+		throws ExpressionVisitException {
+
+		Map<String, EntityField> entityFieldsMap =
+			_entityModel.getEntityFieldsMap();
+
+		JSONObject jsonObject =
+			(JSONObject)_expressionVisitorImpl.visitBinaryExpressionOperation(
+				BinaryExpression.Operation.AND,
+				_expressionVisitorImpl.visitBinaryExpressionOperation(
+					BinaryExpression.Operation.EQ, entityFieldsMap.get("title"),
+					"title1"),
+				_expressionVisitorImpl.visitBinaryExpressionOperation(
+					BinaryExpression.Operation.AND,
+					_expressionVisitorImpl.visitBinaryExpressionOperation(
+						BinaryExpression.Operation.EQ,
+						entityFieldsMap.get("title"), "title1"),
+					_expressionVisitorImpl.visitBinaryExpressionOperation(
+						BinaryExpression.Operation.EQ,
+						entityFieldsMap.get("title"), "title1")));
+
+		Assert.assertEquals("and", jsonObject.getString("conjunctionName"));
+		Assert.assertEquals("group_2", jsonObject.getString("groupId"));
+
+		JSONArray itemsJSONArray = jsonObject.getJSONArray("items");
+
+		Assert.assertEquals(
+			JSONUtil.putAll(
+				JSONUtil.put(
+					"operatorName", "eq"
+				).put(
+					"propertyName", "title"
+				).put(
+					"value", "title1"
+				),
+				JSONUtil.put(
+					"operatorName", "eq"
+				).put(
+					"propertyName", "title"
+				).put(
+					"value", "title1"
+				),
+				JSONUtil.put(
+					"operatorName", "eq"
+				).put(
+					"propertyName", "title"
+				).put(
+					"value", "title1"
+				)
+			).toString(),
+			itemsJSONArray.toString());
+	}
+
+	@Test
+	public void testNestedMultipleOperationsWithSameTitle()
+		throws ExpressionVisitException {
+
+		Map<String, EntityField> entityFieldsMap =
+			_entityModel.getEntityFieldsMap();
+
+		JSONObject jsonObject =
+			(JSONObject)_expressionVisitorImpl.visitBinaryExpressionOperation(
+				BinaryExpression.Operation.OR,
+				_expressionVisitorImpl.visitBinaryExpressionOperation(
+					BinaryExpression.Operation.EQ, entityFieldsMap.get("title"),
+					"title1"),
+				_expressionVisitorImpl.visitBinaryExpressionOperation(
+					BinaryExpression.Operation.AND,
+					_expressionVisitorImpl.visitBinaryExpressionOperation(
+						BinaryExpression.Operation.EQ,
+						entityFieldsMap.get("title"), "title1"),
+					_expressionVisitorImpl.visitBinaryExpressionOperation(
+						BinaryExpression.Operation.EQ,
+						entityFieldsMap.get("title"), "title1")));
+
+		Assert.assertEquals("or", jsonObject.getString("conjunctionName"));
+		Assert.assertEquals("group_2", jsonObject.getString("groupId"));
+
+		JSONArray itemsJSONArray = jsonObject.getJSONArray("items");
+
+		Assert.assertEquals(
+			JSONUtil.putAll(
+				JSONUtil.put(
+					"operatorName", "eq"
+				).put(
+					"propertyName", "title"
+				).put(
+					"value", "title1"
+				),
+				JSONUtil.put(
+					"conjunctionName", "and"
+				).put(
+					"groupId", "group_1"
+				).put(
+					"items",
+					JSONUtil.putAll(
+						JSONUtil.put(
+							"operatorName", "eq"
+						).put(
+							"propertyName", "title"
+						).put(
+							"value", "title1"
+						),
+						JSONUtil.put(
+							"operatorName", "eq"
+						).put(
+							"propertyName", "title"
+						).put(
+							"value", "title1"
+						))
+				)
+			).toString(),
+			itemsJSONArray.toString());
 	}
 
 	@Test
@@ -124,125 +239,6 @@ public class ExpressionVisitorImplTest {
 				"value", "title1"
 			).toJSONString(),
 			jsonObject.toJSONString());
-	}
-
-	@Test
-	public void testMultipleNotNestedOperationsWithSameTitle()
-		throws ExpressionVisitException {
-
-		Map<String, EntityField> entityFieldsMap =
-			_entityModel.getEntityFieldsMap();
-
-		JSONObject jsonObject =
-			(JSONObject)_expressionVisitorImpl.visitBinaryExpressionOperation(
-				BinaryExpression.Operation.AND,
-				_expressionVisitorImpl.visitBinaryExpressionOperation(
-					BinaryExpression.Operation.EQ, entityFieldsMap.get("title"),
-					"title1"),
-				_expressionVisitorImpl.visitBinaryExpressionOperation(
-					BinaryExpression.Operation.AND,
-					_expressionVisitorImpl.visitBinaryExpressionOperation(
-						BinaryExpression.Operation.EQ, entityFieldsMap.get("title"),
-						"title1"),
-					_expressionVisitorImpl.visitBinaryExpressionOperation(
-						BinaryExpression.Operation.EQ, entityFieldsMap.get("title"),
-						"title1")));
-
-		Assert.assertEquals("and", jsonObject.getString("conjunctionName"));
-		Assert.assertEquals("group_2", jsonObject.getString("groupId"));
-
-		JSONArray itemsJSONArray = jsonObject.getJSONArray("items");
-
-		Assert.assertEquals(
-			JSONUtil.putAll(
-				JSONUtil.put(
-					"operatorName", "eq"
-				).put(
-					"propertyName", "title"
-				).put(
-					"value", "title1"
-				),
-				JSONUtil.put(
-					"operatorName", "eq"
-				).put(
-					"propertyName", "title"
-				).put(
-					"value", "title1"
-				),
-				JSONUtil.put(
-					"operatorName", "eq"
-				).put(
-					"propertyName", "title"
-				).put(
-					"value", "title1"
-				)
-			).toString(),
-			itemsJSONArray.toString());
-	}
-
-	@Test
-	public void testNestedMultipleOperationsWithSameTitle()
-		throws ExpressionVisitException {
-
-		Map<String, EntityField> entityFieldsMap =
-			_entityModel.getEntityFieldsMap();
-
-		JSONObject jsonObject = (JSONObject)_expressionVisitorImpl.visitBinaryExpressionOperation(
-			BinaryExpression.Operation.OR,
-			_expressionVisitorImpl.visitBinaryExpressionOperation(
-				BinaryExpression.Operation.EQ, entityFieldsMap.get("title"),
-				"title1"),
-			_expressionVisitorImpl.visitBinaryExpressionOperation(
-				BinaryExpression.Operation.AND,
-				_expressionVisitorImpl.visitBinaryExpressionOperation(
-					BinaryExpression.Operation.EQ, entityFieldsMap.get("title"),
-					"title1"),
-				_expressionVisitorImpl.visitBinaryExpressionOperation(
-					BinaryExpression.Operation.EQ, entityFieldsMap.get("title"),
-					"title1")
-				)
-
-		);
-
-		Assert.assertEquals("or", jsonObject.getString("conjunctionName"));
-		Assert.assertEquals("group_2", jsonObject.getString("groupId"));
-
-		JSONArray itemsJSONArray = jsonObject.getJSONArray("items");
-
-		JSONArray expected = JSONUtil.putAll(
-			JSONUtil.put(
-				"operatorName", "eq"
-			).put(
-				"propertyName", "title"
-			).put(
-				"value", "title1"
-			),
-			JSONUtil.put(
-				"groupId", "group_1"
-			).put(
-				"conjunctionName", "and"
-			).put(
-				"items", JSONUtil.putAll(
-					JSONUtil.put(
-						"operatorName", "eq"
-					).put(
-						"propertyName", "title"
-					).put(
-						"value", "title1"
-					),
-					JSONUtil.put(
-						"operatorName", "eq"
-					).put(
-						"propertyName", "title"
-					).put(
-						"value", "title1"
-					)
-				)
-			)
-		);
-		Assert.assertEquals(
-			expected.toString(),
-			itemsJSONArray.toString());
 	}
 
 	@Test
