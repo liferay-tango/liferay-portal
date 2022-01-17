@@ -21,6 +21,7 @@ import com.liferay.content.dashboard.web.internal.constants.ContentDashboardPort
 import com.liferay.content.dashboard.web.internal.dao.search.ContentDashboardItemSearchContainerFactory;
 import com.liferay.content.dashboard.web.internal.item.ContentDashboardItem;
 import com.liferay.content.dashboard.web.internal.item.ContentDashboardItemFactoryTracker;
+import com.liferay.content.dashboard.web.internal.item.ContentDashboardItemSearchClassNameMapperTracker;
 import com.liferay.content.dashboard.web.internal.item.FileEntryContentDashboardItem;
 import com.liferay.content.dashboard.web.internal.item.JournalArticleContentDashboardItem;
 import com.liferay.content.dashboard.web.internal.item.type.ContentDashboardItemSubtype;
@@ -129,6 +130,7 @@ public class GetContentDashboardItemsXlsMVCResourceCommand
 				ContentDashboardItemSearchContainerFactory.getInstance(
 					_assetCategoryLocalService, _assetVocabularyLocalService,
 					_contentDashboardItemFactoryTracker,
+					_contentDashboardItemSearchClassNameMapperTracker,
 					_contentDashboardSearchRequestBuilderFactory, _portal,
 					resourceRequest, resourceResponse, _searcher);
 
@@ -243,6 +245,10 @@ public class GetContentDashboardItemsXlsMVCResourceCommand
 	@Reference
 	private ContentDashboardItemFactoryTracker
 		_contentDashboardItemFactoryTracker;
+
+	@Reference
+	private ContentDashboardItemSearchClassNameMapperTracker
+		_contentDashboardItemSearchClassNameMapperTracker;
 
 	@Reference
 	private ContentDashboardSearchRequestBuilderFactory

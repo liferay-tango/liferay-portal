@@ -21,6 +21,8 @@ import com.liferay.petra.reflect.GenericUtil;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Stream;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -33,6 +35,27 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(service = ContentDashboardItemSearchClassNameMapperTracker.class)
 public class ContentDashboardItemSearchClassNameMapperTracker {
+
+	public String getContentDashboardItemClassName(String searchClassName) {
+		Set<String> keys = _serviceTrackerMap.keySet();
+
+		Stream<String> stream = keys.stream();
+
+		return stream.filter(
+			key -> {
+				ContentDashboardItemSearchClassNameMapper<?>
+					contentDashboardItemSearchClassNameMapper =
+						_serviceTrackerMap.getService(key);
+
+				return searchClassName.equals(
+					contentDashboardItemSearchClassNameMapper.
+						getSearchClassName());
+			}
+		).findFirst(
+		).orElse(
+			searchClassName
+		);
+	}
 
 	public String getContentDashboardItemSearchClassName(String className) {
 		return Optional.ofNullable(
