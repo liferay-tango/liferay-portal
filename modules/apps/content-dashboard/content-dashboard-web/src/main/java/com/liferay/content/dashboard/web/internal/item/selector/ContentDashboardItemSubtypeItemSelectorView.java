@@ -19,11 +19,11 @@ import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.content.dashboard.web.internal.display.context.ContentDashboardItemSubtypeItemSelectorViewDisplayContext;
 import com.liferay.content.dashboard.web.internal.item.ContentDashboardItemFactory;
 import com.liferay.content.dashboard.web.internal.item.ContentDashboardItemFactoryTracker;
+import com.liferay.content.dashboard.web.internal.item.ContentDashboardItemSearchClassNameMapperTracker;
 import com.liferay.content.dashboard.web.internal.item.selector.criteria.content.dashboard.type.criterion.ContentDashboardItemSubtypeItemSelectorCriterion;
 import com.liferay.content.dashboard.web.internal.item.type.ContentDashboardItemSubtype;
 import com.liferay.content.dashboard.web.internal.item.type.ContentDashboardItemSubtypeFactory;
 import com.liferay.content.dashboard.web.internal.util.ContentDashboardGroupUtil;
-import com.liferay.content.dashboard.web.internal.util.ContentDashboardSearchClassNameUtil;
 import com.liferay.document.library.kernel.model.DLFileEntryType;
 import com.liferay.document.library.kernel.service.DLFileEntryTypeLocalService;
 import com.liferay.info.item.InfoItemClassDetails;
@@ -173,8 +173,8 @@ public class ContentDashboardItemSubtypeItemSelectorView
 	private String _getIcon(String className) {
 		AssetRendererFactory<?> assetRendererFactory =
 			AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassName(
-				ContentDashboardSearchClassNameUtil.getSearchClassName(
-					className));
+				_contentDashboardItemSearchClassNameMapperTracker.
+					getContentDashboardItemSearchClassName(className));
 
 		if (assetRendererFactory != null) {
 			return assetRendererFactory.getIconCssClass();
@@ -319,6 +319,10 @@ public class ContentDashboardItemSubtypeItemSelectorView
 	@Reference
 	private ContentDashboardItemFactoryTracker
 		_contentDashboardItemFactoryTracker;
+
+	@Reference
+	private ContentDashboardItemSearchClassNameMapperTracker
+		_contentDashboardItemSearchClassNameMapperTracker;
 
 	@Reference
 	private DLFileEntryTypeLocalService _dlFileEntryTypeLocalService;

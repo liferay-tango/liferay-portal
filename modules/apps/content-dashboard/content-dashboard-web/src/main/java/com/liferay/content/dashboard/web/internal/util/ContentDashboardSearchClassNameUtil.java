@@ -30,14 +30,6 @@ public class ContentDashboardSearchClassNameUtil {
 			searchClassName, searchClassName);
 	}
 
-	public static String getSearchClassName(String className) {
-		return _classNamesMap.getOrDefault(className, className);
-	}
-
-	private static final Map<String, String> _classNamesMap =
-		HashMapBuilder.put(
-			FileEntry.class.getName(), DLFileEntry.class.getName()
-		).build();
 	private static final Map<String, String> _searchClassNamesMap =
 		HashMapBuilder.put(
 			DLFileEntry.class.getName(), FileEntry.class.getName()

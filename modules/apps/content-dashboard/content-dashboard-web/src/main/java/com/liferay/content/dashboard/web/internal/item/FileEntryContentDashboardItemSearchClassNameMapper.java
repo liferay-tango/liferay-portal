@@ -16,10 +16,12 @@ package com.liferay.content.dashboard.web.internal.item;
 
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Cristina González
  */
+@Component(service = ContentDashboardItemSearchClassNameMapper.class)
 public class FileEntryContentDashboardItemSearchClassNameMapper
 	implements ContentDashboardItemSearchClassNameMapper<FileEntry> {
 
