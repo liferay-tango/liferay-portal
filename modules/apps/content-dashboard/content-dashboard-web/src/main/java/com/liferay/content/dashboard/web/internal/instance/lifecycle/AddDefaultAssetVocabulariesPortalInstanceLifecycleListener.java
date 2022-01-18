@@ -18,8 +18,8 @@ import com.liferay.asset.kernel.model.AssetCategoryConstants;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.model.AssetVocabularyConstants;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
-import com.liferay.document.library.kernel.model.DLFileEntry;
-import com.liferay.journal.model.JournalArticle;
+import com.liferay.content.dashboard.web.internal.item.ContentDashboardItemAssetVocabularyClassNameMapperTracker;
+import com.liferay.content.dashboard.web.internal.item.ContentDashboardItemFactoryTracker;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.instance.lifecycle.BasePortalInstanceLifecycleListener;
 import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
@@ -33,10 +33,14 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.util.PropsValues;
 import com.liferay.portlet.asset.util.AssetVocabularySettingsHelper;
 
+import java.util.AbstractMap;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -53,18 +57,31 @@ public class AddDefaultAssetVocabulariesPortalInstanceLifecycleListener
 		_addAssetVocabulary(
 			company, PropsValues.ASSET_VOCABULARY_DEFAULT,
 			AssetVocabularyConstants.VISIBILITY_TYPE_PUBLIC, null);
+
+		Collection<String> classNames =
+			_contentDashboardItemFactoryTracker.getClassNames();
+
+		Stream<String> stream = classNames.stream();
+
+		String[] assetVocabularyTypeClassNames = stream.map(
+			_contentDashboardItemAssetVocabularyClassNameMapperTracker::
+				getContentDashboardItemAssetVocabularyClassName
+		).toArray(
+			size -> new String[size]
+		);
+
 		_addAssetVocabulary(
 			company, "audience",
 			AssetVocabularyConstants.VISIBILITY_TYPE_INTERNAL,
-			JournalArticle.class, DLFileEntry.class);
+			assetVocabularyTypeClassNames);
 		_addAssetVocabulary(
 			company, "stage", AssetVocabularyConstants.VISIBILITY_TYPE_INTERNAL,
-			JournalArticle.class, DLFileEntry.class);
+			assetVocabularyTypeClassNames);
 	}
 
 	private void _addAssetVocabulary(
 			Company company, String name, int visibilityType,
-			Class<?>... assetVocabularyTypeClasses)
+			String[] assetVocabularyTypeClassNames)
 		throws Exception {
 
 		AssetVocabulary assetVocabulary =
@@ -78,27 +95,32 @@ public class AddDefaultAssetVocabulariesPortalInstanceLifecycleListener
 
 		User defaultUser = company.getDefaultUser();
 
-		Map<Locale, String> titleMap = new HashMap<>();
+		Set<Locale> locales = LanguageUtil.getCompanyAvailableLocales(
+			company.getCompanyId());
 
-		for (Locale locale :
-				LanguageUtil.getCompanyAvailableLocales(
-					company.getCompanyId())) {
+		Stream<Locale> stream = locales.stream();
 
-			titleMap.put(locale, LanguageUtil.get(locale, name));
-		}
+		Map<Locale, String> titleMap = stream.map(
+			locale -> new AbstractMap.SimpleEntry<>(
+				locale, LanguageUtil.get(locale, name))
+		).collect(
+			Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)
+		);
 
 		AssetVocabularySettingsHelper assetVocabularySettingsHelper =
 			new AssetVocabularySettingsHelper();
 
-		if (assetVocabularyTypeClasses != null) {
-			long[] classNameIds = new long[assetVocabularyTypeClasses.length];
-			long[] classTypePKs = new long[assetVocabularyTypeClasses.length];
+		if (assetVocabularyTypeClassNames != null) {
+			long[] classNameIds =
+				new long[assetVocabularyTypeClassNames.length];
+			long[] classTypePKs =
+				new long[assetVocabularyTypeClassNames.length];
 			boolean[] requireds =
-				new boolean[assetVocabularyTypeClasses.length];
+				new boolean[assetVocabularyTypeClassNames.length];
 
-			for (int i = 0; i < assetVocabularyTypeClasses.length; i++) {
+			for (int i = 0; i < assetVocabularyTypeClassNames.length; i++) {
 				classNameIds[i] = _portal.getClassNameId(
-					assetVocabularyTypeClasses[i]);
+					assetVocabularyTypeClassNames[i]);
 				classTypePKs[i] = AssetCategoryConstants.ALL_CLASS_TYPE_PK;
 				requireds[i] = false;
 			}
@@ -121,6 +143,14 @@ public class AddDefaultAssetVocabulariesPortalInstanceLifecycleListener
 
 	@Reference
 	private AssetVocabularyLocalService _assetVocabularyLocalService;
+
+	@Reference
+	private ContentDashboardItemAssetVocabularyClassNameMapperTracker
+		_contentDashboardItemAssetVocabularyClassNameMapperTracker;
+
+	@Reference
+	private ContentDashboardItemFactoryTracker
+		_contentDashboardItemFactoryTracker;
 
 	@Reference
 	private Portal _portal;
