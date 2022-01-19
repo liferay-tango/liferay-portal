@@ -533,8 +533,9 @@ public class AssetListAssetEntryProviderImpl
 				return _assetListEntryAssetEntryRelLocalService.
 					getAssetListEntryAssetEntryRels(
 						assetListEntry.getAssetListEntryId(),
-						_getCombinedSegmentsEntryIds(segmentsEntryIds), start,
-						end);
+						_getCombinedSegmentsEntryIds(
+							assetListEntry, segmentsEntryIds),
+						start, end);
 			}
 
 			List<AssetListEntryAssetEntryRel> assetListEntryAssetEntryRels =
@@ -695,16 +696,36 @@ public class AssetListAssetEntryProviderImpl
 		return availableClassTypeIds;
 	}
 
-	private long[] _getCombinedSegmentsEntryIds(long[] segmentEntryIds) {
+	private long[] _getCombinedSegmentsEntryIds(
+		AssetListEntry assetListEntry, long[] segmentEntryIds) {
+
 		if ((segmentEntryIds.length > 1) &&
 			ArrayUtil.contains(
 				segmentEntryIds, SegmentsEntryConstants.ID_DEFAULT)) {
 
-			return ArrayUtil.remove(
+			segmentEntryIds = ArrayUtil.remove(
 				segmentEntryIds, SegmentsEntryConstants.ID_DEFAULT);
 		}
 
-		return segmentEntryIds;
+		LongStream longStream = Arrays.stream(segmentEntryIds);
+
+		Stream<AssetListEntrySegmentsEntryRel>
+			assetListEntrySegmentsEntryRelStream = longStream.mapToObj(
+				segmentsEntryId ->
+					_assetListEntrySegmentsEntryRelLocalService.
+						fetchAssetListEntrySegmentsEntryRel(
+							assetListEntry.getAssetListEntryId(),
+							segmentsEntryId));
+
+		return assetListEntrySegmentsEntryRelStream.filter(
+			Objects::nonNull
+		).sorted(
+			Comparator.comparing(AssetListEntrySegmentsEntryRel::getPriority)
+		).map(
+			AssetListEntrySegmentsEntryRelModel::getSegmentsEntryId
+		).mapToLong(
+			i -> i
+		).toArray();
 	}
 
 	private List<AssetEntry> _getDynamicAssetEntries(
@@ -730,7 +751,8 @@ public class AssetListAssetEntryProviderImpl
 
 		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS)) {
 			for (long segmentsEntryId :
-					_getCombinedSegmentsEntryIds(segmentsEntryIds)) {
+					_getCombinedSegmentsEntryIds(
+						assetListEntry, segmentsEntryIds)) {
 
 				AssetEntryQuery assetEntryQuery = getAssetEntryQuery(
 					assetListEntry, segmentsEntryId, userId);
@@ -750,7 +772,8 @@ public class AssetListAssetEntryProviderImpl
 		int subtotal = 0;
 
 		for (long segmentsEntryId :
-				_getCombinedSegmentsEntryIds(segmentsEntryIds)) {
+				_getCombinedSegmentsEntryIds(
+					assetListEntry, segmentsEntryIds)) {
 
 			AssetEntryQuery assetEntryQuery = getAssetEntryQuery(
 				assetListEntry, segmentsEntryId, userId);
@@ -796,7 +819,8 @@ public class AssetListAssetEntryProviderImpl
 			int totalCount = 0;
 
 			for (long segmentsEntryId :
-					_getCombinedSegmentsEntryIds(segmentsEntryIds)) {
+					_getCombinedSegmentsEntryIds(
+						assetListEntry, segmentsEntryIds)) {
 
 				AssetEntryQuery assetEntryQuery = getAssetEntryQuery(
 					assetListEntry, segmentsEntryId, userId);
