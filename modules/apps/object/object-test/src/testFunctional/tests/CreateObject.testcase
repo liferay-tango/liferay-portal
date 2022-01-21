@@ -1455,37 +1455,6 @@ definition {
 			value1 = "No items were found.");
 	}
 
-	@description = "LPS-135390 - Verify it is not possible to view and access the Object Admin portlet without the Access in Control Panel permission"
-	@priority = "5"
-	test CannotAccessObjectAdminWithoutAccessPermission {
-		property portal.acceptance = "true";
-
-		JSONRole.addRegularRole(
-			roleKey = "Regular Role",
-			roleTitle = "Regular Role");
-
-		JSONUser.addUser(
-			userEmailAddress = "userea@liferay.com",
-			userFirstName = "userfn",
-			userLastName = "userln",
-			userScreenName = "usersn");
-
-		JSONUser.setFirstPassword(
-			agreeToTermsAndAnswerReminderQuery = "true",
-			requireReset = "false",
-			userEmailAddress = "userea@liferay.com");
-
-		JSONRole.assignRoleToUser(
-			roleTitle = "Regular Role",
-			userEmailAddress = "userea@liferay.com");
-
-		User.logoutAndLoginPG(
-			userLoginEmailAddress = "userea@liferay.com",
-			userLoginFullName = "userfn userln");
-
-		ApplicationsMenu.assertMenuButtonIsNotPresent();
-	}
-
 	@description = "LPS-135390 - Verify it is not possible to add an Object without the Add Object Definition permission"
 	@priority = "5"
 	test CannotAddObjectWithoutAddPermission {
@@ -2512,12 +2481,75 @@ definition {
 	}
 
 	@description = "LPS-135390 - Verify it is possible to publish an Object with the Publish Object Definition permission"
-	@ignore = "Test Stub"
 	@priority = "4"
 	test CanPublishObjectWithPublishPermission {
+		ObjectAdmin.addObjectViaAPI(
+			labelName = "Custom Object",
+			objectName = "CustomObject",
+			pluralLabelName = "Custom Objects");
 
-		// TODO LPS-141602 CanPublishObjectWithPublishPermission pending implementation
+		ObjectAdmin.addObjectFieldViaAPI(
+			fieldLabelName = "Custom Field",
+			fieldName = "customObjectField",
+			fieldType = "String",
+			isRequired = "false",
+			objectName = "CustomObject");
 
+		JSONRole.addRegularRole(
+			roleKey = "Regular Role",
+			roleTitle = "Regular Role");
+
+		for (var resourceAction : list "ACCESS_IN_CONTROL_PANEL,VIEW") {
+			Permissions.definePermissionViaJSONAPI(
+				resourceAction = "${resourceAction}",
+				resourceName = "com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet",
+				roleTitle = "Regular Role");
+		}
+
+		Permissions.definePermissionViaJSONAPI(
+			resourceAction = "PUBLISH_OBJECT_DEFINITION",
+			resourceName = "com.liferay.object",
+			roleTitle = "Regular Role");
+
+		for (var resourceAction : list "UPDATE,VIEW") {
+			Permissions.definePermissionViaJSONAPI(
+				resourceAction = "${resourceAction}",
+				resourceName = "com.liferay.object.model.ObjectDefinition",
+				roleTitle = "Regular Role");
+		}
+
+		JSONUser.addUser(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		JSONUser.setFirstPassword(
+			agreeToTermsAndAnswerReminderQuery = "true",
+			requireReset = "false",
+			userEmailAddress = "userea@liferay.com");
+
+		JSONRole.assignRoleToUser(
+			roleTitle = "Regular Role",
+			userEmailAddress = "userea@liferay.com");
+
+		User.logoutAndLoginPG(
+			userLoginEmailAddress = "userea@liferay.com",
+			userLoginFullName = "userfn userln");
+
+		ObjectAdmin.openObjectAdmin();
+
+		ObjectPortlet.selectCustomObject(label = "Custom Object");
+
+		Button.clickPublish();
+
+		Navigator.openURL();
+
+		ObjectAdmin.openObjectAdmin();
+
+		ObjectAdmin.assertObjectStatus(
+			label = "Custom Object",
+			status = "Approved");
 	}
 
 	@description = "LPS-135401 - Verify that it is possible to relate to many other entries on both objects"
@@ -4495,12 +4527,104 @@ definition {
 	}
 
 	@description = "LPS-135401 - Verify if Cascade deletion type of Relationship Many to Many will allow to delete only the entry with relation but not its relations"
-	@ignore = "Test Stub"
 	@priority = "4"
 	test CascadeDeletionManyToManyWillAllowDelete {
+		for (var letter : list "A,B") {
+			ObjectAdmin.addObjectViaAPI(
+				labelName = "Custom Object ${letter}",
+				objectName = "CustomObject${letter}",
+				pluralLabelName = "Custom Objects ${letter}");
+		}
 
-		// TODO LPS-141670 CascadeDeletionManyToManyWillAllowDelete pending implementation
+		for (var letter : list "A,B") {
+			ObjectAdmin.addObjectFieldViaAPI(
+				fieldLabelName = "Custom Field ${letter}",
+				fieldName = "customObjectField${letter}",
+				fieldType = "String",
+				isRequired = "false",
+				objectName = "CustomObject${letter}");
+		}
 
+		ObjectAdmin.addObjectRelationshipViaAPI(
+			deletionType = "cascade",
+			objectName_1 = "CustomObjectA",
+			objectName_2 = "CustomObjectB",
+			relationshipLabel = "Relationship",
+			relationshipName = "relationship",
+			relationshipType = "manyToMany");
+
+		ObjectAdmin.addObjectLayoutViaAPI(
+			layoutName = "Layout Name",
+			objectName = "CustomObjectA");
+
+		ObjectAdmin.openObjectAdmin();
+
+		ObjectPortlet.selectCustomObject(label = "Custom Object A");
+
+		CreateObject.selectTitleField(fieldLabel = "Custom Field A");
+
+		CreateObject.saveObject();
+
+		ObjectAdmin.goToLayoutsTab();
+
+		ObjectAdmin.selectKebabMenuOption(kebabOption = "View");
+
+		ObjectAdmin.markLayoutAsDefault();
+
+		ObjectAdmin.goToLayoutTabOnLayouts();
+
+		ObjectAdmin.addTabFieldsOnLayout(
+			blockName = "Block 1",
+			columnsNumber = "1",
+			fieldLabelName = "Custom Field A",
+			tabName = "Field Tab");
+
+		ObjectAdmin.addTabRelationshipsOnLayout(
+			relationshipsLabelName = "Relationship",
+			tabName = "Relationship Tab");
+
+		Button.clickSave();
+
+		Navigator.openURL();
+
+		ObjectAdmin.openObjectAdmin();
+
+		ObjectPortlet.selectCustomObject(label = "Custom Object B");
+
+		CreateObject.selectTitleField(fieldLabel = "Custom Field B");
+
+		CreateObject.saveObject();
+
+		ObjectAdmin.publishObjectViaAPI(objectName = "CustomObjectA");
+
+		ObjectAdmin.publishObjectViaAPI(objectName = "CustomObjectB");
+
+		for (var fieldEntry : list "A,B") {
+			ObjectAdmin.addObjectSingleFieldEntryViaAPI(
+				fieldName = "customObjectField${fieldEntry}",
+				objectName = "CustomObject${fieldEntry}",
+				value = "Entry ${fieldEntry}");
+		}
+
+		Navigator.openURL();
+
+		ObjectAdmin.goToCustomObject(objectName = "CustomObjectA");
+
+		ObjectPortlet.viewEntryDetails(entry = "Entry A");
+
+		ObjectAdmin.gotoRelationshipsTab();
+
+		CreateObject.addRelationshipAndSelectEntry(titleFieldName = "Entry B");
+
+		ObjectAdmin.goToCustomObject(objectName = "CustomObjectA");
+
+		ObjectPortlet.deleteEntry(entry = "Entry A");
+
+		ObjectPortlet.assertEntryNotPresent(entry = "Entry A");
+
+		ObjectAdmin.goToCustomObject(objectName = "CustomObjectB");
+
+		ObjectPortlet.viewEntry(entry = "Entry B");
 	}
 
 	@description = "LPS-135401 - Verify if Cascade deletion type of Relationship One to Many will allow the entry with relation (from the child Object) to be deleted but not its relation"
@@ -4609,13 +4733,76 @@ definition {
 	}
 
 	@description = "LPS-135401 - Verify if Cascade deletion type of Relationship One to Many will allow the entry with relation (from the parent Object) and its relations to be deleted"
-	@ignore = "Test Stub"
 	@priority = "5"
 	test CascadeDeletionOneToManyWillAllowDeleteParent {
 		property portal.acceptance = "true";
 
-		// TODO LPS-141671 CascadeDeletionOneToManyWillAllowDeleteParent pending implementation
+		for (var letter : list "A,B") {
+			ObjectAdmin.addObjectViaAPI(
+				labelName = "Custom Object ${letter}",
+				objectName = "CustomObject${letter}",
+				pluralLabelName = "Custom Objects ${letter}");
+		}
 
+		for (var letter : list "A,B") {
+			ObjectAdmin.addObjectFieldViaAPI(
+				fieldLabelName = "Custom Field ${letter}",
+				fieldName = "customObjectField${letter}",
+				fieldType = "String",
+				isRequired = "false",
+				objectName = "CustomObject${letter}");
+		}
+
+		ObjectAdmin.addObjectRelationshipViaAPI(
+			deletionType = "cascade",
+			objectName_1 = "CustomObjectA",
+			objectName_2 = "CustomObjectB",
+			relationshipLabel = "Relationship",
+			relationshipName = "relationship",
+			relationshipType = "oneToMany");
+
+		ObjectAdmin.openObjectAdmin();
+
+		ObjectPortlet.selectCustomObject(label = "Custom Object A");
+
+		CreateObject.selectTitleField(fieldLabel = "Custom Field A");
+
+		Button.clickSave();
+
+		ObjectAdmin.publishObjectViaAPI(objectName = "CustomObjectA");
+
+		ObjectAdmin.publishObjectViaAPI(objectName = "CustomObjectB");
+
+		for (var fieldEntry : list "A,B") {
+			ObjectAdmin.addObjectSingleFieldEntryViaAPI(
+				fieldName = "customObjectField${fieldEntry}",
+				objectName = "CustomObject${fieldEntry}",
+				value = "Entry ${fieldEntry}");
+		}
+
+		Navigator.openURL();
+
+		ObjectAdmin.goToCustomObject(objectName = "CustomObjectB");
+
+		ObjectPortlet.viewEntryDetails(entry = "Entry B");
+
+		ObjectPortlet.chooseEntryOnRelationshipField(entryOption = "Entry A");
+
+		Button.clickSave();
+
+		WaitForSPARefresh();
+
+		Navigator.openURL();
+
+		ObjectAdmin.goToCustomObject(objectName = "CustomObjectA");
+
+		ObjectPortlet.deleteEntry(entry = "Entry A");
+
+		ObjectPortlet.assertEntryNotPresent(entry = "Entry A");
+
+		ObjectAdmin.goToCustomObject(objectName = "CustomObjectB");
+
+		ObjectPortlet.assertEntryNotPresent(entry = "Entry B");
 	}
 
 	@description = "LPS-135401 - Verify that when adding an entry that was already related to another it will keep related to both entries"
@@ -6893,12 +7080,90 @@ definition {
 	}
 
 	@description = "LPS-139005 - Verify that the Relationship field will not be displayed on a Collection Display with List Style set as Table when the parent object is inactivated"
-	@ignore = "Test Stub"
 	@priority = "4"
 	test RelationshipFieldCannotBeDisplayedForCollectionDisplayTableWhenInactivated {
+		for (var letter : list "A,B") {
+			ObjectAdmin.addObjectViaAPI(
+				labelName = "Custom Object ${letter}",
+				objectName = "CustomObject${letter}",
+				pluralLabelName = "Custom Objects ${letter}");
+		}
 
-		// TODO LPS-140871 RelationshipFieldCannotBeDisplayedForCollectionDisplayTableWhenInactivated pending implementation
+		for (var letter : list "A,B") {
+			ObjectAdmin.addObjectFieldViaAPI(
+				fieldLabelName = "Custom Field ${letter}",
+				fieldName = "customObjectField${letter}",
+				fieldType = "String",
+				isRequired = "false",
+				objectName = "CustomObject${letter}");
+		}
 
+		ObjectAdmin.addObjectRelationshipViaAPI(
+			objectName_1 = "CustomObjectA",
+			objectName_2 = "CustomObjectB",
+			relationshipLabel = "Relationship",
+			relationshipName = "relationship",
+			relationshipType = "oneToMany");
+
+		for (var letter : list "A,B") {
+			ObjectAdmin.openObjectAdmin();
+
+			ObjectPortlet.selectCustomObject(label = "Custom Object ${letter}");
+
+			CreateObject.selectTitleField(fieldLabel = "Custom Field ${letter}");
+
+			CreateObject.saveObject();
+		}
+
+		Navigator.openURL();
+
+		ObjectAdmin.publishObjectViaAPI(objectName = "CustomObjectA");
+
+		ObjectAdmin.publishObjectViaAPI(objectName = "CustomObjectB");
+
+		for (var fieldEntry : list "A,B") {
+			ObjectAdmin.addObjectSingleFieldEntryViaAPI(
+				fieldName = "customObjectField${fieldEntry}",
+				objectName = "CustomObject${fieldEntry}",
+				value = "Entry ${fieldEntry}");
+		}
+
+		ObjectAdmin.goToCustomObject(objectName = "CustomObjectB");
+
+		ObjectPortlet.viewEntryDetails(entry = "Entry B");
+
+		ObjectPortlet.chooseEntryOnRelationshipField(entryOption = "Entry A");
+
+		Button.clickSave();
+
+		ObjectAdmin.openObjectAdmin();
+
+		CreateObject.inactiveCustomObject(objectName = "Custom Object A");
+
+		Navigator.openURL();
+
+		ContentPages.addPage(pageName = "Blank Display Page");
+
+		PageEditor.addFragment(
+			collectionName = "Content Display",
+			fragmentName = "Collection Display");
+
+		PageEditor.editCollectionDisplay(
+			fragmentName = "Collection Display",
+			infoListProviderName = "Custom Objects B");
+
+		PageEditor.editCollectionDisplay(
+			fragmentName = "Collection Display",
+			listStyle = "Table",
+			selectedName = "Custom Objects B");
+
+		PageEditor.clickPublish();
+
+		PagesAdmin.gotoPageEllipsisMenuItem(
+			menuItem = "View",
+			pageName = "Blank Display Page");
+
+		ObjectAdmin.assertEntryOnPageNotPresent(entryName = "Entry A");
 	}
 
 	@description = "LPS-139005 - Verify that the Relationship field will not be displayed to be selected for a Page fragment when the parent object is inactivated"

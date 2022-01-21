@@ -29,22 +29,20 @@ const VariationsNav = ({
 	updateVariationsPriorityURL,
 }) => {
 	const states = {
-		createTheFirstSegment:
-			segmentsEntriesAvailables &&
-			assetListEntrySegmentsEntryRels.length === 1,
-		default() {
-			return !this.emptyState && !this.createTheFirstSegment;
-		},
-		defaultWithHeaderButton() {
+		default: assetListEntrySegmentsEntryRels.length > 1,
+		emptyState: assetListEntrySegmentsEntryRels.length === 1,
+		showDefaultStateHeaderAddVariationButton() {
 			return (
-				!this.createTheFirstSegment &&
-				segmentsEntriesAvailables &&
-				assetListEntryValid
+				this.default && assetListEntryValid && segmentsEntriesAvailables
 			);
 		},
-		emptyState:
-			!segmentsEntriesAvailables &&
-			assetListEntrySegmentsEntryRels.length === 1,
+		showEmptyStateAddVariationButton() {
+			return (
+				this.emptyState &&
+				assetListEntryValid &&
+				segmentsEntriesAvailables
+			);
+		},
 	};
 
 	const handleAddVariation = () => {
@@ -64,7 +62,7 @@ const VariationsNav = ({
 					{Liferay.Language.get('personalized-variations')}
 				</p>
 
-				{states.defaultWithHeaderButton() && (
+				{states.showDefaultStateHeaderAddVariationButton() && (
 					<ClayTooltipProvider>
 						<ClayButtonWithIcon
 							data-tooltip-align="top"
@@ -78,7 +76,7 @@ const VariationsNav = ({
 				)}
 			</div>
 
-			{(states.emptyState || states.createTheFirstSegment) && (
+			{states.emptyState && (
 				<ClayEmptyState
 					description={Liferay.Language.get(
 						'no-personalized-variations-were-found'
@@ -87,7 +85,7 @@ const VariationsNav = ({
 						'no-personalized-variations-yet'
 					)}
 				>
-					{states.createTheFirstSegment && (
+					{states.showEmptyStateAddVariationButton() && (
 						<ClayButton
 							displayType="primary"
 							onClick={handleAddVariation}
@@ -99,7 +97,7 @@ const VariationsNav = ({
 				</ClayEmptyState>
 			)}
 
-			{states.default() && (
+			{states.default && (
 				<>
 					<p className="mb-3 small text-secondary">
 						{Liferay.Language.get(

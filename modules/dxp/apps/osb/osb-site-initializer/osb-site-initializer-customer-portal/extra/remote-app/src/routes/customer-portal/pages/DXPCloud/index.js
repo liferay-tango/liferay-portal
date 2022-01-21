@@ -9,14 +9,27 @@
  * distribution rights of the Software.
  */
 import ActivationStatus from '../../components/ActivationStatus/index';
+import DeveloperKeysLayouts from '../../components/DeveloperKeysLayout';
 
-const DXPCloud = ({project, subscriptionGroups, userAccount}) => {
+const DXPCloud = ({project, sessionId, subscriptionGroups, userAccount}) => {
 	return (
-		<ActivationStatus
-			project={project}
-			subscriptionGroups={subscriptionGroups}
-			userAccount={userAccount}
-		/>
+		<div className="mr-4">
+			<ActivationStatus
+				project={project}
+				subscriptionGroups={subscriptionGroups}
+				userAccount={userAccount}
+			/>
+
+			<DeveloperKeysLayouts>
+				<DeveloperKeysLayouts.Inputs
+					accountKey={project.accountKey}
+					downloadTextHelper="To activate a local instance of Liferay DXP, download a developer key for your Liferay DXP version."
+					dxpVersion={project.dxpVersion}
+					productTitle="DXP Cloud"
+					sessionId={sessionId}
+				></DeveloperKeysLayouts.Inputs>
+			</DeveloperKeysLayouts>
+		</div>
 	);
 };
 

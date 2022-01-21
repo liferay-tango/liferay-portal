@@ -22,6 +22,7 @@ import VariationsNav from '../../../src/main/resources/META-INF/resources/js/com
 import {
 	emptyStateNoSegments,
 	emptyStateOneAvailableSegments,
+	emptyStateOneAvailableSegmentsWithEntryValid,
 	listWithFourVariationsAndNoMoreSegmentsEntries,
 	listWithTwoVariations,
 } from '../mocks/variationsNavProps';
@@ -83,9 +84,19 @@ describe('VariationsNav Initial State', () => {
 		).toBeInTheDocument();
 	});
 
-	it('shows an add-personalized-variation button, when a segment is available and no variations are created', () => {
-		const {getByText} = render(
+	it('shows an initial state without the add variation button if entry is not valid', () => {
+		const {queryByText} = render(
 			_getComponent(emptyStateOneAvailableSegments)
+		);
+
+		expect(
+			queryByText('add-personalized-variation')
+		).not.toBeInTheDocument();
+	});
+
+	it('shows an add-personalized-variation button, when a segment is available, the entry is valid and no variations are created', () => {
+		const {getByText} = render(
+			_getComponent(emptyStateOneAvailableSegmentsWithEntryValid)
 		);
 
 		const addPersonalizedVariationButton = getByText(

@@ -409,11 +409,11 @@ currentURLObj.setParameter("historyKey", liferayPortletResponse.getNamespace() +
 						},
 
 						<%
+						String groupEventName = liferayPortletResponse.getNamespace() + "selectOrganization";
 						String organizationRoleEventName = liferayPortletResponse.getNamespace() + "selectOrganizationRole";
 						%>
 
 						selectEventName: '<%= organizationRoleEventName %>',
-						selectedData: searchContainer.getData(true),
 						title:
 							'<liferay-ui:message arguments="organization-role" key="select-x" />',
 
@@ -422,6 +422,8 @@ currentURLObj.setParameter("historyKey", liferayPortletResponse.getNamespace() +
 							PortletProviderUtil.getPortletURL(request, Role.class.getName(), PortletProvider.Action.BROWSE)
 						).setParameter(
 							"eventName", organizationRoleEventName
+						).setParameter(
+							"groupEventName", groupEventName
 						).setParameter(
 							"organizationIds", StringUtil.merge(organizationIds)
 						).setParameter(
@@ -436,6 +438,36 @@ currentURLObj.setParameter("historyKey", liferayPortletResponse.getNamespace() +
 						%>
 
 						url: '<%= selectOrganizationRoleURL.toString() %>',
+					});
+
+					Liferay.on('<%= groupEventName %>', () => {
+						const iframe = document.querySelector('.liferay-modal iframe');
+
+						if (iframe) {
+							const iframeDocument = iframe.contentWindow.document;
+
+							const selectedDataSet = new Set(searchContainer.getData(true));
+
+							const selectButtons = iframeDocument.querySelectorAll(
+								'.selector-button'
+							);
+
+							selectButtons.forEach((selectButton) => {
+								const selectButtonId =
+									selectButton.dataset.groupid +
+									'-' +
+									selectButton.dataset.entityid;
+
+								if (selectedDataSet.has(selectButtonId)) {
+									selectButton.disabled = true;
+									selectButton.classList.add('disabled');
+								}
+								else {
+									selectButton.disabled = false;
+									selectButton.classList.remove('disabled');
+								}
+							});
+						}
 					});
 				});
 			}
@@ -608,12 +640,12 @@ currentURLObj.setParameter("historyKey", liferayPortletResponse.getNamespace() +
 							},
 
 							<%
+							String groupEventName = liferayPortletResponse.getNamespace() + "selectSite";
 							String siteRoleEventName = liferayPortletResponse.getNamespace() + "selectSiteRole";
 							%>
 
 							selectEventName: '<%= siteRoleEventName %>',
 
-							selectedData: searchContainer.getData(true),
 							title:
 								'<liferay-ui:message arguments="site-role" key="select-x" />',
 							url:
@@ -622,6 +654,8 @@ currentURLObj.setParameter("historyKey", liferayPortletResponse.getNamespace() +
 										PortletProviderUtil.getPortletURL(request, Role.class.getName(), PortletProvider.Action.BROWSE)
 									).setParameter(
 										"eventName", siteRoleEventName
+									).setParameter(
+										"groupEventName", groupEventName
 									).setParameter(
 										"p_u_i_d", (selUser == null) ? "0" : String.valueOf(selUser.getUserId())
 									).setParameter(
@@ -633,6 +667,36 @@ currentURLObj.setParameter("historyKey", liferayPortletResponse.getNamespace() +
 									).buildPortletURL()
 								%>',
 						});
+					});
+
+					Liferay.on('<%= groupEventName %>', () => {
+						const iframe = document.querySelector('.liferay-modal iframe');
+
+						if (iframe) {
+							const iframeDocument = iframe.contentWindow.document;
+
+							const selectedDataSet = new Set(searchContainer.getData(true));
+
+							const selectButtons = iframeDocument.querySelectorAll(
+								'.selector-button'
+							);
+
+							selectButtons.forEach((selectButton) => {
+								const selectButtonId =
+									selectButton.dataset.groupid +
+									'-' +
+									selectButton.dataset.entityid;
+
+								if (selectedDataSet.has(selectButtonId)) {
+									selectButton.disabled = true;
+									selectButton.classList.add('disabled');
+								}
+								else {
+									selectButton.disabled = false;
+									selectButton.classList.remove('disabled');
+								}
+							});
+						}
 					});
 				}
 			</aui:script>

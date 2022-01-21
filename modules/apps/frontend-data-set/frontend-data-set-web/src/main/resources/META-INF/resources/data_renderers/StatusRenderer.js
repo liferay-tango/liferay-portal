@@ -16,12 +16,27 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 function StatusRenderer(props) {
+	const getLabelType = (label) => {
+		switch (label) {
+			case 'approved':
+				return 'label-success';
+			case 'denied':
+				return 'label-danger';
+			case 'expired':
+				return 'label-warning';
+			case 'draft':
+			case 'pending':
+			case 'scheduled':
+				return 'label-info';
+			default:
+				return '';
+		}
+	};
+
 	return props.value ? (
 		<span className="taglib-workflow-status">
 			<span className="workflow-status">
-				<strong
-					className={`label status workflow-status-data-renderer workflow-status-${props.value.label} ${props.value.label} workflow-value`}
-				>
+				<strong className={`label ${getLabelType(props.value.label)}`}>
 					{props.value.label_i18n}
 				</strong>
 			</span>
@@ -31,7 +46,6 @@ function StatusRenderer(props) {
 
 StatusRenderer.propTypes = {
 	value: PropTypes.shape({
-		code: PropTypes.number,
 		label: PropTypes.string,
 		label_i18n: PropTypes.string,
 	}),

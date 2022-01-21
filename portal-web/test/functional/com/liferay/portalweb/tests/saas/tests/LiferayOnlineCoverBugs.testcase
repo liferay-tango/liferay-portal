@@ -16,8 +16,9 @@ definition {
 			Navigator.openURL();
 
 			HeadlessPortalInstanceAPI.addPortalInstanceWithVirtualInstanceInitializer(
-				domain = "raylife.com",
+				domain = "www.raylife.com",
 				portalInstanceId = "www.raylife.com",
+				siteInitializerKey = "com.liferay.site.initializer.raylife",
 				virtualHost = "www.raylife.com");
 
 			User.firstLoginUI(

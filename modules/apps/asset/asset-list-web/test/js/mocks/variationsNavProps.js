@@ -55,6 +55,11 @@ export const emptyStateOneAvailableSegments = {
 	segmentsEntriesAvailables: true,
 };
 
+export const emptyStateOneAvailableSegmentsWithEntryValid = {
+	...emptyStateOneAvailableSegments,
+	assetListEntryValid: true,
+};
+
 export const listWithTwoVariations = {
 	...emptyStateNoSegments,
 	...emptyStateOneAvailableSegments,

@@ -45,7 +45,6 @@ import java.util.Objects;
 
 import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
-import javax.portlet.WindowStateException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -126,7 +125,7 @@ public class ProductMenuProductNavigationControlMenuEntry
 					LiferayWindowState.EXCLUSIVE
 				).buildPortletURL();
 
-				return "data-url='" + portletURL.toString() + "'";
+				return "data-url='" + portletURL + "'";
 			}
 		).put(
 			"portletNamespace",

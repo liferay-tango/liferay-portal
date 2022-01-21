@@ -32,6 +32,9 @@ const KEY_CODE = {
 
 const noop = () => {};
 
+const itemIsImage = ({mimeType, type}) =>
+	type === 'image' || Boolean(mimeType?.match(/image.*/));
+
 const ItemSelectorPreview = ({
 	container,
 	currentIndex = 0,
@@ -45,6 +48,7 @@ const ItemSelectorPreview = ({
 }) => {
 	const [currentItemIndex, setCurrentItemIndex] = useState(currentIndex);
 	const [isEditing, setIsEditing] = useState();
+	const [isImage, setIsImage] = useState(itemIsImage(items[currentIndex]));
 	const [itemList, setItemList] = useState(items);
 	const [reloadOnHide, setReloadOnHide] = useState(initialReloadOnHide);
 
@@ -215,7 +219,15 @@ const ItemSelectorPreview = ({
 				width: '320px',
 			});
 		}
+
+		return () => {
+			Liferay.SideNavigation.destroy(sidenavToggle);
+		};
 	}, [infoButtonRef]);
+
+	useEffect(() => {
+		setIsImage(itemIsImage(currentItem));
+	}, [currentItem]);
 
 	return (
 		<div className="fullscreen item-selector-preview">
@@ -226,7 +238,7 @@ const ItemSelectorPreview = ({
 				handleClickEdit={handleClickEdit}
 				headerTitle={headerTitle}
 				infoButtonRef={infoButtonRef}
-				showEditIcon={true}
+				showEditIcon={isImage}
 				showInfoIcon={!!currentItem.metadata}
 				showNavbar={!isEditing}
 			/>
@@ -246,6 +258,7 @@ const ItemSelectorPreview = ({
 						currentItem={currentItem}
 						handleClickNext={handleClickNext}
 						handleClickPrevious={handleClickPrevious}
+						isImage={isImage}
 						showArrows={itemList.length > 1}
 					/>
 

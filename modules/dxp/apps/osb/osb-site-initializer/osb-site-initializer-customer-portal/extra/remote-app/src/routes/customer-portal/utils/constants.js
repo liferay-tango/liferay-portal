@@ -12,6 +12,7 @@
 export const CONTENT_TYPE = {
 	JSON: 'application/json',
 	XML: 'application/xml',
+	XML_TEXT: 'text/xml',
 };
 
 export const CUSTOM_EVENTS = {
@@ -25,6 +26,7 @@ export const CUSTOM_EVENTS = {
 export const EXTENSIONS_FILE_TYPE = {
 	[CONTENT_TYPE.JSON]: '.json',
 	[CONTENT_TYPE.XML]: '.xml',
+	[CONTENT_TYPE.XML_TEXT]: '.xml',
 };
 
 export const SLA_NAMES = {
@@ -55,6 +57,10 @@ export const WEB_CONTENTS_BY_LIFERAY_VERSION = {
 	'7.2': 'WEB-CONTENT-ACTION-06',
 	'7.3': 'WEB-CONTENT-ACTION-07',
 	'7.4': 'WEB-CONTENT-ACTION-08',
+};
+
+export const LIST_TYPES = {
+	dxpVersion: 'DXP Version',
 };
 
 export const pages = {
