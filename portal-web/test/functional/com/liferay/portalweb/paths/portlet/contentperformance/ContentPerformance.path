@@ -81,6 +81,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>PAGE_AUTHOR</td>
+	<td>//div[contains(@class,'text-secondary') and contains (text(),'Authored by ${key_author}')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>SIDEBAR</td>
 	<td>//div[contains(@class,'lfr-analytics-reports-panel')]</td>
 	<td></td>
