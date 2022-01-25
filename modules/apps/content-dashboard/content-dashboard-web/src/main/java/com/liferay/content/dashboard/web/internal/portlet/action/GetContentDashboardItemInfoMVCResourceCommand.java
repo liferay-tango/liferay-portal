@@ -177,6 +177,8 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 				resourceRequest, resourceResponse, jsonObject);
 		}
 		catch (Exception exception) {
+			exception.printStackTrace();
+
 			if (_log.isInfoEnabled()) {
 				_log.info(exception, exception);
 			}
@@ -189,25 +191,6 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 						ResourceBundleUtil.getBundle(locale, getClass()),
 						"an-unexpected-error-occurred")));
 		}
-	}
-
-	private Map<String, Object> _buildVocabularyDetails(
-		Locale locale, AssetVocabulary assetVocabulary) {
-
-		return HashMapBuilder.<String, Object>put(
-			"categories", ListUtil.fromArray()
-		).put(
-			"groupName",
-			ContentDashboardGroupUtil.getGroupName(
-				_groupLocalService.fetchGroup(assetVocabulary.getGroupId()),
-				locale)
-		).put(
-			"isPublic",
-			assetVocabulary.getVisibilityType() ==
-				AssetVocabularyConstants.VISIBILITY_TYPE_PUBLIC
-		).put(
-			"vocabularyName", assetVocabulary.getTitleCurrentValue()
-		).build();
 	}
 
 	private JSONArray _getAssetTagsJSONArray(
@@ -231,10 +214,27 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 
 		Stream<AssetCategory> stream = assetCategories.stream();
 
-		Map<Long, Map<String, Object>> assetVocabularies = stream.collect(
-			_getCollector(locale));
+		return JSONFactoryUtil.createJSONObject(
+			stream.collect(_getCollector(locale)));
+	}
 
-		return JSONFactoryUtil.createJSONObject(assetVocabularies);
+	private Map<String, Object> _getAssetVocabularyData(
+		Locale locale, AssetVocabulary assetVocabulary) {
+
+		return HashMapBuilder.<String, Object>put(
+			"categories", ListUtil.fromArray()
+		).put(
+			"groupName",
+			ContentDashboardGroupUtil.getGroupName(
+				_groupLocalService.fetchGroup(assetVocabulary.getGroupId()),
+				locale)
+		).put(
+			"isPublic",
+			assetVocabulary.getVisibilityType() ==
+				AssetVocabularyConstants.VISIBILITY_TYPE_PUBLIC
+		).put(
+			"vocabularyName", assetVocabulary.getTitleCurrentValue()
+		).build();
 	}
 
 	private String _getClassName(ContentDashboardItem<?> contentDashboardItem) {
@@ -255,22 +255,22 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 		_getCollector(Locale locale) {
 
 		return Collector.of(
-			() -> new HashMap<Long, Map<String, Object>>(),
-			(assetVocabularies, assetCategory) -> {
-				assetVocabularies.computeIfAbsent(
+			() -> new HashMap<>(),
+			(assetVocabulariesData, assetCategory) -> {
+				assetVocabulariesData.computeIfAbsent(
 					assetCategory.getVocabularyId(),
-					vocabularyId -> _buildVocabularyDetails(
+					vocabularyId -> _getAssetVocabularyData(
 						locale,
 						_assetVocabularyLocalService.fetchAssetVocabulary(
 							vocabularyId)));
 
-				Map<String, Object> assetVocabulary = assetVocabularies.get(
-					assetCategory.getVocabularyId());
+				Map<String, Object> assetVocabularyData =
+					assetVocabulariesData.get(assetCategory.getVocabularyId());
 
-				List<String> assetVocabularyCategories =
-					(List<String>)assetVocabulary.get("categories");
+				List<String> assetCategories =
+					(List<String>)assetVocabularyData.get("categories");
 
-				assetVocabularyCategories.add(assetCategory.getTitle(locale));
+				assetCategories.add(assetCategory.getTitle(locale));
 			},
 			(first, second) -> {
 				first.putAll(second);

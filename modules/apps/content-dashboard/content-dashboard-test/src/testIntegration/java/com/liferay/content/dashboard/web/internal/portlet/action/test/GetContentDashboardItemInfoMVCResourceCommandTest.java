@@ -82,50 +82,6 @@ public class GetContentDashboardItemInfoMVCResourceCommandTest {
 	}
 
 	@Test
-	public void testServeResourceFileEntry() throws Exception {
-		FileEntry fileEntry = _addFileEntry();
-
-		JSONObject jsonObject = _serveResource(
-			FileEntry.class.getName(), fileEntry.getFileEntryId(),
-			_group.getGroupId());
-
-		Assert.assertEquals(
-			FileEntry.class.getName(), jsonObject.getString("className"));
-		Assert.assertEquals(
-			String.valueOf(fileEntry.getFileEntryId()),
-			jsonObject.getString("classPK"));
-		Assert.assertEquals("en-US", jsonObject.getString("languageTag"));
-
-		JSONObject specificFieldsJSONObject = jsonObject.getJSONObject(
-			"specificFields");
-
-		Assert.assertNotNull(specificFieldsJSONObject.getString("downloadURL"));
-		Assert.assertEquals(
-			"pdf", specificFieldsJSONObject.getString("extension"));
-		Assert.assertEquals(
-			"FileName.pdf", specificFieldsJSONObject.getString("fileName"));
-		Assert.assertNotNull(
-			specificFieldsJSONObject.getString("previewImageURL"));
-		Assert.assertNotNull(specificFieldsJSONObject.getString("previewURL"));
-		Assert.assertNotNull(specificFieldsJSONObject.getString("viewURL"));
-
-		Assert.assertEquals("Basic Document", jsonObject.getString("subType"));
-		Assert.assertEquals("FileName.pdf", jsonObject.getString("title"));
-
-		JSONArray versionsJSONArray = jsonObject.getJSONArray("versions");
-
-		Assert.assertEquals(1, versionsJSONArray.length());
-
-		JSONObject versionJSONObject = versionsJSONArray.getJSONObject(0);
-
-		Assert.assertEquals(
-			"Approved", versionJSONObject.getString("statusLabel"));
-		Assert.assertEquals(
-			"success", versionJSONObject.getString("statusStyle"));
-		Assert.assertEquals("1.0", versionJSONObject.getString("version"));
-	}
-
-	@Test
 	public void testServeResourceJournalArticle() throws Exception {
 		AssetVocabulary assetVocabulary = AssetTestUtil.addVocabulary(
 			_group.getGroupId());

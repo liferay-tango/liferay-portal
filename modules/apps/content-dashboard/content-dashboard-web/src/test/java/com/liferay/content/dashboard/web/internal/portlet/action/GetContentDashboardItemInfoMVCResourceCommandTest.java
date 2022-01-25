@@ -16,6 +16,7 @@ package com.liferay.content.dashboard.web.internal.portlet.action;
 
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetTag;
+import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.content.dashboard.item.action.ContentDashboardItemAction;
 import com.liferay.content.dashboard.web.internal.item.ContentDashboardItem;
 import com.liferay.content.dashboard.web.internal.item.ContentDashboardItemFactory;
@@ -31,6 +32,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.servlet.BrowserSnifferUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
@@ -505,6 +507,19 @@ public class GetContentDashboardItemInfoMVCResourceCommandTest {
 
 		ReflectionTestUtil.setFieldValue(
 			_getContentDashboardItemInfoMVCResourceCommand, "_userLocalService",
+			userLocalService);
+
+		AssetVocabularyLocalService assetVocabularyLocalService = Mockito.mock(
+			AssetVocabularyLocalService.class);
+
+		Mockito.when(
+			assetVocabularyLocalService.fetchUser(contentDashboardItem.getUserId())
+		).thenReturn(
+			user
+		);
+
+		ReflectionTestUtil.setFieldValue(
+			_getContentDashboardItemInfoMVCResourceCommand, "_assetVocabularyLocalService",
 			userLocalService);
 	}
 
