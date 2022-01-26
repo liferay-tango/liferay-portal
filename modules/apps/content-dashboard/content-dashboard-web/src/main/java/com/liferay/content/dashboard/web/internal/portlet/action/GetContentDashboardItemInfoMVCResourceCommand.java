@@ -27,6 +27,7 @@ import com.liferay.content.dashboard.web.internal.item.ContentDashboardItemFacto
 import com.liferay.content.dashboard.web.internal.item.type.ContentDashboardItemSubtype;
 import com.liferay.content.dashboard.web.internal.util.ContentDashboardGroupUtil;
 import com.liferay.info.item.InfoItemReference;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -225,15 +226,19 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 			"categories", ListUtil.fromArray()
 		).put(
 			"groupName",
-			ContentDashboardGroupUtil.getGroupName(
-				_groupLocalService.fetchGroup(assetVocabulary.getGroupId()),
-				locale)
+			Optional.ofNullable(
+				_groupLocalService.fetchGroup(assetVocabulary.getGroupId())
+			).map(
+				group -> ContentDashboardGroupUtil.getGroupName(group, locale)
+			).orElse(
+				StringPool.BLANK
+			)
 		).put(
 			"isPublic",
 			assetVocabulary.getVisibilityType() ==
 				AssetVocabularyConstants.VISIBILITY_TYPE_PUBLIC
 		).put(
-			"vocabularyName", assetVocabulary.getTitleCurrentValue()
+			"vocabularyName", assetVocabulary.getTitle(locale)
 		).build();
 	}
 
