@@ -25,6 +25,8 @@ import com.liferay.content.dashboard.web.internal.item.type.ContentDashboardItem
 import com.liferay.content.dashboard.web.internal.item.type.ContentDashboardItemSubtypeUtil;
 import com.liferay.content.dashboard.web.internal.model.AssetVocabularyMetric;
 import com.liferay.content.dashboard.web.internal.servlet.taglib.util.ContentDashboardDropdownItemsProvider;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.item.selector.ItemSelector;
@@ -116,12 +118,6 @@ public class ContentDashboardAdminDisplayContext {
 					_liferayPortletRequest, "assetCategoryId")));
 
 		return _assetCategoryIds;
-	}
-
-	public PortletURL getPortletURL() {
-		return PortletURLBuilder.createRenderURL(
-			_liferayPortletResponse
-		).buildPortletURL();
 	}
 
 	public List<String> getAssetCategoryTitles(
@@ -289,6 +285,23 @@ public class ContentDashboardAdminDisplayContext {
 		return _contentDashboardItemSubtypePayloads;
 	}
 
+	public CreationMenu getCreationMenu() {
+		return CreationMenuBuilder.addDropdownItem(
+			dropdownItem -> {
+				dropdownItem.setHref(
+					PortletURLBuilder.createRenderURL(
+						_liferayPortletResponse
+					).setMVCRenderCommandName(
+						"/remote_app_admin/edit_remote_app_entry"
+					).setRedirect(
+						_portal.getCurrentURL(_liferayPortletRequest)
+					).buildPortletURL());
+
+				dropdownItem.setLabel("HOLA");
+			}
+		).build();
+	}
+
 	public Map<String, Object> getData() {
 		if (_data != null) {
 			return _data;
@@ -380,6 +393,12 @@ public class ContentDashboardAdminDisplayContext {
 		sb.append("'}); return false;");
 
 		return sb.toString();
+	}
+
+	public PortletURL getPortletURL() {
+		return PortletURLBuilder.createRenderURL(
+			_liferayPortletResponse
+		).buildPortletURL();
 	}
 
 	public long getScopeId() {
