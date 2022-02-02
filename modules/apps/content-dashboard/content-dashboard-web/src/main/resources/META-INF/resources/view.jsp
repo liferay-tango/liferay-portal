@@ -1,3 +1,5 @@
+<%@ page import="com.liferay.content.dashboard.web.internal.constants.ContentDashboardFDSNames" %>
+
 <%--
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
@@ -307,11 +309,13 @@ ContentDashboardAdminDisplayContext contentDashboardAdminDisplayContext = (Conte
 			size="<%= StringPool.BLANK %>"
 		>
 			<frontend-data-set:classic-display
-				dataProviderKey="a"
+				actionParameterName="contentDashboardEntryId"
+				creationMenu="<%= contentDashboardAdminDisplayContext.getCreationMenu() %>"
+				dataProviderKey="<%= ContentDashboardFDSNames.CONTENT_DASHBOARD_ENTRIES %>"
 				formName="fm"
-				id="my-id"
+				id="<%= ContentDashboardFDSNames.CONTENT_DASHBOARD_ENTRIES %>"
 				itemsPerPage="<%= 10 %>"
-				namespace="namespace"
+				namespace="<%= liferayPortletResponse.getNamespace() %>"
 				pageNumber="<%= 1 %>"
 				portletURL="<%= contentDashboardAdminDisplayContext.getPortletURL() %>"
 				selectedItemsKey="key"
