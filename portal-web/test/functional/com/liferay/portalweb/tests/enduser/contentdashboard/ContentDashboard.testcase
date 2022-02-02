@@ -2597,21 +2597,21 @@ definition {
 				panel = "Applications",
 				portlet = "Content Dashboard");
 		}
-		
+
 		task ("Open the info panel and collapse the Categorization section") {
 			ContentDashboard.openInfoPanelByDropdownMenu();
 
 			AssertElementPresent(
-				locator1 = "ContentDashboard#CATEGORY_LABEL_INFO_PANEL",
-				categoryName = "Category Name");
+				categoryName = "Category Name",
+				locator1 = "ContentDashboard#CATEGORY_LABEL_INFO_PANEL");
 
 			Click(
 				locator1 = "ContentDashboard#INFO_PANEL_SECTION_TITLE",
 				sectionName = "Categorization");
 
 			AssertNotVisible(
-				locator1 = "ContentDashboard#CATEGORY_LABEL_INFO_PANEL",
-				categoryName = "Category Name");
+				categoryName = "Category Name",
+				locator1 = "ContentDashboard#CATEGORY_LABEL_INFO_PANEL");
 		}
 	}
 
@@ -2645,29 +2645,29 @@ definition {
 				panel = "Applications",
 				portlet = "Content Dashboard");
 		}
-		
+
 		task ("Open the info panel and collapse the Categorization section") {
 			ContentDashboard.openInfoPanelByDropdownMenu();
 
 			AssertElementPresent(
-				locator1 = "ContentDashboard#CATEGORY_LABEL_INFO_PANEL",
-				categoryName = "Category Name");
+				categoryName = "Category Name",
+				locator1 = "ContentDashboard#CATEGORY_LABEL_INFO_PANEL");
 
 			Click(
 				locator1 = "ContentDashboard#INFO_PANEL_SECTION_TITLE",
 				sectionName = "Categorization");
 
 			AssertNotVisible(
-				locator1 = "ContentDashboard#CATEGORY_LABEL_INFO_PANEL",
-				categoryName = "Category Name");
+				categoryName = "Category Name",
+				locator1 = "ContentDashboard#CATEGORY_LABEL_INFO_PANEL");
 
 			Click(
 				locator1 = "ContentDashboard#INFO_PANEL_SECTION_TITLE",
 				sectionName = "Categorization");
 
 			AssertElementPresent(
-				locator1 = "ContentDashboard#CATEGORY_LABEL_INFO_PANEL",
-				categoryName = "Category Name");
+				categoryName = "Category Name",
+				locator1 = "ContentDashboard#CATEGORY_LABEL_INFO_PANEL");
 		}
 	}
 
