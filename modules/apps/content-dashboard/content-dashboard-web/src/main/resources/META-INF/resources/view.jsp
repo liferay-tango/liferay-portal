@@ -301,5 +301,23 @@ ContentDashboardAdminDisplayContext contentDashboardAdminDisplayContext = (Conte
 				/>
 			</liferay-ui:search-container>
 		</clay:sheet>
+
+		<clay:sheet
+			cssClass="c-mt-5"
+			size="<%= StringPool.BLANK %>"
+		>
+			<frontend-data-set:classic-display
+				dataProviderKey="a"
+				formName="fm"
+				id="my-id"
+				itemsPerPage="<%= 10 %>"
+				namespace="namespace"
+				pageNumber="<%= 1 %>"
+				portletURL="<%= contentDashboardAdminDisplayContext.getPortletURL() %>"
+				selectedItemsKey="key"
+				selectionType="multiple"
+				style="fluid"
+			/>
+		</clay:sheet>
 	</clay:container-fluid>
 </div>
