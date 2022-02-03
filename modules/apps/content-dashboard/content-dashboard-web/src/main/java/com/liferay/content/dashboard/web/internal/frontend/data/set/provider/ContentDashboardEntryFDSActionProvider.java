@@ -70,7 +70,7 @@ public class ContentDashboardEntryFDSActionProvider
 					getContentDashboardItemFactoryOptional(
 						infoItemReference.getClassName());
 
-		return (List<DropdownItem>) contentDashboardItemFactoryOptional.map(
+		return (List<DropdownItem>)contentDashboardItemFactoryOptional.map(
 			contentDashboardItemFactory -> {
 				try {
 					return contentDashboardDropdownItemsProvider.

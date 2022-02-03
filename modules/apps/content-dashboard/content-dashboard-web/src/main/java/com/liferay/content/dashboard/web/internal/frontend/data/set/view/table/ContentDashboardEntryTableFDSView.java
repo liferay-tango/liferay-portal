@@ -47,6 +47,23 @@ public class ContentDashboardEntryTableFDSView extends BaseTableFDSView {
 
 		nameFDSTableSchemaField.setContentRenderer("actionLink");
 
+		fdsTableSchemaBuilder.addFDSTableSchemaField("type", "type");
+
+		fdsTableSchemaBuilder.addFDSTableSchemaField("subType", "subtype");
+
+		fdsTableSchemaBuilder.addFDSTableSchemaField("scope", "site-or-asset-library");
+
+
+		FDSTableSchemaField statusFDSTableSchemaField =
+			fdsTableSchemaBuilder.addFDSTableSchemaField("status", "status");
+
+		statusFDSTableSchemaField.setContentRenderer("status");
+
+		FDSTableSchemaField modifiedDateFDSTableSchemaField =
+			fdsTableSchemaBuilder.addFDSTableSchemaField("modifiedDate", "modified-date");
+
+		modifiedDateFDSTableSchemaField.setContentRenderer("dateTime");
+
 		return fdsTableSchemaBuilder.build();
 	}
 
