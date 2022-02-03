@@ -135,8 +135,9 @@ public class ContentDashboardAdminPortlet extends MVCPortlet {
 					contentDashboardDataProvider.getAssetVocabularyMetric(
 						assetVocabularies),
 					new ContentDashboardDropdownItemsProvider(
-						_http, _language, liferayPortletRequest,
-						liferayPortletResponse, _portal),
+						_language,
+						_portal.getHttpServletRequest(liferayPortletRequest),
+						_portal),
 					_contentDashboardItemSubtypeFactoryTracker, _itemSelector,
 					_language.get(
 						_portal.getLocale(liferayPortletRequest),
