@@ -397,7 +397,8 @@ public class ContentDashboardAdminDisplayContext {
 	}
 
 	public PortletURL getPortletURL() {
-		return PortletURLUtil.getCurrent(_liferayPortletRequest, _liferayPortletResponse);
+		return PortletURLUtil.getCurrent(
+			_liferayPortletRequest, _liferayPortletResponse);
 	}
 
 	public long getScopeId() {
