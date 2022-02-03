@@ -23,7 +23,10 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.service.PortletLocalService;
+import com.liferay.portal.kernel.theme.PortletDisplay;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.servlet.DynamicServletRequestUtil;
 
 import java.util.Collections;
@@ -75,7 +78,7 @@ public class EditJournalArticleContentDashboardItemAction
 	@Override
 	public String getURL() {
 		Portlet portlet = _portletLocalService.getPortletById(
-			_portal.getPortletId(_httpServletRequest));
+			_getPortletId(_httpServletRequest));
 
 		HttpServletRequest httpServletRequest =
 			DynamicServletRequestUtil.createDynamicServletRequest(
@@ -102,6 +105,16 @@ public class EditJournalArticleContentDashboardItemAction
 	@Override
 	public String getURL(Locale locale) {
 		return getURL();
+	}
+
+	private String _getPortletId(HttpServletRequest httpServletRequest) {
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
+
+		return portletDisplay.getId();
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

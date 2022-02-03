@@ -15,6 +15,7 @@
 package com.liferay.content.dashboard.web.internal.frontend.data.set.model;
 
 import com.liferay.content.dashboard.web.internal.item.ContentDashboardItem;
+import com.liferay.info.item.InfoItemReference;
 
 import java.util.Locale;
 
@@ -28,6 +29,10 @@ public class ContentDashboardFDSEntry {
 
 		_contentDashboardItem = contentDashboardItem;
 		_locale = locale;
+	}
+
+	public InfoItemReference getInfoItemReference() {
+		return _contentDashboardItem.getInfoItemReference();
 	}
 
 	public String getTitle() {

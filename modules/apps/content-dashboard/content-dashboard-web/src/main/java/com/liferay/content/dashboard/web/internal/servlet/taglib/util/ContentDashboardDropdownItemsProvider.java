@@ -21,18 +21,21 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemList;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.portal.kernel.language.Language;
-import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
-import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
-import com.liferay.portal.kernel.portlet.PortletURLUtil;
+import com.liferay.portal.kernel.portlet.LiferayPortletURL;
+import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
+import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
+import com.liferay.portal.kernel.theme.PortletDisplay;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.vulcan.util.TransformUtil;
 
 import java.util.List;
 import java.util.Locale;
 
-import javax.portlet.ResourceURL;
+import javax.portlet.PortletURL;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -42,36 +45,28 @@ import javax.servlet.http.HttpServletRequest;
 public class ContentDashboardDropdownItemsProvider {
 
 	public ContentDashboardDropdownItemsProvider(
-		Http http, Language language,
-		LiferayPortletRequest liferayPortletRequest,
-		LiferayPortletResponse liferayPortletResponse, Portal portal) {
+		Language language, HttpServletRequest httpServletRequest,
+		Portal portal) {
 
-		_http = http;
 		_language = language;
-		_liferayPortletRequest = liferayPortletRequest;
-		_liferayPortletResponse = liferayPortletResponse;
+		_httpServletRequest = httpServletRequest;
 		_portal = portal;
 
-		_currentURL = String.valueOf(
-			PortletURLUtil.getCurrent(
-				_liferayPortletRequest, liferayPortletResponse));
+		_currentURL = ParamUtil.getString(
+			httpServletRequest, "currentURL",
+			_portal.getCurrentURL(httpServletRequest));
 	}
 
 	public List<DropdownItem> getDropdownItems(
-		ContentDashboardItem contentDashboardItem) {
+		ContentDashboardItem<?> contentDashboardItem) {
 
-		HttpServletRequest httpServletRequest = _portal.getHttpServletRequest(
-			_liferayPortletRequest);
-
-		Locale locale = _portal.getLocale(_liferayPortletRequest);
+		Locale locale = _portal.getLocale(_httpServletRequest);
 
 		DropdownItemList dropdownItemList = DropdownItemList.of(
 			(DropdownItem[])TransformUtil.transformToArray(
-				(List<ContentDashboardItemAction>)
-					contentDashboardItem.getContentDashboardItemActions(
-						httpServletRequest,
-						ContentDashboardItemAction.Type.VIEW,
-						ContentDashboardItemAction.Type.EDIT),
+				contentDashboardItem.getContentDashboardItemActions(
+					_httpServletRequest, ContentDashboardItemAction.Type.VIEW,
+					ContentDashboardItemAction.Type.EDIT),
 				contentDashboardItemAction -> _toDropdownItem(
 					contentDashboardItemAction, locale),
 				DropdownItem.class));
@@ -79,23 +74,28 @@ public class ContentDashboardDropdownItemsProvider {
 		dropdownItemList.addAll(
 			DropdownItemList.of(
 				() -> {
-					ResourceURL resourceURL =
-						_liferayPortletResponse.createResourceURL();
+					RequestBackedPortletURLFactory
+						requestBackedPortletURLFactory =
+							RequestBackedPortletURLFactoryUtil.create(
+								_httpServletRequest);
 
-					resourceURL.setParameter(
-						"backURL",
-						_portal.getCurrentURL(_liferayPortletRequest));
+					LiferayPortletURL liferayPortletURL =
+						(LiferayPortletURL)
+							requestBackedPortletURLFactory.createResourceURL(
+								_getPortletId(_httpServletRequest));
+
+					liferayPortletURL.setParameter("backURL", _currentURL);
 
 					InfoItemReference infoItemReference =
 						contentDashboardItem.getInfoItemReference();
 
-					resourceURL.setParameter(
+					liferayPortletURL.setParameter(
 						"className", infoItemReference.getClassName());
-					resourceURL.setParameter(
+					liferayPortletURL.setParameter(
 						"classPK",
 						String.valueOf(infoItemReference.getClassPK()));
 
-					resourceURL.setResourceID(
+					liferayPortletURL.setResourceID(
 						"/content_dashboard/get_content_dashboard_item_info");
 
 					return DropdownItemBuilder.setData(
@@ -106,7 +106,7 @@ public class ContentDashboardDropdownItemsProvider {
 						).put(
 							"classPK", infoItemReference.getClassPK()
 						).put(
-							"fetchURL", String.valueOf(resourceURL)
+							"fetchURL", String.valueOf(liferayPortletURL)
 						).build()
 					).setIcon(
 						"info-circle-open"
@@ -119,14 +119,31 @@ public class ContentDashboardDropdownItemsProvider {
 
 		dropdownItemList.addAll(
 			TransformUtil.transform(
-				(List<ContentDashboardItemAction>)
-					contentDashboardItem.getContentDashboardItemActions(
-						httpServletRequest,
-						ContentDashboardItemAction.Type.VIEW_IN_PANEL),
+				contentDashboardItem.getContentDashboardItemActions(
+					_httpServletRequest,
+					ContentDashboardItemAction.Type.VIEW_IN_PANEL),
 				contentDashboardItemAction -> _toViewInPanelDropdownItem(
 					contentDashboardItem, contentDashboardItemAction, locale)));
 
 		return dropdownItemList;
+	}
+
+	private String _getPortletId(HttpServletRequest httpServletRequest) {
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
+
+		return portletDisplay.getId();
+	}
+
+	private PortletURL _getRenderURL(HttpServletRequest httpServletRequest) {
+		RequestBackedPortletURLFactory requestBackedPortletURLFactory =
+			RequestBackedPortletURLFactoryUtil.create(httpServletRequest);
+
+		return requestBackedPortletURLFactory.createRenderURL(
+			_getPortletId(httpServletRequest));
 	}
 
 	private DropdownItem _toDropdownItem(
@@ -174,10 +191,8 @@ public class ContentDashboardDropdownItemsProvider {
 	}
 
 	private final String _currentURL;
-	private final Http _http;
+	private final HttpServletRequest _httpServletRequest;
 	private final Language _language;
-	private final LiferayPortletRequest _liferayPortletRequest;
-	private final LiferayPortletResponse _liferayPortletResponse;
 	private final Portal _portal;
 
 }

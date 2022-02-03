@@ -42,6 +42,7 @@ import com.liferay.portal.kernel.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
+import com.liferay.portal.kernel.portlet.PortletURLUtil;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.theme.PortletDisplay;
@@ -396,9 +397,7 @@ public class ContentDashboardAdminDisplayContext {
 	}
 
 	public PortletURL getPortletURL() {
-		return PortletURLBuilder.createRenderURL(
-			_liferayPortletResponse
-		).buildPortletURL();
+		return PortletURLUtil.getCurrent(_liferayPortletRequest, _liferayPortletResponse);
 	}
 
 	public long getScopeId() {
