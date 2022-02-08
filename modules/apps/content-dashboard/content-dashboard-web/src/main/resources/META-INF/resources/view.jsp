@@ -318,6 +318,7 @@ ContentDashboardAdminDisplayContext contentDashboardAdminDisplayContext = (Conte
 				namespace="<%= liferayPortletResponse.getNamespace() %>"
 				pageNumber="<%= 1 %>"
 				portletURL="<%= contentDashboardAdminDisplayContext.getPortletURL() %>"
+				propsTransformer="js/transformers/SampleFDSPropsTransformer"
 				selectedItemsKey="key"
 				selectionType="multiple"
 				style="fluid"
