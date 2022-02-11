@@ -27,7 +27,6 @@ import com.liferay.document.library.constants.DLPortletKeys;
 import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.info.field.InfoFieldValue;
 import com.liferay.info.item.InfoItemClassDetails;
-import com.liferay.info.item.InfoItemFieldValues;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.info.item.provider.InfoItemFieldValuesProvider;
 import com.liferay.petra.string.StringPool;
@@ -43,7 +42,6 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
-import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -432,35 +430,13 @@ public class FileEntryContentDashboardItem
 	}
 
 	private String _getDownloadURL() {
-		InfoItemFieldValues infoItemFieldValues =
-			_infoItemFieldValuesProvider.getInfoItemFieldValues(_fileEntry);
-
-		InfoFieldValue<Object> infoFieldValue =
-			infoItemFieldValues.getInfoFieldValue("downloadURL");
-
-		if (infoFieldValue == null) {
-			return StringPool.BLANK;
-		}
-
-		Object downloadURL = infoFieldValue.getValue();
-
-		return downloadURL.toString();
+		return InfoItemFieldValuesProviderUtil.getStringValue(
+			_fileEntry, _infoItemFieldValuesProvider, "downloadURL");
 	}
 
 	private String _getExtension() {
-		InfoItemFieldValues infoItemFieldValues =
-			_infoItemFieldValuesProvider.getInfoItemFieldValues(_fileEntry);
-
-		InfoFieldValue<Object> infoFieldValue =
-			infoItemFieldValues.getInfoFieldValue("fileName");
-
-		if (infoFieldValue == null) {
-			return StringPool.BLANK;
-		}
-
-		Object fileName = infoFieldValue.getValue();
-
-		return FileUtil.getExtension(fileName.toString());
+		return InfoItemFieldValuesProviderUtil.getStringValue(
+			_fileEntry, _infoItemFieldValuesProvider, "fileName");
 	}
 
 	private String _getFileName() {
@@ -474,31 +450,13 @@ public class FileEntryContentDashboardItem
 	}
 
 	private String _getPreviewImageURL() {
-		InfoItemFieldValues infoItemFieldValues =
-			_infoItemFieldValuesProvider.getInfoItemFieldValues(_fileEntry);
-
-		InfoFieldValue<Object> infoFieldValue =
-			infoItemFieldValues.getInfoFieldValue("previewImage");
-
-		if (infoFieldValue == null) {
-			return StringPool.BLANK;
-		}
-
-		return String.valueOf(infoFieldValue.getValue());
+		return InfoItemFieldValuesProviderUtil.getStringValue(
+			_fileEntry, _infoItemFieldValuesProvider, "previewImage");
 	}
 
 	private String _getPreviewURL() {
-		InfoItemFieldValues infoItemFieldValues =
-			_infoItemFieldValuesProvider.getInfoItemFieldValues(_fileEntry);
-
-		InfoFieldValue<Object> infoFieldValue =
-			infoItemFieldValues.getInfoFieldValue("previewURL");
-
-		if (infoFieldValue == null) {
-			return StringPool.BLANK;
-		}
-
-		return String.valueOf(infoFieldValue.getValue());
+		return InfoItemFieldValuesProviderUtil.getStringValue(
+			_fileEntry, _infoItemFieldValuesProvider, "previewURL");
 	}
 
 	private String _getSize(Locale locale) {
