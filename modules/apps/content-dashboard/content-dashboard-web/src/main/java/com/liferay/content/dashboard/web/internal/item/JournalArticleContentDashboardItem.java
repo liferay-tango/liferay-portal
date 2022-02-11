@@ -19,6 +19,7 @@ import com.liferay.asset.kernel.model.AssetTag;
 import com.liferay.content.dashboard.item.action.ContentDashboardItemAction;
 import com.liferay.content.dashboard.item.action.exception.ContentDashboardItemActionException;
 import com.liferay.content.dashboard.item.action.provider.ContentDashboardItemActionProvider;
+import com.liferay.content.dashboard.web.internal.info.item.provider.util.InfoItemFieldValuesProviderUtil;
 import com.liferay.content.dashboard.web.internal.item.action.ContentDashboardItemActionProviderTracker;
 import com.liferay.content.dashboard.web.internal.item.type.ContentDashboardItemSubtype;
 import com.liferay.content.dashboard.web.internal.util.ContentDashboardGroupUtil;
@@ -57,7 +58,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Cristina González
  */
 public class JournalArticleContentDashboardItem
-	extends BaseContentDashboardItem<JournalArticle> {
+	implements ContentDashboardItem<JournalArticle> {
 
 	public JournalArticleContentDashboardItem(
 		List<AssetCategory> assetCategories, List<AssetTag> assetTags,
@@ -267,6 +268,12 @@ public class JournalArticleContentDashboardItem
 	}
 
 	@Override
+	public String getDescription(Locale locale) {
+		return InfoItemFieldValuesProviderUtil.getStringValue(
+			_journalArticle, _infoItemFieldValuesProvider, "description");
+	}
+
+	@Override
 	public Object getDisplayFieldValue(String fieldName, Locale locale) {
 		InfoFieldValue<Object> infoFieldValue =
 			_infoItemFieldValuesProvider.getInfoFieldValue(
@@ -277,16 +284,6 @@ public class JournalArticleContentDashboardItem
 		}
 
 		return infoFieldValue.getValue(locale);
-	}
-
-	@Override
-	public JournalArticle getInfoItem() {
-		return _journalArticle;
-	}
-
-	@Override
-	public InfoItemFieldValuesProvider getInfoItemFieldValuesProvider() {
-		return _infoItemFieldValuesProvider;
 	}
 
 	@Override
