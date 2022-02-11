@@ -85,7 +85,7 @@ public class BlogsEntryContentDashboardItemFactory
 
 		return _contentDashboardItemSubtypeFactoryTracker.
 			getContentDashboardItemSubtypeFactoryOptional(
-				DLFileEntryType.class.getName());
+				BlogsEntry.class.getName());
 	}
 
 	@Activate
