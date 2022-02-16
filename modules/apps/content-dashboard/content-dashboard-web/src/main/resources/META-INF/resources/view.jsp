@@ -22,7 +22,7 @@
 ContentDashboardAdminDisplayContext contentDashboardAdminDisplayContext = (ContentDashboardAdminDisplayContext)request.getAttribute(ContentDashboardWebKeys.CONTENT_DASHBOARD_ADMIN_DISPLAY_CONTEXT);
 %>
 
-<div class="cadmin sidebar-wrapper">
+<div class="sidebar-wrapper">
 	<clay:container-fluid
 		cssClass="container-form-lg"
 	>
@@ -110,198 +110,199 @@ ContentDashboardAdminDisplayContext contentDashboardAdminDisplayContext = (Conte
 				managementToolbarDisplayContext="<%= (ContentDashboardAdminManagementToolbarDisplayContext)request.getAttribute(ContentDashboardWebKeys.CONTENT_DASHBOARD_ADMIN_MANAGEMENT_TOOLBAR_DISPLAY_CONTEXT) %>"
 				propsTransformer="js/ContentDashboardManagementToolbarPropsTransformer"
 			/>
-
-			<liferay-ui:search-container
-				cssClass="table-hover"
-				id="content"
-				searchContainer="<%= contentDashboardAdminDisplayContext.getSearchContainer() %>"
-			>
-				<liferay-ui:search-container-row
-					className="com.liferay.content.dashboard.web.internal.item.ContentDashboardItem"
-					keyProperty="id"
-					modelVar="contentDashboardItem"
+			<div class="cadmin">
+				<liferay-ui:search-container
+					cssClass="table-hover"
+					id="content"
+					searchContainer="<%= contentDashboardAdminDisplayContext.getSearchContainer() %>"
 				>
-
-					<%
-					InfoItemReference infoItemReference = contentDashboardItem.getInfoItemReference();
-
-					String rowId = String.valueOf(infoItemReference.getClassPK());
-
-					row.setData(Collections.singletonMap("rowId", rowId));
-					row.setRowId(rowId);
-
-					ContentDashboardItemAction contentDashboardItemAction = contentDashboardItem.getDefaultContentDashboardItemAction(request);
-					%>
-
-					<liferay-ui:search-container-column-text
-						cssClass="table-cell-expand table-title"
-						name="title"
-					>
-						<c:choose>
-							<c:when test="<%= contentDashboardItemAction != null %>">
-								<a class="lfr-portal-tooltip" href="<%= contentDashboardItemAction.getURL() %>" title="<%= HtmlUtil.escape(contentDashboardItem.getTitle(locale)) %>">
-									<span class="text-truncate-inline">
-										<span class="text-truncate"><%= HtmlUtil.escape(contentDashboardItem.getTitle(locale)) %></span>
-									</span>
-								</a>
-							</c:when>
-							<c:otherwise>
-								<span class="lfr-portal-tooltip text-truncate-inline" title="<%= HtmlUtil.escape(contentDashboardItem.getTitle(locale)) %>">
-									<span class="text-truncate"><%= HtmlUtil.escape(contentDashboardItem.getTitle(locale)) %></span>
-								</span>
-							</c:otherwise>
-						</c:choose>
-					</liferay-ui:search-container-column-text>
-
-					<liferay-ui:search-container-column-text
-						cssClass="text-center"
-						name=""
-					>
-						<c:if test="<%= contentDashboardItem.isViewable(request) %>">
-							<span class="lfr-portal-tooltip" title="<%= LanguageUtil.get(request, "this-content-has-a-display-page") %>">
-								<clay:icon
-									cssClass="text-secondary"
-									symbol="page"
-								/>
-							</span>
-						</c:if>
-					</liferay-ui:search-container-column-text>
-
-					<liferay-ui:search-container-column-text
-						cssClass="text-center"
-						name="author"
-					>
-						<span class="lfr-portal-tooltip" title="<%= HtmlUtil.escape(contentDashboardItem.getUserName()) %>">
-							<liferay-ui:user-portrait
-								userId="<%= contentDashboardItem.getUserId() %>"
-							/>
-						</span>
-					</liferay-ui:search-container-column-text>
-
-					<liferay-ui:search-container-column-text
-						cssClass="lfr-small-column table-cell-expand-smaller"
-						name="type"
-					>
-						<span class="lfr-portal-tooltip text-truncate" title="<%= HtmlUtil.escape(contentDashboardItem.getTypeLabel(locale)) %>">
-							<%= HtmlUtil.escape(contentDashboardItem.getTypeLabel(locale)) %>
-						</span>
-					</liferay-ui:search-container-column-text>
-
-					<%
-					ContentDashboardItemSubtype contentDashboardItemSubtype = contentDashboardItem.getContentDashboardItemSubtype();
-					%>
-
-					<liferay-ui:search-container-column-text
-						cssClass="lfr-small-column table-cell-expand-smaller"
-						name="subtype"
-					>
-						<c:choose>
-							<c:when test="<%= contentDashboardItemSubtype != null %>">
-								<span class="lfr-portal-tooltip text-truncate" title="<%= HtmlUtil.escape(contentDashboardItemSubtype.getLabel(locale)) %>">
-									<%= HtmlUtil.escape(contentDashboardItemSubtype.getLabel(locale)) %>
-								</span>
-							</c:when>
-							<c:otherwise>
-								<span class="lfr-portal-tooltip text-truncate" />
-							</c:otherwise>
-						</c:choose>
-					</liferay-ui:search-container-column-text>
-
-					<liferay-ui:search-container-column-text
-						cssClass="text-truncate"
-						name="site-or-asset-library"
-						value="<%= HtmlUtil.escape(contentDashboardItem.getScopeName(locale)) %>"
-					/>
-
-					<%
-					for (AssetVocabulary assetVocabulary : contentDashboardAdminDisplayContext.getAssetVocabularies()) {
-					%>
-
-						<liferay-ui:search-container-column-text
-							cssClass="table-cell-expand-smaller"
-							name="<%= assetVocabulary.getTitle(locale) %>"
-						>
-
-							<%
-							List<String> assetCategories = contentDashboardAdminDisplayContext.getAssetCategoryTitles(contentDashboardItem, assetVocabulary.getVocabularyId());
-							%>
-
-							<div class="d-flex">
-								<c:if test="<%= !assetCategories.isEmpty() %>">
-									<clay:label
-										cssClass="category-label text-truncate-inline"
-										displayType="secondary"
-										large="<%= true %>"
-									>
-										<clay:label-item-expand cssClass="text-truncate"><%= assetCategories.get(0) %></clay:label-item-expand>
-									</clay:label>
-								</c:if>
-
-								<c:if test="<%= assetCategories.size() > 1 %>">
-
-									<%
-									List<String> restOfAssetCategories = assetCategories.subList(1, assetCategories.size());
-									%>
-
-									<div>
-										<react:component
-											module="js/components/CategoriesPopover"
-											props='<%=
-												HashMapBuilder.<String, Object>put(
-													"categories", restOfAssetCategories
-												).put(
-													"vocabulary", assetVocabulary.getTitle(locale)
-												).build()
-											%>'
-										/>
-									</div>
-								</c:if>
-							</div>
-						</liferay-ui:search-container-column-text>
-
-					<%
-					}
-					%>
-
-					<liferay-ui:search-container-column-text
-						cssClass="text-nowrap"
-						name="status"
+					<liferay-ui:search-container-row
+						className="com.liferay.content.dashboard.web.internal.item.ContentDashboardItem"
+						keyProperty="id"
+						modelVar="contentDashboardItem"
 					>
 
 						<%
-						List<ContentDashboardItem.Version> versions = contentDashboardItem.getVersions(locale);
+						InfoItemReference infoItemReference = contentDashboardItem.getInfoItemReference();
 
-						for (ContentDashboardItem.Version version : versions) {
+						String rowId = String.valueOf(infoItemReference.getClassPK());
+
+						row.setData(Collections.singletonMap("rowId", rowId));
+						row.setRowId(rowId);
+
+						ContentDashboardItemAction contentDashboardItemAction = contentDashboardItem.getDefaultContentDashboardItemAction(request);
 						%>
 
-							<clay:label
-								displayType="<%= version.getStyle() %>"
-								label="<%= version.getLabel() %>"
-							/>
+						<liferay-ui:search-container-column-text
+							cssClass="table-cell-expand table-title"
+							name="title"
+						>
+							<c:choose>
+								<c:when test="<%= contentDashboardItemAction != null %>">
+									<a class="lfr-portal-tooltip" href="<%= contentDashboardItemAction.getURL() %>" title="<%= HtmlUtil.escape(contentDashboardItem.getTitle(locale)) %>">
+										<span class="text-truncate-inline">
+											<span class="text-truncate"><%= HtmlUtil.escape(contentDashboardItem.getTitle(locale)) %></span>
+										</span>
+									</a>
+								</c:when>
+								<c:otherwise>
+									<span class="lfr-portal-tooltip text-truncate-inline" title="<%= HtmlUtil.escape(contentDashboardItem.getTitle(locale)) %>">
+										<span class="text-truncate"><%= HtmlUtil.escape(contentDashboardItem.getTitle(locale)) %></span>
+									</span>
+								</c:otherwise>
+							</c:choose>
+						</liferay-ui:search-container-column-text>
+
+						<liferay-ui:search-container-column-text
+							cssClass="text-center"
+							name=""
+						>
+							<c:if test="<%= contentDashboardItem.isViewable(request) %>">
+								<span class="lfr-portal-tooltip" title="<%= LanguageUtil.get(request, "this-content-has-a-display-page") %>">
+									<clay:icon
+										cssClass="text-secondary"
+										symbol="page"
+									/>
+								</span>
+							</c:if>
+						</liferay-ui:search-container-column-text>
+
+						<liferay-ui:search-container-column-text
+							cssClass="text-center"
+							name="author"
+						>
+							<span class="lfr-portal-tooltip" title="<%= HtmlUtil.escape(contentDashboardItem.getUserName()) %>">
+								<liferay-ui:user-portrait
+									userId="<%= contentDashboardItem.getUserId() %>"
+								/>
+							</span>
+						</liferay-ui:search-container-column-text>
+
+						<liferay-ui:search-container-column-text
+							cssClass="lfr-small-column table-cell-expand-smaller"
+							name="type"
+						>
+							<span class="lfr-portal-tooltip text-truncate" title="<%= HtmlUtil.escape(contentDashboardItem.getTypeLabel(locale)) %>">
+								<%= HtmlUtil.escape(contentDashboardItem.getTypeLabel(locale)) %>
+							</span>
+						</liferay-ui:search-container-column-text>
+
+						<%
+						ContentDashboardItemSubtype contentDashboardItemSubtype = contentDashboardItem.getContentDashboardItemSubtype();
+						%>
+
+						<liferay-ui:search-container-column-text
+							cssClass="lfr-small-column table-cell-expand-smaller"
+							name="subtype"
+						>
+							<c:choose>
+								<c:when test="<%= contentDashboardItemSubtype != null %>">
+									<span class="lfr-portal-tooltip text-truncate" title="<%= HtmlUtil.escape(contentDashboardItemSubtype.getLabel(locale)) %>">
+										<%= HtmlUtil.escape(contentDashboardItemSubtype.getLabel(locale)) %>
+									</span>
+								</c:when>
+								<c:otherwise>
+									<span class="lfr-portal-tooltip text-truncate" />
+								</c:otherwise>
+							</c:choose>
+						</liferay-ui:search-container-column-text>
+
+						<liferay-ui:search-container-column-text
+							cssClass="text-truncate"
+							name="site-or-asset-library"
+							value="<%= HtmlUtil.escape(contentDashboardItem.getScopeName(locale)) %>"
+						/>
+
+						<%
+						for (AssetVocabulary assetVocabulary : contentDashboardAdminDisplayContext.getAssetVocabularies()) {
+						%>
+
+							<liferay-ui:search-container-column-text
+								cssClass="table-cell-expand-smaller"
+								name="<%= assetVocabulary.getTitle(locale) %>"
+							>
+
+								<%
+								List<String> assetCategories = contentDashboardAdminDisplayContext.getAssetCategoryTitles(contentDashboardItem, assetVocabulary.getVocabularyId());
+								%>
+
+								<div class="d-flex">
+									<c:if test="<%= !assetCategories.isEmpty() %>">
+										<clay:label
+											cssClass="category-label text-truncate-inline"
+											displayType="secondary"
+											large="<%= true %>"
+										>
+											<clay:label-item-expand cssClass="text-truncate"><%= assetCategories.get(0) %></clay:label-item-expand>
+										</clay:label>
+									</c:if>
+
+									<c:if test="<%= assetCategories.size() > 1 %>">
+
+										<%
+										List<String> restOfAssetCategories = assetCategories.subList(1, assetCategories.size());
+										%>
+
+										<div>
+											<react:component
+												module="js/components/CategoriesPopover"
+												props='<%=
+													HashMapBuilder.<String, Object>put(
+														"categories", restOfAssetCategories
+													).put(
+														"vocabulary", assetVocabulary.getTitle(locale)
+													).build()
+												%>'
+											/>
+										</div>
+									</c:if>
+								</div>
+							</liferay-ui:search-container-column-text>
 
 						<%
 						}
 						%>
 
-					</liferay-ui:search-container-column-text>
+						<liferay-ui:search-container-column-text
+							cssClass="text-nowrap"
+							name="status"
+						>
 
-					<liferay-ui:search-container-column-date
-						name="modified-date"
-						value="<%= contentDashboardItem.getModifiedDate() %>"
-					/>
+							<%
+							List<ContentDashboardItem.Version> versions = contentDashboardItem.getVersions(locale);
 
-					<liferay-ui:search-container-column-text>
-						<clay:dropdown-actions
-							dropdownItems="<%= contentDashboardAdminDisplayContext.getDropdownItems(contentDashboardItem) %>"
-							propsTransformer="js/transformers/ActionsComponentPropsTransformer"
+							for (ContentDashboardItem.Version version : versions) {
+							%>
+
+								<clay:label
+									displayType="<%= version.getStyle() %>"
+									label="<%= version.getLabel() %>"
+								/>
+
+							<%
+							}
+							%>
+
+						</liferay-ui:search-container-column-text>
+
+						<liferay-ui:search-container-column-date
+							name="modified-date"
+							value="<%= contentDashboardItem.getModifiedDate() %>"
 						/>
-					</liferay-ui:search-container-column-text>
-				</liferay-ui:search-container-row>
 
-				<liferay-ui:search-iterator
-					markupView="lexicon"
-				/>
-			</liferay-ui:search-container>
+						<liferay-ui:search-container-column-text>
+							<clay:dropdown-actions
+								dropdownItems="<%= contentDashboardAdminDisplayContext.getDropdownItems(contentDashboardItem) %>"
+								propsTransformer="js/transformers/ActionsComponentPropsTransformer"
+							/>
+						</liferay-ui:search-container-column-text>
+					</liferay-ui:search-container-row>
+
+					<liferay-ui:search-iterator
+						markupView="lexicon"
+					/>
+				</liferay-ui:search-container>
+			</div>
 		</clay:sheet>
 
 		<clay:sheet
@@ -321,6 +322,7 @@ ContentDashboardAdminDisplayContext contentDashboardAdminDisplayContext = (Conte
 				propsTransformer="js/transformers/SampleFDSPropsTransformer"
 				selectedItemsKey="key"
 				selectionType="multiple"
+				showManagementBar="<%= false %>"
 				style="fluid"
 			/>
 		</clay:sheet>
