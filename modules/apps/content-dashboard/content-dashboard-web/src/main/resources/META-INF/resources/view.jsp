@@ -320,6 +320,7 @@ ContentDashboardAdminDisplayContext contentDashboardAdminDisplayContext = (Conte
 				portletURL="<%= contentDashboardAdminDisplayContext.getPortletURL() %>"
 				selectedItemsKey="key"
 				selectionType="multiple"
+				showManagementBar="<%= true %>"
 				style="fluid"
 			/>
 		</clay:sheet>
