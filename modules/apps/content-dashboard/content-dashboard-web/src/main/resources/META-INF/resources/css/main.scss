@@ -4,14 +4,14 @@
 @import './download-spreadsheet-button';
 
 html#{$cadmin-selector} {
-	.cadmin {
-		.audit-graph {
-			position: relative;
-			&-loading {
-				min-height: 304px;
-			}
+	.audit-graph {
+		position: relative;
+		&-loading {
+			min-height: 304px;
 		}
+	}
 
+	
 		.content-dashboard-management-toolbar {
 			.navbar-expand-md .container-fluid {
 				padding: 0;
@@ -69,6 +69,9 @@ html#{$cadmin-selector} {
 			box-shadow: 0 1px 15px -2px rgba(0, 0, 0, 0.2);
 			opacity: 1;
 		}
+
+	
+	.cadmin {
 
 		// Table
 
