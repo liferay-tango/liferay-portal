@@ -322,7 +322,7 @@ ContentDashboardAdminDisplayContext contentDashboardAdminDisplayContext = (Conte
 				propsTransformer="js/transformers/SampleFDSPropsTransformer"
 				selectedItemsKey="key"
 				selectionType="multiple"
-				showManagementBar="<%= false %>"
+				showManagementBar="<%= true %>"
 				style="fluid"
 			/>
 		</clay:sheet>

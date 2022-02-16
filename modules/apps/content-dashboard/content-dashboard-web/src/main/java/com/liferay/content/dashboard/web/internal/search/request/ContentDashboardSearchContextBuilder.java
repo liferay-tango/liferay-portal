@@ -19,6 +19,7 @@ import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.model.AssetVocabularyConstants;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
+import com.liferay.content.dashboard.web.internal.constants.ContentDashboardPortletKeys;
 import com.liferay.document.library.kernel.model.DLFileEntryType;
 import com.liferay.document.library.kernel.service.DLFileEntryTypeLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -42,8 +43,10 @@ import com.liferay.portal.kernel.search.generic.BooleanQueryImpl;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.util.ArrayList;
@@ -73,8 +76,9 @@ public class ContentDashboardSearchContextBuilder {
 			_httpServletRequest);
 
 		Integer status = GetterUtil.getInteger(
-			ParamUtil.getInteger(
-				_httpServletRequest, "status", WorkflowConstants.STATUS_ANY));
+			getParam(
+				_httpServletRequest, "status",
+				String.valueOf(WorkflowConstants.STATUS_ANY)));
 
 		if (status == WorkflowConstants.STATUS_APPROVED) {
 			searchContext.setAttribute("head", Boolean.TRUE);
@@ -87,19 +91,23 @@ public class ContentDashboardSearchContextBuilder {
 		searchContext.setBooleanClauses(
 			_getBooleanClauses(
 				new AssetCategoryIds(
-					ParamUtil.getLongValues(
-						_httpServletRequest, "assetCategoryId"),
+					Stream.of(
+						getParams(_httpServletRequest, "assetCategoryId")
+					).mapToLong(
+						value -> Long.valueOf(value)
+					).toArray(),
 					_assetCategoryLocalService, _assetVocabularyLocalService),
-				ParamUtil.getStringValues(_httpServletRequest, "assetTagId"),
-				ParamUtil.getLongValues(_httpServletRequest, "authorIds"),
+				getParams(_httpServletRequest, "assetTagId"),
+				Stream.of(
+					getParams(_httpServletRequest, "authorIds")
+				).mapToLong(
+					value -> Long.valueOf(value)
+				).toArray(),
 				PortalUtil.getCompanyId(_httpServletRequest),
-				ParamUtil.getStringValues(
-					_httpServletRequest, "fileExtension")));
+				getParams(_httpServletRequest, "fileExtension")));
 
-		String[] contentDashboardItemSubtypePayloads =
-			ParamUtil.getParameterValues(
-				_httpServletRequest, "contentDashboardItemSubtypePayload",
-				new String[0], false);
+		String[] contentDashboardItemSubtypePayloads = getParams(
+			_httpServletRequest, "contentDashboardItemSubtypePayload");
 
 		if (!ArrayUtil.isEmpty(contentDashboardItemSubtypePayloads)) {
 			searchContext.setClassTypeIds(
@@ -323,6 +331,42 @@ public class ContentDashboardSearchContextBuilder {
 		}
 
 		return booleanFilter;
+	}
+
+	private String getParam(
+		HttpServletRequest httpServletRequest, String name,
+		String defaultValue) {
+
+		String currentURL = ParamUtil.getString(
+			_httpServletRequest, "currentURL");
+
+		String portletNamespace = PortalUtil.getPortletNamespace(
+			ContentDashboardPortletKeys.CONTENT_DASHBOARD_ADMIN);
+
+		if (Validator.isNull(currentURL)) {
+			return ParamUtil.getString(httpServletRequest, name, defaultValue);
+		}
+
+		return GetterUtil.getString(
+			HttpUtil.getParameter(currentURL, portletNamespace + name, false),
+			defaultValue);
+	}
+
+	private String[] getParams(
+		HttpServletRequest httpServletRequest, String name) {
+
+		String portletNamespace = PortalUtil.getPortletNamespace(
+			ContentDashboardPortletKeys.CONTENT_DASHBOARD_ADMIN);
+
+		String currentURL = ParamUtil.getString(
+			_httpServletRequest, "currentURL");
+
+		if (Validator.isNull(currentURL)) {
+			return ParamUtil.getStringValues(httpServletRequest, name);
+		}
+
+		return GetterUtil.getStringValues(
+			HttpUtil.getParameter(currentURL, portletNamespace + name, false));
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
