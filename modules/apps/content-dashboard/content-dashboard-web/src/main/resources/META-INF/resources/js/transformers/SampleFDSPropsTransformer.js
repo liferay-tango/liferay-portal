@@ -12,15 +12,108 @@
  * details.
  */
 
+import {render} from '@liferay/frontend-js-react-web';
+
+import SidebarPanel from '../components/SidebarPanel';
+import SidebarPanelInfoView from '../components/SidebarPanelInfoView/SidebarPanelInfoView';
+import SidebarPanelMetricsView from '../components/SidebarPanelMetricsView';
 import RelativeDateTimeRenderer from '../components/data_renderers/RelativeDateTimeRenderer';
 import StatusListRenderer from '../components/data_renderers/StatusListRenderer';
 
-export default function propsTransformer({...otherProps}) {
+const deselectAllRows = (portletNamespace) => {
+	const activeRows = document.querySelectorAll(
+		`[data-searchcontainerid="${portletNamespace}content"] tr.active`
+	);
+
+	activeRows.forEach((row) => row.classList.remove('active'));
+};
+
+const getRow = (portletNamespace, rowId) =>
+	document.querySelector(
+		`[data-searchcontainerid="${portletNamespace}content"] [data-rowid="${rowId}"]`
+	);
+
+const selectRow = (portletNamespace, rowId) => {
+	deselectAllRows(portletNamespace);
+
+	const currentRow = getRow(portletNamespace, rowId);
+	currentRow.classList.add('active');
+};
+
+const showSidebar = ({View, fetchURL, portletNamespace}) => {
+	const id = `${portletNamespace}sidebar`;
+
+	const sidebarPanel = Liferay.component(id);
+
+	if (!sidebarPanel) {
+		const container = document.body.appendChild(
+			document.createElement('div')
+		);
+
+		render(
+			SidebarPanel,
+			{
+				fetchURL,
+				onClose: () => {
+					Liferay.component(id).close();
+
+					deselectAllRows(portletNamespace);
+				},
+				ref: (element) => {
+					Liferay.component(id, element);
+				},
+				viewComponent: View,
+			},
+			container
+		);
+	}
+	else {
+		sidebarPanel.open(fetchURL, View);
+	}
+};
+
+const actions = {
+	showInfo({fetchURL, portletNamespace, rowId}) {
+
+		// selectRow(portletNamespace, rowId);
+
+		showSidebar({
+			View: SidebarPanelInfoView,
+			fetchURL,
+			portletNamespace,
+		});
+	},
+	showMetrics({fetchURL, portletNamespace, rowId}) {
+
+		// selectRow(portletNamespace, rowId);
+
+		showSidebar({
+			View: SidebarPanelMetricsView,
+			fetchURL,
+			portletNamespace,
+		});
+	},
+};
+
+export default function propsTransformer({portletNamespace, ...otherProps}) {
 	return {
 		...otherProps,
 		customDataRenderers: {
 			relativeDateTimeRenderer: RelativeDateTimeRenderer,
 			statusListRenderer: StatusListRenderer,
+		},
+		onActionDropdownItemClick({action, itemData}) {
+			const currentAction = action.data?.action;
+			if (currentAction) {
+				actions[currentAction]({
+					fetchURL: action.data.fetchURL,
+					portletNamespace,
+					rowId: action.data.classPK,
+				});
+				document
+					.querySelector('.dropdown-menu.show')
+					.classList.remove('show');
+			}
 		},
 	};
 }
