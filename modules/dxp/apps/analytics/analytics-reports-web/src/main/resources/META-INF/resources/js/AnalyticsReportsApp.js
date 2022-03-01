@@ -19,46 +19,9 @@ import Navigation from './components/Navigation';
 import {ChartStateContextProvider} from './context/ChartStateContext';
 import ConnectionContext from './context/ConnectionContext';
 import {StoreContextProvider} from './context/StoreContext';
+import {dataReducer, initialState} from './context/dataReducer';
 
 import '../css/analytics-reports-app.scss';
-
-const initialState = {
-	data: null,
-	error: null,
-	loading: false,
-};
-
-const dataReducer = (state, action) => {
-	switch (action.type) {
-		case 'LOAD_DATA':
-			return {
-				...state,
-				loading: true,
-			};
-
-		case 'SET_ERROR':
-			return {
-				...state,
-				error: action.error,
-				loading: false,
-			};
-
-		case 'SET_DATA':
-			return {
-				data: {
-					...action.data,
-					publishedToday:
-						new Date().toDateString() ===
-						new Date(action.data?.publishDate).toDateString(),
-				},
-				error: action.data?.error,
-				loading: false,
-			};
-
-		default:
-			return initialState;
-	}
-};
 
 export default function ({context}) {
 	const {analyticsReportsDataURL} = context;
