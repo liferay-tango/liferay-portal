@@ -120,8 +120,13 @@ export default function Main({
 	);
 }
 
+Main.defaultProps = {
+	author: null,
+	totalReadsDataProvider: null,
+};
+
 Main.propTypes = {
-	author: PropTypes.object.isRequired,
+	author: PropTypes.object,
 	canonicalURL: PropTypes.string.isRequired,
 	chartDataProviders: PropTypes.arrayOf(PropTypes.func.isRequired).isRequired,
 	onSelectedLanguageClick: PropTypes.func.isRequired,
@@ -134,7 +139,7 @@ Main.propTypes = {
 			label: PropTypes.string,
 		})
 	).isRequired,
-	totalReadsDataProvider: PropTypes.func.isRequired,
+	totalReadsDataProvider: PropTypes.func,
 	totalViewsDataProvider: PropTypes.func.isRequired,
 	trafficSourcesDataProvider: PropTypes.func.isRequired,
 	viewURLs: PropTypes.arrayOf(
