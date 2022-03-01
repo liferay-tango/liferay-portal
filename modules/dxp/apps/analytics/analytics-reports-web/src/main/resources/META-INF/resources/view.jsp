@@ -36,9 +36,7 @@ String analyticsReportsPanelState = SessionClicks.get(request, "com.liferay.anal
 	</div>
 
 	<div class="sidebar-body">
-		<c:if test='<%= Objects.equals(analyticsReportsPanelState, "open") %>'>
-			<liferay-util:include page="/analytics_reports_panel.jsp" servletContext="<%= application %>" />
-		</c:if>
+		<liferay-util:include page="/analytics_reports_panel.jsp" servletContext="<%= application %>" />
 	</div>
 </div>
 
