@@ -14,15 +14,13 @@ import React, {useEffect, useState} from 'react';
 
 import AnalyticsReports from './components/AnalyticsReports';
 
-export default function AnalyticsReportsApp({context, portletNamespace}) {
-	const {analyticsReportsDataURL} = context;
+const ANALYTICS_REPORTS_CLOSED_PANEL_VALUE = 'closed';
+const ANALYTICS_REPORTS_OPEN_PANEL_VALUE = 'open';
+const ANALYTICS_REPORTS_PANEL_ID =
+	'com.liferay.analytics.reports.web_panelState';
 
-	const panelState = async () =>
-		await Liferay.Util.Session.get(
-			'com.liferay.analytics.reports.web_panelState'
-		);
-
-	const [panelIsOpen, setPanelIsOpen] = useState(panelState === 'open');
+export default function AnalyticsReportsApp(props) {
+	const {analyticsReportsDataURL, isPanelStateOpen, portletNamespace} = props;
 
 	const analyticsReportsPanelToggle = document.getElementById(
 		`${portletNamespace}analyticsReportsPanelToggleId`
@@ -35,18 +33,16 @@ export default function AnalyticsReportsApp({context, portletNamespace}) {
 
 		sidenavInstance.on('open.lexicon.sidenav', () => {
 			Liferay.Util.Session.set(
-				'com.liferay.analytics.reports.web_panelState',
-				'open'
+				ANALYTICS_REPORTS_PANEL_ID,
+				ANALYTICS_REPORTS_OPEN_PANEL_VALUE
 			);
-			setPanelIsOpen(true);
 		});
 
 		sidenavInstance.on('closed.lexicon.sidenav', () => {
 			Liferay.Util.Session.set(
-				'com.liferay.analytics.reports.web_panelState',
-				'closed'
+				ANALYTICS_REPORTS_PANEL_ID,
+				ANALYTICS_REPORTS_CLOSED_PANEL_VALUE
 			);
-			setPanelIsOpen(false);
 		});
 
 		Liferay.once('screenLoad', () => {
@@ -54,18 +50,18 @@ export default function AnalyticsReportsApp({context, portletNamespace}) {
 		});
 	}, [analyticsReportsPanelToggle, portletNamespace]);
 
-	const [fetchInitialData, setFetchInitialData] = useState(false);
+	const [eventTriggered, setEventTriggered] = useState(false);
 
 	useEventListener(
 		'mouseenter',
-		() => setFetchInitialData(true),
+		() => setEventTriggered(true),
 		{once: true},
 		analyticsReportsPanelToggle
 	);
 
 	useEventListener(
 		'focus',
-		() => setFetchInitialData(true),
+		() => setEventTriggered(true),
 		{once: true},
 		analyticsReportsPanelToggle
 	);
@@ -73,8 +69,8 @@ export default function AnalyticsReportsApp({context, portletNamespace}) {
 	return (
 		<AnalyticsReports
 			analyticsReportsDataURL={analyticsReportsDataURL}
-			fetchInitialData={fetchInitialData}
-			panelIsOpen={panelIsOpen}
+			eventTriggered={eventTriggered}
+			isPanelStateOpen={isPanelStateOpen}
 		/>
 	);
 }

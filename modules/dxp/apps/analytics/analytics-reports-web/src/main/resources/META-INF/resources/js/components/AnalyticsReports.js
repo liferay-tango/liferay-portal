@@ -25,7 +25,8 @@ import '../../css/analytics-reports-app.scss';
 
 export default function AnalyticsReports({
 	analyticsReportsDataURL,
-	fetchInitialData,
+	eventTriggered,
+	isPanelStateOpen,
 }) {
 	const isMounted = useIsMounted();
 
@@ -74,10 +75,22 @@ export default function AnalyticsReports({
 	);
 
 	useEffect(() => {
-		if (fetchInitialData && !state.data) {
+		if (eventTriggered && !state.data) {
 			getData(analyticsReportsDataURL);
 		}
-	}, [analyticsReportsDataURL, fetchInitialData, getData, state.data]);
+	}, [eventTriggered, state.data, analyticsReportsDataURL, getData]);
+
+	useEffect(() => {
+		if (isPanelStateOpen && !state.data && !state.loading) {
+			getData(analyticsReportsDataURL);
+		}
+	}, [
+		analyticsReportsDataURL,
+		isPanelStateOpen,
+		state.data,
+		state.loading,
+		getData,
+	]);
 
 	const handleSelectedLanguageClick = useCallback(
 		(url, timeSpanKey, timeSpanOffset) => {
