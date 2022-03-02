@@ -9,118 +9,38 @@
  * distribution rights of the Software.
  */
 
-import ClayAlert from '@clayui/alert';
-import ClayLoadingIndicator from '@clayui/loading-indicator';
-import {useIsMounted} from '@liferay/frontend-js-react-web';
-import {fetch} from 'frontend-js-web';
-import React, {useCallback, useEffect, useReducer} from 'react';
+import {useEventListener} from '@liferay/frontend-js-react-web';
+import React, {useState} from 'react';
 
-import Navigation from './components/Navigation';
-import {ChartStateContextProvider} from './context/ChartStateContext';
-import ConnectionContext from './context/ConnectionContext';
-import {StoreContextProvider} from './context/StoreContext';
-import {dataReducer, initialState} from './context/dataReducer';
+import AnalyticsReports from './components/AnalyticsReports';
 
-import '../css/analytics-reports-app.scss';
-
-export default function ({context}) {
+export default function AnalyticsReportsApp({context, portletNamespace}) {
 	const {analyticsReportsDataURL} = context;
 
-	const isMounted = useIsMounted();
-
-	const [state, dispatch] = useReducer(dataReducer, initialState);
-
-	const safeDispatch = (action) => {
-		if (isMounted()) {
-			dispatch(action);
-		}
-	};
-
-	const getData = (fetchURL, timeSpanKey, timeSpanOffset) => {
-		safeDispatch({type: 'LOAD_DATA'});
-
-		const body =
-			!timeSpanOffset && !!timeSpanKey
-				? {timeSpanKey, timeSpanOffset}
-				: {};
-
-		fetch(fetchURL, {
-			body,
-			method: 'POST',
-		})
-			.then((response) =>
-				response.json().then((data) =>
-					safeDispatch({
-						data: data.context,
-						type: 'SET_DATA',
-					})
-				)
-			)
-			.catch(() => {
-				safeDispatch({
-					error: Liferay.Language.get('an-unexpected-error-occurred'),
-					type: 'SET_ERROR',
-				});
-			});
-	};
-
-	useEffect(() => {
-		getData(analyticsReportsDataURL);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [analyticsReportsDataURL]);
-
-	const handleSelectedLanguageClick = useCallback(
-		(url, timeSpanKey, timeSpanOffset) => {
-			getData(url, timeSpanKey, timeSpanOffset);
-		},
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[]
+	const analyticsReportsPanelToggle = document.getElementById(
+		`${portletNamespace}analyticsReportsPanelToggleId`
 	);
 
-	return state.loading ? (
-		<ClayLoadingIndicator small />
-	) : state.error ? (
-		<ClayAlert displayType="danger" variant="stripe">
-			{state.error}
-		</ClayAlert>
-	) : (
-		state.data && (
-			<ConnectionContext.Provider
-				value={{
-					validAnalyticsConnection:
-						state.data.validAnalyticsConnection,
-				}}
-			>
-				<StoreContextProvider
-					value={{
-						endpoints: {...state.data.endpoints},
-						languageTag: state.data.languageTag,
-						namespace: state.data.namespace,
-						page: state.data.page,
-						publishedToday: state.data.publishedToday,
-					}}
-				>
-					<ChartStateContextProvider
-						publishDate={state.data.publishDate}
-						timeRange={state.data.timeRange}
-						timeSpanKey={state.data.timeSpanKey}
-					>
-						<div className="analytics-reports-app">
-							<Navigation
-								author={state.data.author}
-								canonicalURL={state.data.canonicalURL}
-								onSelectedLanguageClick={
-									handleSelectedLanguageClick
-								}
-								pagePublishDate={state.data.publishDate}
-								pageTitle={state.data.title}
-								timeSpanOptions={state.data.timeSpans}
-								viewURLs={state.data.viewURLs}
-							/>
-						</div>
-					</ChartStateContextProvider>
-				</StoreContextProvider>
-			</ConnectionContext.Provider>
-		)
+	const [fetchInitialData, setFetchInitialData] = useState(false);
+
+	useEventListener(
+		'mouseenter',
+		() => setFetchInitialData(true),
+		{once: true},
+		analyticsReportsPanelToggle
+	);
+
+	useEventListener(
+		'focus',
+		() => setFetchInitialData(true),
+		{once: true},
+		analyticsReportsPanelToggle
+	);
+
+	return (
+		<AnalyticsReports
+			analyticsReportsDataURL={analyticsReportsDataURL}
+			fetchInitialData={fetchInitialData}
+		/>
 	);
 }
