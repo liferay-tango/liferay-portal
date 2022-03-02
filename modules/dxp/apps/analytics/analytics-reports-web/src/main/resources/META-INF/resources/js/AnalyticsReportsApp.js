@@ -10,16 +10,49 @@
  */
 
 import {useEventListener} from '@liferay/frontend-js-react-web';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import AnalyticsReports from './components/AnalyticsReports';
 
 export default function AnalyticsReportsApp({context, portletNamespace}) {
 	const {analyticsReportsDataURL} = context;
 
+	const panelState = async () =>
+		await Liferay.Util.Session.get(
+			'com.liferay.analytics.reports.web_panelState'
+		);
+
+	const [panelIsOpen, setPanelIsOpen] = useState(panelState === 'open');
+
 	const analyticsReportsPanelToggle = document.getElementById(
 		`${portletNamespace}analyticsReportsPanelToggleId`
 	);
+
+	useEffect(() => {
+		const sidenavInstance = Liferay.SideNavigation.instance(
+			analyticsReportsPanelToggle
+		);
+
+		sidenavInstance.on('open.lexicon.sidenav', () => {
+			Liferay.Util.Session.set(
+				'com.liferay.analytics.reports.web_panelState',
+				'open'
+			);
+			setPanelIsOpen(true);
+		});
+
+		sidenavInstance.on('closed.lexicon.sidenav', () => {
+			Liferay.Util.Session.set(
+				'com.liferay.analytics.reports.web_panelState',
+				'closed'
+			);
+			setPanelIsOpen(false);
+		});
+
+		Liferay.once('screenLoad', () => {
+			Liferay.SideNavigation.destroy(analyticsReportsPanelToggle);
+		});
+	}, [analyticsReportsPanelToggle, portletNamespace]);
 
 	const [fetchInitialData, setFetchInitialData] = useState(false);
 
@@ -41,6 +74,7 @@ export default function AnalyticsReportsApp({context, portletNamespace}) {
 		<AnalyticsReports
 			analyticsReportsDataURL={analyticsReportsDataURL}
 			fetchInitialData={fetchInitialData}
+			panelIsOpen={panelIsOpen}
 		/>
 	);
 }
