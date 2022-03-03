@@ -319,6 +319,7 @@ ContentDashboardAdminDisplayContext contentDashboardAdminDisplayContext = (Conte
 				namespace="<%= liferayPortletResponse.getNamespace() %>"
 				pageNumber="<%= 1 %>"
 				portletURL="<%= contentDashboardAdminDisplayContext.getPortletURL() %>"
+				propsTransformer="js/transformers/FDSPropsTransformer"
 				selectedItemsKey="key"
 				selectionType="multiple"
 				showManagementBar="<%= true %>"

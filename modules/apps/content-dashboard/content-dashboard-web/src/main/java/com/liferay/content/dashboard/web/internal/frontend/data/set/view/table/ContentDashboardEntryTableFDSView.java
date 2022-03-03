@@ -57,7 +57,7 @@ public class ContentDashboardEntryTableFDSView extends BaseTableFDSView {
 		FDSTableSchemaField statusFDSTableSchemaField =
 			fdsTableSchemaBuilder.addFDSTableSchemaField("status", "status");
 
-		statusFDSTableSchemaField.setContentRenderer("status");
+		statusFDSTableSchemaField.setContentRenderer("statusListRenderer");
 
 		FDSTableSchemaField modifiedDateFDSTableSchemaField =
 			fdsTableSchemaBuilder.addFDSTableSchemaField("modifiedDate", "modified-date");
