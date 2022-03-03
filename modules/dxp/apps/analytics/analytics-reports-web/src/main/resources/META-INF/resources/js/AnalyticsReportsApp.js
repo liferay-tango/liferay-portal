@@ -10,47 +10,22 @@
  */
 
 import {useEventListener} from '@liferay/frontend-js-react-web';
-import React, {useEffect, useState} from 'react';
+import PropTypes from 'prop-types';
+import React, {useState} from 'react';
 
 import AnalyticsReports from './components/AnalyticsReports';
-
-const ANALYTICS_REPORTS_CLOSED_PANEL_VALUE = 'closed';
-const ANALYTICS_REPORTS_OPEN_PANEL_VALUE = 'open';
-const ANALYTICS_REPORTS_PANEL_ID =
-	'com.liferay.analytics.reports.web_panelState';
+import useSidenavState from './hooks/useSidenavState';
 
 export default function AnalyticsReportsApp(props) {
 	const {analyticsReportsDataURL, isPanelStateOpen, portletNamespace} = props;
+
+	const [eventTriggered, setEventTriggered] = useState(false);
 
 	const analyticsReportsPanelToggle = document.getElementById(
 		`${portletNamespace}analyticsReportsPanelToggleId`
 	);
 
-	useEffect(() => {
-		const sidenavInstance = Liferay.SideNavigation.instance(
-			analyticsReportsPanelToggle
-		);
-
-		sidenavInstance.on('open.lexicon.sidenav', () => {
-			Liferay.Util.Session.set(
-				ANALYTICS_REPORTS_PANEL_ID,
-				ANALYTICS_REPORTS_OPEN_PANEL_VALUE
-			);
-		});
-
-		sidenavInstance.on('closed.lexicon.sidenav', () => {
-			Liferay.Util.Session.set(
-				ANALYTICS_REPORTS_PANEL_ID,
-				ANALYTICS_REPORTS_CLOSED_PANEL_VALUE
-			);
-		});
-
-		Liferay.once('screenLoad', () => {
-			Liferay.SideNavigation.destroy(analyticsReportsPanelToggle);
-		});
-	}, [analyticsReportsPanelToggle, portletNamespace]);
-
-	const [eventTriggered, setEventTriggered] = useState(false);
+	useSidenavState(analyticsReportsPanelToggle, portletNamespace);
 
 	useEventListener(
 		'mouseenter',
@@ -74,3 +49,9 @@ export default function AnalyticsReportsApp(props) {
 		/>
 	);
 }
+
+AnalyticsReportsApp.propTypes = {
+	analyticsReportsDataURL: PropTypes.string.isRequired,
+	isPanelStateOpen: PropTypes.bool.isRequired,
+	portletNamespace: PropTypes.string.isRequired,
+};

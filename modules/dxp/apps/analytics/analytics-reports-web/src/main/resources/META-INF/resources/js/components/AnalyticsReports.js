@@ -13,6 +13,7 @@ import ClayAlert from '@clayui/alert';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {useIsMounted} from '@liferay/frontend-js-react-web';
 import {fetch} from 'frontend-js-web';
+import PropTypes from 'prop-types';
 import React, {useCallback, useEffect, useReducer} from 'react';
 
 import {ChartStateContextProvider} from '../context/ChartStateContext';
@@ -78,19 +79,15 @@ export default function AnalyticsReports({
 		if (eventTriggered && !state.data) {
 			getData(analyticsReportsDataURL);
 		}
-	}, [eventTriggered, state.data, analyticsReportsDataURL, getData]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [eventTriggered]);
 
 	useEffect(() => {
 		if (isPanelStateOpen && !state.data && !state.loading) {
 			getData(analyticsReportsDataURL);
 		}
-	}, [
-		analyticsReportsDataURL,
-		isPanelStateOpen,
-		state.data,
-		state.loading,
-		getData,
-	]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [isPanelStateOpen]);
 
 	const handleSelectedLanguageClick = useCallback(
 		(url, timeSpanKey, timeSpanOffset) => {
@@ -148,6 +145,8 @@ export default function AnalyticsReports({
 	);
 }
 
-/* LayoutReports.propTypes = {
+AnalyticsReports.propTypes = {
+	analyticsReportsDataURL: PropTypes.string.isRequired,
 	eventTriggered: PropTypes.bool.isRequired,
-}; */
+	isPanelStateOpen: PropTypes.bool.isRequired,
+};
