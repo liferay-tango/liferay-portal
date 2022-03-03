@@ -14,8 +14,7 @@ import PropTypes from 'prop-types';
 import React, {useState} from 'react';
 
 import AnalyticsReports from './components/AnalyticsReports';
-import useSidenavState from './hooks/useSidenavState';
-
+import useInitialPanelState from './hooks/useInitialPanelState';
 export default function AnalyticsReportsApp({context, portletNamespace}) {
 	const {analyticsReportsDataURL} = context;
 
@@ -25,10 +24,7 @@ export default function AnalyticsReportsApp({context, portletNamespace}) {
 		`${portletNamespace}analyticsReportsPanelToggleId`
 	);
 
-	const [isPanelStateOpen] = useSidenavState(
-		analyticsReportsPanelToggle,
-		portletNamespace
-	);
+	const [isPanelStateOpen] = useInitialPanelState();
 
 	useEventListener(
 		'mouseenter',
