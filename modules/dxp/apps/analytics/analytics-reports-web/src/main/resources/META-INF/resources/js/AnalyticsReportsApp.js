@@ -18,7 +18,10 @@ import useInitialPanelState from './hooks/useInitialPanelState';
 export default function AnalyticsReportsApp({context, portletNamespace}) {
 	const {analyticsReportsDataURL} = context;
 
-	const [eventTriggered, setEventTriggered] = useState(false);
+	const [
+		hoverOrFocusEventTriggered,
+		setHoverOrFocusEventTriggered,
+	] = useState(false);
 
 	const analyticsReportsPanelToggle = document.getElementById(
 		`${portletNamespace}analyticsReportsPanelToggleId`
@@ -28,14 +31,14 @@ export default function AnalyticsReportsApp({context, portletNamespace}) {
 
 	useEventListener(
 		'mouseenter',
-		() => setEventTriggered(true),
+		() => setHoverOrFocusEventTriggered(true),
 		{once: true},
 		analyticsReportsPanelToggle
 	);
 
 	useEventListener(
 		'focus',
-		() => setEventTriggered(true),
+		() => setHoverOrFocusEventTriggered(true),
 		{once: true},
 		analyticsReportsPanelToggle
 	);
@@ -43,7 +46,7 @@ export default function AnalyticsReportsApp({context, portletNamespace}) {
 	return (
 		<AnalyticsReports
 			analyticsReportsDataURL={analyticsReportsDataURL}
-			eventTriggered={eventTriggered}
+			hoverOrFocusEventTriggered={hoverOrFocusEventTriggered}
 			isPanelStateOpen={isPanelStateOpen}
 		/>
 	);

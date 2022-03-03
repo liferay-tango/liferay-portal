@@ -26,7 +26,7 @@ import '../../css/analytics-reports-app.scss';
 
 export default function AnalyticsReports({
 	analyticsReportsDataURL,
-	eventTriggered,
+	hoverOrFocusEventTriggered,
 	isPanelStateOpen,
 }) {
 	const isMounted = useIsMounted();
@@ -76,11 +76,11 @@ export default function AnalyticsReports({
 	);
 
 	useEffect(() => {
-		if (eventTriggered && !state.data) {
+		if (hoverOrFocusEventTriggered && !state.data) {
 			getData(analyticsReportsDataURL);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [eventTriggered]);
+	}, [hoverOrFocusEventTriggered]);
 
 	useEffect(() => {
 		if (isPanelStateOpen && !state.data && !state.loading) {
@@ -147,6 +147,6 @@ export default function AnalyticsReports({
 
 AnalyticsReports.propTypes = {
 	analyticsReportsDataURL: PropTypes.string.isRequired,
-	eventTriggered: PropTypes.bool.isRequired,
+	hoverOrFocusEventTriggered: PropTypes.bool.isRequired,
 	isPanelStateOpen: PropTypes.bool.isRequired,
 };
