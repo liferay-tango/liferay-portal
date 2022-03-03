@@ -20,21 +20,16 @@ import com.liferay.info.item.ClassPKInfoItemIdentifier;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
-import com.liferay.portal.kernel.util.SessionClicks;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.Collections;
 import java.util.Map;
-import java.util.Objects;
 
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.portlet.ResourceURL;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author David Arques
@@ -57,13 +52,12 @@ public class AnalyticsReportsDisplayContext<T> {
 			return _data;
 		}
 
-		_data = HashMapBuilder.<String, Object>put(
-			"analyticsReportsDataURL",
-			String.valueOf(_getResourceURL("/analytics_reports/get_data"))
-		).put(
-			"isPanelStateOpen",
-			_isPanelStateOpen(PortalUtil.getHttpServletRequest(_renderRequest))
-		).build();
+		_data = Collections.singletonMap(
+			"context",
+			Collections.singletonMap(
+				"analyticsReportsDataURL",
+				String.valueOf(
+					_getResourceURL("/analytics_reports/get_data"))));
 
 		return _data;
 	}
@@ -139,20 +133,6 @@ public class AnalyticsReportsDisplayContext<T> {
 
 		return resourceURL;
 	}
-
-	private boolean _isPanelStateOpen(HttpServletRequest httpServletRequest) {
-		String layoutReportsPanelState = SessionClicks.get(
-			httpServletRequest, _SESSION_CLICKS_KEY, "closed");
-
-		if (Objects.equals(layoutReportsPanelState, "open")) {
-			return true;
-		}
-
-		return false;
-	}
-
-	private static final String _SESSION_CLICKS_KEY =
-		"com.liferay.analytics.reports.web_panelState";
 
 	private Map<String, Object> _data;
 	private final InfoItemReference _infoItemReference;

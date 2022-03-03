@@ -16,8 +16,8 @@ import React, {useState} from 'react';
 import AnalyticsReports from './components/AnalyticsReports';
 import useSidenavState from './hooks/useSidenavState';
 
-export default function AnalyticsReportsApp(props) {
-	const {analyticsReportsDataURL, isPanelStateOpen, portletNamespace} = props;
+export default function AnalyticsReportsApp({context, portletNamespace}) {
+	const {analyticsReportsDataURL} = context;
 
 	const [eventTriggered, setEventTriggered] = useState(false);
 
@@ -25,7 +25,10 @@ export default function AnalyticsReportsApp(props) {
 		`${portletNamespace}analyticsReportsPanelToggleId`
 	);
 
-	useSidenavState(analyticsReportsPanelToggle, portletNamespace);
+	const [isPanelStateOpen] = useSidenavState(
+		analyticsReportsPanelToggle,
+		portletNamespace
+	);
 
 	useEventListener(
 		'mouseenter',
@@ -51,7 +54,8 @@ export default function AnalyticsReportsApp(props) {
 }
 
 AnalyticsReportsApp.propTypes = {
-	analyticsReportsDataURL: PropTypes.string.isRequired,
-	isPanelStateOpen: PropTypes.bool.isRequired,
+	context: PropTypes.shape({
+		analyticsReportsDataURL: PropTypes.string.isRequired,
+	}).isRequired,
 	portletNamespace: PropTypes.string.isRequired,
 };

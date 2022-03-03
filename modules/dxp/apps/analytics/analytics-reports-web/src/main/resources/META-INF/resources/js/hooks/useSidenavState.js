@@ -10,14 +10,29 @@
  */
 
 import PropTypes from 'prop-types';
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 
-const ANALYTICS_REPORTS_CLOSED_PANEL_VALUE = 'closed';
-const ANALYTICS_REPORTS_OPEN_PANEL_VALUE = 'open';
-const ANALYTICS_REPORTS_PANEL_ID =
-	'com.liferay.analytics.reports.web_panelState';
+import {
+	ANALYTICS_REPORTS_CLOSED_PANEL_VALUE,
+	ANALYTICS_REPORTS_OPEN_PANEL_VALUE,
+	ANALYTICS_REPORTS_PANEL_ID,
+} from '../constants';
+
+const setInitialOpenPanelState = async (stateCallback) => {
+	const _panelState = await Liferay.Util.Session.get(
+		'com.liferay.analytics.reports.web_panelState'
+	);
+
+	stateCallback(_panelState === ANALYTICS_REPORTS_OPEN_PANEL_VALUE);
+};
 
 export default function useSidenavState(element, portletNamespace) {
+	const [isPanelStateOpen, setIsPanelStateOpen] = useState(false);
+
+	useEffect(() => {
+		setInitialOpenPanelState(setIsPanelStateOpen);
+	}, []);
+
 	useEffect(() => {
 		const sidenavInstance = Liferay.SideNavigation.instance(element);
 
@@ -39,6 +54,8 @@ export default function useSidenavState(element, portletNamespace) {
 			Liferay.SideNavigation.destroy(element);
 		});
 	}, [element, portletNamespace]);
+
+	return [isPanelStateOpen];
 }
 
 useSidenavState.propTypes = {
