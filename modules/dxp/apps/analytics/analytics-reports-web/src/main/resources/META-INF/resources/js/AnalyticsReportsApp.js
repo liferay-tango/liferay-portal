@@ -11,10 +11,32 @@
 
 import {useEventListener} from '@liferay/frontend-js-react-web';
 import PropTypes from 'prop-types';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import AnalyticsReports from './components/AnalyticsReports';
-import useInitialPanelState from './hooks/useInitialPanelState';
+
+const setInitialOpenPanelState = async (stateCallback) => {
+	const ANALYTICS_REPORTS_OPEN_PANEL_VALUE = 'open';
+	const ANALYTICS_REPORTS_PANEL_ID =
+		'com.liferay.analytics.reports.web_panelState';
+
+	const _panelState = await Liferay.Util.Session.get(
+		ANALYTICS_REPORTS_PANEL_ID
+	);
+
+	stateCallback(_panelState === ANALYTICS_REPORTS_OPEN_PANEL_VALUE);
+};
+
+const useInitialPanelState = () => {
+	const [isPanelStateOpen, setIsPanelStateOpen] = useState(false);
+
+	useEffect(() => {
+		setInitialOpenPanelState(setIsPanelStateOpen);
+	}, []);
+
+	return [isPanelStateOpen];
+};
+
 export default function AnalyticsReportsApp({context, portletNamespace}) {
 	const {analyticsReportsDataURL} = context;
 
