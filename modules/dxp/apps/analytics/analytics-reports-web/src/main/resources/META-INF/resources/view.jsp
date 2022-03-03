@@ -16,10 +16,6 @@
 
 <%@ include file="/init.jsp" %>
 
-<%
-String analyticsReportsPanelState = SessionClicks.get(request, "com.liferay.analytics.reports.web_panelState", "closed");
-%>
-
 <div class="lfr-analytics-reports-sidebar" id="analyticsReportsSidebar">
 	<div class="d-flex justify-content-between p-3 sidebar-header">
 		<h1 class="sr-only"><liferay-ui:message key="content-performance-panel" /></h1>
