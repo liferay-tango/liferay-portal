@@ -62,7 +62,7 @@ public class ContentDashboardEntryTableFDSView extends BaseTableFDSView {
 		FDSTableSchemaField modifiedDateFDSTableSchemaField =
 			fdsTableSchemaBuilder.addFDSTableSchemaField("modifiedDate", "modified-date");
 
-		modifiedDateFDSTableSchemaField.setContentRenderer("dateTime");
+		modifiedDateFDSTableSchemaField.setContentRenderer("relativeDateTimeRenderer");
 
 		return fdsTableSchemaBuilder.build();
 	}

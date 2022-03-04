@@ -12,12 +12,14 @@
  * details.
  */
 
+import RelativeDateTimeRenderer from '../components/data_renderers/RelativeDateTimeRenderer';
 import StatusListRenderer from '../components/data_renderers/StatusListRenderer';
 
 export default function propsTransformer({...otherProps}) {
 	return {
 		...otherProps,
 		customDataRenderers: {
+			relativeDateTimeRenderer: RelativeDateTimeRenderer,
 			statusListRenderer: StatusListRenderer,
 		},
 	};
