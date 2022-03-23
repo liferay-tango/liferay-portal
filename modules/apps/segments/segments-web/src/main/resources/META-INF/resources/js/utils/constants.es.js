@@ -45,6 +45,7 @@ export const RELATIONAL_OPERATORS = {
 export const PROPERTY_TYPES = {
 	BOOLEAN: 'boolean',
 	COLLECTION: 'collection',
+	COMPLEX: 'complex',
 	DATE: 'date',
 	DATE_TIME: 'date-time',
 	DOUBLE: 'double',
