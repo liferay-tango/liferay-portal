@@ -34,6 +34,7 @@ import {
 } from '../../utils/utils.es';
 import BooleanInput from '../inputs/BooleanInput.es';
 import CollectionInput from '../inputs/CollectionInput.es';
+import ComplexInput from '../inputs/ComplexInput.es';
 import DateInput from '../inputs/DateInput.es';
 import DateTimeInput from '../inputs/DateTimeInput.es';
 import DecimalInput from '../inputs/DecimalInput.es';
@@ -353,6 +354,7 @@ class CriteriaRow extends Component {
 			[PROPERTY_TYPES.ID]: SelectEntityInput,
 			[PROPERTY_TYPES.INTEGER]: IntegerInput,
 			[PROPERTY_TYPES.STRING]: StringInput,
+			[PROPERTY_TYPES.COMPLEX]: ComplexInput,
 		};
 
 		const InputComponent =
@@ -467,25 +469,30 @@ class CriteriaRow extends Component {
 					</div>
 				)}
 
-				<span className="criterion-string">
-					<b>{propertyLabel}</b>
-				</span>
+				{selectedProperty.type !== 'complex' && (
+					<>
+						<span className="criterion-string">
+							<b>{propertyLabel}</b>
+						</span>
 
-				<ClaySelectWithOption
-					aria-label={`${propertyLabel}: ${Liferay.Language.get(
-						'select-property-operator-option'
-					)}`}
-					className="criterion-input form-control operator-input"
-					disabled={disabledInput}
-					onChange={this._handleInputChange('operatorName')}
-					options={filteredSupportedOperators.map(
-						({label, name}) => ({
-							label,
-							value: name,
-						})
-					)}
-					value={selectedOperator && selectedOperator.name}
-				/>
+						<ClaySelectWithOption
+							aria-label={`${propertyLabel}: ${Liferay.Language.get(
+								'select-property-operator-option'
+							)}`}
+							className="criterion-input form-control operator-input"
+							disabled={disabledInput}
+							onChange={this._handleInputChange('operatorName')}
+							options={filteredSupportedOperators.map(
+								({label, name}) => ({
+									label,
+									value: name,
+								})
+							)}
+							value={selectedOperator && selectedOperator.name}
+						/>
+					</>
+				)}
+
 
 				{this._renderValueInput(
 					disabledInput,

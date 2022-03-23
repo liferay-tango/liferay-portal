@@ -145,7 +145,7 @@ class CriteriaGroup extends Component {
 		);
 
 		const newCriterion = {
-			operatorName: operatorName ? operatorName : operators[0].name,
+			operatorName: operatorName ? operatorName : operators[0]?.name,
 			propertyName,
 			type,
 			value: criterionValue,
