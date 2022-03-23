@@ -14,166 +14,197 @@
 
 import ClayButton from '@clayui/button';
 import ClayForm, {ClayInput, ClaySelectWithOption} from '@clayui/form';
-import propTypes from 'prop-types';
-import React from 'react';
+import ClayModal, {useModal} from '@clayui/modal';
 
-class ComplexInput extends React.Component {
-	static propTypes = {
-		disabled: propTypes.bool,
-		onChange: propTypes.func.isRequired,
-		options: propTypes.array,
-		value: propTypes.oneOfType([propTypes.string, propTypes.number]),
-	};
+// import propTypes from 'prop-types';
 
-	static defaultProps = {
-		options: [],
-	};
+import React, {useState} from 'react';
 
-	_handleIntegerChange = (event) => {
+function ComplexInput(disabled, onChange, options, value) {
+
+	// static propTypes = {
+	// 	disabled: propTypes.bool,
+	// 	onChange: propTypes.func.isRequired,
+	// 	options: propTypes.array,
+	// 	value: propTypes.oneOfType([propTypes.string, propTypes.number]),
+	// };
+
+	// static defaultProps = {
+	// 	options: [],
+	// };
+
+	const [visible, setVisible] = useState(false);
+	const {observer, onClose} = useModal({
+		onClose: () => setVisible(false),
+	});
+
+	const _handleIntegerChange = (event) => {
 		const value = parseInt(event.target.value, 10);
 
 		if (!isNaN(value)) {
-			this.props.onChange({value: value.toString()});
+			onChange({value: value.toString()});
 		}
 	};
 
-	render() {
-		const {disabled, value} = this.props;
-		const firstOptions = [
-			{
-				label: 'has',
-				value: 'has',
-			},
-			{
-				label: 'has not',
-				value: 'has not',
-			},
-		];
-		const secondOptions = [
-			{
-				label: 'at least',
-				value: 'at least',
-			},
-			{
-				label: 'at most',
-				value: 'at most',
-			},
-		];
+	const firstOptions = [
+		{
+			label: 'has',
+			value: 'has',
+		},
+		{
+			label: 'has not',
+			value: 'has not',
+		},
+	];
+	const secondOptions = [
+		{
+			label: 'at least',
+			value: 'at least',
+		},
+		{
+			label: 'at most',
+			value: 'at most',
+		},
+	];
 
-		const thirdOptions = [
-			{
-				label: 'since',
-				value: 'since',
-			},
-			{
-				label: 'after',
-				value: 'after',
-			},
-			{
-				label: 'before',
-				value: 'before',
-			},
-			{
-				label: 'between',
-				value: 'between',
-			},
-			{
-				label: 'ever',
-				value: 'ever',
-			},
-			{
-				label: 'on',
-				value: 'on',
-			},
-		];
+	const thirdOptions = [
+		{
+			label: 'since',
+			value: 'since',
+		},
+		{
+			label: 'after',
+			value: 'after',
+		},
+		{
+			label: 'before',
+			value: 'before',
+		},
+		{
+			label: 'between',
+			value: 'between',
+		},
+		{
+			label: 'ever',
+			value: 'ever',
+		},
+		{
+			label: 'on',
+			value: 'on',
+		},
+	];
 
-		const fourthOptions = [
-			{
-				label: 'last 24 hours',
-				value: '24',
-			},
-			{
-				label: 'yesterday',
-				value: 'yesterday',
-			},
-			{
-				label: 'last 7 days',
-				value: '7',
-			},
-			{
-				label: 'last 28 days',
-				value: '28',
-			},
-			{
-				label: 'last 30 days',
-				value: '30',
-			},
-			{
-				label: 'last 90 days',
-				value: '90',
-			},
-		];
+	const fourthOptions = [
+		{
+			label: 'last 24 hours',
+			value: '24',
+		},
+		{
+			label: 'yesterday',
+			value: 'yesterday',
+		},
+		{
+			label: 'last 7 days',
+			value: '7',
+		},
+		{
+			label: 'last 28 days',
+			value: '28',
+		},
+		{
+			label: 'last 30 days',
+			value: '30',
+		},
+		{
+			label: 'last 90 days',
+			value: '90',
+		},
+	];
 
-		return (
-			<div className="mx-0" style={{flexGrow: 1}}>
-				<div className="align-items-center d-flex mb-2">
-					<ClaySelectWithOption
-						className="criterion-input form-control operator-input"
-						options={firstOptions}
-					/>
+	return (
+		<div className="mx-0" style={{flexGrow: 1}}>
+			{visible && (
+				<ClayModal
+					observer={observer}
+					size="lg"
 
-					<span className="criterion-string">
+					// spritemap={spritemap}
+
+					// status="info"
+
+				>
+					<ClayModal.Header>
 						Downloaded Document & Media
-					</span>
+					</ClayModal.Header>
 
-					<ClayForm.Group className="mb-0">
-						<ClayInput.Group>
-							<ClayInput.GroupItem prepend>
-								<ClayInput placeholder="" type="text" />
-							</ClayInput.GroupItem>
+					<ClayModal.Body>
+						<p>Select the documents and media</p>
+					</ClayModal.Body>
 
-							<ClayInput.GroupItem append shrink>
-								<ClayButton
-									displayType="secondary"
-									type="button"
-								>
-									Select
-								</ClayButton>
-							</ClayInput.GroupItem>
-						</ClayInput.Group>
-					</ClayForm.Group>
-				</div>
-
-				<div className="align-items-center d-flex">
-					<ClaySelectWithOption
-						className="criterion-input form-control operator-input"
-						options={secondOptions}
+					<ClayModal.Footer
+						last={<ClayButton onClick={onClose}>Save</ClayButton>}
 					/>
+				</ClayModal>
+			)}
 
-					<input
-						className="criterion-input form-control"
-						data-testid="integer-number"
-						disabled={disabled}
-						onChange={this._handleIntegerChange}
-						type="number"
-						value={value || 1}
-					/>
+			<div className="align-items-center d-flex mb-2">
+				<ClaySelectWithOption
+					className="criterion-input form-control operator-input"
+					options={firstOptions}
+				/>
 
-					<span className="criterion-string">time(s)</span>
+				<span className="criterion-string">
+					Downloaded Document & Media
+				</span>
 
-					<ClaySelectWithOption
-						className="criterion-input form-control operator-input"
-						options={thirdOptions}
-					/>
+				<ClayForm.Group className="mb-0">
+					<ClayInput.Group>
+						<ClayInput.GroupItem prepend>
+							<ClayInput placeholder="" type="text" />
+						</ClayInput.GroupItem>
 
-					<ClaySelectWithOption
-						className="criterion-input form-control operator-input"
-						options={fourthOptions}
-					/>
-				</div>
+						<ClayInput.GroupItem append shrink>
+							<ClayButton
+								displayType="secondary"
+								onClick={() => setVisible(true)}
+								type="button"
+							>
+								Select
+							</ClayButton>
+						</ClayInput.GroupItem>
+					</ClayInput.Group>
+				</ClayForm.Group>
 			</div>
-		);
-	}
+
+			<div className="align-items-center d-flex">
+				<ClaySelectWithOption
+					className="criterion-input form-control operator-input"
+					options={secondOptions}
+				/>
+
+				<input
+					className="criterion-input form-control"
+					data-testid="integer-number"
+					disabled={disabled}
+					onChange={_handleIntegerChange}
+					type="number"
+					value={value || 1}
+				/>
+
+				<span className="criterion-string">time(s)</span>
+
+				<ClaySelectWithOption
+					className="criterion-input form-control operator-input"
+					options={thirdOptions}
+				/>
+
+				<ClaySelectWithOption
+					className="criterion-input form-control operator-input"
+					options={fourthOptions}
+				/>
+			</div>
+		</div>
+	);
 }
 
 export default ComplexInput;
