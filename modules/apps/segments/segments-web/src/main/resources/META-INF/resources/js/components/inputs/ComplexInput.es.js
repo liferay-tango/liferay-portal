@@ -13,12 +13,14 @@
  */
 
 import ClayButton from '@clayui/button';
-import ClayForm, {ClayInput, ClaySelectWithOption} from '@clayui/form';
+import {ClaySelectWithOption} from '@clayui/form';
 import ClayModal, {useModal} from '@clayui/modal';
 
 // import propTypes from 'prop-types';
 
 import React, {useState} from 'react';
+
+import SelectEntityInput from '../inputs/SelectEntityInput.es';
 
 function ComplexInput(disabled, onChange, options, value) {
 
@@ -121,6 +123,24 @@ function ComplexInput(disabled, onChange, options, value) {
 		},
 	];
 
+	const selectProps = {
+		disabled: false,
+		displayValue: '',
+		id: 'selectEntity',
+		multiple: true,
+		onChange: () => {},
+		options: [],
+		renderEmptyValueErrors: false,
+		selectEntity: {
+			id: 'selectEntity',
+			multiple: true,
+			title: 'Select Documents and Media',
+		},
+		title: 'Select User',
+		uri:
+			'http://tango.com:8080/group/guest/~/control_panel/manage/-/select/user/selectEntity?_com_liferay_item_selector_web_portlet_ItemSelectorPortlet_0_json=%7B%22desiredItemSelectorReturnTypes%22%3A%22uuid%22%7D&_com_liferay_item_selector_web_portlet_ItemSelectorPortlet_checkedUserIdsEnabled=true&p_p_auth=uqRyKhAn',
+	};
+
 	return (
 		<div className="mx-0" style={{flexGrow: 1}}>
 			{visible && (
@@ -157,23 +177,7 @@ function ComplexInput(disabled, onChange, options, value) {
 					Downloaded Document & Media
 				</span>
 
-				<ClayForm.Group className="mb-0">
-					<ClayInput.Group>
-						<ClayInput.GroupItem prepend>
-							<ClayInput placeholder="" type="text" />
-						</ClayInput.GroupItem>
-
-						<ClayInput.GroupItem append shrink>
-							<ClayButton
-								displayType="secondary"
-								onClick={() => setVisible(true)}
-								type="button"
-							>
-								Select
-							</ClayButton>
-						</ClayInput.GroupItem>
-					</ClayInput.Group>
-				</ClayForm.Group>
+				<SelectEntityInput {...selectProps}></SelectEntityInput>
 			</div>
 
 			<div className="align-items-center d-flex">
