@@ -22,7 +22,7 @@ import React, {useState} from 'react';
 
 import SelectEntityInput from '../inputs/SelectEntityInput.es';
 
-function ComplexInput(disabled, onChange, options, value) {
+function ComplexInput({disabled, onChange, selectEntity, value}) {
 
 	// static propTypes = {
 	// 	disabled: propTypes.bool,
@@ -131,14 +131,9 @@ function ComplexInput(disabled, onChange, options, value) {
 		onChange: () => {},
 		options: [],
 		renderEmptyValueErrors: false,
-		selectEntity: {
-			id: 'selectEntity',
-			multiple: true,
-			title: 'Select Documents and Media',
-		},
-		title: 'Select User',
-		uri:
-			'http://tango.com:8080/group/guest/~/control_panel/manage/-/select/user/selectEntity?_com_liferay_item_selector_web_portlet_ItemSelectorPortlet_0_json=%7B%22desiredItemSelectorReturnTypes%22%3A%22uuid%22%7D&_com_liferay_item_selector_web_portlet_ItemSelectorPortlet_checkedUserIdsEnabled=true&p_p_auth=uqRyKhAn',
+		selectEntity,
+		title: 'Select',
+		uri: selectEntity?.uri,
 	};
 
 	return (
