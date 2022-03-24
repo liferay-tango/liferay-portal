@@ -14,7 +14,14 @@
 
 package com.liferay.segments.internal.criteria.contributor;
 
+import com.liferay.item.selector.ItemSelector;
+import com.liferay.item.selector.criteria.FileEntryItemSelectorReturnType;
+import com.liferay.item.selector.criteria.file.criterion.FileItemSelectorCriterion;
+import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.segments.criteria.Criteria;
@@ -23,16 +30,17 @@ import com.liferay.segments.field.Field;
 import com.liferay.segments.internal.odata.entity.ContextEntityModel;
 import com.liferay.segments.internal.odata.entity.EntityModelFieldMapper;
 import com.liferay.segments.internal.odata.entity.EventEntityModel;
-import org.osgi.service.component.annotations.Activate;
+
+import java.util.Collections;
+import java.util.List;
+
+import javax.portlet.PortletRequest;
+
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
-
-import javax.portlet.PortletRequest;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * @author Eduardo García
@@ -66,9 +74,11 @@ public class EventSegmentsCriteriaContributor
 		return Collections.singletonList(
 			new Field(
 				"downloaded-document-and-media",
-				LanguageUtil.get(_portal.getLocale(portletRequest), "downloaded-document-and-media"), "complex"
-			)
-		);
+				LanguageUtil.get(
+					_portal.getLocale(portletRequest),
+					"downloaded-document-and-media"),
+				"complex", Collections.emptyList(),
+				getSelectEntity(portletRequest)));
 	}
 
 	@Override
@@ -76,10 +86,40 @@ public class EventSegmentsCriteriaContributor
 		return KEY;
 	}
 
+	public Field.SelectEntity getSelectEntity(PortletRequest portletRequest) {
+		try {
+			FileItemSelectorCriterion fileItemSelectorCriterion =
+				new FileItemSelectorCriterion();
+
+			fileItemSelectorCriterion.setDesiredItemSelectorReturnTypes(
+				new FileEntryItemSelectorReturnType());
+
+			return new Field.SelectEntity(
+				"selectEntity", "Select",
+				PortletURLBuilder.create(
+					_itemSelector.getItemSelectorURL(
+						RequestBackedPortletURLFactoryUtil.create(
+							portletRequest),
+						"selectEntity", fileItemSelectorCriterion)
+				).buildString(),
+				true);
+		}
+		catch (Exception exception) {
+			if (_log.isWarnEnabled()) {
+				_log.warn("Unable to get select entity", exception);
+			}
+
+			return null;
+		}
+	}
+
 	@Override
 	public Criteria.Type getType() {
 		return Criteria.Type.CONTEXT;
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		EventSegmentsCriteriaContributor.class);
 
 	@Reference(
 		cardinality = ReferenceCardinality.MANDATORY,
@@ -91,6 +131,9 @@ public class EventSegmentsCriteriaContributor
 
 	@Reference
 	private EntityModelFieldMapper _entityModelFieldMapper;
+
+	@Reference
+	private ItemSelector _itemSelector;
 
 	@Reference
 	private Portal _portal;
