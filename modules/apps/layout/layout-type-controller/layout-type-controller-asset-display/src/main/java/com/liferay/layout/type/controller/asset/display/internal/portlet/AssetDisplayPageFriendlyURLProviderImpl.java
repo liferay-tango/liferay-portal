@@ -165,7 +165,7 @@ public class AssetDisplayPageFriendlyURLProviderImpl
 		Set<String> languageIds = I18nFilter.getLanguageIds();
 
 		if ((languageIds.contains(locale.toString()) &&
-			 (PropsValues.LOCALE_PREPEND_FRIENDLY_URL_STYLE == 1) &&
+			 (PropsValues.LOCALE_PREPEND_FRIENDLY_URL_STYLE != 2) &&
 			 !locale.equals(LocaleUtil.getDefault())) ||
 			(PropsValues.LOCALE_PREPEND_FRIENDLY_URL_STYLE == 2)) {
 
