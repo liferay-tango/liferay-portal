@@ -18,6 +18,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.display.page.constants.AssetDisplayPageConstants;
 import com.liferay.asset.display.page.model.AssetDisplayPageEntry;
 import com.liferay.asset.display.page.portlet.AssetDisplayPageEntryFormProcessor;
+import com.liferay.asset.display.page.portlet.AssetDisplayPageFriendlyURLProvider;
 import com.liferay.asset.display.page.service.AssetDisplayPageEntryLocalService;
 import com.liferay.asset.display.page.util.AssetDisplayPageUtil;
 import com.liferay.asset.kernel.service.AssetEntryLocalServiceUtil;
@@ -46,6 +47,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -230,6 +232,38 @@ public class AssetDisplayPageFormProcessorTest {
 	}
 
 	@Test
+	public void testProcessWithDefaultAssetDisplayPageWithLocalizedFriendlyURL()
+		throws Exception {
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
+				TestPropsValues.getUserId(), _group.getGroupId(), 0,
+				_portal.getClassNameId(FileEntry.class.getName()), 0,
+				RandomTestUtil.randomString(),
+				LayoutPageTemplateEntryTypeConstants.TYPE_DISPLAY_PAGE, 0, true,
+				0, 0, 0, WorkflowConstants.STATUS_APPROVED,
+				new ServiceContext());
+
+		_withAndWithoutAssetEntry(
+			fileEntry -> {
+				_assetDisplayPageEntryFormProcessor.process(
+					FileEntry.class.getName(), fileEntry.getFileEntryId(),
+					new MockPortletRequest(
+						String.valueOf(AssetDisplayPageConstants.TYPE_DEFAULT),
+						String.valueOf(
+							layoutPageTemplateEntry.
+								getLayoutPageTemplateEntryId())));
+
+				String friendlyURL =
+					_assetDisplayPageFriendlyURLProvider.getFriendlyURL(
+						FileEntry.class.getName(), fileEntry.getPrimaryKey(),
+						LocaleUtil.BRAZIL, _getThemeDisplay());
+
+				Assert.assertTrue(friendlyURL.contains("pt"));
+			});
+	}
+
+	@Test
 	public void testProcessWithDefaultNonexistingAssetDisplayPage()
 		throws Exception {
 
@@ -325,6 +359,8 @@ public class AssetDisplayPageFormProcessorTest {
 
 		themeDisplay.setCompany(company);
 
+		themeDisplay.setSiteGroupId(_group.getGroupId());
+
 		return themeDisplay;
 	}
 
@@ -356,6 +392,10 @@ public class AssetDisplayPageFormProcessorTest {
 	@Inject
 	private AssetDisplayPageEntryLocalService
 		_assetDisplayPageEntryLocalService;
+
+	@Inject
+	private AssetDisplayPageFriendlyURLProvider
+		_assetDisplayPageFriendlyURLProvider;
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
