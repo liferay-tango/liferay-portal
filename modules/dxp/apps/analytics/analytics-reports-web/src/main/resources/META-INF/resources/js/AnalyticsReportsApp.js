@@ -15,6 +15,8 @@ import React, {useEffect, useState} from 'react';
 
 import AnalyticsReports from './components/AnalyticsReports';
 
+const [eventTriggered, setEventTriggered] = useState(false);
+
 const setInitialOpenPanelState = async (stateCallback) => {
 	const ANALYTICS_REPORTS_OPEN_PANEL_VALUE = 'open';
 	const ANALYTICS_REPORTS_PANEL_ID =
@@ -48,6 +50,30 @@ export default function AnalyticsReportsApp({context, portletNamespace}) {
 	const analyticsReportsPanelToggle = document.getElementById(
 		`${portletNamespace}analyticsReportsPanelToggleId`
 	);
+
+	useEffect(() => {
+		const sidenavInstance = Liferay.SideNavigation.instance(
+			analyticsReportsPanelToggle
+		);
+
+		sidenavInstance.on('open.lexicon.sidenav', () => {
+			Liferay.Util.Session.set(
+				'com.liferay.analytics.reports.web_analyticsReportsPanelState',
+				'open'
+			);
+		});
+
+		sidenavInstance.on('closed.lexicon.sidenav', () => {
+			Liferay.Util.Session.set(
+				'com.liferay.analytics.reports.web_analyticsReportsPanelState',
+				'closed'
+			);
+		});
+
+		Liferay.once('screenLoad', () => {
+			Liferay.SideNavigation.destroy(analyticsReportsPanelToggle);
+		});
+	}, [analyticsReportsPanelToggle, portletNamespace]);
 
 	const [isPanelStateOpen] = useInitialPanelState();
 
