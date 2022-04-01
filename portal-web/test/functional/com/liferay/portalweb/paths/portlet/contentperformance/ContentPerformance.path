@@ -112,7 +112,7 @@
 </tr>
 <tr>
 	<td>TOTAL_VIEWS_NUMBER</td>
-	<td>//*[contains(@class, 'mb-2')]//span[contains(@class, 'inline-item-after')]</td>
+	<td>//*[contains(@class, 'mb-2')] //span[contains(@class, 'inline-item-after') and (contains(text(),'0') or contains(text(),'-'))]</td>
 	<td></td>
 </tr>
 </tbody>
