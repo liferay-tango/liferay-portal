@@ -14,10 +14,17 @@
 
 package com.liferay.content.dashboard.item.action;
 
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
+
+import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * @author David Arques
+ * @author Yurena Cabrera
  */
 public interface ContentDashboardItemAction {
 
@@ -32,6 +39,21 @@ public interface ContentDashboardItemAction {
 	public String getURL();
 
 	public String getURL(Locale locale);
+
+	public default JSONArray getAlternates (List<Locale> locales, Locale defaultLocale){
+		return JSONUtil.putAll(
+			locales.stream().map(
+				locale -> JSONUtil.put(
+					"default",
+					Objects.equals(
+						locale, defaultLocale)
+				).put(
+					"languageId", LocaleUtil.toBCP47LanguageId(locale)
+				).put(
+					"viewURL", getURL(locale)
+				)
+			).toArray());
+	}
 
 	public enum Type {
 

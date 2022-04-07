@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
@@ -97,11 +98,19 @@ public class ViewJournalArticleContentDashboardItemAction
 
 			clonedThemeDisplay.setScopeGroupId(_journalArticle.getGroupId());
 
-			return Optional.ofNullable(
+			String viewURL = Optional.ofNullable(
 				_assetDisplayPageFriendlyURLProvider.getFriendlyURL(
 					JournalArticle.class.getName(),
 					_journalArticle.getResourcePrimKey(), locale,
 					clonedThemeDisplay)
+			).orElse(
+				StringPool.BLANK
+			);
+
+			return Optional.ofNullable(
+				PortalUtil.getAlternateURL(
+					viewURL, clonedThemeDisplay, locale,
+					clonedThemeDisplay.getLayout())
 			).map(
 				url -> {
 					String backURL = ParamUtil.getString(
