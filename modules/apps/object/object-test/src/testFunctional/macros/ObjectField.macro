@@ -33,6 +33,19 @@ definition {
 			value1 = "${description}");
 	}
 
+	macro assertOptionAndDescriptionOnRequestFiles {
+		Click(locator1 = "ObjectField#REQUEST_FILES_INPUT");
+
+		AssertElementPresent(
+			key_fieldType = "${option}",
+			locator1 = "ObjectField#TYPE_OPTION");
+
+		AssertTextEquals(
+			key_type = "${option}",
+			locator1 = "ObjectField#FIELD_TYPE_DESCRIPTION",
+			value1 = "${description}");
+	}
+
 	macro assertSearchableLanguage {
 		AssertSelectedLabel(
 			locator1 = "ObjectField#SEARCHABLE_LANGUAGE_SELECT",
@@ -51,6 +64,10 @@ definition {
 
 	macro checkToggleMandatory {
 		Check.checkToggleSwitch(locator1 = "ObjectField#MANDATORY_TOGGLE");
+	}
+
+	macro closeModal {
+		Click(locator1 = "ObjectField#MODAL_CLOSE_BUTTON");
 	}
 
 	macro save {

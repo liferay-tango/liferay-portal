@@ -59,7 +59,6 @@ import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.content.page.editor.constants.ContentPageEditorPortletKeys;
 import com.liferay.layout.content.page.editor.sidebar.panel.ContentPageEditorSidebarPanel;
 import com.liferay.layout.content.page.editor.web.internal.comment.CommentUtil;
-import com.liferay.layout.content.page.editor.web.internal.configuration.FFLayoutContentPageEditorConfiguration;
 import com.liferay.layout.content.page.editor.web.internal.configuration.PageEditorConfiguration;
 import com.liferay.layout.content.page.editor.web.internal.constants.ContentPageEditorActionKeys;
 import com.liferay.layout.content.page.editor.web.internal.constants.ContentPageEditorConstants;
@@ -184,8 +183,6 @@ public class ContentPageEditorDisplayContext {
 	public ContentPageEditorDisplayContext(
 		CommentManager commentManager,
 		List<ContentPageEditorSidebarPanel> contentPageEditorSidebarPanels,
-		FFLayoutContentPageEditorConfiguration
-			ffLayoutContentPageEditorConfiguration,
 		FragmentCollectionContributorTracker
 			fragmentCollectionContributorTracker,
 		FragmentEntryConfigurationParser fragmentEntryConfigurationParser,
@@ -202,8 +199,6 @@ public class ContentPageEditorDisplayContext {
 
 		_commentManager = commentManager;
 		_contentPageEditorSidebarPanels = contentPageEditorSidebarPanels;
-		_ffLayoutContentPageEditorConfiguration =
-			ffLayoutContentPageEditorConfiguration;
 		_fragmentCollectionContributorTracker =
 			fragmentCollectionContributorTracker;
 		_fragmentEntryConfigurationParser = fragmentEntryConfigurationParser;
@@ -351,15 +346,11 @@ public class ContentPageEditorDisplayContext {
 				getFragmentEntryActionURL(
 					"/layout_content_page_editor/edit_fragment_entry_link")
 			).put(
-				"featureFlagLps119551",
-				GetterUtil.getBoolean(PropsUtil.get("feature.flag.LPS-119551"))
-			).put(
 				"featureFlagLps132571",
 				GetterUtil.getBoolean(PropsUtil.get("feature.flag.LPS-132571"))
 			).put(
-				"fragmentAdvancedOptionsEnabled",
-				_ffLayoutContentPageEditorConfiguration.
-					fragmentAdvancedOptionsEnabled()
+				"featureFlagLps150277",
+				GetterUtil.getBoolean(PropsUtil.get("feature.flag.LPS-150277"))
 			).put(
 				"frontendTokens",
 				() -> {
@@ -384,6 +375,11 @@ public class ContentPageEditorDisplayContext {
 				_getResourceURL(
 					"/layout_content_page_editor" +
 						"/get_available_image_configurations")
+			).put(
+				"getAvailableInfoItemFormProviders",
+				_getResourceURL(
+					"/layout_content_page_editor" +
+						"/get_available_info_item_form_providers")
 			).put(
 				"getAvailableListItemRenderersURL",
 				_getResourceURL(
@@ -2299,8 +2295,6 @@ public class ContentPageEditorDisplayContext {
 	private Map<String, Object> _defaultConfigurations;
 	private StyleBookEntry _defaultMasterStyleBookEntry;
 	private StyleBookEntry _defaultStyleBookEntry;
-	private final FFLayoutContentPageEditorConfiguration
-		_ffLayoutContentPageEditorConfiguration;
 	private final FragmentCollectionContributorTracker
 		_fragmentCollectionContributorTracker;
 	private final FragmentEntryConfigurationParser

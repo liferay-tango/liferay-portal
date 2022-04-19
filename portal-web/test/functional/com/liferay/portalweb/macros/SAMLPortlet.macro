@@ -62,10 +62,26 @@ definition {
 			SAMLPortlet.addIdentityProviderConnectionAttributeMapping(idpAttributeMapping = "${idpAttributeMapping}");
 		}
 
+		if (isSet(idpCustomFieldAttributeMappingText)) {
+			SAMLPortlet.addIdentityProviderConnectionCustomFieldAttributeMappingWithCustomAttributes(
+				idpCustomFieldAttributeMapping = "${idpCustomFieldAttributeMapping}",
+				idpCustomFieldAttributeMappingText = "${idpCustomFieldAttributeMappingText}");
+		}
+		else if (isSet(idpCustomFieldAttributeMapping)) {
+			SAMLPortlet.addIdentityProviderConnectionCustomFieldAttributeMapping(idpCustomFieldAttributeMapping = "${idpCustomFieldAttributeMapping}");
+		}
+
 		if ("${userResolution}" == "attribute") {
-			Click(
-				key_index = "${userMatchingAttributeIndex}",
-				locator1 = "CPSAMLAdminIdentityProviderConnection#IDENTITY_PROVIDER_CONNECTION_USE_TO_MATCH_USERS_RADIO");
+			if (isSet(customFieldUserMatching)) {
+				Click(
+					key_index = "${userMatchingAttributeIndex}",
+					locator1 = "CPSAMLAdminIdentityProviderConnection#IDENTITY_PROVIDER_CONNECTION_CUSTOM_FIELD_USE_TO_MATCH_USERS_RADIO");
+			}
+			else {
+				Click(
+					key_index = "${userMatchingAttributeIndex}",
+					locator1 = "CPSAMLAdminIdentityProviderConnection#IDENTITY_PROVIDER_CONNECTION_USE_TO_MATCH_USERS_RADIO");
+			}
 		}
 
 		if (isSet(idpKeepAliveURL)) {
@@ -117,6 +133,52 @@ definition {
 			Type(
 				key_index = "${attributeRowId2}",
 				locator1 = "CPSAMLAdminIdentityProviderConnection#IDENTITY_PROVIDER_CONNECTION_SAML_ATTRIBUTE_TEXT",
+				value1 = "${userfieldExpressionText}");
+
+			var attributeRowId2 = ${attributeRowId2} + 1;
+		}
+	}
+
+	macro addIdentityProviderConnectionCustomFieldAttributeMapping {
+		var attributeRowId = "0";
+
+		for (var userfieldExpressionName : list "${idpCustomFieldAttributeMapping}") {
+			Select(
+				key_index = "${attributeRowId}",
+				locator1 = "CPSAMLAdminIdentityProviderConnection#IDENTITY_PROVIDER_CONNECTION_CUSTOM_FIELD_EXPRESSION_DROPDOWN",
+				value1 = "${userfieldExpressionName}");
+
+			Type(
+				key_index = "${attributeRowId}",
+				locator1 = "CPSAMLAdminIdentityProviderConnection#IDENTITY_PROVIDER_CONNECTION_CUSTOM_FIELD_ATTRIBUTE_TEXT",
+				value1 = "${userfieldExpressionName}");
+
+			var attributeRowId = ${attributeRowId} + 1;
+
+			Click(locator1 = "Button#ADD_ROW_LAST");
+		}
+	}
+
+	@description = "This macro should be used when the values of the Custom field User Field Expression and SAML Attribute are different inside the Attribute Mapping"
+	macro addIdentityProviderConnectionCustomFieldAttributeMappingWithCustomAttributes {
+		var attributeRowId = "0";
+		var attributeRowId2 = "0";
+
+		for (var userfieldExpressionName : list "${idpCustomFieldAttributeMapping}") {
+			Select(
+				key_index = "${attributeRowId}",
+				locator1 = "CPSAMLAdminIdentityProviderConnection#IDENTITY_PROVIDER_CONNECTION_CUSTOM_FIELD_EXPRESSION_DROPDOWN",
+				value1 = "${userfieldExpressionName}");
+
+			var attributeRowId = ${attributeRowId} + 1;
+
+			Click(locator1 = "Button#ADD_ROW_LAST");
+		}
+
+		for (var userfieldExpressionText : list "${idpCustomFieldAttributeMappingText}") {
+			Type(
+				key_index = "${attributeRowId2}",
+				locator1 = "CPSAMLAdminIdentityProviderConnection#IDENTITY_PROVIDER_CONNECTION_CUSTOM_FIELD_ATTRIBUTE_TEXT",
 				value1 = "${userfieldExpressionText}");
 
 			var attributeRowId2 = ${attributeRowId2} + 1;

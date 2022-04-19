@@ -31,9 +31,7 @@ definition {
 	}
 
 	macro clickDoNotShowMeThisAgain {
-		Click(
-			key_text = "Do not show me this again",
-			locator1 = "Link#ANY");
+		Click(locator1 = "ContentPerformance#CONTENT_PERFORMANCE_DO_NOT_SHOW_AGAIN");
 	}
 
 	macro connectDXPtoAnalyticsCloudNoSync {
@@ -47,6 +45,10 @@ definition {
 	macro openContentPerformance {
 		if (!(IsVisible(locator1 = "ContentPerformance#SIDEBAR"))) {
 			Click(locator1 = "ContentPerformance#CONTENT_PERFORMANCE_BUTTON");
+		}
+
+		while (IsNotVisible(locator1 = "ContentPerformance#SIDEBAR")) {
+			WaitForElementPresent(locator1 = "ContentPerformance#SIDEBAR");
 		}
 	}
 
@@ -66,6 +68,19 @@ definition {
 		AssertVisible(
 			key_numberViews = "${numberViews}",
 			locator1 = "ContentPerformance#TOTAL_VIEWS_NUMBER");
+	}
+
+	macro viewTrafficViews {
+		ContentPerformance.openContentPerformance();
+
+		while (IsElementPresent(locator1 = "ContentPerformance#TOTAL_VIEWS_EMPTY")) {
+			Refresh();
+		}
+
+		AssertVisible(
+			key_numberViews = "${numberViews}",
+			key_trafficChannel = "${trafficChannel}",
+			locator1 = "ContentPerformance#TRAFFIC_CHANNELS_VALUE");
 	}
 
 }

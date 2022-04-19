@@ -10,9 +10,9 @@
 			<category name="Bug Prevention" />
 			<description name="Checks that `/src/*/java/` only contains `.java` files." />
 		</check>
-		<check name="IncorrectFilePahCheck">
+		<check name="IncorrectFilePathCheck">
 			<category name="Bug Prevention" />
-			<description name="Checks that file path conatins illegal characters." />
+			<description name="Checks that file path contains illegal characters." />
 		</check>
 		<check name="NonbreakingSpaceCheck">
 			<category name="Styling" />
@@ -71,7 +71,7 @@
 		</check>
 		<check name="BNDStylingCheck">
 			<category name="Styling" />
-			<description name="Applies rules to enforce consisteny in code style." />
+			<description name="Applies rules to enforce consistency in code style." />
 		</check>
 		<check name="BNDWhitespaceCheck">
 			<category name="Styling" />
@@ -82,7 +82,7 @@
 
 		<check name="BNDExportsCheck">
 			<category name="Bug Prevention" />
-			<description name="Checks that modules not ending with `-api`, `-client`, `-spi`, `-tablig`, `-test-util` do not export packages." />
+			<description name="Checks that modules not ending with `-api`, `-client`, `-spi`, `-taglib`, `-test-util` do not export packages." />
 		</check>
 		<check name="BNDImportsCheck">
 			<category name="Styling" />
@@ -109,7 +109,7 @@
 		</check>
 		<check name="BNDIncludeResourceCheck">
 			<category name="Bug Prevention" />
-			<description name="Checks for unnesecarry including of `test-classes/integration`." />
+			<description name="Checks for unnecessary including of `test-classes/integration`." />
 			<property name="checkTestIncludeResource" value="true" />
 		</check>
 		<check name="BNDLiferayEnterpriseAppCheck">
@@ -225,7 +225,7 @@
 		</check>
 		<check name="FTLStylingCheck">
 			<category name="Styling" />
-			<description name="Applies rules to enforce consisteny in code style." />
+			<description name="Applies rules to enforce consistency in code style." />
 		</check>
 		<check name="FTLTagAttributesCheck">
 			<category name="Styling" />
@@ -247,7 +247,7 @@
 		</check>
 		<check name="GradleBodyCheck">
 			<category name="Styling" />
-			<description name="Applies rules to enforce consisteny in the body of gradle build files." />
+			<description name="Applies rules to enforce consistency in the body of gradle build files." />
 		</check>
 		<check name="GradleDependenciesCheck">
 			<category name="Performance" />
@@ -297,7 +297,7 @@
 		</check>
 		<check name="GradleStylingCheck">
 			<category name="Styling" />
-			<description name="Applies rules to enforce consisteny in code style." />
+			<description name="Applies rules to enforce consistency in code style." />
 		</check>
 		<check name="GradleTaskCreationCheck">
 			<category name="Styling" />
@@ -339,7 +339,7 @@
 	<source-processor name="JavaSourceProcessor">
 		<check name="ArrayCheck">
 			<category name="Performance" />
-			<description name="Checks if performance can be improved by using different mehods that can be used by collections." />
+			<description name="Checks if performance can be improved by using different methods that can be used by collections." />
 		</check>
 		<check name="CopyrightCheck">
 			<category name="Styling" />
@@ -437,7 +437,7 @@
 		</check>
 		<check name="JavaEmptyLineAfterSuperCallCheck">
 			<category name="Miscellaneous" />
-			<description name="Finds missing emptly line after a `super` call." />
+			<description name="Finds missing empty line after a `super` call." />
 		</check>
 		<check name="JavaEmptyLinesCheck">
 			<category name="Styling" />
@@ -546,7 +546,7 @@
 		</check>
 		<check name="JavaStaticMethodCheck">
 			<category name="Bug Prevention" />
-			<description name="Finds cases where methods are unncessarily declared static." />
+			<description name="Finds cases where methods are unnecessarily declared static." />
 		</check>
 		<check name="JavaStaticVariableDependencyCheck">
 			<category name="Bug Prevention" />
@@ -558,7 +558,7 @@
 		</check>
 		<check name="JavaStylingCheck">
 			<category name="Styling" />
-			<description name="Applies rules to enforce consisteny in code style." />
+			<description name="Applies rules to enforce consistency in code style." />
 		</check>
 		<check name="JavaSystemExceptionCheck">
 			<category name="Bug Prevention" />
@@ -574,7 +574,7 @@
 		</check>
 		<check name="JavaTermStylingCheck">
 			<category name="Styling" />
-			<description name="Applies rules to enforce consisteny in code style." />
+			<description name="Applies rules to enforce consistency in code style." />
 		</check>
 		<check name="MethodCallsOrderCheck">
 			<category name="Styling" />
@@ -594,7 +594,7 @@
 		</check>
 		<check name="UnparameterizedClassCheck">
 			<category name="Bug Prevention" />
-			<description name="Finds `Class` instantation without generic type." />
+			<description name="Finds `Class` instantiation without generic type." />
 		</check>
 		<check name="ValidatorEqualsCheck">
 			<category name="Performance" />
@@ -703,7 +703,7 @@
 		</check>
 		<check name="JavaServiceTrackerFactoryCheck">
 			<category name="Performance" />
-			<description name="Checks that there are no calls to deprecatred method `ServiceTrackerFactory.open(java.lang.Class)`." />
+			<description name="Checks that there are no calls to deprecated method `ServiceTrackerFactory.open(java.lang.Class)`." />
 		</check>
 		<check name="JavaServiceUtilCheck">
 			<category name="Bug Prevention" />
@@ -771,7 +771,7 @@
 		</check>
 		<check name="JavaUpgradeConnectionCheck">
 			<category name="Bug Prevention" />
-			<description name="Finds cases where `DataAccess.getConnection` is used (instead of using the availabe global variable `connection`)." />
+			<description name="Finds cases where `DataAccess.getConnection` is used (instead of using the available global variable `connection`)." />
 		</check>
 		<check name="JavaUpgradeIndexCheck">
 			<category name="Bug Prevention" />
@@ -790,7 +790,7 @@
 		</check>
 		<check name="JavaVerifyUpgradeConnectionCheck">
 			<category name="Bug Prevention" />
-			<description name="Finds cases where `DataAccess.getConnection` is used (instead of using the availabe global variable `connection`)." />
+			<description name="Finds cases where `DataAccess.getConnection` is used (instead of using the available global variable `connection`)." />
 		</check>
 		<check name="JavaXMLSecurityCheck">
 			<category name="Security" />
@@ -873,7 +873,7 @@
 	<source-processor name="JSONSourceProcessor">
 		<check name="JSONStylingCheck">
 			<category name="Styling" />
-			<description name="Applies rules to enforce consisteny in code style." />
+			<description name="Applies rules to enforce consistency in code style." />
 		</check>
 		<check name="JSONValidationCheck">
 			<category name="Bug Prevention" />
@@ -908,7 +908,7 @@
 	<source-processor name="JSPSourceProcessor">
 		<check name="ArrayCheck">
 			<category name="Performance" />
-			<description name="Checks if performance can be improved by using different mehods that can be used by collections." />
+			<description name="Checks if performance can be improved by using different methods that can be used by collections." />
 		</check>
 		<check name="CopyrightCheck">
 			<category name="Styling" />
@@ -934,7 +934,7 @@
 		</check>
 		<check name="JSPDefineObjectsCheck">
 			<category name="Performance" />
-			<description name="Checks for unnesecarry duplication of code that already exists in `defineObjects`." />
+			<description name="Checks for unnecessary duplication of code that already exists in `defineObjects`." />
 		</check>
 		<check name="JSPEmptyLinesCheck">
 			<category name="Styling" />
@@ -1002,7 +1002,7 @@
 		</check>
 		<check name="JSPStylingCheck">
 			<category name="Styling" />
-			<description name="Applies rules to enforce consisteny in code style." />
+			<description name="Applies rules to enforce consistency in code style." />
 		</check>
 		<check name="JSPTagAttributesCheck">
 			<category name="Bug Prevention" />
@@ -1046,7 +1046,7 @@
 		</check>
 		<check name="UnparameterizedClassCheck">
 			<category name="Bug Prevention" />
-			<description name="Finds `Class` instantation without generic type." />
+			<description name="Finds `Class` instantiation without generic type." />
 		</check>
 		<check name="ValidatorEqualsCheck">
 			<category name="Performance" />
@@ -1136,7 +1136,7 @@
 		</check>
 		<check name="JSStylingCheck">
 			<category name="Styling" />
-			<description name="Applies rules to enforce consisteny in code style." />
+			<description name="Applies rules to enforce consistency in code style." />
 			<property name="enabled" value="false" />
 		</check>
 		<check name="JSWhitespaceCheck">
@@ -1179,7 +1179,7 @@
 		</check>
 		<check name="MarkdownStylingCheck">
 			<category name="Styling" />
-			<description name="Applies rules to enforce consisteny in code style." />
+			<description name="Applies rules to enforce consistency in code style." />
 		</check>
 		<check name="MarkdownWhitespaceCheck">
 			<category name="Styling" />
@@ -1206,7 +1206,7 @@
 		</check>
 		<check name="PoshiStylingCheck">
 			<category name="Styling" />
-			<description name="Applies rules to enforce consisteny in code style." />
+			<description name="Applies rules to enforce consistency in code style." />
 		</check>
 		<check name="PoshiVariableNameCheck">
 			<category name="Styling" />
@@ -1277,11 +1277,11 @@
 		</check>
 		<check name="PropertiesSQLStylingCheck">
 			<category name="Styling" />
-			<description name="Applies rules to enforce consisteny in code style." />
+			<description name="Applies rules to enforce consistency in code style." />
 		</check>
 		<check name="PropertiesStylingCheck">
 			<category name="Styling" />
-			<description name="Applies rules to enforce consisteny in code style." />
+			<description name="Applies rules to enforce consistency in code style." />
 		</check>
 		<check name="PropertiesWhitespaceCheck">
 			<category name="Styling" />
@@ -1328,7 +1328,7 @@
 		</check>
 		<check name="PythonStylingCheck">
 			<category name="Styling" />
-			<description name="Applies rules to enforce consisteny in code style." />
+			<description name="Applies rules to enforce consistency in code style." />
 			<property name="maxLineLength" value="80" />
 		</check>
 		<check name="PythonWhitespaceCheck">
@@ -1363,7 +1363,7 @@
 		</check>
 		<check name="SQLStylingCheck">
 			<category name="Styling" />
-			<description name="Applies rules to enforce consisteny in code style." />
+			<description name="Applies rules to enforce consistency in code style." />
 		</check>
 		<check name="WhitespaceCheck">
 			<category name="Styling" />
@@ -1373,7 +1373,7 @@
 	<source-processor name="TLDSourceProcessor">
 		<check name="TLDElementOrderCheck">
 			<category name="Styling" />
-			<description name="Checks the order of attributers in `.tld` file." />
+			<description name="Checks the order of attributes in `.tld` file." />
 		</check>
 		<check name="TLDTypeCheck">
 			<category name="Bug Prevention" />
@@ -1403,7 +1403,7 @@
 		</check>
 		<check name="TXTStylingCheck">
 			<category name="Styling" />
-			<description name="Applies rules to enforce consisteny in code style." />
+			<description name="Applies rules to enforce consistency in code style." />
 		</check>
 	</source-processor>
 	<source-processor name="UpgradeSourceProcessor">
@@ -1427,7 +1427,7 @@
 		</check>
 		<check name="XMLCustomSQLStylingCheck">
 			<category name="Styling" />
-			<description name="Applies rules to enforce consisteny in code style for `.xml` files in directory `custom-sql`." />
+			<description name="Applies rules to enforce consistency in code style for `.xml` files in directory `custom-sql`." />
 		</check>
 		<check name="XMLDDLStructuresFileCheck">
 			<category name="Styling" />
@@ -1518,7 +1518,7 @@
 		</check>
 		<check name="XMLStylingCheck">
 			<category name="Styling" />
-			<description name="Applies rules to enforce consisteny in code style." />
+			<description name="Applies rules to enforce consistency in code style." />
 		</check>
 		<check name="XMLSuppressionsFileCheck">
 			<category name="Bug Prevention" />
@@ -1558,7 +1558,7 @@
 		</check>
 		<check name="XMLIvyFileCheck">
 			<category name="Styling" />
-			<description name="Checks the order of dependcies in `ivy.xml` file." />
+			<description name="Checks the order of dependencies in `ivy.xml` file." />
 		</check>
 		<check name="XMLServiceReferenceCheck">
 			<category name="Bug Prevention" />
@@ -1606,7 +1606,7 @@
 		</check>
 		<check name="YMLStylingCheck">
 			<category name="Styling" />
-			<description name="Applies rules to enforce consisteny in code style." />
+			<description name="Applies rules to enforce consistency in code style." />
 		</check>
 		<check name="YMLWhitespaceCheck">
 			<category name="Styling" />

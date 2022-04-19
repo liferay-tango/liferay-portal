@@ -32,9 +32,10 @@ const headers = new Headers({
 });
 
 function ModalAddObjectField({
-	allowMaxLength,
+	allowUploadDocAndMedia,
 	apiURL,
 	objectFieldTypes,
+	objectName,
 	observer,
 	onClose,
 }: IModal) {
@@ -112,11 +113,12 @@ function ModalAddObjectField({
 					/>
 
 					<ObjectFieldFormBase
-						allowMaxLength={allowMaxLength}
+						allowUploadDocAndMedia={allowUploadDocAndMedia}
 						errors={errors}
 						handleChange={handleChange}
 						objectField={values}
 						objectFieldTypes={objectFieldTypes}
+						objectName={objectName}
 						setValues={setValues}
 					/>
 				</ClayModal.Body>
@@ -143,9 +145,10 @@ function ModalAddObjectField({
 }
 
 export default function ModalWithProvider({
-	allowMaxLength,
+	allowUploadDocAndMedia,
 	apiURL,
 	objectFieldTypes,
+	objectName,
 }: IProps) {
 	const [isVisible, setVisibility] = useState<boolean>(false);
 	const {observer, onClose} = useModal({onClose: () => setVisibility(false)});
@@ -160,9 +163,10 @@ export default function ModalWithProvider({
 		<ClayModalProvider>
 			{isVisible && (
 				<ModalAddObjectField
-					allowMaxLength={allowMaxLength}
+					allowUploadDocAndMedia={allowUploadDocAndMedia}
 					apiURL={apiURL}
 					objectFieldTypes={objectFieldTypes}
+					objectName={objectName}
 					observer={observer}
 					onClose={onClose}
 				/>
@@ -172,13 +176,14 @@ export default function ModalWithProvider({
 }
 
 interface IModal extends IProps {
-	allowMaxLength: boolean;
+	allowUploadDocAndMedia: boolean;
 	observer: any;
 	onClose: () => void;
 }
 
 interface IProps {
-	allowMaxLength: boolean;
+	allowUploadDocAndMedia: boolean;
 	apiURL: string;
 	objectFieldTypes: ObjectFieldType[];
+	objectName: string;
 }

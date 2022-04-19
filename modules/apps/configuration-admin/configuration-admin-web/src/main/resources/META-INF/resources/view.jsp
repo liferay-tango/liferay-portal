@@ -29,7 +29,7 @@ ConfigurationScopeDisplayContext configurationScopeDisplayContext = Configuratio
 	<portlet:param name="redirect" value="<%= redirectURL %>" />
 </portlet:renderURL>
 
-<div class="sticky-top" style="top: 56px;">
+<div class="sticky-top" style="top: 56px; z-index: 999;">
 	<clay:management-toolbar
 		searchActionURL="<%= searchURL %>"
 		selectable="<%= false %>"
@@ -37,7 +37,9 @@ ConfigurationScopeDisplayContext configurationScopeDisplayContext = Configuratio
 	/>
 </div>
 
-<liferay-ui:success key='<%= ConfigurationAdminPortletKeys.SITE_SETTINGS + "requestProcessed" %>' message="site-was-added" />
+<liferay-ui:success key='<%= ConfigurationAdminPortletKeys.SITE_SETTINGS + "requestProcessed" %>'>
+	<liferay-ui:message key="site-was-successfully-added" />
+</liferay-ui:success>
 
 <clay:container-fluid
 	cssClass="container-view"

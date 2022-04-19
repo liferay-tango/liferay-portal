@@ -97,7 +97,7 @@ export default function ({
 										'propagation-is-enabled-connected-sites-are-being-updated'
 								  )
 								: Liferay.Language.get(
-										'propagation-is-disabled-connected-sites-might-not-have-been-updated-yet-propagation-is-only-triggered-when-a-site-created-from-the-template-is-visited'
+										'propagation-is-enabled-connected-sites-will-be-updated-once-a-site-page-is-visited'
 								  ),
 							type: 'info',
 						});

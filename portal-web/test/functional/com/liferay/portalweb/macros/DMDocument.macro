@@ -678,6 +678,19 @@ definition {
 				value1 = "${viewableBy}");
 		}
 
+		if (isSet(textField)) {
+			if (isSet(fieldFieldLabel)) {
+				var key_fieldLabel = "${fieldFieldLabel}";
+			}
+			else {
+				var key_fieldLabel = "Text";
+			}
+
+			Type(
+				locator1 = "TextInput#GENERIC_TEXT_INPUT",
+				value1 = "${textField}");
+		}
+
 		AssertClick(
 			locator1 = "Button#PUBLISH",
 			value1 = "Publish");
@@ -1306,11 +1319,16 @@ definition {
 			key_rowEntry = "${dmDocumentTitle}",
 			locator1 = "Icon#ROW_VERTICAL_ELLIPSIS");
 
-		AssertClick.assertPartialTextClickAt(
-			locator1 = "MenuItem#DOWNLOAD",
-			value1 = "Download");
+		if (isSet(noDownloadOption)) {
+			AssertElementNotPresent(locator1 = "MenuItem#DOWNLOAD");
+		}
+		else {
+			AssertClick.assertPartialTextClickAt(
+				locator1 = "MenuItem#DOWNLOAD",
+				value1 = "Download");
 
-		DownloadTempFile();
+			DownloadTempFile();
+		}
 	}
 
 	macro downloadMultipleCP {
@@ -2495,10 +2513,23 @@ definition {
 			key_text = "fileExtensions",
 			locator1 = "TextArea#ANY");
 
-		Type(
-			key_text = "fileExtensions",
-			locator1 = "TextArea#ANY",
-			value1 = "${fieldValue}");
+		if ("${indexNumber}" == "2") {
+			Click(
+				key_label = "Add Duplicate Field File Extensions",
+				locator1 = "Button#DUPLICATE_SPECIFIC");
+
+			Type(
+				key_indexNumber = "${indexNumber}",
+				key_label = "File Extensions",
+				locator1 = "TextArea#ANY_LABELED_N",
+				value1 = "${fieldValue}");
+		}
+		else {
+			Type(
+				key_text = "fileExtensions",
+				locator1 = "TextArea#ANY",
+				value1 = "${fieldValue}");
+		}
 
 		SystemSettings.saveConfiguration();
 	}

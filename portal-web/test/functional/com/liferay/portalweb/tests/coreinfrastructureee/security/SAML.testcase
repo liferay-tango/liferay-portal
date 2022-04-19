@@ -1472,6 +1472,105 @@ definition {
 		}
 	}
 
+	@description = "LPS-128600 TC-3. User can't log in with invalid custom field mapping on SP. Blocked by LPS-142222."
+	@priority = "4"
+	test CannotLoginWithInvalidCustomFieldMappingInSAML {
+		property app.server.bundles.size = "0";
+		property portal.release = "quarantine";
+		property portal.upstream = "quarantine";
+		property test.name.skip.portal.instance = "SAML#CannotLoginWithInvalidCustomFieldMappingInSAML";
+
+		task ("Given: User adds a virtual instance") {
+			HeadlessPortalInstanceAPI.addPortalInstance(
+				domain = "www.able.com",
+				portalInstanceId = "www.able.com",
+				virtualHost = "www.able.com");
+		}
+
+		task ("And: Add a boolean custom field on localhost") {
+			CustomFields.openCustomFieldAdmin();
+
+			CustomFields.addCP(
+				customBooleanDefaultValue = "False",
+				customFieldName = "boolean",
+				customFieldType = "True",
+				nameLocalization = "false",
+				resourceName = "User");
+		}
+
+		task ("And: Add an inputfield custom field on able.com") {
+			User.firstLoginUI(
+				specificURL = "http://www.able.com:8080",
+				userEmailAddress = "test@www.able.com");
+
+			CustomFields.openCustomFieldAdmin(baseURL = "http://www.able.com:8080");
+
+			CustomFields.addCP(
+				baseURL = "http://www.able.com:8080",
+				customFieldName = "inputfield",
+				customFieldType = "Input Field",
+				customInputDataType = "Text",
+				nameLocalization = "false",
+				resourceName = "User");
+		}
+
+		task ("And: Add a new user on localhost") {
+			JSONUser.addUser(
+				userEmailAddress = "usera@liferay.com",
+				userFirstName = "user",
+				userLastName = "a",
+				userScreenName = "usera");
+
+			JSONUser.setFirstPassword(
+				agreeToTermsAndAnswerReminderQuery = "true",
+				requireReset = "false",
+				userEmailAddress = "usera@liferay.com");
+		}
+
+		task ("When: User configures SP and IdP connection") {
+			SAML.configureLiferaySAMLAsIdP(
+				idpURL = "http://localhost:8080",
+				samlEntityId = "samlidp");
+
+			SAML.setupSP(
+				encryptionCertificate = "true",
+				samlEntityId = "samlsp",
+				spURL = "www.able.com:8080",
+				userEmailAddress = "test@www.able.com");
+
+			SAML.connectSPAndIdP(
+				idpAttributeMapping = "UUID,screenName,firstName,lastName,emailAddress",
+				idpCustomFieldAttributeMapping = "inputfield",
+				idpCustomFieldAttributeMappingText = "boolean",
+				idpEntityId = "samlidp",
+				idpKeepAliveURL = "http://localhost:8080/c/portal/saml/keep_alive",
+				idpURL = "http://localhost:8080",
+				spAttributes = '''emailAddress
+			firstName
+			lastName
+			screenName
+			uuid
+			expando:boolean''',
+				spEntityId = "samlsp",
+				spKeepAliveURL = "http://www.able.com:8080/c/portal/saml/keep_alive",
+				spURL = "http://www.able.com:8080",
+				sPUserEmailAddress = "test@www.able.com",
+				userResolution = "dynamic");
+
+			User.logoutPG();
+		}
+
+		task ("Then: User is unable to initiate SP SSO on able.com") {
+			User.firstLoginUI(
+				idpName = "samlidp",
+				password = "test",
+				specificURL = "http://www.able.com:8080",
+				userEmailAddress = "usera@liferay.com");
+
+			User.viewLoggedOutPG();
+		}
+	}
+
 	@description = "This is a use case for LPS-129373. Configure SAML to import users from LDAP."
 	@priority = "4"
 	test ConfigureSAMLToImportUsersFromLDAP {
@@ -2021,6 +2120,673 @@ definition {
 		}
 	}
 
+	@description = "LPS-128600 TC-1. Custom fields and their values will sync on SAML connection."
+	@priority = "5"
+	test CustomFieldsCanBeConfiguredForSAML {
+		property app.server.bundles.size = "0";
+		property test.name.skip.portal.instance = "SAML#ConfigureCustomFieldsForSAMLConnection";
+
+		task ("Given: User adds 1 virtual instance") {
+			HeadlessPortalInstanceAPI.addPortalInstance(
+				domain = "www.able.com",
+				portalInstanceId = "www.able.com",
+				virtualHost = "www.able.com");
+		}
+
+		task ("And: Add new custom fields on localhost") {
+			CustomFields.openCustomFieldAdmin();
+
+			CustomFields.addCP(
+				customFieldName = "inputfield",
+				customFieldType = "Input Field",
+				customInputDataType = "Text",
+				nameLocalization = "false",
+				resourceName = "User",
+				startingValue = "more text");
+
+			CustomFields.openCustomFieldAdmin();
+
+			CustomFields.addCP(
+				customFieldName = "Dropdown",
+				customFieldType = "Dropdown",
+				resourceName = "User",
+				startingValue = '''Option2
+						Option1
+						Option3''');
+
+			CustomFields.openCustomFieldAdmin();
+
+			CustomFields.addCP(
+				customBooleanDefaultValue = "False",
+				customFieldName = "Boolean",
+				customFieldType = "True",
+				resourceName = "User");
+		}
+
+		task ("And: Add a new user on localhost") {
+			JSONUser.addUser(
+				userEmailAddress = "usera@liferay.com",
+				userFirstName = "user",
+				userLastName = "a",
+				userScreenName = "usera");
+
+			JSONUser.setFirstPassword(
+				agreeToTermsAndAnswerReminderQuery = "true",
+				requireReset = "false",
+				userEmailAddress = "usera@liferay.com");
+
+			User.logoutPG();
+		}
+
+		task ("And: Add the same custom fields on able.com") {
+			User.firstLoginUI(
+				specificURL = "http://www.able.com:8080",
+				userEmailAddress = "test@www.able.com");
+
+			CustomFields.openCustomFieldAdmin(baseURL = "http://www.able.com:8080");
+
+			CustomFields.addCP(
+				baseURL = "http://www.able.com:8080",
+				customFieldName = "inputfield",
+				customFieldType = "Input Field",
+				customInputDataType = "Text",
+				nameLocalization = "false",
+				resourceName = "User");
+
+			CustomFields.openCustomFieldAdmin(baseURL = "http://www.able.com:8080");
+
+			CustomFields.addCP(
+				baseURL = "http://www.able.com:8080",
+				customFieldName = "dropdown",
+				customFieldType = "Dropdown",
+				nameLocalization = "false",
+				resourceName = "User",
+				startingValue = '''Option1
+						Option2
+						Option3''');
+
+			CustomFields.openCustomFieldAdmin(baseURL = "http://www.able.com:8080");
+
+			CustomFields.addCP(
+				baseURL = "http://www.able.com:8080",
+				customBooleanDefaultValue = "True",
+				customFieldName = "boolean",
+				customFieldType = "True",
+				nameLocalization = "false",
+				resourceName = "User");
+		}
+
+		task ("When: The SAML connection is established ") {
+			SAML.configureLiferaySAMLAsIdP(
+				idpURL = "http://localhost:8080",
+				samlEntityId = "samlidp");
+
+			SAML.setupSP(
+				encryptionCertificate = "true",
+				samlEntityId = "samlsp",
+				spURL = "www.able.com:8080",
+				userEmailAddress = "test@www.able.com");
+
+			SAML.connectSPAndIdP(
+				idpAttributeMapping = "UUID,screenName,firstName,lastName,emailAddress",
+				idpCustomFieldAttributeMapping = "Boolean,Dropdown,inputfield",
+				idpCustomFieldAttributeMappingText = "boolean,dropdown,inputfield",
+				idpEntityId = "samlidp",
+				idpKeepAliveURL = "http://localhost:8080/c/portal/saml/keep_alive",
+				idpURL = "http://localhost:8080",
+				spAttributes = '''emailAddress
+			firstName
+			lastName
+			screenName
+			uuid
+			expando:dropdown
+			expando:inputfield
+			expando:boolean''',
+				spEntityId = "samlsp",
+				spKeepAliveURL = "http://www.able.com:8080/c/portal/saml/keep_alive",
+				spURL = "http://www.able.com:8080",
+				sPUserEmailAddress = "test@www.able.com",
+				userResolution = "dynamic");
+		}
+
+		task ("And: User executes SP initiated SSO on able.com:8080") {
+			User.logoutPG();
+
+			SAML.executeSPInitiatedSSO(
+				spURL = "http://www.able.com:8080",
+				userEmailAddress = "usera@liferay.com");
+
+			User.logoutPG(specificURL = "http://www.able.com:8080");
+		}
+
+		task ("Then: The custom field values are updated on user profile at able.com:8080") {
+			User.firstLoginUI(
+				specificURL = "http://www.able.com:8080/web/guest/home?p_p_id=com_liferay_login_web_portlet_LoginPortlet&p_p_lifecycle=0&p_p_state=maximized&p_p_mode=view&saveLastPath=false&_com_liferay_login_web_portlet_LoginPortlet_mvcRenderCommandName=%2Flogin%2Flogin",
+				userEmailAddress = "test@www.able.com");
+
+			User.openUsersAdmin(baseURL = "http://www.able.com:8080");
+
+			User.gotoEditCP(userScreenName = "usera");
+
+			User.viewUserCustomFieldsCP(
+				customFieldName = "inputfield",
+				customFieldValue = "more text");
+
+			User.viewUserCustomFieldsCP(
+				customFieldName = "boolean",
+				customFieldValue = "False");
+
+			User.viewUserCustomFieldsCP(
+				customFieldName = "dropdown",
+				customFieldValue = "Option2");
+		}
+	}
+
+	@description = "LPS-128600 TC-2. Custom fields and their values will sync with 2 IdP provider. "
+	@priority = "5"
+	test CustomFieldsCanBeConfiguredForSAMLWithMultipleIdPs {
+		property app.server.bundles.size = "0";
+		property test.name.skip.portal.instance = "SAML#ConfigureCustomFieldsForSAMLConnectionWithMultipleIdPs";
+
+		task ("Given: User adds 2 virtual instance") {
+			HeadlessPortalInstanceAPI.addPortalInstance(
+				domain = "www.able.com",
+				portalInstanceId = "www.able.com",
+				virtualHost = "www.able.com");
+
+			HeadlessPortalInstanceAPI.addPortalInstance(
+				domain = "www.baker.com",
+				portalInstanceId = "www.baker.com",
+				virtualHost = "www.baker.com");
+		}
+
+		task ("And: Add new custom fields on localhost") {
+			CustomFields.openCustomFieldAdmin();
+
+			CustomFields.addCP(
+				customFieldName = "inputfield",
+				customFieldType = "Input Field",
+				customInputDataType = "Text",
+				nameLocalization = "false",
+				resourceName = "User",
+				startingValue = "localhost text");
+
+			CustomFields.openCustomFieldAdmin();
+
+			CustomFields.addCP(
+				customFieldName = "Dropdown",
+				customFieldType = "Dropdown",
+				resourceName = "User",
+				startingValue = '''Option1
+						Option2
+						Option3''');
+
+			CustomFields.openCustomFieldAdmin();
+
+			CustomFields.addCP(
+				customBooleanDefaultValue = "False",
+				customFieldName = "Boolean",
+				customFieldType = "True",
+				resourceName = "User");
+
+			takeScreenshot();
+
+			User.logoutPG();
+		}
+
+		task ("And: Add the same custom fields on able.com") {
+			User.firstLoginUI(
+				specificURL = "http://www.able.com:8080",
+				userEmailAddress = "test@www.able.com");
+
+			CustomFields.openCustomFieldAdmin(baseURL = "http://www.able.com:8080");
+
+			CustomFields.addCP(
+				baseURL = "http://www.able.com:8080",
+				customFieldName = "inputfield",
+				customFieldType = "Input Field",
+				customInputDataType = "Text",
+				nameLocalization = "false",
+				resourceName = "User",
+				startingValue = "able text");
+
+			CustomFields.openCustomFieldAdmin(baseURL = "http://www.able.com:8080");
+
+			CustomFields.addCP(
+				baseURL = "http://www.able.com:8080",
+				customFieldName = "dropdown",
+				customFieldType = "Dropdown",
+				nameLocalization = "false",
+				resourceName = "User",
+				startingValue = '''Option2
+						Option1
+						Option3''');
+
+			CustomFields.openCustomFieldAdmin(baseURL = "http://www.able.com:8080");
+
+			CustomFields.addCP(
+				baseURL = "http://www.able.com:8080",
+				customBooleanDefaultValue = "False",
+				customFieldName = "boolean",
+				customFieldType = "True",
+				nameLocalization = "false",
+				resourceName = "User");
+
+			takeScreenshot();
+		}
+
+		task ("And: Add the same custom fields on baker.com") {
+			User.firstLoginUI(
+				specificURL = "http://www.baker.com:8080",
+				userEmailAddress = "test@www.baker.com");
+
+			CustomFields.openCustomFieldAdmin(baseURL = "http://www.baker.com:8080");
+
+			CustomFields.addCP(
+				baseURL = "http://www.baker.com:8080",
+				customFieldName = "inputfield",
+				customFieldType = "Input Field",
+				customInputDataType = "Text",
+				nameLocalization = "false",
+				resourceName = "User",
+				startingValue = "baker text");
+
+			CustomFields.openCustomFieldAdmin(baseURL = "http://www.baker.com:8080");
+
+			CustomFields.addCP(
+				baseURL = "http://www.baker.com:8080",
+				customFieldName = "Dropdown",
+				customFieldType = "Dropdown",
+				resourceName = "User",
+				startingValue = '''Option3
+						Option2
+						Option1''');
+
+			CustomFields.openCustomFieldAdmin(baseURL = "http://www.baker.com:8080");
+
+			CustomFields.addCP(
+				baseURL = "http://www.baker.com:8080",
+				customBooleanDefaultValue = "False",
+				customFieldName = "Boolean",
+				customFieldType = "True",
+				resourceName = "User");
+
+			takeScreenshot();
+
+			User.logoutPG(specificURL = "www.baker.com:8080");
+		}
+
+		task ("When: User configure localhost and baker.com as IdP") {
+			SAML.setupIDP(
+				idpURL = "http://localhost:8080",
+				samlEntityId = "samlidp1",
+				userEmailAddress = "test@liferay.com");
+
+			SAML.setupIDP(
+				idpURL = "www.baker.com:8080",
+				samlEntityId = "samlidp2",
+				userEmailAddress = "test@www.baker.com");
+		}
+
+		task ("And: Configure able.com as SP") {
+			SAML.setupSP(
+				encryptionCertificate = "true",
+				samlEntityId = "samlsp",
+				spURL = "www.able.com:8080",
+				userEmailAddress = "test@www.able.com");
+		}
+
+		task ("And: Add IdP connection samlidp1 and samlidp2 to SP") {
+			SAML.addIDPConfigurationsToServiceProvider(
+				idpAttributeMapping = "screenName,emailAddress,firstName,lastName,UUID",
+				idpCustomFieldAttributeMapping = "Boolean,Dropdown,inputfield",
+				idpCustomFieldAttributeMappingText = "boolean,dropdown,inputfield",
+				idpEntityId = "samlidp1",
+				idpKeepAliveURL = "http://localhost:8080/c/portal/saml/keep_alive",
+				idpURL = "http://localhost:8080",
+				spURL = "http://www.able.com:8080",
+				userEmailAddress = "test@www.able.com",
+				userResolution = "dynamic");
+
+			SAML.addIDPConfigurationsToServiceProvider(
+				idpAttributeMapping = "screenName,UUID,firstName,lastName,emailAddress",
+				idpCustomFieldAttributeMapping = "Boolean,Dropdown,inputfield",
+				idpCustomFieldAttributeMappingText = "boolean,dropdown,inputfield",
+				idpEntityId = "samlidp2",
+				idpKeepAliveURL = "www.baker.com:8080/c/portal/saml/keep_alive",
+				idpURL = "http://www.baker.com:8080",
+				spURL = "http://www.able.com:8080",
+				userEmailAddress = "test@www.able.com",
+				userResolution = "dynamic");
+		}
+
+		task ("And: Enable SP role") {
+			SAML.enableSPRoles(
+				samlEntityId = "samlsp",
+				spURL = "http://www.able.com:8080",
+				userEmailAddress = "test@www.able.com");
+		}
+
+		task ("And: Add SP connection samlsp to IdP on localhost and on baker.com") {
+			SAML.addSPConfigurationsToIdentityProvider(
+				idpURL = "http://localhost:8080",
+				nameIdentifierFormat = "Email Address",
+				spAttributes = '''emailAddress
+					firstName
+					lastName
+					screenName
+					uuid
+					expando:dropdown
+					expando:inputfield
+					expando:boolean''',
+				spEntityId = "samlsp",
+				spKeepAliveURL = "http://www.able.com:8080/c/portal/saml/keep_alive",
+				spURL = "http://www.able.com:8080",
+				userEmailAddress = "test@liferay.com");
+
+			SAML.addSPConfigurationsToIdentityProvider(
+				idpURL = "www.baker.com:8080",
+				nameIdentifierFormat = "Email Address",
+				spAttributes = '''emailAddress
+					firstName
+					lastName
+					screenName
+					uuid
+					expando:dropdown
+					expando:inputfield
+					expando:boolean''',
+				spEntityId = "samlsp",
+				spKeepAliveURL = "http://www.able.com:8080/c/portal/saml/keep_alive",
+				spURL = "http://www.able.com:8080",
+				userEmailAddress = "test@www.baker.com");
+		}
+
+		task ("And: Add a new user in localhost") {
+			JSONUser.addUser(
+				userEmailAddress = "usera@liferay.com",
+				userFirstName = "user",
+				userLastName = "a",
+				userScreenName = "usera");
+
+			JSONUser.setFirstPassword(
+				agreeToTermsAndAnswerReminderQuery = "true",
+				requireReset = "false",
+				userEmailAddress = "usera@liferay.com");
+		}
+
+		task ("And: Add the same user in baker.com") {
+			User.firstLoginUI(
+				specificURL = "http://www.baker.com:8080",
+				userEmailAddress = "test@www.baker.com");
+
+			User.openUsersAdmin(baseURL = "http://www.baker.com:8080");
+
+			User.addCP(
+				userEmailAddress = "usera@liferay.com",
+				userFirstName = "user",
+				userLastName = "a",
+				userScreenName = "usera");
+
+			User.openUsersAdmin(baseURL = "http://www.baker.com:8080");
+
+			UserNavigator.gotoUser(userScreenName = "usera");
+
+			User.editPassword(newPassword = "test");
+
+			User.logoutPG(specificURL = "http://www.baker.com:8080");
+		}
+
+		task ("Then: SP initiated SSO can be executed on able.com from localhost") {
+			SAML.executeSPInitiatedSSO(
+				idpName = "samlidp1",
+				samlMultiIdPs = "true",
+				spURL = "http://www.able.com:8080",
+				userEmailAddress = "usera@liferay.com");
+
+			User.logoutPG(specificURL = "http://www.able.com:8080");
+		}
+
+		task ("And: SP initiated SSO can be executed on able.com from baker.com") {
+			User.logoutPG();
+
+			SAML.executeSPInitiatedSSO(
+				idpName = "samlidp2",
+				samlMultiIdPs = "true",
+				spURL = "http://www.able.com:8080",
+				userEmailAddress = "usera@liferay.com");
+
+			User.logoutPG(specificURL = "http://www.able.com:8080");
+		}
+
+		task ("And: the custom field values are updated on 5z3 profile of the new user on able.com") {
+			User.firstLoginUI(
+				specificURL = "http://www.able.com:8080/web/guest/home?p_p_id=com_liferay_login_web_portlet_LoginPortlet&p_p_lifecycle=0&p_p_state=maximized&p_p_mode=view&saveLastPath=false&_com_liferay_login_web_portlet_LoginPortlet_mvcRenderCommandName=%2Flogin%2Flogin",
+				userEmailAddress = "test@www.able.com");
+
+			User.openUsersAdmin(baseURL = "http://www.able.com:8080");
+
+			User.gotoEditCP(userScreenName = "usera");
+
+			User.viewUserCustomFieldsCP(
+				customFieldName = "inputfield",
+				customFieldValue = "baker more text");
+
+			User.viewUserCustomFieldsCP(
+				customFieldName = "boolean",
+				customFieldValue = "False");
+
+			User.viewUserCustomFieldsCP(
+				customFieldName = "dropdown",
+				customFieldValue = "Option3");
+		}
+	}
+
+	@description = "LPS-128600 TC-6-7. Custom fields can be used for User matching in a SAML connection."
+	@priority = "4"
+	test CustomFieldsCanBeUsedForUserMatchingInSAML {
+		property app.server.bundles.size = "0";
+		property test.name.skip.portal.instance = "SAML#CustomFieldsCanBeUsedForUserMatchingInSAML";
+
+		task ("Enable SAML debug logs") {
+			SAML.enableSAMLDebugLogs();
+		}
+
+		task ("Given: User adds a virtual instance") {
+			HeadlessPortalInstanceAPI.addPortalInstance(
+				domain = "www.able.com",
+				portalInstanceId = "www.able.com",
+				virtualHost = "www.able.com");
+		}
+
+		task ("And: Add an Inputfield custom field on localhost") {
+			CustomFields.openCustomFieldAdmin();
+
+			CustomFields.addCP(
+				customFieldName = "inputfield",
+				customFieldType = "Input Field",
+				customInputDataType = "Text",
+				nameLocalization = "false",
+				resourceName = "User",
+				startingValue = "more text");
+		}
+
+		task ("And: Add a new user in localhost") {
+			JSONUser.addUser(
+				userEmailAddress = "usera@liferay.com",
+				userFirstName = "user",
+				userLastName = "a",
+				userScreenName = "usera");
+
+			JSONUser.setFirstPassword(
+				agreeToTermsAndAnswerReminderQuery = "true",
+				requireReset = "false",
+				userEmailAddress = "usera@liferay.com");
+
+			User.logoutPG();
+		}
+
+		task ("And: Add the same custom field on able.com") {
+			User.firstLoginUI(
+				specificURL = "http://www.able.com:8080",
+				userEmailAddress = "test@www.able.com");
+
+			CustomFields.openCustomFieldAdmin(baseURL = "http://www.able.com:8080");
+
+			CustomFields.addCP(
+				baseURL = "http://www.able.com:8080",
+				customFieldName = "inputfield",
+				customFieldType = "Input Field",
+				customInputDataType = "Text",
+				nameLocalization = "false",
+				resourceName = "User");
+
+			User.logoutPG(specificURL = "http://www.able.com:8080");
+		}
+
+		task ("When: User configure localhost as IdP and able.com as SP") {
+			SAML.setupIDP(
+				idpURL = "http://localhost:8080",
+				samlEntityId = "samlidp",
+				userEmailAddress = "test@liferay.com");
+
+			SAML.setupSP(
+				encryptionCertificate = "true",
+				samlEntityId = "samlsp",
+				spURL = "http://www.able.com:8080",
+				userEmailAddress = "test@www.able.com");
+		}
+
+		task ("And: Establish SP and IdP connection") {
+			SAML.connectSPAndIdP(
+				customFieldUserMatching = "true",
+				idpAttributeMapping = "UUID,screenName,firstName,lastName,emailAddress",
+				idpCustomFieldAttributeMapping = "inputfield",
+				idpEntityId = "samlidp",
+				idpKeepAliveURL = "http://localhost:8080/c/portal/saml/keep_alive",
+				idpURL = "http://localhost:8080",
+				spAttributes = '''emailAddress
+			firstName
+			lastName
+			screenName
+			uuid
+			expando:inputfield''',
+				spEntityId = "samlsp",
+				spKeepAliveURL = "http://www.able.com:8080/c/portal/saml/keep_alive",
+				spURL = "http://www.able.com:8080",
+				sPUserEmailAddress = "test@www.able.com",
+				userMatchingAttributeIndex = "0",
+				userResolution = "attribute");
+
+			User.logoutPG();
+		}
+
+		task ("And: Execute SP initiated SSO on able.com") {
+			SAML.executeSPInitiatedSSO(
+				spURL = "http://www.able.com:8080",
+				userEmailAddress = "usera@liferay.com");
+
+			User.viewLoggedInPG();
+		}
+
+		task ("Then: The correct console log will appear") {
+			AssertConsoleTextPresent(value1 = "Resolving user with user field expression: expando:inputfield");
+
+			User.logoutPG(specificURL = "http://www.able.com:8080");
+		}
+
+		task ("When: User changes the value of the custom field on the created user's profile") {
+			User.firstLoginPG();
+
+			User.openUsersAdmin();
+
+			User.gotoEditCP(userScreenName = "usera");
+
+			User.editUserInformation(
+				userCustomField = "textChanged",
+				userCustomFieldLabel = "inputfield");
+
+			User.logoutPG();
+		}
+
+		task ("And: Execute SP initiated SSO on able.com") {
+			SAML.executeSPInitiatedSSO(
+				spURL = "http://www.able.com:8080",
+				userEmailAddress = "usera@liferay.com");
+
+			User.viewLoggedInPG();
+		}
+
+		task ("Then: The correct console log will appear, verifying that the correct attribute was used for user matching") {
+			WaitForConsoleTextPresent(value1 = "Resolving user with user field expression: expando:inputfield");
+
+			User.logoutPG(specificURL = "http://www.able.com:8080");
+		}
+
+		task ("And: The new user has the correct information on his profile on able.com") {
+			User.firstLoginUI(
+				specificURL = "http://www.able.com:8080/web/guest/home?p_p_id=com_liferay_login_web_portlet_LoginPortlet&p_p_lifecycle=0&p_p_state=maximized&p_p_mode=view&saveLastPath=false&_com_liferay_login_web_portlet_LoginPortlet_mvcRenderCommandName=%2Flogin%2Flogin",
+				userEmailAddress = "test@www.able.com");
+
+			User.openUsersAdmin(baseURL = "http://www.able.com:8080");
+
+			User.gotoEditCP(userScreenName = "usera");
+
+			User.viewUserCustomFieldsCP(
+				customFieldName = "inputfield",
+				customFieldValue = "textChanged");
+		}
+	}
+
+	@description = "LPS-128600 TC-4. SAML connection cannot be saved if a custom field value is used more than once."
+	@priority = "4"
+	test CustomFieldUsedMultipleTimesCannotBeSavedInSAML {
+		property app.server.bundles.size = "0";
+		property test.name.skip.portal.instance = "SAML#CustomFieldUsedMultipleTimesCannotBeSavedInSAML";
+
+		task ("Given: User adds new custom fields") {
+			CustomFields.openCustomFieldAdmin();
+
+			CustomFields.addCP(
+				customFieldName = "inputfield",
+				customFieldType = "Input Field",
+				customInputDataType = "Text",
+				nameLocalization = "false",
+				resourceName = "User");
+		}
+
+		task ("And: Enable SP role") {
+			SAML.goToSAMLAdmin();
+
+			SAMLRole.configure(
+				samlEntityId = "samlsp",
+				samlRoleType = "Service Provider");
+		}
+
+		task ("When: User tries to establish IdP connection with 1 custom field used two times") {
+			SAML.goToSAMLAdmin();
+
+			SAMLNavigation.gotoIdentityProviderConnections();
+
+			SAMLPortlet.addIdentityProviderConnection(
+				idpAttributeMapping = "UUID,UUID,lastName,lastName",
+				idpCustomFieldAttributeMapping = "inputfield,inputfield",
+				idpCustomFieldAttributeMappingText = "attribute1,attribute2",
+				idpEntityId = "samlidp",
+				idpKeepAliveURL = "http://localhost:8080/c/portal/saml/keep_alive",
+				idpNameId = "samlidp",
+				idpURL = "http://localhost:8080",
+				spURL = "http://www.able.com:8080",
+				userEmailAddress = "test@www.able.com",
+				userResolution = "dynamic");
+		}
+
+		task ("Then: The save fails and the correct error message appears") {
+			AssertTextEquals.assertPartialText(
+				locator1 = "Message#ERROR_DISMISSIBLE",
+				value1 = "User Custom Fields: Each user field can only be mapped to one SAML attribute.");
+		}
+	}
+
 	@description = "This is a use case for LPS-105170 TC-8: Verifying that deleting a User will sync with the SP site - Using virtual instances."
 	@priority = "3"
 	test DeleteUserAfterSAMLSetupAndVerify {
@@ -2133,6 +2899,67 @@ definition {
 				userEmailAddress = "user1@liferay.com");
 
 			SAML.viewAuthenticationFailedErrorMessage();
+		}
+	}
+
+	@description = "LPS-128600 TC-5. SAML connection cannot be saved if more than one custom field value is mapped with the same SAML attribute. Blocked by LPS-141959."
+	@priority = "4"
+	test DuplicatedCustomFieldMappingCannotBeSavedInSAML {
+		property app.server.bundles.size = "0";
+		property portal.release = "quarantine";
+		property portal.upstream = "quarantine";
+		property test.name.skip.portal.instance = "SAML#DuplicatedCustomFieldMappingCannotBeSavedInSAML";
+
+		task ("Given: new custom fields are added") {
+			CustomFields.openCustomFieldAdmin();
+
+			CustomFields.addCP(
+				customFieldName = "inputfield1",
+				customFieldType = "Input Field",
+				customInputDataType = "Text",
+				nameLocalization = "false",
+				resourceName = "User");
+
+			CustomFields.openCustomFieldAdmin();
+
+			CustomFields.addCP(
+				customFieldName = "inputfield2",
+				customFieldType = "Input Field",
+				customInputDataType = "Text",
+				nameLocalization = "false",
+				resourceName = "User");
+		}
+
+		task ("And: Enable SP role") {
+			SAML.goToSAMLAdmin();
+
+			SAMLRole.configure(
+				samlEntityId = "samlsp",
+				samlRoleType = "Service Provider");
+		}
+
+		task ("When: User tries to add IdP connection with 2 custom field mapped with the same attribute") {
+			SAML.goToSAMLAdmin();
+
+			SAMLNavigation.gotoIdentityProviderConnections();
+
+			SAMLPortlet.addIdentityProviderConnection(
+				idpAttributeMapping = "UUID,UUID,lastName,lastName",
+				idpCustomFieldAttributeMapping = "inputfield1,inputfield2",
+				idpCustomFieldAttributeMappingText = "attribute,attribute",
+				idpEntityId = "samlidp",
+				idpKeepAliveURL = "http://localhost:8080/c/portal/saml/keep_alive",
+				idpNameId = "samlidp",
+				idpURL = "http://localhost:8080",
+				spURL = "http://www.able.com:8080",
+				userEmailAddress = "test@www.able.com",
+				userResolution = "dynamic");
+		}
+
+		task ("Then: The save of the connection fails and the correct error message appears") {
+			AssertTextEquals.assertPartialText(
+				locator1 = "Message#ERROR_DISMISSIBLE",
+				value1 = "User Custom Fields: Each user field can only be mapped to one SAML attribute.");
 		}
 	}
 
@@ -2275,6 +3102,7 @@ definition {
 	@priority = "4"
 	test SPInitiatedSSODoesNotSyncAttributesIfNotMapped {
 		property app.server.bundles.size = "0";
+		property portal.release = "quarantine";
 		property portal.upstream = "quarantine";
 		property test.name.skip.portal.instance = "SAML#SPInitiatedSSODoesNotSyncAttributesIfNotMapped";
 
@@ -2620,6 +3448,7 @@ definition {
 	@priority = "4"
 	test SPInitiatedSSOSyncsUserAttributesFromMultipleIdPToSPCustomMapping {
 		property app.server.bundles.size = "0";
+		property portal.release = "quarantine";
 		property portal.upstream = "quarantine";
 		property test.name.skip.portal.instance = "SAML#SPInitiatedSSOSyncsUserAttributesFromMultipleIdPToSPCustomMapping";
 
@@ -3839,6 +4668,7 @@ definition {
 	@priority = "4"
 	test ViewSPInitiatedSSOWithSAMLAttributeScreenNameUsedForUserMatchingMultipleIdP {
 		property app.server.bundles.size = "0";
+		property portal.release = "quarantine";
 		property portal.upstream = "quarantine";
 		property test.name.skip.portal.instance = "SAML#ViewSPInitiatedSSOWithSAMLAttributeScreenNameUsedForUserMatchingMultipleIdP";
 

@@ -261,6 +261,12 @@ definition {
 				LAR._mirrorWithOverwriting();
 			}
 
+			if ("${deleteApplicationData}" == "true") {
+				Check(
+					checkboxName = "Delete Application Data Before Importing",
+					locator1 = "Checkbox#ANY_CHECKBOX");
+			}
+
 			if ("${importDeletions}" == "true") {
 				Check(locator1 = "Checkbox#DELETIONS");
 			}
@@ -586,6 +592,7 @@ definition {
 		LAR._selectImportFile(
 			cannotImport = "${cannotImport}",
 			copyAsNew = "${copyAsNew}",
+			deleteApplicationData = "${deleteApplicationData}",
 			failureExpected = "${failureExpected}",
 			importDeletions = "${importDeletions}",
 			importPermissions = "${importPermissions}",

@@ -17,6 +17,7 @@ package com.liferay.object.service.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.exception.DefaultObjectViewException;
+import com.liferay.object.exception.ObjectViewColumnFieldNameException;
 import com.liferay.object.exception.ObjectViewSortColumnException;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
@@ -28,17 +29,22 @@ import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectViewLocalService;
 import com.liferay.object.service.persistence.ObjectViewColumnPersistence;
 import com.liferay.object.service.persistence.ObjectViewSortColumnPersistence;
+import com.liferay.object.test.util.ObjectFieldSettingTestUtil;
 import com.liferay.object.util.LocalizedMapUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import org.apache.commons.lang3.RandomStringUtils;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -108,13 +114,53 @@ public class ObjectViewLocalServiceTest {
 				TestPropsValues.getUserId(),
 				_objectDefinition.getObjectDefinitionId(), false,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				Arrays.asList(
+					_createObjectViewColumnWithNonexistentObjectFieldName()),
+				Collections.emptyList());
+		}
+		catch (ObjectViewColumnFieldNameException
+					objectViewColumnFieldNameException) {
+
+			Assert.assertEquals(
+				"There is no object field with the name: zebra",
+				objectViewColumnFieldNameException.getMessage());
+		}
+
+		try {
+			_objectViewLocalService.addObjectView(
+				TestPropsValues.getUserId(),
+				_objectDefinition.getObjectDefinitionId(), false,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				_createObjectViewColumnsWithDuplicateObjectFieldName(),
+				Collections.emptyList());
+		}
+		catch (ObjectViewColumnFieldNameException
+					objectViewColumnFieldNameException) {
+
+			Assert.assertEquals(
+				"There is already an object view column with the object " +
+					"field name: roger",
+				objectViewColumnFieldNameException.getMessage());
+		}
+
+		_objectViewLocalService.addObjectView(
+			TestPropsValues.getUserId(),
+			_objectDefinition.getObjectDefinitionId(), false,
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+			_createObjectViewColumnsWithoutLabel(), Collections.emptyList());
+
+		try {
+			_objectViewLocalService.addObjectView(
+				TestPropsValues.getUserId(),
+				_objectDefinition.getObjectDefinitionId(), false,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				Arrays.asList(_createObjectViewColumn("Item", "item")),
 				Arrays.asList(
 					_createObjectViewSortColumnWithWrongObjectFieldName()));
 		}
 		catch (ObjectViewSortColumnException objectViewSortColumnException) {
 			Assert.assertEquals(
-				"There is no object field with the name: zulu",
+				"There is no object view column with the name: zulu",
 				objectViewSortColumnException.getMessage());
 		}
 
@@ -187,13 +233,44 @@ public class ObjectViewLocalServiceTest {
 				objectView.getObjectViewId(), objectView.isDefaultObjectView(),
 				objectView.getNameMap(),
 				Collections.singletonList(
+					_createObjectViewColumnWithNonexistentObjectFieldName()),
+				Collections.emptyList());
+		}
+		catch (ObjectViewColumnFieldNameException
+					objectViewColumnFieldNameException) {
+
+			Assert.assertEquals(
+				"There is no object field with the name: zebra",
+				objectViewColumnFieldNameException.getMessage());
+		}
+
+		try {
+			_objectViewLocalService.updateObjectView(
+				objectView.getObjectViewId(), objectView.isDefaultObjectView(),
+				objectView.getNameMap(),
+				_createObjectViewColumnsWithDuplicateObjectFieldName(),
+				Collections.emptyList());
+		}
+		catch (ObjectViewColumnFieldNameException
+					objectViewColumnFieldNameException) {
+
+			Assert.assertEquals(
+				"Already exist an object view column with field name: roger",
+				objectViewColumnFieldNameException.getMessage());
+		}
+
+		try {
+			_objectViewLocalService.updateObjectView(
+				objectView.getObjectViewId(), objectView.isDefaultObjectView(),
+				objectView.getNameMap(),
+				Collections.singletonList(
 					_createObjectViewColumn("Jig", "jig")),
 				Collections.singletonList(
 					_createObjectViewSortColumn("jig", "desc")));
 		}
 		catch (ObjectViewSortColumnException objectViewSortColumnException) {
 			Assert.assertEquals(
-				"There is no object field with the name: king",
+				"There is no object view column with the name: king",
 				objectViewSortColumnException.getMessage());
 		}
 
@@ -212,6 +289,26 @@ public class ObjectViewLocalServiceTest {
 				objectViewSortColumnException.getMessage());
 		}
 
+		objectView = _objectViewLocalService.updateObjectView(
+			objectView.getObjectViewId(), objectView.isDefaultObjectView(),
+			objectView.getNameMap(), Collections.emptyList(),
+			Collections.emptyList());
+
+		objectViewColumns = objectView.getObjectViewColumns();
+
+		Assert.assertEquals(
+			objectViewColumns.toString(), 0, objectViewColumns.size());
+
+		objectViewSortColumns = objectView.getObjectViewSortColumns();
+
+		Assert.assertEquals(
+			objectViewSortColumns.toString(), 0, objectViewSortColumns.size());
+
+		_objectViewLocalService.updateObjectView(
+			objectView.getObjectViewId(), objectView.isDefaultObjectView(),
+			objectView.getNameMap(), _createObjectViewColumnsWithoutLabel(),
+			Collections.emptyList());
+
 		_deleteObjectFields();
 
 		_objectViewLocalService.deleteObjectView(objectView.getObjectViewId());
@@ -225,7 +322,8 @@ public class ObjectViewLocalServiceTest {
 			TestPropsValues.getUserId(), 0,
 			_objectDefinition.getObjectDefinitionId(), "Text", "String", false,
 			false, null, LocalizedMapUtil.getLocalizedMap(objectFieldLabel),
-			objectFieldName, true, Collections.emptyList());
+			objectFieldName, true,
+			ObjectFieldSettingTestUtil.getObjectFieldSettings("Text"));
 
 		return objectField.getName();
 	}
@@ -264,9 +362,52 @@ public class ObjectViewLocalServiceTest {
 		ObjectViewColumn objectViewColumn = _objectViewColumnPersistence.create(
 			0);
 
+		objectViewColumn.setLabelMap(
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()));
 		objectViewColumn.setObjectFieldName(
 			_addObjectField(objectFieldLabel, objectFieldName));
 		objectViewColumn.setPriority(0);
+
+		return objectViewColumn;
+	}
+
+	private List<ObjectViewColumn>
+			_createObjectViewColumnsWithDuplicateObjectFieldName()
+		throws Exception {
+
+		ObjectViewColumn objectViewColumn1 = _createObjectViewColumn(
+			"Roger", "roger");
+
+		ObjectViewColumn objectViewColumn2 = _createObjectViewColumn(
+			RandomTestUtil.randomString(),
+			StringUtil.toLowerCase(RandomStringUtils.randomAlphabetic(5)));
+
+		objectViewColumn2.setObjectFieldName("roger");
+
+		return ListUtil.fromArray(objectViewColumn1, objectViewColumn2);
+	}
+
+	private List<ObjectViewColumn> _createObjectViewColumnsWithoutLabel()
+		throws Exception {
+
+		ObjectViewColumn objectViewColumn = _createObjectViewColumn(
+			RandomTestUtil.randomString(),
+			StringUtil.toLowerCase(RandomStringUtils.randomAlphabetic(5)));
+
+		objectViewColumn.setLabelMap(LocalizedMapUtil.getLocalizedMap(""));
+
+		return ListUtil.fromArray(objectViewColumn);
+	}
+
+	private ObjectViewColumn
+			_createObjectViewColumnWithNonexistentObjectFieldName()
+		throws Exception {
+
+		ObjectViewColumn objectViewColumn = _createObjectViewColumn(
+			RandomTestUtil.randomString(),
+			StringUtil.toLowerCase(RandomStringUtils.randomAlphabetic(5)));
+
+		objectViewColumn.setObjectFieldName("zebra");
 
 		return objectViewColumn;
 	}

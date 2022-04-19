@@ -17,10 +17,10 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import {ConfigurationFieldPropTypes} from '../../../prop-types/index';
-import {config} from '../../config/index';
 import {useSelectItem} from '../../contexts/ControlsContext';
 import {useSelector} from '../../contexts/StoreContext';
 import {getResponsiveConfig} from '../../utils/getResponsiveConfig';
+import hasDropZoneChild from '../layout-data-items/hasDropZoneChild';
 import {CheckboxField} from './CheckboxField';
 
 function getHiddenAncestorId(layoutData, item, selectedViewportSize) {
@@ -63,22 +63,24 @@ export function HideFragmentField({
 	return (
 		<>
 			<CheckboxField
-				disabled={Boolean(hiddenAncestorId) || disabled}
+				disabled={
+					Boolean(hiddenAncestorId) ||
+					hasDropZoneChild(item, layoutData) ||
+					disabled
+				}
 				field={field}
 				onValueSelect={onValueSelect}
 				title={title}
 				value={value}
 			/>
 
-			{value === 'none' &&
-				!hiddenAncestorId &&
-				config.fragmentAdvancedOptionsEnabled && (
-					<p className="small text-secondary">
-						{Liferay.Language.get(
-							'this-fragment-is-still-visible-on-search-.you-can-hide-it-from-search-in-the-advanced-tab'
-						)}
-					</p>
-				)}
+			{value === 'none' && !hiddenAncestorId && (
+				<p className="small text-secondary">
+					{Liferay.Language.get(
+						'this-fragment-is-still-visible-on-search-.you-can-hide-it-from-search-in-the-advanced-tab'
+					)}
+				</p>
+			)}
 
 			{hiddenAncestorId && (
 				<>

@@ -119,12 +119,28 @@ definition {
 	}
 
 	@description = "LPS-143065 - Verify if there is an option on Request Files: Directly from User's Computer"
-	@ignore = "Test Stub"
 	@priority = "4"
 	test CanViewDirectlyFromUsersComputerOption {
+		ObjectAdmin.addObjectViaAPI(
+			labelName = "Custom Object 151559",
+			objectName = "CustomObject151559",
+			pluralLabelName = "Custom Objects 151559");
 
-		// TODO LPS-151559 CanViewDirectlyFromUsersComputerOption pending implementation
+		Navigator.openURL();
 
+		ObjectAdmin.openObjectAdmin();
+
+		ObjectPortlet.selectCustomObject(label = "Custom Object 151559");
+
+		ObjectAdmin.goToFieldsTab();
+
+		LexiconEntry.gotoAdd();
+
+		ObjectField.selectType(fieldType = "Attachment");
+
+		ObjectField.assertOptionAndDescriptionOnRequestFiles(
+			description = "Files can be stored in an object entry or in a specific folder in Documents and Media.",
+			option = "Upload Directly from the User's Computer");
 	}
 
 	@description = "LPS-146523 - Verify if there's an option on Request Files: Upload and Select from Documents and Media Item Selector"
@@ -137,12 +153,36 @@ definition {
 	}
 
 	@description = "LPS-146889 - Verify that when turn on the 'Set the Maximum Number of Characters' a Maximum Number of Characters field is shown"
-	@ignore = "Test Stub"
 	@priority = "4"
 	test CanViewMaximumCharactersField {
+		ObjectAdmin.addObjectViaAPI(
+			labelName = "Custom Object 151570",
+			objectName = "CustomObject151570",
+			pluralLabelName = "Custom Objects 151570");
 
-		// TODO LPS-151570 CanViewMaximumCharactersField pending implementation
+		ObjectAdmin.addObjectFieldViaAPI(
+			fieldBusinessType = "Text",
+			fieldLabelName = "Custom Field Text",
+			fieldName = "customObjectFieldText",
+			fieldType = "String",
+			isRequired = "false",
+			objectName = "CustomObject151570");
 
+		Navigator.openURL();
+
+		ObjectAdmin.openObjectAdmin();
+
+		ObjectPortlet.selectCustomObject(label = "Custom Object 151570");
+
+		ObjectAdmin.goToFieldsTab();
+
+		ObjectAdmin.goToFieldsDetails(label = "Custom Field Text");
+
+		Click(
+			key_labelName = "Limit Characters",
+			locator1 = "ObjectField#DEFAULT_TOGGLE_SWITCH");
+
+		AssertElementPresent(locator1 = "ObjectField#MAXIMUM_NUMBER_CHARACTERS_OPTION");
 	}
 
 	@description = "LPS-147944 - Verify it is possible to view more than 20 picklists for the picklist drop-down"
@@ -179,21 +219,80 @@ definition {
 	}
 
 	@description = "LPS-146889 - Verify that 'Set the Maximum Number of Characters' toggle is available for Text and Long Text fields"
-	@ignore = "Test Stub"
 	@priority = "5"
 	test CanViewSetMaximumCharactersOption {
+		ObjectAdmin.addObjectViaAPI(
+			labelName = "Custom Object 151569",
+			objectName = "CustomObject151569",
+			pluralLabelName = "Custom Objects 151569");
 
-		// TODO LPS-151569 CanViewSetMaximumCharactersOption pending implementation
+		ObjectAdmin.addObjectFieldViaAPI(
+			fieldBusinessType = "Text",
+			fieldLabelName = "Custom Field Text",
+			fieldName = "customObjectFieldText",
+			fieldType = "String",
+			isRequired = "false",
+			objectName = "CustomObject151569");
 
+		ObjectAdmin.addObjectFieldViaAPI(
+			fieldBusinessType = "LongText",
+			fieldLabelName = "Custom Field Long Text",
+			fieldName = "customObjectFieldLongText",
+			fieldType = "Clob",
+			isRequired = "false",
+			objectName = "CustomObject151569");
+
+		Navigator.openURL();
+
+		ObjectAdmin.openObjectAdmin();
+
+		ObjectPortlet.selectCustomObject(label = "Custom Object 151569");
+
+		ObjectAdmin.goToFieldsTab();
+
+		ObjectAdmin.goToFieldsDetails(label = "Custom Field Text");
+
+		AssertElementPresent(
+			key_labelName = "Limit Characters",
+			locator1 = "ObjectField#DEFAULT_TOGGLE_SWITCH");
+
+		ObjectField.closeModal();
+
+		SelectFrame(locator1 = "ObjectAdmin#SELECT_OBJECT_FIELD");
+
+		ObjectAdmin.goToFieldsDetails(label = "Custom Field Long Text");
+
+		AssertElementPresent(
+			key_labelName = "Limit Characters",
+			locator1 = "ObjectField#DEFAULT_TOGGLE_SWITCH");
 	}
 
 	@description = "LPS-143065 - Verify if a side panel containing the Field name, Typem Request Files, Accepted File Extensions, and Maximum File Size fields"
-	@ignore = "Test Stub"
 	@priority = "4"
 	test CanViewSidePanelOptions {
+		ObjectAdmin.addObjectViaAPI(
+			labelName = "Custom Object 151560",
+			objectName = "CustomObject151560",
+			pluralLabelName = "Custom Objects 151560");
 
-		// TODO LPS-151560 CanViewSidePanelOptions pending implementation
+		Navigator.openURL();
 
+		ObjectAdmin.openObjectAdmin();
+
+		ObjectPortlet.selectCustomObject(label = "Custom Object 151560");
+
+		ObjectAdmin.goToFieldsTab();
+
+		ObjectAdmin.addObjectFieldViaUI(
+			fieldAttachment = "Upload Directly from the User's Computer",
+			fieldLabel = "Custom Attachment",
+			fieldType = "Attachment");
+
+		ObjectAdmin.goToFieldsDetails(label = "Custom Attachment");
+
+		AssertElementPresent(locator1 = "ObjectField#LABEL_ACCEPTED_FILE_EXTENSIONS");
+
+		AssertElementPresent(locator1 = "ObjectField#LABEL_MAXIMUM_FILE_SIZE");
 	}
 
 	@description = "LPS-144902 - Verify there is a description of each Field Type"

@@ -137,7 +137,7 @@
 </tr>
 <tr>
 	<td>TRASH_ENABLED</td>
-	<td>//button[*[name()='svg'][contains(@class,'lexicon-icon-trash')]]</td>
+	<td>//button[*[name()='svg'][contains(@class,'lexicon-icon-trash')]] | //a[contains(@class,'btn')]/*[name()='svg'][contains(@class,'trash')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -358,6 +358,11 @@
 <tr>
 	<td>DUPLICATE</td>
 	<td>//button[contains(@class, 'ddm-form-field-repeatable-add-button p-0 btn btn-sm btn-primary')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DUPLICATE_SPECIFIC</td>
+	<td>//button[contains(@class, 'ddm-form-field-repeatable-add-button p-0 btn btn-sm btn-primary') and contains(@aria-label, '${key_label}')]</td>
 	<td></td>
 </tr>
 <tr>

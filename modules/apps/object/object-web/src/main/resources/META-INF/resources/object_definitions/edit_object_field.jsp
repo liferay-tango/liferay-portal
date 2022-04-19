@@ -29,13 +29,21 @@ ObjectField objectField = (ObjectField)request.getAttribute(ObjectWebKeys.OBJECT
 		module="js/components/EditObjectField"
 		props='<%=
 			HashMapBuilder.<String, Object>put(
-				"allowMaxLength", GetterUtil.getBoolean(PropsUtil.get("feature.flag.LPS-146889"))
+				"allowUploadDocAndMedia", GetterUtil.getBoolean(PropsUtil.get("feature.flag.LPS-148112"))
+			).put(
+				"forbiddenChars", PropsUtil.getArray(PropsKeys.DL_CHAR_BLACKLIST)
+			).put(
+				"forbiddenLastChars", objectDefinitionsFieldsDisplayContext.getForbiddenLastCharacters()
+			).put(
+				"forbiddenNames", PropsUtil.getArray(PropsKeys.DL_NAME_BLACKLIST)
 			).put(
 				"isApproved", objectDefinition.isApproved()
 			).put(
 				"objectField", objectDefinitionsFieldsDisplayContext.getObjectFieldJSONObject(objectField)
 			).put(
 				"objectFieldTypes", objectDefinitionsFieldsDisplayContext.getObjectFieldBusinessTypeMaps(Validator.isNotNull(objectField.getRelationshipType()), locale)
+			).put(
+				"objectName", objectDefinition.getShortName()
 			).put(
 				"readOnly", !objectDefinitionsFieldsDisplayContext.hasUpdateObjectDefinitionPermission()
 			).build()

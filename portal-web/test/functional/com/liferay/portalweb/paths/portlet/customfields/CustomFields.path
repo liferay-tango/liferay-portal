@@ -31,6 +31,21 @@
 	<td>//select[contains(@id,'dataType')]</td>
 	<td></td>
 </tr>
+<tr>
+	<td>CUSTOM_BOOLEAN_DEFAULT_VALUE</td>
+	<td>//select[contains(@id,'defaultValue')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CUSTOM_FIELDS_ADVANCED_PROPERTIES</td>
+	<td>//fieldset[contains(@id,'advanced-properties')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CUSTOM_FIELDS_FIELD_NAME_LOCALIZATION</td>
+	<td>//fieldset[contains(@id,'advanced-properties')]</td>
+	<td></td>
+</tr>
 </tbody>
 </table>
 </body>

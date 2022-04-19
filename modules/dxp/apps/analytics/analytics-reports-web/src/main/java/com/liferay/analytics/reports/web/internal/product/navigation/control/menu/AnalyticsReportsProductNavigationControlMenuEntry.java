@@ -120,13 +120,13 @@ public class AnalyticsReportsProductNavigationControlMenuEntry
 					}
 				});
 		}
+		catch (JspException jspException) {
+			throw new IOException(jspException);
+		}
 		catch (ProcessBodyBottomTagBodyException
 					processBodyBottomTagBodyException) {
 
 			throw new IOException(processBodyBottomTagBodyException);
-		}
-		catch (JspException jspException) {
-			throw new IOException(jspException);
 		}
 
 		return true;

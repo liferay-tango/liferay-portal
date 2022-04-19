@@ -294,6 +294,133 @@ definition {
 		SearchResultPortlet.viewSearchResultsSpecificOrder(resultsList = "Liferay Web Content,Liferay Blogs Entry");
 	}
 
+	@description = "This is a use case for LPS-147264."
+	test ApplyUserCustomFieldVariableToCustomElement {
+		JSONWebcontent.addWebContent(
+			content = "",
+			groupName = "Guest",
+			title = "Employee eyes only");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Configuration",
+			panel = "Control Panel",
+			portlet = "Custom Fields");
+
+		CustomFields.addCP(
+			customFieldName = "Employee",
+			customFieldType = "True / False",
+			resourceName = "User");
+
+		JSONUser.addUser(
+			userEmailAddress = "userea@liferay.com",
+			userFirstName = "userfn",
+			userLastName = "userln",
+			userScreenName = "usersn");
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Users",
+			panel = "Control Panel",
+			portlet = "Users and Organizations");
+
+		User.gotoEditCP(userScreenName = "usersn");
+
+		Select(
+			locator1 = "Select#SELECT_ID",
+			selectFieldId = "employee",
+			value1 = "False");
+
+		PortletEntry.save();
+
+		Blueprints.openBlueprintsAdmin();
+
+		var elementSourceJson = '''
+{
+  "elementDefinition": {
+    "configuration": {
+      "queryConfiguration": {
+        "queryEntries": [
+          {
+            "clauses": [
+              {
+                "context": "query",
+                "occur": "filter",
+                "query": {
+                  "bool": {
+                    "must_not": [
+                      {
+                        "match": {
+                          "title_${context.language_id}": {
+                            "query": "employee"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            "condition": {
+              "equals": {
+                "parameterName": "user.custom.field.employee",
+                "value": false
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "title_i18n": {
+    "en_US": "Test Element"
+  }
+}
+		''';
+
+		Blueprints.createElement(
+			elementSourceJson = "${elementSourceJson}",
+			title = "Test Element");
+
+		Blueprints.editElement(element = "Test Element");
+
+		Click(
+			item = "user",
+			locator1 = "Blueprints#ELEMENTS_EDIT_PAGE_PREDEFINED_VARIABLES_SIDEBAR_ITEM");
+
+		AssertElementPresent(
+			item = "Employee",
+			locator1 = "Blueprints#ELEMENTS_EDIT_PAGE_PREDEFINED_VARIABLES_SIDEBAR_ITEM");
+
+		PortletEntry.save();
+
+		Blueprints.openBlueprintsAdmin();
+
+		Blueprints.createBlueprint(title = "Test Blueprint");
+
+		Blueprints.addElement(element = "Test Element");
+
+		PortletEntry.save();
+
+		Search.openSearchPage();
+
+		Blueprints.applyBlueprintViaOptionsWidget(blueprintTitle = "Test Blueprint");
+
+		SearchPortlets.searchEmbedded(searchTerm = "Employee");
+
+		SearchResultPortlet.viewSearchResults(
+			searchAssetTitle = "Employee eyes only",
+			searchAssetType = "Web Content Article");
+
+		User.logoutAndLoginPG(
+			userLoginEmailAddress = "userea@liferay.com",
+			userLoginFullName = "userfn userln");
+
+		SearchPortlets.searchEmbedded(searchTerm = "Employee");
+
+		SearchResultPortlet.viewSearchResultNotPresent(
+			searchAssetTitle = "Employee eyes only",
+			searchAssetType = "Web Content Article");
+	}
+
 	test AssertBlueprintStillAppliedAfterRename {
 		JSONWebcontent.addWebContent(
 			content = "apple apple apple",
@@ -437,18 +564,11 @@ definition {
 	}
 
 	test AssertNonAdminsCannotAccessBlueprintsPortlet {
-		property custom.properties = "jsonws.web.service.paths.excludes=";
-
 		JSONUser.addUser(
 			userEmailAddress = "userea@liferay.com",
 			userFirstName = "userfn",
 			userLastName = "userln",
 			userScreenName = "usersn");
-
-		JSONUser.setFirstPassword(
-			agreeToTermsAndAnswerReminderQuery = "true",
-			requireReset = "false",
-			userEmailAddress = "userea@liferay.com");
 
 		User.logoutAndLoginPG(
 			userLoginEmailAddress = "userea@liferay.com",
@@ -1007,8 +1127,6 @@ definition {
 	}
 
 	test DefineBlueprintsRolePermissions {
-		property custom.properties = "jsonws.web.service.paths.excludes=";
-
 		JSONRole.addRegularRole(
 			roleKey = "Search Blueprints Admin",
 			roleTitle = "Search Blueprints Admin");
@@ -1045,11 +1163,6 @@ definition {
 			userLastName = "userln",
 			userScreenName = "usersn");
 
-		JSONUser.setFirstPassword(
-			agreeToTermsAndAnswerReminderQuery = "true",
-			requireReset = "false",
-			userEmailAddress = "userea@liferay.com");
-
 		JSONRole.assignRoleToUser(
 			roleTitle = "Search Blueprints Admin",
 			userEmailAddress = "userea@liferay.com");
@@ -1083,8 +1196,6 @@ definition {
 	}
 
 	test DefineElementsRolePermissions {
-		property custom.properties = "jsonws.web.service.paths.excludes=";
-
 		JSONRole.addRegularRole(
 			roleKey = "Search Elements Admin",
 			roleTitle = "Search Elements Admin");
@@ -1120,11 +1231,6 @@ definition {
 			userFirstName = "userfn",
 			userLastName = "userln",
 			userScreenName = "usersn");
-
-		JSONUser.setFirstPassword(
-			agreeToTermsAndAnswerReminderQuery = "true",
-			requireReset = "false",
-			userEmailAddress = "userea@liferay.com");
 
 		JSONRole.assignRoleToUser(
 			roleTitle = "Search Elements Admin",

@@ -28,6 +28,8 @@ definition {
 			widgetName = "Frontend Data Set Sample");
 
 		Navigator.gotoPage(pageName = "Frontend Data Set Test Page");
+
+		Refresh();
 	}
 
 	tearDown {

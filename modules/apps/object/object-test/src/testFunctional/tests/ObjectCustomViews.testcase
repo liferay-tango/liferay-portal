@@ -25,6 +25,15 @@ definition {
 		}
 	}
 
+	@description = "LPS-144472 - Verify it is possible add all column in the Default Sort"
+	@ignore = "Test Stub"
+	@priority = "4"
+	test CanAddAllcolumnsOnDefaultSort {
+
+		// TODO LPS-152055 CanAddAllcolumnsOnDefaultSort pending implementation
+
+	}
+
 	@description = "LPS-135394 - Verify it is possible to add a column for the View"
 	@priority = "5"
 	test CanAddColumn {
@@ -62,6 +71,24 @@ definition {
 		}
 	}
 
+	@description = "LPS-144472 - Verify if the user can add metadata columns to Default Sort and save it"
+	@ignore = "Test Stub"
+	@priority = "4"
+	test CanAddMetadacolumnDefaultSort {
+
+		// TODO LPS-152059 CanAddMetadacolumnDefaultSort pending implementation
+
+	}
+
+	@description = "LPS-147792 - Verify it is possible to add any translation for any Column Label"
+	@ignore = "Test Stub"
+	@priority = "4"
+	test CanAddTranslationToColumnLabel {
+
+		// TODO LPS-152069 CanAddTranslationToColumnLabel pending implementation
+
+	}
+
 	@description = "LPS-135394 - Verify it is possible to cancel the addition of a column for the View"
 	@priority = "4"
 	test CanCancelColumnAddition {
@@ -91,6 +118,15 @@ definition {
 		ObjectCustomViews.assertEmptyStateTextOnViewBuilder(text = "No columns added yet.");
 	}
 
+	@description = "LPS-147792 - Verify it is possible to cancel the rename of a Column Label"
+	@ignore = "Test Stub"
+	@priority = "4"
+	test CanCancelRenameColumnLabel {
+
+		// TODO LPS-152067 CanCancelRenameColumnLabel pending implementation
+
+	}
+
 	@description = "LPS-135394 - Verify it is possible to cancel the creation of a View"
 	@priority = "4"
 	test CanCancelViewCreation {
@@ -112,6 +148,15 @@ definition {
 		AssertElementNotPresent(locator1 = "Portlet#MODAL_TITLE");
 
 		ObjectAdmin.assertNoResultsWereFound();
+	}
+
+	@description = "LPS-144472 - Verify it is possible to create a Default Sort when there is column (Ascending or Descending)"
+	@ignore = "Test Stub"
+	@priority = "4"
+	test CanCreateDefaultSort {
+
+		// TODO LPS-152053 CanCreateDefaultSort pending implementation
+
 	}
 
 	@description = "LPS-135394 - Verify it is possible to create a View"
@@ -219,6 +264,15 @@ definition {
 		ObjectCustomViews.assertEmptyStateTextOnViewBuilder(text = "No columns added yet.");
 	}
 
+	@description = "LPS-144472 - Verify it is possible the user to delete the pre-order column"
+	@ignore = "Test Stub"
+	@priority = "4"
+	test CanDeletePreOrderColumn {
+
+		// TODO LPS-152057 CanDeletePreOrderColumn pending implementation
+
+	}
+
 	@description = "LPS-135394 - Verify it is possible to delete a View"
 	@priority = "5"
 	test CanDeleteView {
@@ -310,11 +364,32 @@ definition {
 	}
 
 	@description = "LPS-146028 - Verify that the user can duplicate a object View"
-	@ignore = "Test Stub"
 	@priority = "4"
 	test CanDuplicateObjectView {
+		ObjectAdmin.addObjectViaAPI(
+			labelName = "Custom Object 151589",
+			objectName = "CustomObject151589",
+			pluralLabelName = "Custom Objects 151589");
 
-		// TODO LPS-151589 CanDuplicateObjectView pending implementation
+		ObjectAdmin.openObjectAdmin();
+
+		ObjectPortlet.selectCustomObject(label = "Custom Object 151589");
+
+		ObjectCustomViews.goToViewsTab();
+
+		ObjectCustomViews.addObjectViewViaUI(viewName = "Custom View 151589");
+
+		ObjectCustomViews.duplicateObjectCustomView(viewLabel = "Custom View 151589");
+
+		ObjectCustomViews.assertObjectView(viewLabel = "Custom View 151589 (Copy)");
+	}
+
+	@description = "LPS-144472 - Verify it is not is possible to create a Default Sort when there isn't column"
+	@ignore = "Test Stub"
+	@priority = "4"
+	test CannotCreateDefaultSortWhenNoColumn {
+
+		// TODO LPS-152054 CannotCreateDefaultSortWhenNoColumn pending implementation
 
 	}
 
@@ -388,6 +463,25 @@ definition {
 		Alert.viewErrorMessage(errorMessage = "There can only be one default object view");
 	}
 
+	@description = "LPS-144472 - Verify it is possible to prioritize columns to Default Sort"
+	@ignore = "Test Stub"
+	@priority = "4"
+	test CanPrioritizeColumns {
+
+		// TODO LPS-152061 CanPrioritizeColumns pending implementation
+
+	}
+
+	@description = "LPS-147792 - Verify it is possible to rename a column label"
+	@ignore = "Test Stub"
+	@priority = "5"
+	test CanRenameColumnLabel {
+		property portal.acceptance = "true";
+
+		// TODO LPS-152066 CanRenameColumnLabel pending implementation
+
+	}
+
 	@description = "LPS-135394 - Verify it is possible to search for a column on the View Builder tab"
 	@priority = "4"
 	test CanSearchColumn {
@@ -456,6 +550,24 @@ definition {
 		ObjectCustomViews.assertColumnNotVisibleOnAddColumnModal(columnOption = "Creation Date");
 	}
 
+	@description = "LPS-144472 - Verify it is possible to search columns to a New Default Sort modal"
+	@ignore = "Test Stub"
+	@priority = "4"
+	test CanSearchColumnOnNewDefaultSortModal {
+
+		// TODO LPS-152063 CanSearchColumnOnNewDefaultSortModal pending implementation
+
+	}
+
+	@description = "LPS-144472 - Verify it is possible to search columns to Default Sort"
+	@ignore = "Test Stub"
+	@priority = "4"
+	test CanSearchColumns {
+
+		// TODO LPS-152062 CanSearchColumns pending implementation
+
+	}
+
 	@description = "LPS-135394 - Verify it is possible to search for a View"
 	@priority = "4"
 	test CanSearchView {
@@ -479,6 +591,61 @@ definition {
 		ObjectCustomViews.assertObjectView(viewLabel = "View A");
 
 		ObjectCustomViews.assertObjectViewNotPresent(viewLabel = "Custom B");
+	}
+
+	@description = "LPS-144472 - Verify it is possible to search when press enter key on Default Sort"
+	@ignore = "Test Stub"
+	@priority = "4"
+	test CanSearchWithEnterKey {
+
+		// TODO LPS-152064 CanSearchWithEnterKey pending implementation
+
+	}
+
+	@description = "LPS-144472 - Verify it is possible to see the entries with default return"
+	@ignore = "Test Stub"
+	@priority = "4"
+	test CanSeeEntriesWithDefaultReturn {
+
+		// TODO LPS-152065 CanSeeEntriesWithDefaultReturn pending implementation
+
+	}
+
+	@description = "LPS-147792 - Verify that the new column name will be displayed on the entries list"
+	@ignore = "Test Stub"
+	@priority = "4"
+	test CanSeeRenamedColumnNameOnObjectView {
+
+		// TODO LPS-152070 CanSeeRenamedColumnNameOnObjectView pending implementation
+
+	}
+
+	@description = "LPS-147792 - Verify it is possible to see the column label as the alias on the view builder column list"
+	@ignore = "Test Stub"
+	@priority = "5"
+	test CanSeeRenamedColumnOnViewBuilder {
+		property portal.acceptance = "true";
+
+		// TODO LPS-152068 CanSeeRenamedColumnOnViewBuilder pending implementation
+
+	}
+
+	@description = "LPS-144472 - Verify it is possible to sort the column entries as ascending or descending"
+	@ignore = "Test Stub"
+	@priority = "4"
+	test CanSortColumnEntries {
+
+		// TODO LPS-152060 CanSortColumnEntries pending implementation
+
+	}
+
+	@description = "LPS-144472 - Verify it is possible the user update the pre-order column"
+	@ignore = "Test Stub"
+	@priority = "4"
+	test CanUpdatePreOrderColumn {
+
+		// TODO LPS-152056 CanUpdatePreOrderColumn pending implementation
+
 	}
 
 	@description = "LPS-135394 - Verify it is possible to update a View"
@@ -651,6 +818,15 @@ definition {
 		ObjectAdmin.goToCustomObject(objectName = "CustomObject147770");
 
 		ObjectPortlet.viewEntry(entry = "Entry Test");
+	}
+
+	@description = "LPS-144472 - Verify it is possible the user see entries of object with default sort defined"
+	@ignore = "Test Stub"
+	@priority = "4"
+	test CanViewEntriesWithDefaultSort {
+
+		// TODO LPS-152058 CanViewEntriesWithDefaultSort pending implementation
+
 	}
 
 	@description = "LPS-143190 - Verify that the metadata values are correctly displayed on a Custom View"
@@ -857,17 +1033,148 @@ definition {
 	@ignore = "Test Stub"
 	@priority = "4"
 	test DuplicatedObjectViewColumnsAreCorrectlyOrdered {
+		ObjectAdmin.addObjectViaAPI(
+			labelName = "Custom Object 151590",
+			objectName = "CustomObject151590",
+			pluralLabelName = "Custom Objects 151590");
 
-		// TODO LPS-151590 DuplicatedObjectViewColumnsAreCorrectlyOrdered pending implementation
+		ObjectAdmin.openObjectAdmin();
 
+		ObjectPortlet.selectCustomObject(label = "Custom Object 151590");
+
+		ObjectCustomViews.goToViewsTab();
+
+		ObjectCustomViews.addObjectViewViaUI(viewName = "Custom View 151590");
+
+		ObjectCustomViews.goToViewsDetails(label = "Custom View 151590");
+
+		ObjectCustomViews.markViewAsDefault();
+
+		ObjectCustomViews.goToViewsBuilderTab();
+
+		LexiconEntry.gotoAdd();
+
+		for (var columnOption : list "Author,Creation Date,Modified Date,Workflow Status,ID") {
+			Click.clickAtNotVisible(
+				key_columnOption = "${columnOption}",
+				locator1 = "ObjectCustomViews#CHECKBOX_COLUMN_OPTION");
+		}
+
+		ObjectCustomViews.saveColumnsModal();
+
+		Button.clickSave();
+
+		SelectFrame(locator1 = "ObjectCustomViews#OBJECT_VIEW_KEBAB_MENU");
+
+		ObjectCustomViews.duplicateObjectCustomView(viewLabel = "Custom View 151590");
+
+		ObjectCustomViews.goToViewsDetails(label = "Custom View 151590 (Copy)");
+
+		ObjectCustomViews.goToViewsBuilderTab();
+
+		ObjectCustomViews.viewOrdersOfTheColumns(
+			colunmName = "Author",
+			position = "1");
+
+		ObjectCustomViews.viewOrdersOfTheColumns(
+			colunmName = "Creation Date",
+			position = "2");
+
+		ObjectCustomViews.viewOrdersOfTheColumns(
+			colunmName = "Modified Date",
+			position = "3");
+
+		ObjectCustomViews.viewOrdersOfTheColumns(
+			colunmName = "Workflow Status",
+			position = "4");
+
+		ObjectCustomViews.viewOrdersOfTheColumns(
+			colunmName = "ID",
+			position = "5");
 	}
 
 	@description = "LPS-146028 - Verify that the fields present at the Default Sort are ordered correctly"
-	@ignore = "Test Stub"
 	@priority = "4"
 	test DuplicatedObjectViewFieldsAreCorrectlyOrdered {
+		ObjectAdmin.addObjectViaAPI(
+			labelName = "Custom Object 151591",
+			objectName = "CustomObject151591",
+			pluralLabelName = "Custom Objects 151591");
 
-		// TODO LPS-151591 DuplicatedObjectViewFieldsAreCorrectlyOrdered pending implementation
+		ObjectAdmin.addObjectFieldViaAPI(
+			fieldBusinessType = "Text",
+			fieldLabelName = "Custom Field A",
+			fieldName = "customObjectFieldA151591",
+			fieldType = "String",
+			isRequired = "false",
+			objectName = "CustomObject151591");
+
+		ObjectAdmin.addObjectFieldViaAPI(
+			fieldBusinessType = "Text",
+			fieldLabelName = "Custom Field B",
+			fieldName = "customObjectFieldB151591",
+			fieldType = "String",
+			isRequired = "false",
+			objectName = "CustomObject151591");
+
+		ObjectAdmin.openObjectAdmin();
+
+		ObjectPortlet.selectCustomObject(label = "Custom Object 151591");
+
+		ObjectCustomViews.goToViewsTab();
+
+		ObjectCustomViews.addObjectViewViaUI(viewName = "Custom View 151591");
+
+		ObjectCustomViews.goToViewsDetails(label = "Custom View 151591");
+
+		ObjectCustomViews.markViewAsDefault();
+
+		ObjectCustomViews.goToViewsBuilderTab();
+
+		LexiconEntry.gotoAdd();
+
+		for (var columnOption : list "Custom Field A,Custom Field B") {
+			Click.clickAtNotVisible(
+				key_columnOption = "${columnOption}",
+				locator1 = "ObjectCustomViews#CHECKBOX_COLUMN_OPTION");
+		}
+
+		ObjectCustomViews.saveColumnsModal();
+
+		Button.clickSave();
+
+		SelectFrame(locator1 = "ObjectCustomViews#OBJECT_VIEW_KEBAB_MENU");
+
+		ObjectCustomViews.duplicateObjectCustomView(viewLabel = "Custom View 151591");
+
+		ObjectCustomViews.goToViewsDetails(label = "Custom View 151591 (Copy)");
+
+		ObjectCustomViews.goToViewsBuilderTab();
+
+		ObjectCustomViews.viewOrdersOfTheColumns(
+			colunmName = "Custom Field A",
+			position = "1");
+
+		ObjectCustomViews.viewOrdersOfTheColumns(
+			colunmName = "Custom Field B",
+			position = "2");
+	}
+
+	@description = "LPS-146028 - Verify that the view name is the same of the original, adding a "(Copy)" on the right side"
+	@ignore = "Test Stub"
+	@priority = "4"
+	test DuplicatedViewHasSameOriginalName {
+
+		// TODO LPS-152051 DuplicatedViewHasSameOriginalName pending implementation
+
+	}
+
+	@description = "LPS-146028 - Verify that when the user duplicate a view, the Mark As Default option comes inactivated"
+	@ignore = "Test Stub"
+	@priority = "4"
+	test DuplicatedViewIsNotDefault {
+
+		// TODO LPS-152052 DuplicatedViewIsNotDefault pending implementation
 
 	}
 

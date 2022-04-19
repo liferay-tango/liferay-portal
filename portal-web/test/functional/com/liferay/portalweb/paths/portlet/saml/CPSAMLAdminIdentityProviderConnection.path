@@ -71,6 +71,21 @@
 	<td>//input[contains(@id,'userAttributeMappingSamlAttribute-${key_index}')]</td>
 	<td></td>
 </tr>
+<tr>
+	<td>IDENTITY_PROVIDER_CONNECTION_CUSTOM_FIELD_EXPRESSION_DROPDOWN</td>
+	<td>//select[contains(@id,'attribute:expando:userAttributeMappingFieldExpression-${key_index}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>IDENTITY_PROVIDER_CONNECTION_CUSTOM_FIELD_ATTRIBUTE_TEXT</td>
+	<td>//input[contains(@name,'expando:userAttributeMappingSamlAttribute-${key_index}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>IDENTITY_PROVIDER_CONNECTION_CUSTOM_FIELD_USE_TO_MATCH_USERS_RADIO</td>
+	<td>//input[contains(@name,'expando:userAttributeMappingSamlAttribute-${key_index}')]/../following-sibling::div//input</td>
+	<td></td>
+</tr>
 </tbody>
 </table>
 </body>

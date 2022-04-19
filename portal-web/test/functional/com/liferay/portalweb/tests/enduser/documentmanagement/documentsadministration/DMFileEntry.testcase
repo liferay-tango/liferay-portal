@@ -1113,12 +1113,17 @@ definition {
 	}
 
 	@description = "This test covers LPS-115949. It validates that resource allocation for forked processes can be controlled through portal.properties."
-	@ignore = "Test Stub"
 	@priority = "4"
 	test CanLimitForkedProcessResourceAllocation {
+		property custom.properties = "dl.file.entry.preview.fork.process.jvm.options=-Xmx0m";
 
-		// TODO LPS-150080
+		JSONDocument.addFileWithUploadedFile(
+			dmDocumentTitle = "large_file.pdf",
+			groupName = "Guest",
+			mimeType = "application/pdf",
+			sourceFileName = "large_file.pdf");
 
+		AssertConsoleTextPresent(value1 = "Unable to process file version");
 	}
 
 	@description = "This test ensures that only the last two versions of a file are kept when the max version limit is set."
@@ -2160,12 +2165,31 @@ definition {
 	}
 
 	@description = "This is a test for LPS-80857. It checks that the user will stay in the same folder context after filtering."
-	@ignore = "Test Stub"
 	@priority = "3"
 	test CanStayInFolderAfterFiltering {
+		JSONFolder.addFolder(
+			dmFolderDescription = "DM Folder Description",
+			dmFolderName = "DM Folder Name",
+			groupName = "Guest");
 
-		// TODO LPS-150082 CanStayInFolderAfterFiltering pending implementation
+		JSONDocument.addFileWithUploadedFile(
+			dmDocumentDescription = "DM Document Description",
+			dmDocumentTitle = "DM Document Title",
+			folderName = "DM Folder Name",
+			groupName = "Guest",
+			mimeType = "application/msword",
+			sourceFileName = "Document_1.doc");
 
+		DMNavigator.openToFolderInAdmin(
+			dmFolderName = "DM Folder Name",
+			groupName = "Guest",
+			siteURLKey = "guest");
+
+		ManagementBar.setFilterAndOrder(menuItem = "Recent");
+
+		DMDocument.viewStatus(
+			dmDocumentStatus = "Approved",
+			dmDocumentTitle = "DM Document Title");
 	}
 
 	@description = "This ensures that the user can create a document with edited display page template."
@@ -2740,12 +2764,33 @@ definition {
 	}
 
 	@description = "This is a test for LPS-94829. It ensures that the wildcard can be defined with other file extensions."
-	@ignore = "Test Stub"
 	@priority = "4"
 	test WildcardCanBeDefinedWithOtherFileExtensions {
+		DMDocument.updateFileExtensions(
+			fieldValue = ".doc",
+			indexNumber = "2");
 
-		// TODO LPS-148982 WildcardCanBeDefinedWithOtherFileExtensions pending implementation
+		JSONDocument.addFileWithUploadedFile(
+			dmDocumentDescription = "DM Document Description",
+			dmDocumentTitle = "Document_1.doc",
+			groupName = "Guest",
+			mimeType = "application/msword",
+			sourceFileName = "Document_1.doc");
 
+		JSONDocument.addFileWithUploadedFile(
+			dmDocumentDescription = "DM Document Description",
+			dmDocumentTitle = "Document_2.jpg",
+			groupName = "Guest",
+			mimeType = "image/jpeg",
+			sourceFileName = "Document_2.jpg");
+
+		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
+
+		for (var dmDocumentTitleList : list "Document_2.jpg,Document_1.doc") {
+			DMDocument.viewStatus(
+				dmDocumentStatus = "Approved",
+				dmDocumentTitle = "${dmDocumentTitleList}");
+		}
 	}
 
 }

@@ -25,10 +25,11 @@ services:
     liferay:
         container_name: t7h3-liferay
         environment:
+            - LIFERAY_INCLUDE_MINUS_AND_MINUS_OVERRIDE=portal-liferay-online-config.properties,portal-liferay-online-limit.properties
             - LXC_EXTENSION_ABLE_REMOTE_APP_URL=http://localhost:9001
             - LXC_EXTENSION_BAKER_WEBHOOK_SECRET=pgyP2sdYFaUreq4
             - LXC_EXTENSION_BAKER_WEBHOOK_URL=http://localhost:9002
-        image: liferay/dxp:7.4.13-u20
+        image: liferay/dxp:7.4.13.nightly-d3.0.13-20220421124253
         ports:
             - 8080:8080
         volumes:

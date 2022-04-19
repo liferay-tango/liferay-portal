@@ -56,8 +56,8 @@ import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.Theme;
 import com.liferay.portal.kernel.model.ThemeSetting;
 import com.liferay.portal.kernel.model.UserConstants;
-import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryConstants;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
+import com.liferay.portal.kernel.portlet.constants.PortletPreferencesFactoryConstants;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.resource.bundle.AggregateResourceBundleLoader;
@@ -705,7 +705,7 @@ public class CPFileImporterImpl implements CPFileImporter {
 					"uuid", fileEntry.getUuid()
 				);
 
-				return jsonObject.toJSONString();
+				return jsonObject.toString();
 			},
 			classLoader, dependenciesFilePath, serviceContext);
 
