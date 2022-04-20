@@ -45,6 +45,14 @@ export default function Detail({
 
 	const storeDispatch = useContext(StoreDispatchContext);
 
+	const currentPageMocked = {
+		data: {
+			countrySearchKeywords:
+				[{countryCode:"es", countryName:"Spain", views: 900, viewsP: 40},
+				 {countryCode:"br", countryName:"Brazil", views: 400, viewsP: 20}],
+		}
+	};
+
 	return (
 		<>
 			{loadingData ? (
@@ -80,9 +88,14 @@ export default function Detail({
 						currentPage.view === TRAFFIC_CHANNELS.PAID) &&
 						currentPage.data.countrySearchKeywords.length > 0 && (
 							<KeywordsDetail
-								currentPage={currentPage}
+								currentPage={currentPageMocked}
+								handleDetailPeriodChange={handleDetailPeriodChange}
+								timeSpanOptions={timeSpanOptions}
 								trafficShareDataProvider={
 									trafficShareDataProvider
+								}
+								trafficSourcesDataProvider={
+									trafficSourcesDataProvider
 								}
 								trafficVolumeDataProvider={
 									trafficVolumeDataProvider
