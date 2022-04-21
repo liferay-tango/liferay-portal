@@ -9,7 +9,7 @@ import org.gradle.util.GUtil
 
 buildscript {
 	dependencies {
-		classpath group: "com.liferay", name: "com.liferay.gradle.plugins.defaults", version: "7.0.319"
+		classpath group: "com.liferay", name: "com.liferay.gradle.plugins.defaults", version: "7.0.320"
 		classpath group: "com.liferay", name: "com.liferay.gradle.plugins.maven.plugin.builder", version: "1.2.3"
 		classpath group: "de.undercouch", name: "gradle-download-task", version: "3.3.0"
 		classpath group: "gradle.plugin.org.ysb33r.gradle", name: "gradletest", version: "1.1"
@@ -107,16 +107,18 @@ dependencies {
 poshiRunnerResources {
 	baseName "portal"
 
-	dirs = ["test/functional/com/liferay/portalweb"]
+	Properties testProperties = GUtil.loadProperties(file("poshi.properties"))
 
-	Properties testProperties = GUtil.loadProperties(file("../test.properties"))
+	String testBaseDirName = testProperties.getProperty("test.base.dir.name")
 
-	String testSubrepoDirs = testProperties.getProperty("test.subrepo.dirs")
+	if ((testBaseDirName != null) && !testBaseDirName.isEmpty()) {
+		dirs.add(testBaseDirName)
+	}
 
-	if ((testSubrepoDirs != null) && !testSubrepoDirs.isEmpty()) {
-		testSubrepoDirs = testSubrepoDirs.replace("\${project.dir}", "..");
+	String testDirs = testProperties.getProperty("test.dirs")
 
-		dirs.addAll(testSubrepoDirs.split(","))
+	if ((testDirs != null) && !testDirs.isEmpty()) {
+		dirs.addAll(testDirs.split(","))
 	}
 }
 

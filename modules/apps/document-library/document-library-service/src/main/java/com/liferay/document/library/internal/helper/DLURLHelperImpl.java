@@ -14,6 +14,7 @@
 
 package com.liferay.document.library.internal.helper;
 
+import com.liferay.document.library.configuration.FFFriendlyURLEntryFileEntryConfiguration;
 import com.liferay.document.library.constants.DLFileVersionPreviewConstants;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
@@ -24,15 +25,19 @@ import com.liferay.document.library.kernel.util.VideoProcessorUtil;
 import com.liferay.document.library.service.DLFileVersionPreviewLocalService;
 import com.liferay.document.library.url.provider.DLFileVersionURLProvider;
 import com.liferay.document.library.util.DLURLHelper;
+import com.liferay.friendly.url.model.FriendlyURLEntry;
+import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.PortletProvider;
 import com.liferay.portal.kernel.portlet.PortletProviderUtil;
+import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.repository.model.Folder;
@@ -50,6 +55,7 @@ import com.liferay.trash.TrashHelper;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletURL;
@@ -58,12 +64,16 @@ import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Adolfo Pérez
  */
-@Component(service = DLURLHelper.class)
+@Component(
+	configurationPid = "com.liferay.document.library.configuration.FFFriendlyURLEntryFileEntryConfiguration",
+	service = DLURLHelper.class
+)
 public class DLURLHelperImpl implements DLURLHelper {
 
 	@Override
@@ -216,46 +226,17 @@ public class DLURLHelperImpl implements DLURLHelper {
 		FileEntry fileEntry, FileVersion fileVersion, ThemeDisplay themeDisplay,
 		String queryString, boolean appendVersion, boolean absoluteURL) {
 
-		StringBundler sb = new StringBundler(15);
+		String previewURLPrefix = _getPreviewURLPrefix(
+			themeDisplay, absoluteURL);
 
-		if ((themeDisplay != null) && absoluteURL) {
-			sb.append(themeDisplay.getPortalURL());
+		String previewURL = _getFriendlyURL(
+			fileEntry, previewURLPrefix, queryString, appendVersion);
+
+		if (Validator.isNull(previewURL)) {
+			previewURL = _getPreviewUuidURL(
+				fileEntry, fileVersion, previewURLPrefix, queryString,
+				appendVersion);
 		}
-
-		sb.append(_portal.getPathContext());
-		sb.append("/documents/");
-		sb.append(fileEntry.getRepositoryId());
-		sb.append(StringPool.SLASH);
-		sb.append(fileEntry.getFolderId());
-		sb.append(StringPool.SLASH);
-
-		String fileName = fileEntry.getFileName();
-
-		if (fileEntry.isInTrash()) {
-			fileName = _trashHelper.getOriginalTitle(fileEntry.getFileName());
-		}
-
-		sb.append(URLCodec.encodeURL(HtmlUtil.unescape(fileName)));
-
-		sb.append(StringPool.SLASH);
-		sb.append(URLCodec.encodeURL(fileEntry.getUuid()));
-
-		if (appendVersion) {
-			sb.append("?version=");
-			sb.append(fileVersion.getVersion());
-			sb.append("&t=");
-		}
-		else {
-			sb.append("?t=");
-		}
-
-		Date modifiedDate = fileVersion.getModifiedDate();
-
-		sb.append(modifiedDate.getTime());
-
-		sb.append(queryString);
-
-		String previewURL = sb.toString();
 
 		if ((themeDisplay != null) && themeDisplay.isAddSessionIdToURL()) {
 			return _portal.getURLWithSessionId(
@@ -402,7 +383,9 @@ public class DLURLHelperImpl implements DLURLHelper {
 	}
 
 	@Activate
-	protected void activate(BundleContext bundleContext) {
+	protected void activate(
+		BundleContext bundleContext, Map<String, Object> properties) {
+
 		_dlFileVersionURLProviders =
 			ServiceTrackerMapFactory.openSingleValueMap(
 				bundleContext, DLFileVersionURLProvider.class, null,
@@ -415,11 +398,22 @@ public class DLURLHelperImpl implements DLURLHelper {
 
 					types.forEach(emitter::emit);
 				});
+
+		_ffFriendlyURLEntryFileEntryConfiguration =
+			ConfigurableUtil.createConfigurable(
+				FFFriendlyURLEntryFileEntryConfiguration.class, properties);
 	}
 
 	@Deactivate
 	protected void deactivate() {
 		_dlFileVersionURLProviders.close();
+	}
+
+	@Modified
+	protected void modified(Map<String, Object> properties) {
+		_ffFriendlyURLEntryFileEntryConfiguration =
+			ConfigurableUtil.createConfigurable(
+				FFFriendlyURLEntryFileEntryConfiguration.class, properties);
 	}
 
 	private String _getDLFileVersionURLProviderURL(
@@ -439,6 +433,50 @@ public class DLURLHelperImpl implements DLURLHelper {
 		}
 
 		return null;
+	}
+
+	private String _getFriendlyURL(
+		FileEntry fileEntry, String previewURLPrefix, String queryString,
+		boolean appendVersion) {
+
+		if (!_ffFriendlyURLEntryFileEntryConfiguration.enabled() ||
+			appendVersion || (fileEntry == null) ||
+			(fileEntry.getFileEntryId() == 0)) {
+
+			return null;
+		}
+
+		FriendlyURLEntry friendlyURLEntry =
+			_friendlyURLEntryLocalService.fetchMainFriendlyURLEntry(
+				_portal.getClassNameId(FileEntry.class),
+				fileEntry.getFileEntryId());
+
+		if (friendlyURLEntry == null) {
+			return null;
+		}
+
+		StringBundler sb = new StringBundler(6);
+
+		sb.append(previewURLPrefix);
+		sb.append(FriendlyURLResolverConstants.URL_SEPARATOR_Y_FILE_ENTRY);
+
+		Group group = _groupLocalService.fetchGroup(fileEntry.getGroupId());
+
+		if (group == null) {
+			group = _groupLocalService.fetchGroup(
+				friendlyURLEntry.getGroupId());
+		}
+
+		sb.append(group.getFriendlyURL());
+
+		sb.append(StringPool.SLASH);
+		sb.append(friendlyURLEntry.getUrlTitle());
+
+		if (Validator.isNotNull(queryString)) {
+			sb.append(queryString.replaceFirst("&", "?"));
+		}
+
+		return sb.toString();
 	}
 
 	private String _getImageSrc(
@@ -464,6 +502,63 @@ public class DLURLHelperImpl implements DLURLHelper {
 		return thumbnailSrc;
 	}
 
+	private String _getPreviewURLPrefix(
+		ThemeDisplay themeDisplay, boolean absoluteURL) {
+
+		StringBundler sb = new StringBundler(3);
+
+		if ((themeDisplay != null) && absoluteURL) {
+			sb.append(themeDisplay.getPortalURL());
+		}
+
+		sb.append(_portal.getPathContext());
+		sb.append("/documents/");
+
+		return sb.toString();
+	}
+
+	private String _getPreviewUuidURL(
+		FileEntry fileEntry, FileVersion fileVersion, String previewURLPrefix,
+		String queryString, boolean appendVersion) {
+
+		StringBundler sb = new StringBundler(13);
+
+		sb.append(previewURLPrefix);
+
+		sb.append(fileEntry.getRepositoryId());
+		sb.append(StringPool.SLASH);
+		sb.append(fileEntry.getFolderId());
+		sb.append(StringPool.SLASH);
+
+		String fileName = fileEntry.getFileName();
+
+		if (fileEntry.isInTrash()) {
+			fileName = _trashHelper.getOriginalTitle(fileEntry.getFileName());
+		}
+
+		sb.append(URLCodec.encodeURL(HtmlUtil.unescape(fileName)));
+
+		sb.append(StringPool.SLASH);
+		sb.append(URLCodec.encodeURL(fileEntry.getUuid()));
+
+		if (appendVersion) {
+			sb.append("?version=");
+			sb.append(fileVersion.getVersion());
+			sb.append("&t=");
+		}
+		else {
+			sb.append("?t=");
+		}
+
+		Date modifiedDate = fileVersion.getModifiedDate();
+
+		sb.append(modifiedDate.getTime());
+
+		sb.append(queryString);
+
+		return sb.toString();
+	}
+
 	@Reference
 	private DLAppLocalService _dlAppLocalService;
 
@@ -473,6 +568,11 @@ public class DLURLHelperImpl implements DLURLHelper {
 	private ServiceTrackerMap
 		<DLFileVersionURLProvider.Type, DLFileVersionURLProvider>
 			_dlFileVersionURLProviders;
+	private volatile FFFriendlyURLEntryFileEntryConfiguration
+		_ffFriendlyURLEntryFileEntryConfiguration;
+
+	@Reference
+	private FriendlyURLEntryLocalService _friendlyURLEntryLocalService;
 
 	@Reference
 	private GroupLocalService _groupLocalService;

@@ -32,6 +32,8 @@ definition {
 	test CanUserEnterAProject {
 		ApplicationsMenu.gotoSite(site = "Testray 2");
 
+		Testray.createProjectTestray(key_name = "Liferay Portal 7.3");
+
 		Testray.goToProjectPage(projectName = "Liferay Portal 7.3");
 
 		Testray.assertProjectTitleHeader(projectName = "Liferay Portal 7.3");
@@ -40,6 +42,8 @@ definition {
 	@description = "LPS-150031 - Verify that user can access a Task on Testflow."
 	@priority = "5"
 	test CanUserEnterATask {
+		property portal.upstream = "quarantine";
+
 		ApplicationsMenu.gotoSite(site = "Testray 2");
 
 		Testray.goToTestflow();

@@ -15,6 +15,8 @@ definition {
 		TestCase.setUpPortalInstance();
 
 		User.firstLoginPG();
+
+		SAML.enableSAMLDebugLogs();
 	}
 
 	@description = "This is a use case for LPS-32577. Add user inherited roles as SAML attribute statements."
@@ -116,10 +118,6 @@ definition {
 	test AssertAuthorizationOnOAuth2WithSAMLConnectionWithExistingUser {
 		property portal.acceptance = "true";
 		property test.name.skip.portal.instance = "SAML#AssertAuthorizationOnOAuth2WithSAMLConnectionWithExistingUser";
-
-		task ("Enable SAML debug logs") {
-			SAML.enableSAMLDebugLogs();
-		}
 
 		task ("Logout") {
 			User.logoutPG();
@@ -233,10 +231,6 @@ definition {
 	@priority = "4"
 	test AssertAuthorizationOnOAuth2WithSAMLConnectionWithoutExistingUser {
 		property test.name.skip.portal.instance = "SAML#AssertAuthorizationOnOAuth2WithSAMLConnectionWithoutExistingUser";
-
-		task ("Enable SAML debug logs") {
-			SAML.enableSAMLDebugLogs();
-		}
 
 		task ("Logout") {
 			User.logoutPG();
@@ -1058,10 +1052,6 @@ definition {
 			User.editUserInformation(userScreenNameEdit = "tester");
 		}
 
-		task ("Enable SAML debug logs") {
-			SAML.enableSAMLDebugLogs();
-		}
-
 		task ("Add virtual instance able.com") {
 			HeadlessPortalInstanceAPI.addPortalInstance(
 				domain = "www.able.com",
@@ -1323,10 +1313,6 @@ definition {
 		property app.server.bundles.size = "0";
 		property test.name.skip.portal.instance = "SAML#AssertVerificationForDuplicatedUserAttributeMappingSAML";
 
-		task ("Enable SAML debug logs") {
-			SAML.enableSAMLDebugLogs();
-		}
-
 		task ("Add virtual instance able.com") {
 			HeadlessPortalInstanceAPI.addPortalInstance(
 				domain = "www.able.com",
@@ -1411,10 +1397,6 @@ definition {
 	test AssertVerificationForEmptyUserAttributeMappingSAML {
 		property app.server.bundles.size = "0";
 		property test.name.skip.portal.instance = "SAML#AssertVerificationForEmptyUserAttributeMappingSAML";
-
-		task ("Enable SAML debug logs") {
-			SAML.enableSAMLDebugLogs();
-		}
 
 		task ("Add virtual instance able.com") {
 			HeadlessPortalInstanceAPI.addPortalInstance(
@@ -1710,10 +1692,6 @@ definition {
 		property app.server.bundles.size = "0";
 		property test.name.skip.portal.instance = "SAML#CreateAndSyncUserAfterSAMLSetupMatchingEmailAddressNameIDWithScreenNameAttribute";
 
-		task ("Enable SAML debug logs") {
-			SAML.enableSAMLDebugLogs();
-		}
-
 		task ("Add virtual instance able.com") {
 			HeadlessPortalInstanceAPI.addPortalInstance(
 				domain = "www.able.com",
@@ -1802,10 +1780,6 @@ definition {
 		property app.server.bundles.size = "0";
 		property test.name.skip.portal.instance = "SAML#CreateAndSyncUserAfterSAMLSetupMatchingScreenNameIdentifierWithUUIDAttribute";
 
-		task ("Enable SAML debug logs") {
-			SAML.enableSAMLDebugLogs();
-		}
-
 		task ("Add virtual instance able.com") {
 			HeadlessPortalInstanceAPI.addPortalInstance(
 				domain = "www.able.com",
@@ -1893,10 +1867,6 @@ definition {
 		property portal.acceptance = "true";
 		property test.name.skip.portal.instance = "SAML#CreateAndSyncUserAfterSAMLSetupwithMatchingScreenNameAttribute";
 
-		task ("Enable SAML debug logs") {
-			SAML.enableSAMLDebugLogs();
-		}
-
 		task ("Add virtual instance able.com") {
 			HeadlessPortalInstanceAPI.addPortalInstance(
 				domain = "www.able.com",
@@ -1981,10 +1951,6 @@ definition {
 	@priority = "3"
 	test CreateAndSyncUserAfterSAMLSetupWithMultipleIdPs {
 		property app.server.bundles.size = "0";
-
-		task ("Enable SAML debug logs") {
-			SAML.enableSAMLDebugLogs();
-		}
 
 		task ("Add virtual instance able.com and baker.com") {
 			HeadlessPortalInstanceAPI.addPortalInstance(
@@ -2587,10 +2553,6 @@ definition {
 		property app.server.bundles.size = "0";
 		property test.name.skip.portal.instance = "SAML#CustomFieldsCanBeUsedForUserMatchingInSAML";
 
-		task ("Enable SAML debug logs") {
-			SAML.enableSAMLDebugLogs();
-		}
-
 		task ("Given: User adds a virtual instance") {
 			HeadlessPortalInstanceAPI.addPortalInstance(
 				domain = "www.able.com",
@@ -2792,10 +2754,6 @@ definition {
 	test DeleteUserAfterSAMLSetupAndVerify {
 		property app.server.bundles.size = "0";
 		property test.name.skip.portal.instance = "SAML#DeleteUserAfterSAMLSetupAndVerify";
-
-		task ("Enable SAML debug logs") {
-			SAML.enableSAMLDebugLogs();
-		}
 
 		task ("Add virtual instance able.com") {
 			HeadlessPortalInstanceAPI.addPortalInstance(
@@ -4441,10 +4399,6 @@ definition {
 		var identityProviderEntityId = "samlidp";
 		var serviceProviderEntityId = "samlsp";
 
-		task ("Enable SAML debug logs") {
-			SAML.enableSAMLDebugLogs();
-		}
-
 		task ("Add virtual instance able.com") {
 			HeadlessPortalInstanceAPI.addPortalInstance(
 				domain = "www.able.com",
@@ -4556,10 +4510,6 @@ definition {
 
 		var identityProviderEntityId = "samlidp";
 		var serviceProviderEntityId = "samlsp";
-
-		task ("Enable SAML debug logs") {
-			SAML.enableSAMLDebugLogs();
-		}
 
 		task ("Add virtual intance able.com") {
 			HeadlessPortalInstanceAPI.addPortalInstance(
@@ -4675,10 +4625,6 @@ definition {
 		var identityProviderEntityId1 = "samlidp1";
 		var identityProviderEntityId2 = "samlidp2";
 		var serviceProviderEntityId = "samlsp";
-
-		task ("Enable SAML debug logs") {
-			SAML.enableSAMLDebugLogs();
-		}
 
 		task ("Add virtual instances able.com and baker.com") {
 			HeadlessPortalInstanceAPI.addPortalInstance(
@@ -4823,10 +4769,6 @@ definition {
 		var identityProviderEntityId = "samlidp";
 		var serviceProviderEntityId = "samlsp";
 
-		task ("Enable SAML debug logs") {
-			SAML.enableSAMLDebugLogs();
-		}
-
 		task ("Add virtual instance able.com") {
 			HeadlessPortalInstanceAPI.addPortalInstance(
 				domain = "www.able.com",
@@ -4940,10 +4882,6 @@ definition {
 		var identityProviderEntityId = "samlidp";
 		var serviceProviderEntityId1 = "samlsp1";
 		var serviceProviderEntityId2 = "samlsp2";
-
-		task ("Enable SAML debug logs") {
-			SAML.enableSAMLDebugLogs();
-		}
 
 		task ("Add virtual instances able.com and baker.com") {
 			HeadlessPortalInstanceAPI.addPortalInstance(

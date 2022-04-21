@@ -1365,12 +1365,24 @@ definition {
 	}
 
 	@description = "This is a test for LPS-82205. It checks that the XSS can not be executed after accessing HTML file."
-	@ignore = "Test Stub"
 	@priority = "4"
-	test CannotExecuteXSSWhenAccessingHTMLFIle {
+	test CannotExecuteXSSWhenAccessingHTMLFile {
+		DMDocument.enableDirectoryIndexing(siteURLKey = "guest");
 
-		// TODO LPS-149971 CannotExecuteXSSWhenAccessingHTMLFIle pending implementation
+		JSONDocument.addFileWithUploadedFile(
+			dmDocumentDescription = "The file is a basic HTML file with a simple JavaScript",
+			dmDocumentTitle = "xss_test",
+			groupName = "Guest",
+			mimeType = "code/html",
+			sourceFileName = "xss_test.html");
 
+		DMDocument.downloadWithDirectoryIndexing(
+			dmDocumentTitle = "xss_test",
+			siteURLKey = "guest");
+
+		AssertAlertNotPresent();
+
+		DMDocument.assertFileNameFromTempFolder(fileName = "xss_test");
 	}
 
 	@priority = "4"
@@ -1626,25 +1638,27 @@ definition {
 		property portal.acceptance = "true";
 
 		JSONDocument.addFileWithUploadedFile(
-			dmDocumentTitle = "large_file.pdf",
+			dmDocumentTitle = "large_file_2.pdf",
 			groupName = "Guest",
 			mimeType = "application/pdf",
-			sourceFileName = "large_file.pdf");
+			sourceFileName = "large_file_2.pdf");
 
 		DMNavigator.openToEntryInAdmin(
-			dmDocumentTitle = "large_file.pdf",
+			dmDocumentTitle = "large_file_2.pdf",
 			groupName = "Guest",
 			siteURLKey = "guest");
 
-		while (IsElementPresent(key_infoMessage = "Generating preview will take a few minutes.", locator1 = "Message#INFO")) {
+		while (IsElementPresent(key_infoMessage = "Generating preview will take a few minutes.", locator1 = "Message#INFO_SPECIFIC")) {
 			Pause(locator1 = "10000");
 
 			Refresh();
 		}
 
 		AssertVisible(
-			key_dmDocumentFileName = "large_file.pdf",
+			key_dmDocumentFileName = "large_file_2.pdf",
 			locator1 = "DocumentsAndMediaDocument#DOCUMENT_DETAILS_IMAGE_PREVIEW");
+
+		AssertConsoleTextNotPresent(value1 = "Unable to render preview for file version: large_file_2.pdf");
 	}
 
 	@description = "This test covers LPS-146237. It validates that a PDF can be previewed from the Recycle Bin."

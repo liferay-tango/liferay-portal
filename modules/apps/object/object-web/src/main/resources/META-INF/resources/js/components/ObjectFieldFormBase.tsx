@@ -15,6 +15,7 @@
 import ClayForm, {ClayToggle} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import {ClayTooltipProvider} from '@clayui/tooltip';
+import {useFeatureFlag} from 'data-engine-js-components-web';
 import {fetch} from 'frontend-js-web';
 import React, {ChangeEventHandler, ReactNode, useMemo, useState} from 'react';
 
@@ -75,7 +76,6 @@ async function fetchPickList() {
 }
 
 export default function ObjectFieldFormBase({
-	allowUploadDocAndMedia,
 	children,
 	disabled,
 	errors,
@@ -186,7 +186,6 @@ export default function ObjectFieldFormBase({
 
 			{values.businessType === 'Attachment' && (
 				<AttachmentSourceProperty
-					allowUploadDocAndMedia={allowUploadDocAndMedia}
 					disabled={disabled}
 					error={errors.fileSource}
 					objectFieldSettings={
@@ -295,6 +294,11 @@ export function useObjectFieldForm({
 			errors.businessType = REQUIRED_MSG;
 		}
 		else if (field.businessType === 'Attachment') {
+			const uploadRequestSizeLimit = Math.floor(
+				Liferay.PropsValues.UPLOAD_SERVLET_REQUEST_IMPL_MAX_SIZE /
+					1048576
+			);
+
 			if (
 				invalidateRequired(
 					settings.acceptedFileExtensions as string | undefined
@@ -307,6 +311,14 @@ export function useObjectFieldForm({
 			}
 			if (!settings.maximumFileSize && settings.maximumFileSize !== 0) {
 				errors.maximumFileSize = REQUIRED_MSG;
+			}
+			else if (settings.maximumFileSize > uploadRequestSizeLimit) {
+				errors.maximumFileSize = Liferay.Util.sub(
+					Liferay.Language.get(
+						'file-size-is-larger-than-the-allowed-overall-maximum-upload-request-size-x-mb'
+					),
+					uploadRequestSizeLimit
+				);
 			}
 			else if (settings.maximumFileSize < 0) {
 				errors.maximumFileSize = Liferay.Util.sub(
@@ -366,7 +378,6 @@ export function useObjectFieldForm({
 }
 
 function AttachmentSourceProperty({
-	allowUploadDocAndMedia,
 	disabled,
 	error,
 	objectFieldSettings,
@@ -374,6 +385,7 @@ function AttachmentSourceProperty({
 	onSettingsChange,
 	setValues,
 }: IAttachmentSourcePropertyProps) {
+	const flags = useFeatureFlag();
 	const settings = normalizeFieldSettings(objectFieldSettings);
 
 	const attachmentSource = attachmentSources.find(
@@ -382,7 +394,7 @@ function AttachmentSourceProperty({
 
 	const handleAttachmentSourceChange = ({value}: {value: string}) => {
 		const fileSource: ObjectFieldSetting = {name: 'fileSource', value};
-		if (!allowUploadDocAndMedia) {
+		if (!flags['LPS-148112']) {
 			onSettingsChange(fileSource);
 
 			return;
@@ -441,7 +453,7 @@ function AttachmentSourceProperty({
 				value={attachmentSource?.label}
 			/>
 
-			{allowUploadDocAndMedia && settings.fileSource === 'userComputer' && (
+			{flags['LPS-148112'] && settings.fileSource === 'userComputer' && (
 				<ClayForm.Group className="lfr-objects__object-field-form-base-container">
 					<ClayToggle
 						disabled={disabled}
@@ -473,7 +485,6 @@ function AttachmentSourceProperty({
 }
 
 interface IAttachmentSourcePropertyProps {
-	allowUploadDocAndMedia?: boolean;
 	disabled?: boolean;
 	error?: string;
 	objectFieldSettings: ObjectFieldSetting[];
@@ -494,7 +505,6 @@ interface IPickList {
 }
 
 interface IProps {
-	allowUploadDocAndMedia?: boolean;
 	children?: ReactNode;
 	disabled?: boolean;
 	errors: ObjectFieldErrors;

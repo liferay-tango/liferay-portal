@@ -1,5 +1,6 @@
 [
 	{
+		"clientExtensionEntryKey": "RAYLIFEAGENTPORTAL",
 		"cssURLs": [
 			"[$DOCUMENT_URL:/site-initializer/documents/company/remote-app/site-initializer-raylife-ap/main.css$]"
 		],
@@ -15,7 +16,6 @@
 			"en_US": "Raylife Agent Portal"
 		},
 		"portletCategoryName": "category.remote-apps",
-		"remoteAppEntryKey": "RAYLIFEAGENTPORTAL",
-		"widgetName": "com_liferay_remote_app_web_internal_portlet_RemoteAppEntryPortlet_[$REMOTE_APP_ENTRY_ID:RAYLIFEAGENTPORTAL$]"
+		"widgetName": "com_liferay_remote_app_web_internal_portlet_RemoteAppEntryPortlet_[$CLIENT_EXTENSION_ENTRY_ID:RAYLIFEAGENTPORTAL$]"
 	}
 ]

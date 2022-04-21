@@ -1,5 +1,6 @@
 [
 	{
+		"clientExtensionEntryKey": "RAYLIFE",
 		"cssURLs": [
 			"[$DOCUMENT_URL:/site-initializer/documents/company/remote-app/site-initializer-raylife-d2c/main.css$]"
 		],
@@ -14,7 +15,6 @@
 			"en_US": "Raylife"
 		},
 		"portletCategoryName": "category.remote-apps",
-		"remoteAppEntryKey": "RAYLIFE",
-		"widgetName": "com_liferay_remote_app_web_internal_portlet_RemoteAppEntryPortlet_[$REMOTE_APP_ENTRY_ID:RAYLIFE$]"
+		"widgetName": "com_liferay_remote_app_web_internal_portlet_RemoteAppEntryPortlet_[$CLIENT_EXTENSION_ENTRY_ID:RAYLIFE$]"
 	}
 ]

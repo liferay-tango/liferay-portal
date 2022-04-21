@@ -15,6 +15,18 @@
 package com.liferay.layout.seo.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.asset.display.page.constants.AssetDisplayPageConstants;
+import com.liferay.asset.display.page.service.AssetDisplayPageEntryLocalService;
+import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.info.item.InfoItemReference;
+import com.liferay.journal.constants.JournalFolderConstants;
+import com.liferay.journal.model.JournalArticle;
+import com.liferay.journal.test.util.JournalTestUtil;
+import com.liferay.layout.display.page.LayoutDisplayPageProvider;
+import com.liferay.layout.display.page.constants.LayoutDisplayPageWebKeys;
+import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
+import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
+import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.seo.kernel.LayoutSEOLink;
 import com.liferay.layout.seo.kernel.LayoutSEOLinkManager;
 import com.liferay.layout.test.util.LayoutFriendlyURLRandomizerBumper;
@@ -23,9 +35,11 @@ import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutSet;
+import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutLocalService;
@@ -35,6 +49,7 @@ import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.FriendlyURLNormalizerUtil;
@@ -81,136 +96,122 @@ public class LayoutSEOLinkManagerTest {
 		_group = GroupTestUtil.addGroup();
 
 		LayoutTestUtil.addTypePortletLayout(_group);
-
-		_layout = LayoutTestUtil.addTypePortletLayout(_group);
-
-		for (Map.Entry<Locale, String> entry :
-				_expectedFriendlyURLs.entrySet()) {
-
-			_layout = _layoutLocalService.updateFriendlyURL(
-				TestPropsValues.getUserId(), _layout.getPlid(),
-				entry.getValue(), LocaleUtil.toLanguageId(entry.getKey()));
-		}
-
-		ServiceContext serviceContext = new ServiceContext();
-
-		serviceContext.setRequest(_getHttpServletRequest(_layout));
-
-		ServiceContextThreadLocal.pushServiceContext(serviceContext);
-
-		_groupFriendlyURL = _portal.getGroupFriendlyURL(
-			_group.getPublicLayoutSet(), _themeDisplay, false, false);
-
-		_canonicalURL =
-			_PORTAL_URL + _groupFriendlyURL +
-				_expectedFriendlyURLs.get(LocaleUtil.US);
 	}
 
 	@Test
-	public void testGetClassicLocalizedLayoutSEOLinksWithDefaultLocale()
+	public void testGetClassicContentLocalizedLayoutSEOLinksWithDefaultLocale()
 		throws Exception {
+
+		_setupForTestingContentLocalizedLayoutSEOLinks();
 
 		_testWithLayoutSEOCompanyConfiguration(
 			"default-language-url",
 			() -> _testWithSiteDefaultLanguage(
 				_layout.getGroupId(), LocaleUtil.US,
-				() -> {
-					List<LayoutSEOLink> layoutSEOLinks =
-						_layoutSEOLinkManager.getLocalizedLayoutSEOLinks(
-							_layout, LocaleUtil.US, _canonicalURL,
-							_expectedFriendlyURLs.keySet());
-
-					Assert.assertEquals(
-						layoutSEOLinks.toString(),
-						_expectedFriendlyURLs.size() + 2,
-						layoutSEOLinks.size());
-
-					_assertAlternateLayoutSEOLinks(layoutSEOLinks);
-
-					_assertCanonicalLayoutSEOLink(
-						layoutSEOLinks, LocaleUtil.US, "default-language-url");
-				}));
+				() -> _assertContentLocalizedLayoutSEOLinks(
+					LocaleUtil.US, "default-language-url")));
 	}
 
 	@Test
-	public void testGetClassicLocalizedLayoutSEOLinksWithNoDefaultLocale()
+	public void testGetClassicContentLocalizedLayoutSEOLinksWithNoDefaultLocale()
 		throws Exception {
+
+		_setupForTestingContentLocalizedLayoutSEOLinks();
 
 		_testWithLayoutSEOCompanyConfiguration(
 			"default-language-url",
 			() -> _testWithSiteDefaultLanguage(
 				_layout.getGroupId(), LocaleUtil.US,
-				() -> {
-					List<LayoutSEOLink> layoutSEOLinks =
-						_layoutSEOLinkManager.getLocalizedLayoutSEOLinks(
-							_layout, LocaleUtil.SPAIN, _canonicalURL,
-							_expectedFriendlyURLs.keySet());
-
-					Assert.assertEquals(
-						layoutSEOLinks.toString(),
-						_expectedFriendlyURLs.size() + 2,
-						layoutSEOLinks.size());
-
-					_assertAlternateLayoutSEOLinks(layoutSEOLinks);
-
-					_assertCanonicalLayoutSEOLink(
-						layoutSEOLinks, LocaleUtil.SPAIN,
-						"default-language-url");
-				}));
+				() -> _assertContentLocalizedLayoutSEOLinks(
+					LocaleUtil.SPAIN, "default-language-url")));
 	}
 
 	@Test
-	public void testGetDefaultLocalizedLayoutSEOLinksWithDefaultLocale()
+	public void testGetClassicPageLocalizedLayoutSEOLinksWithDefaultLocale()
 		throws Exception {
+
+		_setupForTestingPageLocalizedLayoutSEOLinks();
+
+		_testWithLayoutSEOCompanyConfiguration(
+			"default-language-url",
+			() -> _testWithSiteDefaultLanguage(
+				_layout.getGroupId(), LocaleUtil.US,
+				() -> _assertPageLocalizedLayoutSEOLinks(
+					LocaleUtil.US, "default-language-url")));
+	}
+
+	@Test
+	public void testGetClassicPageLocalizedLayoutSEOLinksWithNoDefaultLocale()
+		throws Exception {
+
+		_setupForTestingPageLocalizedLayoutSEOLinks();
+
+		_testWithLayoutSEOCompanyConfiguration(
+			"default-language-url",
+			() -> _testWithSiteDefaultLanguage(
+				_layout.getGroupId(), LocaleUtil.US,
+				() -> _assertPageLocalizedLayoutSEOLinks(
+					LocaleUtil.SPAIN, "default-language-url")));
+	}
+
+	@Test
+	public void testGetDefaultContentLocalizedLayoutSEOLinksWithDefaultLocale()
+		throws Exception {
+
+		_setupForTestingContentLocalizedLayoutSEOLinks();
 
 		_testWithLayoutSEOCompanyConfiguration(
 			"localized-url",
 			() -> _testWithSiteDefaultLanguage(
 				_layout.getGroupId(), LocaleUtil.US,
-				() -> {
-					List<LayoutSEOLink> layoutSEOLinks =
-						_layoutSEOLinkManager.getLocalizedLayoutSEOLinks(
-							_layout, LocaleUtil.US, _canonicalURL,
-							_expectedFriendlyURLs.keySet());
-
-					Assert.assertEquals(
-						layoutSEOLinks.toString(),
-						_expectedFriendlyURLs.size() + 2,
-						layoutSEOLinks.size());
-
-					_assertAlternateLayoutSEOLinks(layoutSEOLinks);
-					_assertCanonicalLayoutSEOLink(
-						layoutSEOLinks, LocaleUtil.US, "localized-url");
-				}));
+				() -> _assertContentLocalizedLayoutSEOLinks(
+					LocaleUtil.US, "localized-url")));
 	}
 
 	@Test
-	public void testGetDefaultLocalizedLayoutSEOLinksWithNoDefaultLocale()
+	public void testGetDefaultContentLocalizedLayoutSEOLinksWithNoDefaultLocale()
 		throws Exception {
+
+		_setupForTestingContentLocalizedLayoutSEOLinks();
 
 		_testWithLayoutSEOCompanyConfiguration(
 			"localized-url",
 			() -> _testWithSiteDefaultLanguage(
 				_layout.getGroupId(), LocaleUtil.US,
-				() -> {
-					List<LayoutSEOLink> layoutSEOLinks =
-						_layoutSEOLinkManager.getLocalizedLayoutSEOLinks(
-							_layout, LocaleUtil.SPAIN, _canonicalURL,
-							_expectedFriendlyURLs.keySet());
+				() -> _assertContentLocalizedLayoutSEOLinks(
+					LocaleUtil.SPAIN, "localized-url")));
+	}
 
-					Assert.assertEquals(
-						layoutSEOLinks.toString(),
-						_expectedFriendlyURLs.size() + 2,
-						layoutSEOLinks.size());
+	@Test
+	public void testGetDefaultPageLocalizedLayoutSEOLinksWithDefaultLocale()
+		throws Exception {
 
-					_assertAlternateLayoutSEOLinks(layoutSEOLinks);
-					_assertCanonicalLayoutSEOLink(
-						layoutSEOLinks, LocaleUtil.SPAIN, "localized-url");
-				}));
+		_setupForTestingPageLocalizedLayoutSEOLinks();
+
+		_testWithLayoutSEOCompanyConfiguration(
+			"localized-url",
+			() -> _testWithSiteDefaultLanguage(
+				_layout.getGroupId(), LocaleUtil.US,
+				() -> _assertPageLocalizedLayoutSEOLinks(
+					LocaleUtil.US, "localized-url")));
+	}
+
+	@Test
+	public void testGetDefaultPageLocalizedLayoutSEOLinksWithNoDefaultLocale()
+		throws Exception {
+
+		_setupForTestingPageLocalizedLayoutSEOLinks();
+
+		_testWithLayoutSEOCompanyConfiguration(
+			"localized-url",
+			() -> _testWithSiteDefaultLanguage(
+				_layout.getGroupId(), LocaleUtil.US,
+				() -> _assertPageLocalizedLayoutSEOLinks(
+					LocaleUtil.SPAIN, "localized-url")));
 	}
 
 	private void _assertAlternateLayoutSEOLink(
-		Locale locale, List<LayoutSEOLink> layoutSEOLinks) {
+		Locale locale, List<LayoutSEOLink> layoutSEOLinks, String urlPrefix) {
 
 		LayoutSEOLink layoutSEOLink = _getAlternateLayoutSEOLink(
 			locale, layoutSEOLinks);
@@ -218,7 +219,8 @@ public class LayoutSEOLinkManagerTest {
 		Assert.assertNotNull(layoutSEOLink);
 
 		Assert.assertEquals(
-			_getExpectedAlternateURL(locale), layoutSEOLink.getHref());
+			_getExpectedAlternateURL(locale, urlPrefix),
+			layoutSEOLink.getHref());
 		Assert.assertEquals(
 			LocaleUtil.toW3cLanguageId(locale), layoutSEOLink.getHrefLang());
 		Assert.assertEquals(
@@ -227,10 +229,10 @@ public class LayoutSEOLinkManagerTest {
 	}
 
 	private void _assertAlternateLayoutSEOLinks(
-		List<LayoutSEOLink> layoutSEOLinks) {
+		List<LayoutSEOLink> layoutSEOLinks, String urlPrefix) {
 
 		for (Locale locale : _expectedFriendlyURLs.keySet()) {
-			_assertAlternateLayoutSEOLink(locale, layoutSEOLinks);
+			_assertAlternateLayoutSEOLink(locale, layoutSEOLinks, urlPrefix);
 		}
 
 		_assertXDefaultAlternateLayoutSEOLink(layoutSEOLinks);
@@ -238,10 +240,10 @@ public class LayoutSEOLinkManagerTest {
 
 	private void _assertCanonicalLayoutSEOLink(
 		List<LayoutSEOLink> layoutSEOLinks, Locale locale,
-		String canonicalURLConfiguration) {
+		String canonicalURLConfiguration, String urlPrefix) {
 
 		String canonicalURL = _getExpectedCanonicalURL(
-			locale, canonicalURLConfiguration);
+			locale, canonicalURLConfiguration, urlPrefix);
 
 		LayoutSEOLink layoutSEOLink = _getCanonicalLayoutSEOLink(
 			layoutSEOLinks);
@@ -252,6 +254,41 @@ public class LayoutSEOLinkManagerTest {
 		Assert.assertEquals(
 			layoutSEOLink.getRelationship(),
 			LayoutSEOLink.Relationship.CANONICAL);
+	}
+
+	private void _assertContentLocalizedLayoutSEOLinks(
+			Locale locale, String canonicalURLConfiguration)
+		throws PortalException {
+
+		_assertLocalizedLayoutSEOLinks(
+			locale, canonicalURLConfiguration,
+			FriendlyURLResolverConstants.URL_SEPARATOR_JOURNAL_ARTICLE);
+	}
+
+	private void _assertLocalizedLayoutSEOLinks(
+			Locale locale, String canonicalURLConfiguration, String urlPrefix)
+		throws PortalException {
+
+		List<LayoutSEOLink> layoutSEOLinks =
+			_layoutSEOLinkManager.getLocalizedLayoutSEOLinks(
+				_layout, locale, _canonicalURL, _expectedFriendlyURLs.keySet());
+
+		Assert.assertEquals(
+			layoutSEOLinks.toString(), _expectedFriendlyURLs.size() + 2,
+			layoutSEOLinks.size());
+
+		_assertAlternateLayoutSEOLinks(layoutSEOLinks, urlPrefix);
+
+		_assertCanonicalLayoutSEOLink(
+			layoutSEOLinks, locale, canonicalURLConfiguration, urlPrefix);
+	}
+
+	private void _assertPageLocalizedLayoutSEOLinks(
+			Locale locale, String canonicalURLConfiguration)
+		throws PortalException {
+
+		_assertLocalizedLayoutSEOLinks(
+			locale, canonicalURLConfiguration, StringPool.SLASH);
 	}
 
 	private void _assertXDefaultAlternateLayoutSEOLink(
@@ -300,7 +337,7 @@ public class LayoutSEOLinkManagerTest {
 		return null;
 	}
 
-	private String _getExpectedAlternateURL(Locale locale) {
+	private String _getExpectedAlternateURL(Locale locale, String urlPrefix) {
 		String expectedLanguagePath = StringPool.BLANK;
 
 		if (!Objects.equals(LocaleUtil.US, locale)) {
@@ -308,12 +345,12 @@ public class LayoutSEOLinkManagerTest {
 		}
 
 		return StringBundler.concat(
-			_PORTAL_URL, expectedLanguagePath, _groupFriendlyURL,
+			_PORTAL_URL, expectedLanguagePath, _groupFriendlyURL, urlPrefix,
 			_expectedFriendlyURLs.get(locale));
 	}
 
 	private String _getExpectedCanonicalURL(
-		Locale locale, String canonicalURLConfiguration) {
+		Locale locale, String canonicalURLConfiguration, String urlPrefix) {
 
 		Locale canonicalLocale = locale;
 
@@ -321,7 +358,7 @@ public class LayoutSEOLinkManagerTest {
 			canonicalLocale = LocaleUtil.getDefault();
 		}
 
-		return _getExpectedAlternateURL(canonicalLocale);
+		return _getExpectedAlternateURL(canonicalLocale, urlPrefix);
 	}
 
 	private HttpServletRequest _getHttpServletRequest(Layout layout)
@@ -352,6 +389,7 @@ public class LayoutSEOLinkManagerTest {
 		_themeDisplay.setResponse(new MockHttpServletResponse());
 		_themeDisplay.setScopeGroupId(_group.getGroupId());
 		_themeDisplay.setServerName("localhost");
+		_themeDisplay.setServerPort(8080);
 		_themeDisplay.setSiteGroupId(_group.getGroupId());
 		_themeDisplay.setUser(TestPropsValues.getUser());
 
@@ -372,6 +410,95 @@ public class LayoutSEOLinkManagerTest {
 		}
 
 		return null;
+	}
+
+	private void _setupForTestingContentLocalizedLayoutSEOLinks()
+		throws Exception {
+
+		_layout = _setUpLayoutJournalArticleDefaultDisplayPageTemplate();
+
+		_groupFriendlyURL = _portal.getGroupFriendlyURL(
+			_group.getPublicLayoutSet(), _themeDisplay, false, false);
+
+		_canonicalURL = StringBundler.concat(
+			_PORTAL_URL, _groupFriendlyURL,
+			FriendlyURLResolverConstants.URL_SEPARATOR_JOURNAL_ARTICLE,
+			_expectedFriendlyURLs.get(LocaleUtil.US));
+	}
+
+	private void _setupForTestingPageLocalizedLayoutSEOLinks()
+		throws Exception {
+
+		_layout = LayoutTestUtil.addTypePortletLayout(_group);
+
+		for (Map.Entry<Locale, String> entry :
+				_expectedFriendlyURLs.entrySet()) {
+
+			_layout = _layoutLocalService.updateFriendlyURL(
+				TestPropsValues.getUserId(), _layout.getPlid(),
+				StringPool.SLASH + entry.getValue(),
+				LocaleUtil.toLanguageId(entry.getKey()));
+		}
+
+		ServiceContext serviceContext = new ServiceContext();
+
+		serviceContext.setRequest(_getHttpServletRequest(_layout));
+
+		ServiceContextThreadLocal.pushServiceContext(serviceContext);
+
+		_groupFriendlyURL = _portal.getGroupFriendlyURL(
+			_group.getPublicLayoutSet(), _themeDisplay, false, false);
+
+		_canonicalURL = StringBundler.concat(
+			_PORTAL_URL, _groupFriendlyURL, StringPool.SLASH,
+			_expectedFriendlyURLs.get(LocaleUtil.US));
+	}
+
+	private Layout _setUpLayoutJournalArticleDefaultDisplayPageTemplate()
+		throws Exception {
+
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			_group.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			_expectedFriendlyURLs);
+
+		DDMStructure ddmStructure = journalArticle.getDDMStructure();
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
+				_group.getCreatorUserId(), _group.getGroupId(), 0,
+				_portal.getClassNameId(JournalArticle.class.getName()),
+				ddmStructure.getStructureId(), RandomTestUtil.randomString(),
+				LayoutPageTemplateEntryTypeConstants.TYPE_DISPLAY_PAGE, 0, true,
+				0, 0, 0, 0, serviceContext);
+
+		_assetDisplayPageEntryLocalService.addAssetDisplayPageEntry(
+			journalArticle.getUserId(), _group.getGroupId(),
+			_portal.getClassNameId(JournalArticle.class.getName()),
+			journalArticle.getResourcePrimKey(),
+			layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
+			AssetDisplayPageConstants.TYPE_DEFAULT, serviceContext);
+
+		Layout layout = _layoutLocalService.getLayout(
+			layoutPageTemplateEntry.getPlid());
+
+		HttpServletRequest httpServletRequest = _getHttpServletRequest(layout);
+
+		httpServletRequest.setAttribute(
+			LayoutDisplayPageWebKeys.LAYOUT_DISPLAY_PAGE_OBJECT_PROVIDER,
+			_layoutDisplayPageProvider.getLayoutDisplayPageObjectProvider(
+				new InfoItemReference(
+					JournalArticle.class.getName(),
+					journalArticle.getResourcePrimKey())));
+
+		serviceContext.setRequest(httpServletRequest);
+
+		ServiceContextThreadLocal.pushServiceContext(serviceContext);
+
+		return layout;
 	}
 
 	private void _testWithLayoutSEOCompanyConfiguration(
@@ -423,6 +550,10 @@ public class LayoutSEOLinkManagerTest {
 
 	private static final String _PORTAL_URL = "http://localhost:8080";
 
+	@Inject
+	private AssetDisplayPageEntryLocalService
+		_assetDisplayPageEntryLocalService;
+
 	private String _canonicalURL;
 
 	@Inject
@@ -431,29 +562,34 @@ public class LayoutSEOLinkManagerTest {
 	private final Map<Locale, String> _expectedFriendlyURLs =
 		HashMapBuilder.put(
 			LocaleUtil.GERMANY,
-			StringPool.SLASH +
-				FriendlyURLNormalizerUtil.normalize(
-					RandomTestUtil.randomString(
-						LayoutFriendlyURLRandomizerBumper.INSTANCE))
+			FriendlyURLNormalizerUtil.normalize(
+				RandomTestUtil.randomString(
+					LayoutFriendlyURLRandomizerBumper.INSTANCE))
 		).put(
 			LocaleUtil.SPAIN,
-			StringPool.SLASH +
-				FriendlyURLNormalizerUtil.normalize(
-					RandomTestUtil.randomString(
-						LayoutFriendlyURLRandomizerBumper.INSTANCE))
+			FriendlyURLNormalizerUtil.normalize(
+				RandomTestUtil.randomString(
+					LayoutFriendlyURLRandomizerBumper.INSTANCE))
 		).put(
 			LocaleUtil.US,
-			StringPool.SLASH +
-				FriendlyURLNormalizerUtil.normalize(
-					RandomTestUtil.randomString(
-						LayoutFriendlyURLRandomizerBumper.INSTANCE))
+			FriendlyURLNormalizerUtil.normalize(
+				RandomTestUtil.randomString(
+					LayoutFriendlyURLRandomizerBumper.INSTANCE))
 		).build();
 	private Group _group;
 	private String _groupFriendlyURL;
 	private Layout _layout;
 
+	@Inject(filter = "component.name=*.JournalArticleLayoutDisplayPageProvider")
+	private LayoutDisplayPageProvider<JournalArticle>
+		_layoutDisplayPageProvider;
+
 	@Inject
 	private LayoutLocalService _layoutLocalService;
+
+	@Inject
+	private LayoutPageTemplateEntryLocalService
+		_layoutPageTemplateEntryLocalService;
 
 	@Inject
 	private LayoutSEOLinkManager _layoutSEOLinkManager;

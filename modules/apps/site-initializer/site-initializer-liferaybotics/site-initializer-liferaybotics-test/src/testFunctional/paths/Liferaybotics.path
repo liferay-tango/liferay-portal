@@ -27,6 +27,27 @@
 	<td>//h1[@class='header' and contains (text(),'${key_title}')]</td>
 	<td></td>
 </tr>
+<tr>
+	<td>NEWS_LINK</td>
+	<td>//a[@class="link" and contains (text(),'${key_title}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PRODUCT_PUBLISHER</td>
+	<td>//div[contains(@class,'product-publisher')]</td>
+	<td></td>
+</tr>
+<!--NEWS PAGE-->
+<tr>
+	<td>NEWS_TITLE</td>
+	<td>//h1[@class='display-4 text-white' and contains (text(),'${key_title}')] </td>
+	<td></td>
+</tr>
+<tr>
+	<td>NEWS_BACK_ICON</td>
+	<td>//i[contains(@class,'back fa-4x fa-arrow-circle-left fas')]</td>
+	<td></td>
+</tr>
 </tbody>
 </table>
 </body>

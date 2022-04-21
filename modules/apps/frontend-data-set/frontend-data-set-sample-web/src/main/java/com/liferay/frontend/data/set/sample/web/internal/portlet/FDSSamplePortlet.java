@@ -21,6 +21,7 @@ import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.test.util.ObjectFieldSettingTestUtil;
 import com.liferay.object.util.LocalizedMapUtil;
 import com.liferay.object.util.ObjectFieldUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -65,7 +66,8 @@ import org.osgi.service.component.annotations.Reference;
 		"javax.portlet.init-param.view-template=/view.jsp",
 		"javax.portlet.name=" + FDSSamplePortletKeys.FDS_SAMPLE,
 		"javax.portlet.resource-bundle=content.Language",
-		"javax.portlet.security-role-ref=power-user,user"
+		"javax.portlet.security-role-ref=power-user,user",
+		"javax.portlet.version=3.0"
 	},
 	service = Portlet.class
 )
@@ -117,10 +119,15 @@ public class FDSSamplePortlet extends MVCPortlet {
 				Arrays.asList(
 					ObjectFieldUtil.createObjectField(
 						"Text", "String", true, false, null, "Title", "title",
+						ObjectFieldSettingTestUtil.getObjectFieldSettings(
+							"Text"),
 						false),
 					ObjectFieldUtil.createObjectField(
 						"Text", "String", true, false, null, "Description",
-						"description", false),
+						"description",
+						ObjectFieldSettingTestUtil.getObjectFieldSettings(
+							"Text"),
+						false),
 					ObjectFieldUtil.createObjectField(
 						"Date", "Date", true, false, null, "Date", "date",
 						false)));

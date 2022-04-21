@@ -1165,6 +1165,14 @@ definition {
 			PageEditor.waitForAutoSave();
 		}
 
+		if ("${hideFromSiteSearchResults}" == "true") {
+			Check.checkNotVisible(
+				checkboxName = "Hide from Site Search Results",
+				locator1 = "Checkbox#ANY_CHECKBOX");
+
+			PageEditor.waitForAutoSave();
+		}
+
 		if (isSet(height)) {
 			Select(
 				key_fieldLabel = "Height",
@@ -1514,6 +1522,10 @@ definition {
 		var key_fragmentName = "${fragmentName}";
 		var key_index = "${index}";
 
+		if (isSet(deviceType) && ("${deviceType}" != "Desktop")) {
+			SelectFrame.selectFrameNoLoading(locator1 = "IFrame#PAGE_EDITOR_GLOBAL_CONTEXT_IFRAME");
+		}
+
 		if (isSet(columnNumber)) {
 			Click.clickNoWaitForVisible(
 				key_columnNumber = "${columnNumber}",
@@ -1525,6 +1537,10 @@ definition {
 			PageEditor.clickConfigurableField(
 				fragmentName = "${fragmentName}",
 				index = "${index}");
+		}
+
+		if (isSet(deviceType) && ("${deviceType}" != "Desktop")) {
+			SelectFrame(value1 = "relative=top");
 		}
 
 		AssertVisible(
@@ -1586,7 +1602,7 @@ definition {
 				Button.clickApply();
 			}
 		}
-		else {
+		else if (!(isSet(deviceType)) || ("${deviceType}" == "Desktop")) {
 			if (IsTextEqual(key_fieldLabel = "Collection", locator1 = "PageEditor#ITEM_SELECTOR_CONTENT_INPUT", value1 = "")) {
 				Click(
 					key_fieldLabel = "Collection",
@@ -1637,38 +1653,24 @@ definition {
 			}
 		}
 
-		if (isSet(layout)) {
-			Select(
-				key_fieldLabel = "Layout",
-				locator1 = "Select#GENERIC_SELECT_FIELD",
-				value1 = "${layout}");
-
-			PageEditor.waitForAutoSave();
-
-			AssertSelectedLabel(
-				key_fieldLabel = "Layout",
-				locator1 = "Select#GENERIC_SELECT_FIELD",
-				value1 = "${layout}");
-		}
-
-		if (isSet(listStyle)) {
+		if (isSet(styleDisplay)) {
 			AssertElementPresent(
 				key_fieldLabel = "Style Display",
 				key_groupLabel = "Templates",
-				key_value = "${listStyle}",
+				key_value = "${styleDisplay}",
 				locator1 = "Select#GROUPED_SELECT_VALUE");
 
 			Select(
 				key_fieldLabel = "Style Display",
 				locator1 = "Select#GENERIC_SELECT_FIELD",
-				value1 = "${listStyle}");
+				value1 = "${styleDisplay}");
 
 			PageEditor.waitForAutoSave();
 
 			AssertSelectedLabel(
 				key_fieldLabel = "Style Display",
 				locator1 = "Select#GENERIC_SELECT_FIELD",
-				value1 = "${listStyle}");
+				value1 = "${styleDisplay}");
 
 			if (isSet(listItemStyle)) {
 				Select(
@@ -1683,6 +1685,36 @@ definition {
 					locator1 = "Select#GENERIC_SELECT_FIELD",
 					value1 = "${listItemStyle}");
 			}
+		}
+
+		if (isSet(layout)) {
+			Select(
+				key_fieldLabel = "Layout",
+				locator1 = "Select#GENERIC_SELECT_FIELD",
+				value1 = "${layout}");
+
+			PageEditor.waitForAutoSave();
+
+			AssertSelectedLabel(
+				key_fieldLabel = "Layout",
+				locator1 = "Select#GENERIC_SELECT_FIELD",
+				value1 = "${layout}");
+		}
+
+		if ("${spaceBetweenColumns}" == "true") {
+			Check.checkNotVisible(
+				checkboxName = "Show Gutter",
+				locator1 = "Checkbox#ANY_CHECKBOX");
+
+			PageEditor.waitForAutoSave();
+		}
+
+		if ("${spaceBetweenColumns}" == "false") {
+			Uncheck.uncheckToggleSwitch(
+				checkboxName = "Show Gutter",
+				locator1 = "Checkbox#ANY_CHECKBOX");
+
+			PageEditor.waitForAutoSave();
 		}
 
 		if (isSet(pagination)) {
@@ -2632,6 +2664,14 @@ definition {
 					key_fieldLabel = "HTML Tag",
 					locator1 = "Select#GENERIC_SELECT_FIELD",
 					value1 = "${htmlTag}");
+
+				PageEditor.waitForAutoSave();
+			}
+
+			if ("${hideFromSiteSearchResults}" == "true") {
+				Check.checkNotVisible(
+					checkboxName = "Hide from Site Search Results",
+					locator1 = "Checkbox#ANY_CHECKBOX");
 
 				PageEditor.waitForAutoSave();
 			}
@@ -3616,6 +3656,52 @@ definition {
 		PageEditor.viewFragmentNotPresent(fragmentName = "${fragmentName}");
 	}
 
+	macro viewCollectionDisplayStyle {
+		if (!(isSet(rowNumber))) {
+			var rowNumer = "1";
+		}
+
+		if (isSet(columnCount)) {
+			var i = "0";
+
+			while ("${i}" != "${columnCount}") {
+				var columnNumber = ${i} + 1;
+
+				AssertElementPresent(
+					key_columnNumber = "${columnNumber}",
+					key_position = "${position}",
+					key_rowNumber = "${rowNumer}",
+					locator1 = "PageEditor#COLLECTION_DISPLAY_COLUMN");
+			}
+
+			var columnNumber = ${columnCount} + 1;
+
+			AssertElementNotPresent(
+				key_columnNumber = "${columnNumber}",
+				key_position = "${position}",
+				key_rowNumber = "${rowNumer}",
+				locator1 = "PageEditor#COLLECTION_DISPLAY_COLUMN");
+		}
+
+		if (isSet(layout)) {
+			AssertElementPresent(
+				key_layout = "${layout}",
+				key_position = "${position}",
+				locator1 = "PageEditor#COLLECTION_DISPLAY_CONFIGURATION_LAYOUT");
+		}
+
+		if ("${spaceBetweenColumns}" == "true") {
+			AssertElementNotPresent(
+				key_position = "${position}",
+				locator1 = "PageEditor#COLLECTION_DISPLAY_COLUMNS_NO_GUTTER");
+		}
+		else if ("${spaceBetweenColumns}" == "false") {
+			AssertElementPresent(
+				key_position = "${position}",
+				locator1 = "PageEditor#COLLECTION_DISPLAY_COLUMNS_NO_GUTTER");
+		}
+	}
+
 	macro viewCollectionItem {
 		if (!(isSet(column))) {
 			var column = "1";
@@ -4316,17 +4402,15 @@ definition {
 				locator1 = "PageEditor#GRID_CONFIGURATION_LAYOUT");
 		}
 
-		if (isSet(spaceBetweenColumns)) {
-			if ("${spaceBetweenColumns}" == "true") {
-				AssertElementNotPresent(
-					key_position = "${position}",
-					locator1 = "PageEditor#GRID_CONFIGURATION_COLUMNS_NO_GUTTER");
-			}
-			else if ("${spaceBetweenColumns}" == "false") {
-				AssertElementPresent(
-					key_position = "${position}",
-					locator1 = "PageEditor#GRID_CONFIGURATION_COLUMNS_NO_GUTTER");
-			}
+		if ("${spaceBetweenColumns}" == "true") {
+			AssertElementNotPresent(
+				key_position = "${position}",
+				locator1 = "PageEditor#GRID_CONFIGURATION_COLUMNS_NO_GUTTER");
+		}
+		else if ("${spaceBetweenColumns}" == "false") {
+			AssertElementPresent(
+				key_position = "${position}",
+				locator1 = "PageEditor#GRID_CONFIGURATION_COLUMNS_NO_GUTTER");
 		}
 
 		if ("${verticalAlignment}" == "Top") {

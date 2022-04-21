@@ -60,17 +60,11 @@ const DeactivateKeysTable = ({productName}) => {
 
 	const activationKeysByStatusPaginatedChecked = useMemo(
 		() =>
-			activationKeysByStatusPaginated.filter(({id}) =>
+			activationKeys.filter(({id}) =>
 				activationKeysIdChecked.includes(id)
 			) || [],
-		[activationKeysByStatusPaginated, activationKeysIdChecked]
+		[activationKeys, activationKeysIdChecked]
 	);
-
-	useEffect(() => {
-		if (activationKeysByStatusPaginated.length) {
-			setActivationKeysIdChecked([]);
-		}
-	}, [activationKeysByStatusPaginated]);
 
 	const getDeactivationKeysRows = useCallback(
 		(activationKey) => ({
