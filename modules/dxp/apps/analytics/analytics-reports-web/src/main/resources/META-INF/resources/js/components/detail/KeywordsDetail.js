@@ -9,48 +9,161 @@
  * distribution rights of the Software.
  */
 
-import PropTypes from 'prop-types';
-import React from 'react';
-
-import Keywords from '../Keywords';
-import TotalCount from '../TotalCount';
-
-export default function KeywordsDetail({
-	currentPage,
-	trafficShareDataProvider,
-	trafficVolumeDataProvider,
-}) {
-	return (
-		<div className="c-p-3 traffic-source-detail">
-			<TotalCount
-				className="mb-2"
-				dataProvider={trafficVolumeDataProvider}
-				label={Liferay.Util.sub(Liferay.Language.get('traffic-volume'))}
-				popoverHeader={Liferay.Language.get('traffic-volume')}
-				popoverMessage={Liferay.Language.get(
-					'traffic-volume-is-the-number-of-page-views-coming-from-one-channel'
-				)}
-				popoverPosition="bottom"
-			/>
-
-			<TotalCount
-				className="mb-4"
-				dataProvider={trafficShareDataProvider}
-				label={Liferay.Util.sub(Liferay.Language.get('traffic-share'))}
-				percentage={true}
-				popoverHeader={Liferay.Language.get('traffic-share')}
-				popoverMessage={Liferay.Language.get(
-					'traffic-share-is-the-percentage-of-traffic-sent-to-your-page-by-one-channel'
-				)}
-			/>
-
-			<Keywords currentPage={currentPage} />
-		</div>
-	);
-}
-
-KeywordsDetail.propTypes = {
-	currentPage: PropTypes.object.isRequired,
-	trafficShareDataProvider: PropTypes.func.isRequired,
-	trafficVolumeDataProvider: PropTypes.func.isRequired,
-};
+ import ClayLoadingIndicator from '@clayui/loading-indicator';
+ import className from 'classnames';
+ import PropTypes from 'prop-types';
+ import React, {useContext, useEffect, useMemo, useRef} from 'react';
+ 
+ import {
+	 ChartDispatchContext,
+	 ChartStateContext,
+	 useDateTitle,
+	 useIsPreviousPeriodButtonDisabled,
+ } from '../../context/ChartStateContext';
+ import ConnectionContext from '../../context/ConnectionContext';
+ import {
+	 StoreDispatchContext,
+	 StoreStateContext,
+ } from '../../context/StoreContext';
+ import {generateDateFormatters as dateFormat} from '../../utils/dateFormat';
+ import Keywords from '../Keywords';
+ import TimeSpanSelector from '../TimeSpanSelector';
+ import TotalCount from '../TotalCount';
+ 
+ export default function KeywordsDetail({
+	 currentPage,
+	 handleDetailPeriodChange,
+	 timeSpanOptions,
+	 trafficShareDataProvider,
+	 trafficSourcesDataProvider,
+	 trafficVolumeDataProvider,
+ }) {
+	 const {languageTag} = useContext(StoreStateContext);
+ 
+	 const dateFormatters = useMemo(() => dateFormat(languageTag), [
+		 languageTag,
+	 ]);
+ 
+	 const {firstDate, lastDate} = useDateTitle();
+ 
+	 const dispatch = useContext(StoreDispatchContext);
+ 
+	 const chartDispatch = useContext(ChartDispatchContext);
+ 
+	 const {pieChartLoading, timeSpanKey, timeSpanOffset} = useContext(
+		 ChartStateContext
+	 );
+ 
+	 const title = useMemo(() => {
+		 return dateFormatters.formatChartTitle([firstDate, lastDate]);
+	 }, [dateFormatters, firstDate, lastDate]);
+ 
+	 const {validAnalyticsConnection} = useContext(ConnectionContext);
+ 
+	 const isPreviousPeriodButtonDisabled = useIsPreviousPeriodButtonDisabled();
+ 
+	 const firstUpdateRef = useRef(true);
+ 
+	 const trafficSourceDetailClasses = className(
+		 'c-p-3 traffic-source-detail',
+		 {
+			 'traffic-source-detail--loading': pieChartLoading,
+		 }
+	 );
+ 
+	 useEffect(() => {
+		 if (firstUpdateRef.current) {
+			 firstUpdateRef.current = false;
+ 
+			 return;
+		 }
+ 
+		 if (validAnalyticsConnection) {
+			 chartDispatch({
+				 payload: {
+					 loading: true,
+				 },
+				 type: 'SET_PIE_CHART_LOADING',
+			 });
+ 
+			 trafficSourcesDataProvider()
+				 .then((trafficSources) => {
+					 handleDetailPeriodChange(trafficSources, 'paid', true);
+				 })
+				 .catch(() => {
+					 dispatch({type: 'ADD_WARNING'});
+				 })
+				 .finally(() => {
+					 chartDispatch({
+						 payload: {
+							 loading: false,
+						 },
+						 type: 'SET_PIE_CHART_LOADING',
+					 });
+				 });
+		 }
+	 }, [
+		 chartDispatch,
+		 dispatch,
+		 handleDetailPeriodChange,
+		 timeSpanKey,
+		 timeSpanOffset,
+		 trafficSourcesDataProvider,
+		 validAnalyticsConnection,
+	 ]);
+ 
+	 return (
+		 <div className={trafficSourceDetailClasses}>
+			 {pieChartLoading && (
+				 <ClayLoadingIndicator
+					 className="chart-loading-indicator"
+					 small
+				 />
+			 )}
+ 
+			 <div className="c-mb-3 c-mt-2">
+				 <TimeSpanSelector
+					 disabledNextTimeSpan={timeSpanOffset === 0}
+					 disabledPreviousPeriodButton={
+						 isPreviousPeriodButtonDisabled
+					 }
+					 timeSpanKey={timeSpanKey}
+					 timeSpanOptions={timeSpanOptions}
+				 />
+			 </div>
+ 
+			 {title && <h5 className="c-mb-4">{title}</h5>}
+ 
+			 <TotalCount
+				  className="mb-2"
+				  dataProvider={trafficVolumeDataProvider}
+				  label={Liferay.Util.sub(Liferay.Language.get('traffic-volume'))}
+				  popoverHeader={Liferay.Language.get('traffic-volume')}
+				  popoverMessage={Liferay.Language.get(
+					  'traffic-volume-is-the-number-of-page-views-coming-from-one-channel'
+				  )}
+				  popoverPosition="bottom"
+			  />
+  
+			  <TotalCount
+				  className="mb-4"
+				  dataProvider={trafficShareDataProvider}
+				  label={Liferay.Util.sub(Liferay.Language.get('traffic-share'))}
+				  percentage={true}
+				  popoverHeader={Liferay.Language.get('traffic-share')}
+				  popoverMessage={Liferay.Language.get(
+					  'traffic-share-is-the-percentage-of-traffic-sent-to-your-page-by-one-channel'
+				  )}
+			  />
+ 
+			 <Keywords currentPage={currentPage} />
+		 </div>
+	 );
+ }
+ 
+ KeywordsDetail.propTypes = {
+	 currentPage: PropTypes.object.isRequired,
+	 trafficShareDataProvider: PropTypes.func.isRequired,
+	 trafficVolumeDataProvider: PropTypes.func.isRequired,
+ };
+ 
