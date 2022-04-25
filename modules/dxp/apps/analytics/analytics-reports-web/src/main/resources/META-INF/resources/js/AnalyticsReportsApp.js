@@ -39,7 +39,6 @@ const useInitialPanelState = () => {
 
 export default function AnalyticsReportsApp({context, portletNamespace}) {
 	const {analyticsReportsDataURL} = context;
-
 	const [
 		hoverOrFocusEventTriggered,
 		setHoverOrFocusEventTriggered,
@@ -96,7 +95,9 @@ export default function AnalyticsReportsApp({context, portletNamespace}) {
 			<AnalyticsReports
 				analyticsReportsDataURL={analyticsReportsDataURL}
 				hoverOrFocusEventTriggered={hoverOrFocusEventTriggered}
-				isPanelStateOpen={isPanelStateOpen}
+				isPanelStateOpen={
+					analyticsReportsPanelToggle ? isPanelStateOpen : true
+				}
 			/>
 		</div>
 	);
