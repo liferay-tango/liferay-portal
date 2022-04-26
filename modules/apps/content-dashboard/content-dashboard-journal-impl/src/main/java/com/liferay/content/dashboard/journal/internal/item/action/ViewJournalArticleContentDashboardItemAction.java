@@ -15,19 +15,32 @@
 package com.liferay.content.dashboard.journal.internal.item.action;
 
 import com.liferay.asset.display.page.portlet.AssetDisplayPageFriendlyURLProvider;
+import com.liferay.asset.display.page.util.AssetDisplayPageUtil;
+import com.liferay.asset.kernel.model.AssetEntry;
+import com.liferay.asset.kernel.service.AssetEntryLocalServiceUtil;
 import com.liferay.content.dashboard.item.action.ContentDashboardItemAction;
 import com.liferay.journal.model.JournalArticle;
+import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
+import com.liferay.layout.seo.kernel.LayoutSEOLink;
+import com.liferay.layout.seo.kernel.LayoutSEOLinkManager;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -41,14 +54,20 @@ public class ViewJournalArticleContentDashboardItemAction
 
 	public ViewJournalArticleContentDashboardItemAction(
 		AssetDisplayPageFriendlyURLProvider assetDisplayPageFriendlyURLProvider,
+		GroupLocalService groupLocalService,
 		HttpServletRequest httpServletRequest, JournalArticle journalArticle,
-		Language language) {
+		Language language, LayoutLocalService layoutLocalService,
+		LayoutSEOLinkManager layoutSEOLinkManager, Portal portal) {
 
 		_assetDisplayPageFriendlyURLProvider =
 			assetDisplayPageFriendlyURLProvider;
+		_groupLocalService = groupLocalService;
 		_httpServletRequest = httpServletRequest;
 		_journalArticle = journalArticle;
 		_language = language;
+		_layoutLocalService = layoutLocalService;
+		_layoutSEOLinkManager = layoutSEOLinkManager;
+		_portal = portal;
 	}
 
 	@Override
@@ -89,6 +108,20 @@ public class ViewJournalArticleContentDashboardItemAction
 		return _getViewURL(locale, themeDisplay);
 	}
 
+	private Layout _getDisplayPageTemplateLayout() {
+		AssetEntry assetEntry = AssetEntryLocalServiceUtil.fetchEntry(
+			JournalArticle.class.getName(),
+			_journalArticle.getResourcePrimKey());
+
+		LayoutPageTemplateEntry assetDisplayPageLayoutPageTemplateEntry =
+			AssetDisplayPageUtil.getAssetDisplayPageLayoutPageTemplateEntry(
+				assetEntry.getGroupId(), assetEntry.getClassNameId(),
+				assetEntry.getClassPK(), assetEntry.getClassTypeId());
+
+		return _layoutLocalService.fetchLayout(
+			assetDisplayPageLayoutPageTemplateEntry.getPlid());
+	}
+
 	private String _getViewURL(Locale locale, ThemeDisplay themeDisplay) {
 		try {
 			ThemeDisplay clonedThemeDisplay =
@@ -96,11 +129,41 @@ public class ViewJournalArticleContentDashboardItemAction
 
 			clonedThemeDisplay.setScopeGroupId(_journalArticle.getGroupId());
 
-			return Optional.ofNullable(
+			String friendlyURL =
 				_assetDisplayPageFriendlyURLProvider.getFriendlyURL(
 					JournalArticle.class.getName(),
 					_journalArticle.getResourcePrimKey(), locale,
-					clonedThemeDisplay)
+					clonedThemeDisplay);
+
+			Layout layout = _getDisplayPageTemplateLayout();
+
+			String canonicalURL = _portal.getCanonicalURL(
+				friendlyURL, clonedThemeDisplay, layout, false, false);
+
+			List<LayoutSEOLink> localizedLayoutSEOLinks =
+				_layoutSEOLinkManager.getLocalizedLayoutSEOLinks(
+					layout, locale, canonicalURL,
+					_language.getAvailableLocales());
+
+			List<LayoutSEOLink> layoutSEOLinksWithCurrentLocale =
+				ListUtil.filter(
+					localizedLayoutSEOLinks,
+					link -> {
+						String hrefLang = link.getHrefLang();
+
+						if (hrefLang != null) {
+							String normalizedHrefLang = StringUtil.replace(
+								hrefLang, '-', '_');
+
+							return StringUtil.equalsIgnoreCase(
+								normalizedHrefLang, locale.toString());
+						}
+
+						return false;
+					});
+
+			return Optional.ofNullable(
+				layoutSEOLinksWithCurrentLocale.get(0)
 			).map(
 				url -> {
 					String backURL = ParamUtil.getString(
@@ -108,11 +171,12 @@ public class ViewJournalArticleContentDashboardItemAction
 
 					if (Validator.isNotNull(backURL)) {
 						return HttpComponentsUtil.setParameter(
-							url, "p_l_back_url", backURL);
+							url.getHref(), "p_l_back_url", backURL);
 					}
 
 					return HttpComponentsUtil.setParameter(
-						url, "p_l_back_url", themeDisplay.getURLCurrent());
+						url.getHref(), "p_l_back_url",
+						themeDisplay.getURLCurrent());
 				}
 			).orElse(
 				StringPool.BLANK
@@ -130,8 +194,12 @@ public class ViewJournalArticleContentDashboardItemAction
 
 	private final AssetDisplayPageFriendlyURLProvider
 		_assetDisplayPageFriendlyURLProvider;
+	private final GroupLocalService _groupLocalService;
 	private final HttpServletRequest _httpServletRequest;
 	private final JournalArticle _journalArticle;
 	private final Language _language;
+	private final LayoutLocalService _layoutLocalService;
+	private final LayoutSEOLinkManager _layoutSEOLinkManager;
+	private final Portal _portal;
 
 }
