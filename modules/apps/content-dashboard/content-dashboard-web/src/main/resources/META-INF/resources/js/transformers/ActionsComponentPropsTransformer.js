@@ -48,6 +48,10 @@ const showSidebar = ({View, fetchURL, portletNamespace}) => {
 			document.createElement('div')
 		);
 
+		const originalPanelState = Liferay.Util.Session.get(
+			'com.liferay.analytics.reports.web_panelState'
+		);
+
 		render(
 			SidebarPanel,
 			{
@@ -57,7 +61,7 @@ const showSidebar = ({View, fetchURL, portletNamespace}) => {
 
 					Liferay.Util.Session.set(
 						'com.liferay.analytics.reports.web_panelState',
-						'close'
+						originalPanelState
 					);
 
 					deselectAllRows(portletNamespace);
