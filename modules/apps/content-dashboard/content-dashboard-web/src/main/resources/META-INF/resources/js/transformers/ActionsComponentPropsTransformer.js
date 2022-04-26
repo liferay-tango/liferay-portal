@@ -55,6 +55,11 @@ const showSidebar = ({View, fetchURL, portletNamespace}) => {
 				onClose: () => {
 					Liferay.component(id).close();
 
+					Liferay.Util.Session.set(
+						'com.liferay.analytics.reports.web_panelState',
+						'close'
+					);
+
 					deselectAllRows(portletNamespace);
 				},
 				ref: (element) => {
@@ -64,9 +69,19 @@ const showSidebar = ({View, fetchURL, portletNamespace}) => {
 			},
 			container
 		);
+
+		Liferay.Util.Session.set(
+			'com.liferay.analytics.reports.web_panelState',
+			'open'
+		);
 	}
 	else {
 		sidebarPanel.open(fetchURL, View);
+
+		Liferay.Util.Session.set(
+			'com.liferay.analytics.reports.web_panelState',
+			'open'
+		);
 	}
 };
 
