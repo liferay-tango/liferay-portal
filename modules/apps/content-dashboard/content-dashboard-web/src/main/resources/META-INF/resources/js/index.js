@@ -13,3 +13,5 @@
  */
 
 export {default as SelectFileExtension} from './components/SelectFileExtension';
+export {default as Sidebar} from './components/Sidebar';
+export {default as SidebarPanelInfoView} from './components/SidebarPanelInfoView/SidebarPanelInfoView';
