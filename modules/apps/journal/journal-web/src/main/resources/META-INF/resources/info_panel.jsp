@@ -120,8 +120,12 @@ Map<String, Object> componentContext = journalDisplayContext.getComponentContext
 
 		request.setAttribute("info_panel.jsp-entry", article);
 		%>
-
-		<div class="sidebar-header">
+		<react:component
+			componentId="SharedInfoPanel"
+			module="js/SharedInfoPanel"
+		/>
+		
+		<!-- <div class="sidebar-header">
 			<clay:content-row
 				cssClass="sidebar-section"
 			>
@@ -271,7 +275,7 @@ Map<String, Object> componentContext = journalDisplayContext.getComponentContext
 					</c:otherwise>
 				</c:choose>
 			</p>
-		</div>
+		</div> -->
 	</c:when>
 	<c:otherwise>
 		<div class="sidebar-header">
