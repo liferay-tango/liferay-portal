@@ -427,6 +427,8 @@ public class EditSegmentsEntryDisplayContext {
 		).put(
 			"initialSegmentName", _getInitialSegmentsNameJSONObject()
 		).put(
+			"isSegmentationEnabled", _isSegmentationEnabled()
+		).put(
 			"locale", _locale.toString()
 		).put(
 			"portletNamespace", _renderResponse.getNamespace()
@@ -438,8 +440,6 @@ public class EditSegmentsEntryDisplayContext {
 			"redirect", getRedirect()
 		).put(
 			"requestMembersCountURL", _getSegmentsEntryClassPKsCountURL()
-		).put(
-			"isSegmentationEnabled", _isSegmentationEnabled()
 		).put(
 			"showInEditMode", _isShowInEditMode()
 		).build();

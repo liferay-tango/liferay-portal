@@ -104,6 +104,7 @@ import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.Theme;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.LiferayPortletURL;
 import com.liferay.portal.kernel.portlet.PortletConfigFactoryUtil;
@@ -136,6 +137,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.language.LanguageResources;
 import com.liferay.portal.util.PropsUtil;
 import com.liferay.portal.util.PropsValues;
+import com.liferay.segments.configuration.provider.SegmentsConfigurationProvider;
 import com.liferay.segments.constants.SegmentsExperienceConstants;
 import com.liferay.segments.manager.SegmentsExperienceManager;
 import com.liferay.segments.model.SegmentsExperience;
@@ -196,6 +198,7 @@ public class ContentPageEditorDisplayContext {
 		PageEditorConfiguration pageEditorConfiguration,
 		PortletRequest portletRequest, RenderResponse renderResponse,
 		SegmentsExperienceManager segmentsExperienceManager,
+		SegmentsConfigurationProvider segmentsConfigurationProvider,
 		StagingGroupHelper stagingGroupHelper) {
 
 		_commentManager = commentManager;
@@ -209,6 +212,7 @@ public class ContentPageEditorDisplayContext {
 		_itemSelector = itemSelector;
 		_pageEditorConfiguration = pageEditorConfiguration;
 		_renderResponse = renderResponse;
+		_segmentsConfigurationProvider = segmentsConfigurationProvider;
 		_segmentsExperienceManager = segmentsExperienceManager;
 
 		this.httpServletRequest = httpServletRequest;
@@ -481,6 +485,8 @@ public class ContentPageEditorDisplayContext {
 			).put(
 				"isConversionDraft", _isConversionDraft()
 			).put(
+				"isSegmentationEnabled", _isSegmentationEnabled()
+			).put(
 				"isPrivateLayoutsEnabled",
 				() -> {
 					Group group = themeDisplay.getScopeGroup();
@@ -727,6 +733,16 @@ public class ContentPageEditorDisplayContext {
 				"segmentsExperienceId", getSegmentsExperienceId()
 			).build()
 		).build();
+	}
+
+	private boolean _isSegmentationEnabled() {
+
+		try {
+			return _segmentsConfigurationProvider.isSegmentationEnabled(themeDisplay.getCompanyGroupId());
+		}
+		catch (ConfigurationException configurationException) {
+			return false;
+		}
 	}
 
 	public String getPortletNamespace() {
@@ -2310,6 +2326,7 @@ public class ContentPageEditorDisplayContext {
 	private LayoutStructure _masterLayoutStructure;
 	private final PageEditorConfiguration _pageEditorConfiguration;
 	private Layout _publishedLayout;
+	private SegmentsConfigurationProvider _segmentsConfigurationProvider;
 	private String _redirect;
 	private final RenderResponse _renderResponse;
 	private Long _segmentsExperienceId;

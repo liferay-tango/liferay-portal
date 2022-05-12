@@ -421,6 +421,11 @@ const ExperiencesSelectorHeader = ({
 	onNewExperience,
 	showEmptyStateMessage,
 }) => {
+
+
+	console.log("AQUI");
+	console.log(config);
+
 	return (
 		<>
 			<ClayLayout.ContentRow className="mb-3" verticalAlign="center">
@@ -456,15 +461,28 @@ const ExperiencesSelectorHeader = ({
 				</p>
 			)}
 
-			<ClayAlert
+			{!config.isSegmentationEnabled ?
+				<ClayAlert
+					className="mx-0"
+					displayType="warning"
+					title={Liferay.Language.get('warning')}
+				>
+					{Liferay.Language.get(
+						'segmentation-is-disabled'
+					)+' to enable '+
+					 Liferay.Language.get(
+						 '-go-to-system-settings-segments-segments-service'
+					 )}
+				</ClayAlert>
+				:
+				<ClayAlert
 				className="mx-0"
 				displayType="warning"
-				title={Liferay.Language.get('warning')}
-			>
+				title={Liferay.Language.get('warning')}>
 				{Liferay.Language.get(
 					'changes-to-experiences-are-applied-immediately'
 				)}
-			</ClayAlert>
+			</ClayAlert>}
 		</>
 	);
 };
