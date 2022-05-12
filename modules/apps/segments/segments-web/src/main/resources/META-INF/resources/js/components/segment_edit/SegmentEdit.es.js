@@ -53,6 +53,7 @@ class SegmentEdit extends Component {
 		initialMembersCount: PropTypes.number,
 		initialSegmentActive: PropTypes.bool,
 		initialSegmentName: PropTypes.object,
+		isSegmentationEnabled: PropTypes.bool,
 		locale: PropTypes.string.isRequired,
 		portletNamespace: PropTypes.string,
 		previewMembersURL: PropTypes.string,
