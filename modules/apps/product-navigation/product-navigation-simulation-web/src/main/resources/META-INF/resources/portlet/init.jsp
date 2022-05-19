@@ -28,6 +28,7 @@ page import="com.liferay.application.list.PanelCategoryRegistry" %><%@
 page import="com.liferay.application.list.constants.ApplicationListWebKeys" %><%@
 page import="com.liferay.application.list.display.context.logic.PanelCategoryHelper" %><%@
 page import="com.liferay.product.navigation.simulation.constants.ProductNavigationSimulationConstants" %><%@
+	taglib uri="http://liferay.com/tld/clay" prefix="clay" %><%@
 page import="com.liferay.taglib.aui.AUIUtil" %>
 
 <liferay-frontend:defineObjects />
