@@ -1,4 +1,3 @@
-<%--
 /**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
@@ -29,7 +28,19 @@ PanelCategoryHelper panelCategoryHelper = new PanelCategoryHelper(panelAppRegist
 
 		<%
 		for (PanelApp panelApp : panelCategoryHelper.getAllPanelApps(panelCategory.getKey())) {
+			String normalizedId = AUIUtil.normalizeId(panelApp.getKey());
 		%>
+
+			<c:if test='<%= normalizedId.contains("segment") %>'>
+				<c:if test="<%= !((SegmentsSimulationPanelApp)panelApp).isSegmentationEnabled(request) %>">
+					<clay:stripe
+						displayType="warning"
+						elementClasses="segmentation-is-disabled-warning"
+						message='<%= LanguageUtil.format(request, "segmentation-is-disabled", false) %>'
+						title="Warning"
+					/>
+				</c:if>
+			</c:if>
 
 			<div class="mb-3 panel">
 				<div class="panel-heading" id="<portlet:namespace /><%= AUIUtil.normalizeId(panelApp.getKey()) %>Header" role="tab">
