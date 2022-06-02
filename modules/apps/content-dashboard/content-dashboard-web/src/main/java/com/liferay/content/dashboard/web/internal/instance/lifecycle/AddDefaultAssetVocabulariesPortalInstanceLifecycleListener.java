@@ -18,6 +18,7 @@ import com.liferay.asset.kernel.model.AssetCategoryConstants;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.model.AssetVocabularyConstants;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
+import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.petra.string.StringPool;
@@ -56,10 +57,10 @@ public class AddDefaultAssetVocabulariesPortalInstanceLifecycleListener
 		_addAssetVocabulary(
 			company, "audience",
 			AssetVocabularyConstants.VISIBILITY_TYPE_INTERNAL,
-			JournalArticle.class, DLFileEntry.class);
+			JournalArticle.class, DLFileEntry.class, BlogsEntry.class);
 		_addAssetVocabulary(
 			company, "stage", AssetVocabularyConstants.VISIBILITY_TYPE_INTERNAL,
-			JournalArticle.class, DLFileEntry.class);
+			JournalArticle.class, DLFileEntry.class, BlogsEntry.class);
 	}
 
 	private void _addAssetVocabulary(
