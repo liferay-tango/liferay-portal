@@ -153,31 +153,6 @@ public class SegmentsExperimentProductNavigationControlMenuEntry
 		}
 		else {
 			values.put("cssClass", StringPool.BLANK);
-
-			PortletURL portletURL = PortletURLBuilder.create(
-				_portletURLFactory.create(
-					httpServletRequest, SegmentsPortletKeys.SEGMENTS_EXPERIMENT,
-					RenderRequest.RENDER_PHASE)
-			).setMVCPath(
-				"/segments_experiment_panel.jsp"
-			).buildPortletURL();
-
-			try {
-				portletURL.setWindowState(LiferayWindowState.EXCLUSIVE);
-			}
-			catch (WindowStateException windowStateException) {
-				ReflectionUtil.throwException(windowStateException);
-			}
-
-			SegmentsExperienceManager segmentsExperienceManager =
-				new SegmentsExperienceManager(_segmentsExperienceLocalService);
-
-			String dataURL = HttpComponentsUtil.setParameter(
-				portletURL.toString(), "segmentsExperienceId",
-				segmentsExperienceManager.getSegmentsExperienceId(
-					httpServletRequest));
-
-			values.put("dataURL", "data-url='" + dataURL + "'");
 		}
 
 		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
@@ -349,7 +324,9 @@ public class SegmentsExperimentProductNavigationControlMenuEntry
 
 			IconTag iconTag = new IconTag();
 
-			iconTag.setCssClass("sidenav-close text-secondary");
+			iconTag.setCssClass(
+				"btn btn-monospaced btn-unstyle component-action " +
+					"sidenav-close text-secondary");
 			iconTag.setImage("times");
 			iconTag.setMarkupView("lexicon");
 			iconTag.setUrl("javascript:;");
