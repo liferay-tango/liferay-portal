@@ -271,7 +271,7 @@
 </tr>
 <tr>
 	<td>ICON_VIEW_LISTED_MODIFIED_DATE</td>
-	<td>//a[contains(@data-restore-title,'View')]</td>
+	<td>//a[contains(@title,'View')]</td>
 	<td></td>
 </tr>
 <tr>
