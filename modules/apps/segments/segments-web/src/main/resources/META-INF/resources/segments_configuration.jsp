@@ -1,12 +1,21 @@
 <%@ include file="/init.jsp" %>
 
+<%
+    String redirect = ParamUtil.getString(request, "redirect");
+
+    PortletURL portletURL = renderResponse.createRenderURL();
+
+    if (Validator.isNull(redirect)) {
+        redirect = portletURL.toString();
+    }
+%>
 <clay:sheet
     size="full"
 >
     <h2>
         <liferay-ui:message key="segments-service-company-configuration-name" />
     </h2>
-        
+
     <aui:form action="my_action" method="post" name="fm">
         <div class="form-group">
             <clay:checkbox
@@ -53,10 +62,11 @@
                 <div class="btn-group-item">
                     <clay:link
                         displayType="secondary"
-                        id='<%= liferayPortletResponse.getNamespace() + "cancel" %>' 
-                        href="#1" 
-                        label='<%= LanguageUtil.get(request, "cancel") %>' 
-                        type="button" />
+                        id='<%= liferayPortletResponse.getNamespace() + "cancel" %>'
+                        href="<%= redirect %>"
+                        label='<%= LanguageUtil.get(request, "cancel") %>'
+                        type="button"
+                    />
                 </div>
             </div>
         </div>
