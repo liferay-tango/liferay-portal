@@ -1,3 +1,6 @@
+<%@ page
+    import="com.liferay.segments.configuration.provider.SegmentsConfigurationProvider" %>
+<%@ page import="com.liferay.segments.configuration.SegmentsConfiguration" %>
 <%@ include file="/init.jsp" %>
 
 <%
@@ -8,6 +11,9 @@
     if (Validator.isNull(redirect)) {
         redirect = portletURL.toString();
     }
+
+    SegmentsConfigurationProvider segmentsConfigurationProvider = (SegmentsConfigurationProvider)request.getAttribute(
+        SegmentsConfiguration.class.getName());
 %>
 <clay:sheet
     size="full"
@@ -19,9 +25,9 @@
     <aui:form action="my_action" method="post" name="fm">
         <div class="form-group">
             <clay:checkbox
-                checked="<%= true %>"
+                checked="<%= segmentsConfigurationProvider.isSegmentationEnabled(themeDisplay.getCompanyId()) %>"
                 className="mb-3"
-                disabled="<%= false %>"
+                disabled="<%= !segmentsConfigurationProvider.isSegmentationEnabled(themeDisplay.getCompanyGroupId()) %>"
                 id='<%=liferayPortletResponse.getNamespace() + "segmentationEnabled" %>'
                 label='<%= LanguageUtil.get(request, "segmentation-enabled-name") %>'
                 name='<%=liferayPortletResponse.getNamespace() + "segmentationEnabled" %>'
@@ -34,8 +40,8 @@
 
         <div class="form-group">
             <clay:checkbox
-                checked="<%= true %>"
-                disabled="<%= false %>"
+                checked="<%= segmentsConfigurationProvider.isRoleSegmentationEnabled(themeDisplay.getCompanyId()) %>"
+                disabled="<%= !segmentsConfigurationProvider.isRoleSegmentationEnabled(themeDisplay.getCompanyGroupId()) %>"
                 id='<%=liferayPortletResponse.getNamespace() + "roleSegmentationEnabled" %>'
                 label='<%= LanguageUtil.get(request, "role-segmentation-enabled-name") %>'
                 name='<%=liferayPortletResponse.getNamespace() + "roleSegmentationEnabled" %>'
