@@ -23,6 +23,13 @@
     </h2>
 
     <aui:form action="my_action" method="post" name="fm">
+
+        <c:if test="<%= true %>">
+            <aui:alert closeable="<%= false %>" id="errorAlert" type="info">
+                <liferay-ui:message key="this-configuration-is-not-saved-yet.-the-values-shown-are-the-default" />
+            </aui:alert>
+        </c:if>
+
         <div class="form-group">
             <clay:checkbox
                 checked="<%= segmentsConfigurationProvider.isSegmentationEnabled(themeDisplay.getCompanyId()) %>"
@@ -57,13 +64,26 @@
         <div class="sheet-footer">
             <div class="btn-group-item">
                 <div class="btn-group-item">
-                    <clay:button
-                        displayType="primary"
-                        id='<%= liferayPortletResponse.getNamespace() + "update" %>'
-                        label='<%= LanguageUtil.get(request, "update") %>'
-                        name='<%= liferayPortletResponse.getNamespace() + "update" %>'
-                        type="submit"
-                    />
+                    <c:choose>
+                        <c:when test="<%= true %>">
+                            <clay:button
+                                displayType="primary"
+                                id='<%= liferayPortletResponse.getNamespace() + "update" %>'
+                                label='<%= LanguageUtil.get(request, "update") %>'
+                                name='<%= liferayPortletResponse.getNamespace() + "update" %>'
+                                type="submit"
+                            />
+                        </c:when>
+                        <c:otherwise>
+                            <clay:button
+                                displayType="primary"
+                                id='<%= liferayPortletResponse.getNamespace() + "save" %>'
+                                label='<%= LanguageUtil.get(request, "save") %>'
+                                name='<%= liferayPortletResponse.getNamespace() + "save" %>'
+                                type="submit"
+                            />
+                        </c:otherwise>
+                    </c:choose>
                 </div>
                 <div class="btn-group-item">
                     <clay:link
