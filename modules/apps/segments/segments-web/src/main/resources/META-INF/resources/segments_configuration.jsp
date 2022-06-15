@@ -33,9 +33,41 @@ SegmentsCompanyConfigurationDisplayContext segmentsCompanyConfigurationDisplayCo
 >
 	<h2>
 		<liferay-ui:message key="segments-service-company-configuration-name" />
+
+		<c:if test="<%= true %>">
+			<liferay-ui:icon-menu
+				cssClass="float-right"
+				direction="right"
+				markupView="lexicon"
+				showWhenSingleIcon="<%= true %>"
+			>
+				<liferay-ui:icon
+					message="reset-default-values"
+					method="post"
+					url="<%= segmentsCompanyConfigurationDisplayContext.getDeleteConfigurationActionURL() %>"
+				/>
+
+				<portlet:resourceURL id="/configuration_admin/export_configuration" var="exportURL">
+					<portlet:param name="factoryPid" value="" />
+					<portlet:param name="pid" value="" />
+				</portlet:resourceURL>
+
+				<liferay-ui:icon
+					message="export"
+					method="get"
+					url="http://example.com"
+				/>
+			</liferay-ui:icon-menu>
+		</c:if>
 	</h2>
 
 	<aui:form action="<%= segmentsCompanyConfigurationDisplayContext.getBindConfigurationActionURL() %>" method="post" name="fm">
+		<c:if test="<%= true %>">
+			<aui:alert closeable="<%= false %>" id="errorAlert" type="info">
+				<liferay-ui:message key="this-configuration-is-not-saved-yet.-the-values-shown-are-the-default" />
+			</aui:alert>
+		</c:if>
+
 		<div class="form-group">
 			<c:choose>
 				<c:when test="<%= segmentsCompanyConfigurationDisplayContext.isSegmentationChecked() || !segmentsCompanyConfigurationDisplayContext.isSegmentationEnabled() %>">
