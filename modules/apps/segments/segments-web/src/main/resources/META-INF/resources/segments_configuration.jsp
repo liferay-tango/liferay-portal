@@ -51,6 +51,10 @@ SegmentsCompanyConfigurationDisplayContext segmentsCompanyConfigurationDisplayCo
 	</h2>
 
 	<aui:form action="<%= segmentsCompanyConfigurationDisplayContext.getBindConfigurationActionURL() %>" method="post" name="fm">
+		<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
+		<aui:input name="factoryPid" type="hidden" value="<%= SegmentsCompanyConfiguration.class.getName() %>" />
+		<aui:input name="pid" type="hidden" value='<%= SegmentsCompanyConfiguration.class.getName() + ".scoped" %>' />
+
 		<c:if test="<%= true %>">
 			<aui:alert closeable="<%= false %>" id="errorAlert" type="info">
 				<liferay-ui:message key="this-configuration-is-not-saved-yet.-the-values-shown-are-the-default" />
