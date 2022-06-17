@@ -515,9 +515,11 @@ public class RootProjectConfigurator implements Plugin<Project> {
 
 		File dockerDir = workspaceExtension.getDockerDir();
 
+		File clientExtensionsDir = new File(dockerDir, "client-extensions");
 		File deployDir = new File(dockerDir, "deploy");
 		File workDir = new File(dockerDir, "work");
 
+		String clientExtensionsPath = clientExtensionsDir.getAbsolutePath();
 		String deployPath = deployDir.getAbsolutePath();
 		String dockerPath = dockerDir.getAbsolutePath();
 		String workPath = workDir.getAbsolutePath();
@@ -526,11 +528,14 @@ public class RootProjectConfigurator implements Plugin<Project> {
 			String prefix = FilenameUtils.getPrefix(dockerPath);
 
 			if (prefix.contains(":")) {
+				clientExtensionsPath =
+					'/' + clientExtensionsPath.replace(":", "");
 				deployPath = '/' + deployPath.replace(":", "");
 				dockerPath = '/' + dockerPath.replace(":", "");
 				workPath = '/' + workPath.replace(":", "");
 			}
 
+			clientExtensionsPath = clientExtensionsPath.replace('\\', '/');
 			deployPath = deployPath.replace('\\', '/');
 			dockerPath = dockerPath.replace('\\', '/');
 			workPath = workPath.replace('\\', '/');
@@ -541,6 +546,7 @@ public class RootProjectConfigurator implements Plugin<Project> {
 
 		MapProperty<String, String> binds = hostConfig.getBinds();
 
+		binds.put(clientExtensionsPath, "/opt/liferay/osgi/client-extensions");
 		binds.put(deployPath, "/mnt/liferay/deploy");
 		binds.put(workPath, "/opt/liferay/work");
 
@@ -634,6 +640,8 @@ public class RootProjectConfigurator implements Plugin<Project> {
 					try {
 						File destinationDir = workspaceExtension.getDockerDir();
 
+						_createTouchFile(
+							new File(destinationDir, "client-extensions"));
 						_createTouchFile(new File(destinationDir, "configs"));
 						_createTouchFile(new File(destinationDir, "deploy"));
 						_createTouchFile(new File(destinationDir, "patching"));
@@ -1900,7 +1908,8 @@ public class RootProjectConfigurator implements Plugin<Project> {
 
 	private String _loadTemplate(String name) {
 		try (InputStream inputStream =
-				RootProjectConfigurator.class.getResourceAsStream(name)) {
+				RootProjectConfigurator.class.getResourceAsStream(
+					"dependencies/" + name)) {
 
 			return StringUtil.read(inputStream);
 		}

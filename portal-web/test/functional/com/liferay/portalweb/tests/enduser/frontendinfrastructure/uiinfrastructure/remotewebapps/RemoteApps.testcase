@@ -27,7 +27,7 @@ definition {
 
 				JSONLayout.deletePublicLayout(
 					groupName = "Guest",
-					layoutName = "${layoutName}");
+					layoutName = "Test Page");
 
 				Navigator.gotoPage(pageName = "Home");
 			}
@@ -483,6 +483,8 @@ definition {
 
 		RemoteApps.goToRemoteAppsPortlet();
 
+		RemoteApps.addType(type = "IFrame");
+
 		RemoteApps.addApp(
 			entryName = "Test Remote App",
 			entryURL = "http://www.liferay.com");
@@ -495,34 +497,27 @@ definition {
 	test IframeTypeCanDisplayProperFields {
 		property portal.acceptance = "true";
 
-		var customElementType = "Custom Element";
-		var iFrameType = "IFrame";
-
 		RemoteApps.goToRemoteAppsPortlet();
 
-		LexiconEntry.gotoAdd();
+		RemoteApps.addType(type = "Custom Element");
 
-		Select(
-			locator1 = "Select#TYPE",
-			value1 = "${iFrameType}");
-
-		AssertNotVisible(
+		AssertVisible(
 			key_text = "HTML Element Name",
 			locator1 = "TextInput#ANY");
 
-		AssertNotVisible(
+		AssertVisible(
 			key_text = "CSS URL",
 			locator1 = "TextInput#ANY");
 
-		Select(
-			locator1 = "Select#TYPE",
-			value1 = "${customElementType}");
+		Click(locator1 = "Button#BACK");
 
-		AssertVisible(
+		RemoteApps.addType(type = "IFrame");
+
+		AssertElementNotPresent(
 			key_text = "HTML Element Name",
 			locator1 = "TextInput#ANY");
 
-		AssertVisible(
+		AssertElementNotPresent(
 			key_text = "CSS URL",
 			locator1 = "TextInput#ANY");
 	}

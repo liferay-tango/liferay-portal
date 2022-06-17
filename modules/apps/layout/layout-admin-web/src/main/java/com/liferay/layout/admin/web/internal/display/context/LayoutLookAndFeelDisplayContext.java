@@ -42,8 +42,10 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.util.PropsUtil;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryLocalServiceUtil;
 import com.liferay.style.book.util.DefaultStyleBookEntryUtil;
@@ -51,8 +53,6 @@ import com.liferay.style.book.util.DefaultStyleBookEntryUtil;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
-import javax.portlet.PortletURL;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -102,7 +102,8 @@ public class LayoutLookAndFeelDisplayContext {
 			return faviconURL;
 		}
 
-		return _layoutsAdminDisplayContext.getThemeFavicon();
+		return _themeDisplay.getPathThemeImages() + "/" +
+			PropsUtil.get(PropsKeys.THEME_SHORTCUT_ICON);
 	}
 
 	public Map<String, Object> getGlobalCSSCETsConfigurationProps(
@@ -115,18 +116,13 @@ public class LayoutLookAndFeelDisplayContext {
 				ClientExtensionEntryConstants.TYPE_GLOBAL_CSS)
 		).put(
 			"globalCSSCETSelectorURL",
-			() -> {
-				PortletURL cetItemSelectorURL =
-					_layoutsAdminDisplayContext.getCETItemSelectorURL(
-						"selectGlobalCSSCETs",
-						ClientExtensionEntryConstants.TYPE_GLOBAL_CSS);
-
-				return PortletURLBuilder.create(
-					cetItemSelectorURL
-				).setParameter(
-					"multipleSelection", true
-				).buildString();
-			}
+			() -> PortletURLBuilder.create(
+				_layoutsAdminDisplayContext.getCETItemSelectorURL(
+					"selectGlobalCSSCETs",
+					ClientExtensionEntryConstants.TYPE_GLOBAL_CSS)
+			).setParameter(
+				"multipleSelection", true
+			).buildString()
 		).put(
 			"selectGlobalCSSCETsEventName", "selectGlobalCSSCETs"
 		).build();
@@ -142,18 +138,13 @@ public class LayoutLookAndFeelDisplayContext {
 				ClientExtensionEntryConstants.TYPE_GLOBAL_JS)
 		).put(
 			"globalJSCETSelectorURL",
-			() -> {
-				PortletURL cetItemSelectorURL =
-					_layoutsAdminDisplayContext.getCETItemSelectorURL(
-						"selectGlobalJSCETs",
-						ClientExtensionEntryConstants.TYPE_GLOBAL_JS);
-
-				return PortletURLBuilder.create(
-					cetItemSelectorURL
-				).setParameter(
-					"multipleSelection", true
-				).buildString();
-			}
+			() -> PortletURLBuilder.create(
+				_layoutsAdminDisplayContext.getCETItemSelectorURL(
+					"selectGlobalJSCETs",
+					ClientExtensionEntryConstants.TYPE_GLOBAL_JS)
+			).setParameter(
+				"multipleSelection", true
+			).buildString()
 		).put(
 			"selectGlobalJSCETsEventName", "selectGlobalJSCETs"
 		).build();
@@ -457,19 +448,20 @@ public class LayoutLookAndFeelDisplayContext {
 		for (ClientExtensionEntryRel clientExtensionEntryRel :
 				clientExtensionEntryRels) {
 
+			CET cet = cetManager.getCET(
+				_themeDisplay.getCompanyId(),
+				clientExtensionEntryRel.getCETExternalReferenceCode());
+
+			if (cet == null) {
+				continue;
+			}
+
 			jsonArray.put(
 				JSONUtil.put(
-					"externalReferenceCode",
-					clientExtensionEntryRel.getExternalReferenceCode()
+					"cetExternalReferenceCode",
+					clientExtensionEntryRel.getCETExternalReferenceCode()
 				).put(
-					"name",
-					() -> {
-						CET cet = cetManager.getCET(
-							_themeDisplay.getCompanyId(),
-							clientExtensionEntryRel.getExternalReferenceCode());
-
-						return cet.getName(_themeDisplay.getLocale());
-					}
+					"name", cet.getName(_themeDisplay.getLocale())
 				));
 		}
 

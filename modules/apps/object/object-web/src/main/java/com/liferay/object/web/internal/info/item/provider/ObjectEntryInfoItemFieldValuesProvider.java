@@ -157,19 +157,22 @@ public class ObjectEntryInfoItemFieldValuesProvider
 					_objectFieldLocalService.getObjectFields(
 						objectEntry.getObjectDefinitionId()),
 					objectField -> new InfoFieldValue<>(
-						InfoField.builder(
-						).infoFieldType(
-							ObjectFieldDBTypeUtil.getInfoFieldType(objectField)
-						).namespace(
-							ObjectField.class.getSimpleName()
-						).name(
-							objectField.getName()
-						).labelInfoLocalizedValue(
-							InfoLocalizedValue.<String>builder(
-							).values(
-								objectField.getLabelMap()
-							).build()
-						).build(),
+						ObjectFieldDBTypeUtil.addAttributes(
+							InfoField.builder(
+							).infoFieldType(
+								ObjectFieldDBTypeUtil.getInfoFieldType(
+									objectField)
+							).namespace(
+								ObjectField.class.getSimpleName()
+							).name(
+								objectField.getName()
+							).labelInfoLocalizedValue(
+								InfoLocalizedValue.<String>builder(
+								).values(
+									objectField.getLabelMap()
+								).build()
+							),
+							objectField),
 						_getValue(objectField, values))));
 
 			return objectEntryFieldValues;

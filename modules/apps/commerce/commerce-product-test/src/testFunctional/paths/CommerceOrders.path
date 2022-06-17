@@ -26,6 +26,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>ORDER_DETAILS_ERC</td>
+	<td>//dl[@class='commerce-list']/dt[contains(.,'ERC')]/following-sibling::dd[contains(.,'${key_ERC}')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>ORDER_DETAILS_PAYMENT_METHOD_NAME</td>
 	<td>//span[contains(@class,'payment-name')]</td>
 	<td></td>
@@ -116,6 +121,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>PENDING_ORDERS_LIST_ORDER_TYPE</td>
+	<td>//div[@class='dnd-tr'][contains(.,'${key_entry}')]/div[@class='dnd-td'][3][contains(.,'${key_orderType}')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>PENDING_ORDERS_ORDER_STATUS</td>
 	<td>//dt[contains(text(),'Order Status')]/..//dd[contains(text(),'${key_orderStatus}')]</td>
 	<td></td>
@@ -131,8 +141,28 @@
 	<td></td>
 </tr>
 <tr>
+	<td>PLACED_ORDERS_DETAILS_BILLING_ADDRESS</td>
+	<td>//div[@class='commerce-panel__title'][text()='Billing Address']/following-sibling::div/p[contains(.,'${key_addressInfo}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PLACED_ORDERS_DETAILS_SHIPPING_ADDRESS</td>
+	<td>//div[@class='commerce-panel__title'][text()='Shipping Address']/following-sibling::div/p[contains(.,'${key_addressInfo}')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PLACED_ORDERS_DETAILS_STATUS</td>
+	<td>//dl[contains(.,'Order Status')]/dd[contains(text(),'${key_status}')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>PLACED_ORDERS_LIST_DATE</td>
 	<td>//div[contains(@class,'table-list-title')]/a[contains(.,'${key_orderId}')]/following::div[4]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PLACED_ORDERS_LIST_ORDER_TYPE</td>
+	<td>//div[@class='dnd-tr'][contains(.,'${key_entry}')]/div[@class='dnd-td'][2][contains(.,'${key_orderType}')]</td>
 	<td></td>
 </tr>
 <tr>

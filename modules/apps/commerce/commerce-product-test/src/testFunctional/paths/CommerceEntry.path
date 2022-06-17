@@ -43,6 +43,11 @@
 <tr>
 	<td>SELECTED_TABLE_PAGINATION</td>
 	<td>//li[contains(@class,'page-item active')]//button[contains(.,'${key_pageNumber}')]</td>
+		<td></td>
+</tr>
+<tr>
+	<td>VIEW_DISABLED_ENTRY</td>
+	<td>//label[contains(text(),'${key_entryName}')]/..//select[@class='form-control disabled']</td>
 	<td></td>
 </tr>
 <tr>
@@ -920,6 +925,11 @@
 <tr>
 	<td>PAYMENT_SUBSCRIPTION_TOGGLE</td>
 	<td>//h4[contains(text(), 'Payment Subscription')]//following-sibling::span[contains(@class,'toggle-switch-handle')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>PAYMENT_SUBSCRIPTION_TOGGLE_ACTIVE</td>
+	<td>//h4[contains(text(), 'Payment Subscription')]//following-sibling::span[contains(@class,'toggle-switch-handle')]//following::div[contains(@class,'collapse show')]</td>
 	<td></td>
 </tr>
 <tr>

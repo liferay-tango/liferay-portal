@@ -1,0 +1,4 @@
+sampleThemeFavicon:
+    name: "Sample Theme Favicon"
+    type: "themeFavicon"
+    url: "favicon.ico"

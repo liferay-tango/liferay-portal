@@ -1,5 +1,26 @@
 definition {
 
+	macro activeProductPaymentSubscription {
+		ApplicationsMenu.gotoPortlet(
+			category = "Product Management",
+			panel = "Commerce",
+			portlet = "Products");
+
+		CommerceNavigator.searchEntry(entryName = "${productName}");
+
+		CommerceNavigator.gotoEntry(entryName = "${productName}");
+
+		CommerceEntry.gotoMenuTab(menuTab = "Subscription");
+
+		if (IsElementNotPresent(locator1 = "CommerceEntry#PAYMENT_SUBSCRIPTION_TOGGLE_ACTIVE")) {
+			Click(locator1 = "CommerceEntry#PAYMENT_SUBSCRIPTION_TOGGLE");
+
+			Button.clickPublish();
+		}
+
+		AssertElementPresent(locator1 = "CommerceEntry#PAYMENT_SUBSCRIPTION_TOGGLE_ACTIVE");
+	}
+
 	@summary = "Add a new user that is part of an account(the creation of a new account, the membership and the user's role are optional)"
 	macro addAccountEntryUser {
 		Variables.assertDefined(parameterList = "${accountName},${userEmailAddress},${userFirstName},${userLastName},${userScreenName}");
@@ -248,6 +269,8 @@ definition {
 			value1 = "${discountTarget}");
 
 		Button.click(button = "Submit");
+
+		Refresh();
 
 		Type(
 			locator1 = "CommerceEntry#DISCOUNT_AMOUNT",

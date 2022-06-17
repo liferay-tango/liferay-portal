@@ -20,24 +20,17 @@ import com.liferay.object.admin.rest.dto.v1_0.util.ObjectActionUtil;
 import com.liferay.object.admin.rest.resource.v1_0.ObjectActionResource;
 import com.liferay.object.constants.ObjectActionExecutorConstants;
 import com.liferay.object.service.ObjectActionService;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.UnicodeProperties;
-import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.vulcan.fields.NestedField;
 import com.liferay.portal.vulcan.fields.NestedFieldSupport;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.util.SearchUtil;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -123,7 +116,8 @@ public class ObjectActionResourceImpl
 				objectAction.getDescription(), objectAction.getName(),
 				objectAction.getObjectActionExecutorKey(),
 				objectAction.getObjectActionTriggerKey(),
-				_toParametersUnicodeProperties(objectAction.getParameters())));
+				ObjectActionUtil.toParametersUnicodeProperties(
+					objectAction.getParameters())));
 	}
 
 	@Override
@@ -146,7 +140,8 @@ public class ObjectActionResourceImpl
 				objectAction.getDescription(), objectAction.getName(),
 				objectAction.getObjectActionExecutorKey(),
 				objectAction.getObjectActionTriggerKey(),
-				_toParametersUnicodeProperties(objectAction.getParameters())));
+				ObjectActionUtil.toParametersUnicodeProperties(
+					objectAction.getParameters())));
 	}
 
 	private ObjectAction _toObjectAction(
@@ -173,26 +168,6 @@ public class ObjectActionResourceImpl
 					objectAction.getObjectDefinitionId())
 			).build(),
 			contextAcceptLanguage.getPreferredLocale(), objectAction);
-	}
-
-	private UnicodeProperties _toParametersUnicodeProperties(
-		Map<String, ?> parameters) {
-
-		Map<String, String> map = new HashMap<>();
-
-		for (Map.Entry<String, ?> entry : parameters.entrySet()) {
-			Object value = entry.getValue();
-
-			if (value instanceof ArrayList) {
-				value = JSONFactoryUtil.looseSerialize(value);
-			}
-
-			map.put(entry.getKey(), value.toString());
-		}
-
-		return UnicodePropertiesBuilder.create(
-			map, true
-		).build();
 	}
 
 	@Reference

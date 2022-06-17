@@ -38,6 +38,13 @@ definition {
 		CP2DXPCloudSetup.activeDisasterRecoveryDataCenter();
 	}
 
+	macro assertCardStatusChanged {
+		AssertTextEquals(
+			key_status = "${status}",
+			locator1 = "CP2DXPCloudSetup#STATUS_CARD",
+			value1 = "${value}");
+	}
+
 	macro clearActivationStatus {
 		ApplicationsMenu.gotoPortlet(
 			category = "Object",
@@ -65,6 +72,10 @@ definition {
 
 	macro clickOnAddAnotherAdminButton {
 		Click(locator1 = "CP2DXPCloudSetup#ADD_ANOTHER_ADMIN");
+	}
+
+	macro clickOnFinishActivationButton {
+		Click(locator1 = "CP2DXPCloudSetup#FINISH_ACTIVATION");
 	}
 
 	macro clickOnRemoveThisAdminButton {

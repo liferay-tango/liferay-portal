@@ -231,12 +231,15 @@ function SegmentsExperiments({
 					)}
 
 					{!experiment && (
-						<div className="text-center">
+						<div className="segments-experiments-empty-state text-center">
 							<img
-								alt=""
-								className="my-3"
+								alt={Liferay.Language.get(
+									'create-test-help-message'
+								)}
+								className="mb-3 mt-4 segments-experiments-empty-state__image"
+								height="185"
 								src={noExperimentIllustration}
-								width="120px"
+								width="185"
 							/>
 
 							<h4 className="text-dark">

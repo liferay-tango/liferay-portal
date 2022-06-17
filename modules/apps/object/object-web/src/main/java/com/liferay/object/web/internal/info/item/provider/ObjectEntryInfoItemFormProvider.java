@@ -210,23 +210,26 @@ public class ObjectEntryInfoItemFormProvider
 					}
 
 					unsafeConsumer.accept(
-						InfoField.builder(
-						).infoFieldType(
-							ObjectFieldDBTypeUtil.getInfoFieldType(objectField)
-						).namespace(
-							ObjectField.class.getSimpleName()
-						).name(
-							objectField.getName()
-						).editable(
-							true
-						).labelInfoLocalizedValue(
-							InfoLocalizedValue.<String>builder(
-							).values(
-								objectField.getLabelMap()
-							).build()
-						).required(
-							objectField.isRequired()
-						).build());
+						ObjectFieldDBTypeUtil.addAttributes(
+							InfoField.builder(
+							).infoFieldType(
+								ObjectFieldDBTypeUtil.getInfoFieldType(
+									objectField)
+							).namespace(
+								ObjectField.class.getSimpleName()
+							).name(
+								objectField.getName()
+							).editable(
+								true
+							).labelInfoLocalizedValue(
+								InfoLocalizedValue.<String>builder(
+								).values(
+									objectField.getLabelMap()
+								).build()
+							).required(
+								objectField.isRequired()
+							),
+							objectField));
 				}
 			}
 		).labelInfoLocalizedValue(

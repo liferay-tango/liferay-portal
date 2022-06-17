@@ -34,6 +34,8 @@ public interface CET {
 	@CETProperty(name = "description", type = "string")
 	public String getDescription();
 
+	public String getEditJSP();
+
 	public String getExternalReferenceCode();
 
 	@CETProperty(name = "name", type = "string")
@@ -51,6 +53,10 @@ public interface CET {
 
 	@CETProperty(name = "type", type = "string")
 	public String getType();
+
+	public String getTypeSettings();
+
+	public boolean hasProperties();
 
 	public boolean isReadOnly();
 

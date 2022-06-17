@@ -14,32 +14,36 @@
 
 package com.liferay.client.extension.type.internal.factory;
 
-import com.liferay.client.extension.constants.ClientExtensionEntryConstants;
 import com.liferay.client.extension.exception.ClientExtensionEntryTypeException;
 import com.liferay.client.extension.model.ClientExtensionEntry;
 import com.liferay.client.extension.type.CET;
-import com.liferay.client.extension.type.CETCustomElement;
-import com.liferay.client.extension.type.CETGlobalCSS;
-import com.liferay.client.extension.type.CETGlobalJS;
-import com.liferay.client.extension.type.CETIFrame;
-import com.liferay.client.extension.type.CETThemeCSS;
-import com.liferay.client.extension.type.CETThemeFavicon;
-import com.liferay.client.extension.type.CETThemeJS;
+import com.liferay.client.extension.type.configuration.CETConfiguration;
 import com.liferay.client.extension.type.factory.CETFactory;
-import com.liferay.client.extension.type.internal.CETCustomElementImpl;
-import com.liferay.client.extension.type.internal.CETGlobalCSSImpl;
-import com.liferay.client.extension.type.internal.CETGlobalJSImpl;
-import com.liferay.client.extension.type.internal.CETIFrameImpl;
-import com.liferay.client.extension.type.internal.CETThemeCSSImpl;
-import com.liferay.client.extension.type.internal.CETThemeFaviconImpl;
-import com.liferay.client.extension.type.internal.CETThemeJSImpl;
+import com.liferay.client.extension.type.factory.CETImplFactory;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapListener;
+import com.liferay.petra.string.StringPool;
+import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.util.PropertiesUtil;
+import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 
-import java.util.Objects;
+import java.io.IOException;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Properties;
 
 import javax.portlet.PortletRequest;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 
 /**
  * @author Brian Wing Shun Chan
@@ -48,169 +52,159 @@ import org.osgi.service.component.annotations.Component;
 public class CETFactoryImpl implements CETFactory {
 
 	@Override
-	public CET cet(ClientExtensionEntry clientExtensionEntry)
+	public CET create(
+			CETConfiguration cetConfiguration, long companyId,
+			String externalReferenceCode)
 		throws PortalException {
 
-		String type = clientExtensionEntry.getType();
+		CETImplFactory cetImplFactory = _getCETImplFactory(
+			cetConfiguration.type());
 
-		if (Objects.equals(
-				type, ClientExtensionEntryConstants.TYPE_CUSTOM_ELEMENT)) {
-
-			return cetCustomElement(clientExtensionEntry);
+		try {
+			return cetImplFactory.create(
+				cetConfiguration.baseURL(), companyId,
+				cetConfiguration.description(), externalReferenceCode,
+				cetConfiguration.name(), _loadProperties(cetConfiguration),
+				cetConfiguration.sourceCodeURL(),
+				_toTypeSettingsUnicodeProperties(cetConfiguration));
 		}
-		else if (Objects.equals(
-					type, ClientExtensionEntryConstants.TYPE_GLOBAL_CSS)) {
-
-			return cetGlobalCSS(clientExtensionEntry);
-		}
-		else if (Objects.equals(
-					type, ClientExtensionEntryConstants.TYPE_GLOBAL_JS)) {
-
-			return cetGlobalJS(clientExtensionEntry);
-		}
-		else if (Objects.equals(
-					type, ClientExtensionEntryConstants.TYPE_IFRAME)) {
-
-			return cetIFrame(clientExtensionEntry);
-		}
-		else if (Objects.equals(
-					type, ClientExtensionEntryConstants.TYPE_THEME_CSS)) {
-
-			return cetThemeCSS(clientExtensionEntry);
-		}
-		else if (Objects.equals(
-					type, ClientExtensionEntryConstants.TYPE_THEME_FAVICON)) {
-
-			return cetThemeFavicon(clientExtensionEntry);
-		}
-		else if (Objects.equals(
-					type, ClientExtensionEntryConstants.TYPE_THEME_JS)) {
-
-			return cetThemeJS(clientExtensionEntry);
-		}
-		else {
-			throw new ClientExtensionEntryTypeException("Invalid type " + type);
+		catch (IOException ioException) {
+			throw new PortalException(ioException);
 		}
 	}
 
 	@Override
-	public CETCustomElement cetCustomElement(
-		ClientExtensionEntry clientExtensionEntry) {
-
-		return new CETCustomElementImpl(clientExtensionEntry);
-	}
-
-	@Override
-	public CETCustomElement cetCustomElement(PortletRequest portletRequest) {
-		return new CETCustomElementImpl(portletRequest);
-	}
-
-	@Override
-	public CETGlobalCSS cetGlobalCSS(
-		ClientExtensionEntry clientExtensionEntry) {
-
-		return new CETGlobalCSSImpl(clientExtensionEntry);
-	}
-
-	@Override
-	public CETGlobalCSS cetGlobalCSS(PortletRequest portletRequest) {
-		return new CETGlobalCSSImpl(portletRequest);
-	}
-
-	@Override
-	public CETGlobalJS cetGlobalJS(ClientExtensionEntry clientExtensionEntry) {
-		return new CETGlobalJSImpl(clientExtensionEntry);
-	}
-
-	@Override
-	public CETGlobalJS cetGlobalJS(PortletRequest portletRequest) {
-		return new CETGlobalJSImpl(portletRequest);
-	}
-
-	@Override
-	public CETIFrame cetIFrame(ClientExtensionEntry clientExtensionEntry) {
-		return new CETIFrameImpl(clientExtensionEntry);
-	}
-
-	@Override
-	public CETIFrame cetIFrame(PortletRequest portletRequest) {
-		return new CETIFrameImpl(portletRequest);
-	}
-
-	@Override
-	public CETThemeCSS cetThemeCSS(ClientExtensionEntry clientExtensionEntry) {
-		return new CETThemeCSSImpl(clientExtensionEntry);
-	}
-
-	@Override
-	public CETThemeCSS cetThemeCSS(PortletRequest portletRequest) {
-		return new CETThemeCSSImpl(portletRequest);
-	}
-
-	@Override
-	public CETThemeFavicon cetThemeFavicon(
-		ClientExtensionEntry clientExtensionEntry) {
-
-		return new CETThemeFaviconImpl(clientExtensionEntry);
-	}
-
-	@Override
-	public CETThemeFavicon cetThemeFavicon(PortletRequest portletRequest) {
-		return new CETThemeFaviconImpl(portletRequest);
-	}
-
-	@Override
-	public CETThemeJS cetThemeJS(ClientExtensionEntry clientExtensionEntry) {
-		return new CETThemeJSImpl(clientExtensionEntry);
-	}
-
-	@Override
-	public CETThemeJS cetThemeJS(PortletRequest portletRequest) {
-		return new CETThemeJSImpl(portletRequest);
-	}
-
-	@Override
-	public String typeSettings(PortletRequest portletRequest, String type)
+	public CET create(ClientExtensionEntry clientExtensionEntry)
 		throws PortalException {
 
-		if (Objects.equals(
-				type, ClientExtensionEntryConstants.TYPE_CUSTOM_ELEMENT)) {
+		CETImplFactory cetImplFactory = _getCETImplFactory(
+			clientExtensionEntry.getType());
 
-			return String.valueOf(cetCustomElement(portletRequest));
-		}
-		else if (Objects.equals(
-					type, ClientExtensionEntryConstants.TYPE_GLOBAL_CSS)) {
-
-			return String.valueOf(cetGlobalCSS(portletRequest));
-		}
-		else if (Objects.equals(
-					type, ClientExtensionEntryConstants.TYPE_GLOBAL_JS)) {
-
-			return String.valueOf(cetGlobalJS(portletRequest));
-		}
-		else if (Objects.equals(
-					type, ClientExtensionEntryConstants.TYPE_IFRAME)) {
-
-			return String.valueOf(cetIFrame(portletRequest));
-		}
-		else if (Objects.equals(
-					type, ClientExtensionEntryConstants.TYPE_THEME_CSS)) {
-
-			return String.valueOf(cetThemeCSS(portletRequest));
-		}
-		else if (Objects.equals(
-					type, ClientExtensionEntryConstants.TYPE_THEME_FAVICON)) {
-
-			return String.valueOf(cetThemeFavicon(portletRequest));
-		}
-		else if (Objects.equals(
-					type, ClientExtensionEntryConstants.TYPE_THEME_JS)) {
-
-			return String.valueOf(cetThemeJS(portletRequest));
-		}
-		else {
-			throw new ClientExtensionEntryTypeException("Invalid type " + type);
-		}
+		return cetImplFactory.create(clientExtensionEntry);
 	}
+
+	@Override
+	public CET create(PortletRequest portletRequest, String type)
+		throws PortalException {
+
+		CETImplFactory cetImplFactory = _getCETImplFactory(type);
+
+		return cetImplFactory.create(portletRequest);
+	}
+
+	@Override
+	public Collection<String> getTypes() {
+		return Collections.unmodifiableCollection(_types);
+	}
+
+	@Override
+	public void validate(
+			UnicodeProperties newTypeSettingsUnicodeProperties,
+			UnicodeProperties oldTypeSettingsUnicodeProperties, String type)
+		throws PortalException {
+
+		CETImplFactory cetImplFactory = _getCETImplFactory(type);
+
+		cetImplFactory.validate(
+			newTypeSettingsUnicodeProperties, oldTypeSettingsUnicodeProperties);
+	}
+
+	@Activate
+	protected void activate(BundleContext bundleContext) {
+		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
+			bundleContext, CETImplFactory.class, "type",
+			_serviceTrackerMapListener);
+	}
+
+	@Deactivate
+	protected void deactivate() {
+		if (_serviceTrackerMap != null) {
+			_serviceTrackerMap.close();
+		}
+
+		_serviceTrackerMap = null;
+	}
+
+	private CETImplFactory _getCETImplFactory(String type)
+		throws ClientExtensionEntryTypeException {
+
+		CETImplFactory cetImplFactory = _serviceTrackerMap.getService(type);
+
+		if (cetImplFactory == null) {
+			throw new ClientExtensionEntryTypeException(
+				"No CET implementation factory registered for type " + type);
+		}
+
+		return cetImplFactory;
+	}
+
+	private Properties _loadProperties(CETConfiguration cetConfiguration)
+		throws IOException {
+
+		String[] properties = cetConfiguration.properties();
+
+		if (properties == null) {
+			return new Properties();
+		}
+
+		return PropertiesUtil.load(
+			StringUtil.merge(properties, StringPool.NEW_LINE));
+	}
+
+	private UnicodeProperties _toTypeSettingsUnicodeProperties(
+		CETConfiguration cetConfiguration) {
+
+		UnicodeProperties typeSettingsUnicodeProperties =
+			UnicodePropertiesBuilder.create(
+				true
+			).build();
+
+		String[] typeSettings = cetConfiguration.typeSettings();
+
+		if (typeSettings == null) {
+			return typeSettingsUnicodeProperties;
+		}
+
+		for (String typeSetting : typeSettings) {
+			typeSettingsUnicodeProperties.put(typeSetting);
+		}
+
+		return typeSettingsUnicodeProperties;
+	}
+
+	private ServiceTrackerMap<String, CETImplFactory> _serviceTrackerMap;
+
+	private final ServiceTrackerMapListener
+		<String, CETImplFactory, CETImplFactory> _serviceTrackerMapListener =
+			new ServiceTrackerMapListener
+				<String, CETImplFactory, CETImplFactory>() {
+
+				@Override
+				public void keyEmitted(
+					ServiceTrackerMap<String, CETImplFactory> serviceTrackerMap,
+					String key, CETImplFactory serviceCETImplFactory,
+					CETImplFactory contentCETImplFactory) {
+
+					synchronized (_types) {
+						_types.add(key);
+
+						Collections.sort(_types);
+					}
+				}
+
+				@Override
+				public void keyRemoved(
+					ServiceTrackerMap<String, CETImplFactory> serviceTrackerMap,
+					String key, CETImplFactory serviceCETImplFactory,
+					CETImplFactory contentCETImplFactory) {
+
+					synchronized (_types) {
+						_types.remove(key);
+					}
+				}
+
+			};
+
+	private final List<String> _types = new ArrayList<>();
 
 }

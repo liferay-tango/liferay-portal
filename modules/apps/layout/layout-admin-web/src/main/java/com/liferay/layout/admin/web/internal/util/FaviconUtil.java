@@ -18,7 +18,7 @@ import com.liferay.client.extension.constants.ClientExtensionEntryConstants;
 import com.liferay.client.extension.model.ClientExtensionEntryRel;
 import com.liferay.client.extension.service.ClientExtensionEntryRelLocalServiceUtil;
 import com.liferay.client.extension.type.CET;
-import com.liferay.client.extension.type.CETThemeFavicon;
+import com.liferay.client.extension.type.ThemeFaviconCET;
 import com.liferay.client.extension.type.manager.CETManager;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -48,9 +48,9 @@ public class FaviconUtil {
 			layout.getPlid(), layout.getCompanyId());
 
 		if (cet != null) {
-			CETThemeFavicon cetThemeFavicon = (CETThemeFavicon)cet;
+			ThemeFaviconCET themeFaviconCET = (ThemeFaviconCET)cet;
 
-			String faviconTitle = cetThemeFavicon.getName(locale);
+			String faviconTitle = themeFaviconCET.getName(locale);
 
 			if (Validator.isNotNull(faviconTitle)) {
 				return faviconTitle;
@@ -124,7 +124,7 @@ public class FaviconUtil {
 	}
 
 	public static String getFaviconURL(CETManager cetManager, Layout layout) {
-		String faviconURL = _getCETThemeFaviconURL(
+		String faviconURL = _getThemeFaviconCETURL(
 			cetManager, PortalUtil.getClassNameId(Layout.class),
 			layout.getPlid(), layout.getCompanyId());
 
@@ -143,7 +143,7 @@ public class FaviconUtil {
 				layout.getMasterLayoutPlid());
 
 			if (masterLayout != null) {
-				faviconURL = _getCETThemeFaviconURL(
+				faviconURL = _getThemeFaviconCETURL(
 					cetManager, PortalUtil.getClassNameId(Layout.class),
 					masterLayout.getPlid(), layout.getCompanyId());
 
@@ -165,7 +165,7 @@ public class FaviconUtil {
 	public static String getFaviconURL(
 		CETManager cetManager, LayoutSet layoutSet) {
 
-		String faviconURL = _getCETThemeFaviconURL(
+		String faviconURL = _getThemeFaviconCETURL(
 			cetManager, PortalUtil.getClassNameId(LayoutSet.class),
 			layoutSet.getLayoutSetId(), layoutSet.getCompanyId());
 
@@ -199,7 +199,7 @@ public class FaviconUtil {
 			companyId, clientExtensionEntryRel.getCETExternalReferenceCode());
 	}
 
-	private static String _getCETThemeFaviconURL(
+	private static String _getThemeFaviconCETURL(
 		CETManager cetManager, long classNameId, long classPK, long companyId) {
 
 		CET cet = _getCET(cetManager, classNameId, classPK, companyId);
@@ -208,9 +208,9 @@ public class FaviconUtil {
 			return null;
 		}
 
-		CETThemeFavicon cetThemeFavicon = (CETThemeFavicon)cet;
+		ThemeFaviconCET themeFaviconCET = (ThemeFaviconCET)cet;
 
-		return cetThemeFavicon.getURL();
+		return themeFaviconCET.getURL();
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(FaviconUtil.class);

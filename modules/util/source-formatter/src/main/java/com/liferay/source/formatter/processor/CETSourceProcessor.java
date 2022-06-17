@@ -69,7 +69,7 @@ public class CETSourceProcessor extends BaseSourceProcessor {
 
 	private static final String[] _INCLUDES = {
 		"**/client-extension-type-api/src/main/java/com/liferay/client" +
-			"/extension/type/CET*.java"
+			"/extension/type/*.java"
 	};
 
 }

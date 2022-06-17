@@ -13,13 +13,13 @@
  */
 
 import ClayForm, {ClayRadio, ClayRadioGroup, ClayToggle} from '@clayui/form';
-import ClayIcon from '@clayui/icon';
 import {
 	Card,
 	Input,
 	InputLocalized,
 	Select,
 	SidePanelForm,
+	Toggle,
 	closeSidePanel,
 	openToast,
 } from '@liferay/object-js-components-web';
@@ -60,6 +60,7 @@ export default function EditObjectField({
 	forbiddenLastChars,
 	forbiddenNames,
 	isApproved,
+	isDefaultStorageType,
 	isSystemObject,
 	objectField: initialValues,
 	objectFieldTypes,
@@ -214,6 +215,17 @@ export default function EditObjectField({
 					setValues={setValues}
 				/>
 			)}
+
+			{Liferay.FeatureFlags['LPS-135430'] && !isDefaultStorageType && (
+				<Card title={Liferay.Language.get('external-data-source')}>
+					<Input
+						label={Liferay.Language.get('external-reference-code')}
+						name="externalReferenceCode"
+						onChange={handleChange}
+						value={values.externalReferenceCode}
+					/>
+				</Card>
+			)}
 		</SidePanelForm>
 	);
 }
@@ -346,7 +358,7 @@ function MaxLengthProperties({
 	return (
 		<>
 			<ClayForm.Group>
-				<ClayToggle
+				<Toggle
 					disabled={isSystemObject ?? disabled}
 					label={Liferay.Language.get('limit-characters')}
 					name="showCounter"
@@ -365,19 +377,10 @@ function MaxLengthProperties({
 						setValues({objectFieldSettings: updatedSettings});
 					}}
 					toggled={!!settings.showCounter}
-				/>
-				&nbsp;
-				<span
-					data-tooltip-align="top"
-					title={Liferay.Language.get(
+					tooltip={Liferay.Language.get(
 						'when-enabled-a-character-counter-will-be-shown-to-the-user'
 					)}
-				>
-					<ClayIcon
-						className="lfr-objects__edit-object-field-tooltip-icon"
-						symbol="question-circle-full"
-					/>
-				</span>
+				/>
 			</ClayForm.Group>
 			<ClayForm.Group>
 				{settings.showCounter && (
@@ -497,6 +500,7 @@ interface IProps {
 	forbiddenLastChars: string[];
 	forbiddenNames: string[];
 	isApproved: boolean;
+	isDefaultStorageType: boolean;
 	isSystemObject: boolean;
 	objectField: ObjectField;
 	objectFieldTypes: ObjectFieldType[];

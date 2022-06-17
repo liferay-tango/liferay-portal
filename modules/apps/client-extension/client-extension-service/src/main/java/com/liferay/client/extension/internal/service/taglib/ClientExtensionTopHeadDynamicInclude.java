@@ -17,7 +17,7 @@ package com.liferay.client.extension.internal.service.taglib;
 import com.liferay.client.extension.constants.ClientExtensionEntryConstants;
 import com.liferay.client.extension.model.ClientExtensionEntryRel;
 import com.liferay.client.extension.service.ClientExtensionEntryRelLocalService;
-import com.liferay.client.extension.type.CETGlobalCSS;
+import com.liferay.client.extension.type.GlobalCSSCET;
 import com.liferay.client.extension.type.manager.CETManager;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Layout;
@@ -61,13 +61,13 @@ public class ClientExtensionTopHeadDynamicInclude implements DynamicInclude {
 		for (ClientExtensionEntryRel clientExtensionEntryRel :
 				_getClientExtensionEntryRels(themeDisplay.getLayout())) {
 
-			CETGlobalCSS cetGlobalCSS = (CETGlobalCSS)_cetManager.getCET(
+			GlobalCSSCET globalCSSCET = (GlobalCSSCET)_cetManager.getCET(
 				clientExtensionEntryRel.getCompanyId(),
 				clientExtensionEntryRel.getCETExternalReferenceCode());
 
 			printWriter.print(
 				"<link data-senna-track=\"temporary\" href=\"" +
-					cetGlobalCSS.getURL() +
+					globalCSSCET.getURL() +
 						"\" rel=\"stylesheet\" type=\"text/css\" />");
 		}
 	}
@@ -81,11 +81,14 @@ public class ClientExtensionTopHeadDynamicInclude implements DynamicInclude {
 	private List<ClientExtensionEntryRel> _getClientExtensionEntryRels(
 		Layout layout) {
 
+		LayoutSet layoutSet = layout.getLayoutSet();
+
 		List<ClientExtensionEntryRel> clientExtensionEntryRels =
 			new ArrayList<>(
 				_clientExtensionEntryRelLocalService.
 					getClientExtensionEntryRels(
-						_portal.getClassNameId(Layout.class), layout.getPlid(),
+						_portal.getClassNameId(LayoutSet.class),
+						layoutSet.getLayoutSetId(),
 						ClientExtensionEntryConstants.TYPE_GLOBAL_CSS,
 						QueryUtil.ALL_POS, QueryUtil.ALL_POS));
 
@@ -102,12 +105,9 @@ public class ClientExtensionTopHeadDynamicInclude implements DynamicInclude {
 						QueryUtil.ALL_POS, QueryUtil.ALL_POS));
 		}
 
-		LayoutSet layoutSet = layout.getLayoutSet();
-
 		clientExtensionEntryRels.addAll(
 			_clientExtensionEntryRelLocalService.getClientExtensionEntryRels(
-				_portal.getClassNameId(LayoutSet.class),
-				layoutSet.getLayoutSetId(),
+				_portal.getClassNameId(Layout.class), layout.getPlid(),
 				ClientExtensionEntryConstants.TYPE_GLOBAL_CSS,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS));
 

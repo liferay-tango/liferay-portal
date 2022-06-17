@@ -380,7 +380,9 @@ public class FreeMarkerFragmentEntryProcessor
 			_fragmentEntryConfigurationParser.getFieldValue(
 				fragmentEntryLink.getEditableValues(),
 				new FragmentConfigurationField(
-					"inputHelpText", "string", "", true, "text"),
+					"inputHelpText", "string",
+					LanguageUtil.get(locale, "add-your-help-text-here"), true,
+					"text"),
 				locale));
 		String inputLabel = GetterUtil.getString(
 			_fragmentEntryConfigurationParser.getFieldValue(
@@ -414,7 +416,7 @@ public class FreeMarkerFragmentEntryProcessor
 			_fragmentEntryConfigurationParser.getFieldValue(
 				fragmentEntryLink.getEditableValues(),
 				new FragmentConfigurationField(
-					"inputShowHelpText", "boolean", "true", false, "checkbox"),
+					"inputShowHelpText", "boolean", "false", false, "checkbox"),
 				locale));
 
 		boolean inputShowLabel = GetterUtil.getBoolean(
@@ -437,9 +439,7 @@ public class FreeMarkerFragmentEntryProcessor
 				Optional<Boolean> decimalOptional =
 					infoField.getAttributeOptional(NumberInfoFieldType.DECIMAL);
 
-				boolean decimal = decimalOptional.orElse(false);
-
-				if (decimal) {
+				if (decimalOptional.orElse(false)) {
 					dataType = "decimal";
 				}
 			}
@@ -450,7 +450,7 @@ public class FreeMarkerFragmentEntryProcessor
 			inputShowHelpText, inputShowLabel, type, "value");
 
 		if ((infoField != null) &&
-			(infoField.getInfoFieldType() == SelectInfoFieldType.INSTANCE)) {
+			(infoField.getInfoFieldType() instanceof SelectInfoFieldType)) {
 
 			Optional<List<SelectInfoFieldType.Option>> optionsOptional =
 				infoField.getAttributeOptional(SelectInfoFieldType.OPTIONS);

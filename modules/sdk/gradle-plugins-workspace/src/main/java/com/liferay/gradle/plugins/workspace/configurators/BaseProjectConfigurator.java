@@ -37,6 +37,7 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.initialization.Settings;
 import org.gradle.api.tasks.Copy;
+import org.gradle.api.tasks.TaskProvider;
 
 /**
  * @author Andrea Di Giorgi
@@ -94,8 +95,17 @@ public abstract class BaseProjectConfigurator implements ProjectConfigurator {
 	}
 
 	protected Copy addTaskDockerDeploy(
-		Project project, Object sourcePath,
-		WorkspaceExtension workspaceExtension) {
+		Project project, Object sourcePath, File dockerDeployDir) {
+
+		if (GradleUtil.hasTask(
+				project, RootProjectConfigurator.DOCKER_DEPLOY_TASK_NAME)) {
+
+			TaskProvider<Copy> taskProvider = GradleUtil.getTaskProvider(
+				project, RootProjectConfigurator.DOCKER_DEPLOY_TASK_NAME,
+				Copy.class);
+
+			return taskProvider.get();
+		}
 
 		Copy copy = GradleUtil.addTask(
 			project, RootProjectConfigurator.DOCKER_DEPLOY_TASK_NAME,
@@ -103,14 +113,12 @@ public abstract class BaseProjectConfigurator implements ProjectConfigurator {
 
 		copy.from(sourcePath);
 
-		final File dockerDir = workspaceExtension.getDockerDir();
-
 		copy.into(
 			new Callable<File>() {
 
 				@Override
 				public File call() throws Exception {
-					return new File(dockerDir, "deploy");
+					return dockerDeployDir;
 				}
 
 			});
@@ -133,6 +141,17 @@ public abstract class BaseProjectConfigurator implements ProjectConfigurator {
 		buildDockerImageTask.dependsOn(deployTask);
 
 		return copy;
+	}
+
+	protected Copy addTaskDockerDeploy(
+		Project project, Object sourcePath,
+		WorkspaceExtension workspaceExtension) {
+
+		File dockerDir = workspaceExtension.getDockerDir();
+
+		File dockerDeployDir = new File(dockerDir, "deploy");
+
+		return addTaskDockerDeploy(project, sourcePath, dockerDeployDir);
 	}
 
 	protected void configureLiferay(

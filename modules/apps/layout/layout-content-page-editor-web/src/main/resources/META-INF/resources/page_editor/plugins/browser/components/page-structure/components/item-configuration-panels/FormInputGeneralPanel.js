@@ -91,24 +91,18 @@ function getInputCommonConfiguration(configurationValues, formFields) {
 			type: 'text',
 		},
 		{
-			defaultValue: true,
+			defaultValue: false,
 			label: Liferay.Language.get('show-help-text'),
 			name: SHOW_HELP_TEXT_CONFIGURATION_KEY,
 			type: 'checkbox',
 			typeOptions: {displayType: 'toggle'},
 		},
 		{
-			defaultValue: '',
+			defaultValue: Liferay.Language.get('add-your-help-text-here'),
 			label: Liferay.Language.get('help-text'),
 			localizable: true,
 			name: HELP_TEXT_CONFIGURATION_KEY,
 			type: 'text',
-			typeOptions: {
-				component: 'textarea',
-				placeholder: Liferay.Language.get(
-					'guide-your-users-to-fill-in-the-field-by-adding-help-text-here'
-				),
-			},
 		}
 	);
 
@@ -325,14 +319,22 @@ export function FormInputGeneralPanel({item}) {
 					)}
 
 					{configurationValues[FIELD_ID_CONFIGURATION_KEY] && (
-						<FieldSet
-							fields={configFields}
-							item={item}
-							label=""
-							languageId={languageId}
-							onValueSelect={handleValueSelect}
-							values={configurationValues}
-						/>
+						<>
+							<span className="sr-only">
+								{Liferay.Language.get(
+									'input-fragment-configuration'
+								)}
+							</span>
+
+							<FieldSet
+								fields={configFields}
+								item={item}
+								label=""
+								languageId={languageId}
+								onValueSelect={handleValueSelect}
+								values={configurationValues}
+							/>
+						</>
 					)}
 				</Collapse>
 			</div>

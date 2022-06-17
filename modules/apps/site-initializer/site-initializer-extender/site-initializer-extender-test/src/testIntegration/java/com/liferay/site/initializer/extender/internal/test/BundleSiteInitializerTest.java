@@ -23,7 +23,7 @@ import com.liferay.asset.list.model.AssetListEntry;
 import com.liferay.asset.list.service.AssetListEntryLocalService;
 import com.liferay.client.extension.model.ClientExtensionEntry;
 import com.liferay.client.extension.service.ClientExtensionEntryLocalService;
-import com.liferay.client.extension.type.CETCustomElement;
+import com.liferay.client.extension.type.CustomElementCET;
 import com.liferay.client.extension.type.factory.CETFactory;
 import com.liferay.commerce.inventory.model.CommerceInventoryWarehouse;
 import com.liferay.commerce.inventory.service.CommerceInventoryWarehouseLocalService;
@@ -83,6 +83,7 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.object.admin.rest.dto.v1_0.ObjectRelationship;
 import com.liferay.object.admin.rest.resource.v1_0.ObjectRelationshipResource;
+import com.liferay.object.constants.ObjectActionExecutorConstants;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.model.ObjectAction;
 import com.liferay.object.model.ObjectDefinition;
@@ -427,13 +428,13 @@ public class BundleSiteInitializerTest {
 
 		Assert.assertNotNull(clientExtensionEntry);
 
-		CETCustomElement cetCustomElement = _cetFactory.cetCustomElement(
-			clientExtensionEntry);
+		CustomElementCET customElementCET =
+			(CustomElementCET)_cetFactory.create(clientExtensionEntry);
 
 		Assert.assertEquals(
-			"liferay-test-remote-app", cetCustomElement.getHTMLElementName());
+			"liferay-test-remote-app", customElementCET.getHTMLElementName());
 		Assert.assertEquals(
-			"category.remote-apps", cetCustomElement.getPortletCategoryName());
+			"category.remote-apps", customElementCET.getPortletCategoryName());
 	}
 
 	private void _assertCommerceCatalogs(Group group) throws Exception {
@@ -905,6 +906,31 @@ public class BundleSiteInitializerTest {
 
 		Assert.assertEquals(
 			objectActions.toString(), objectActionsCount, objectActions.size());
+
+		for (ObjectAction objectAction : objectActions) {
+			String objectActionExecutorKey =
+				objectAction.getObjectActionExecutorKey();
+
+			UnicodeProperties parametersUnicodeProperties =
+				objectAction.getParametersUnicodeProperties();
+
+			if (objectActionExecutorKey.equals(
+					ObjectActionExecutorConstants.KEY_GROOVY)) {
+
+				String script = parametersUnicodeProperties.get("script");
+
+				Assert.assertNotNull(script);
+			}
+			else if (objectActionExecutorKey.equals(
+						ObjectActionExecutorConstants.KEY_WEBHOOK)) {
+
+				String secret = parametersUnicodeProperties.get("secret");
+				String url = parametersUnicodeProperties.get("url");
+
+				Assert.assertNotNull(secret);
+				Assert.assertNotNull(url);
+			}
+		}
 	}
 
 	private void _assertObjectDefinitions(
@@ -919,7 +945,7 @@ public class BundleSiteInitializerTest {
 		Assert.assertEquals(
 			objectDefinition1.getStatus(), WorkflowConstants.STATUS_APPROVED);
 
-		_assertObjectActions(1, objectDefinition1);
+		_assertObjectActions(2, objectDefinition1);
 		_assertObjectEntries(group.getGroupId(), objectDefinition1, 0);
 		_assertObjectRelationships(objectDefinition1, serviceContext);
 

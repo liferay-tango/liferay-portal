@@ -133,13 +133,18 @@ public abstract class BaseCETImpl implements CET {
 	}
 
 	@Override
+	public String getTypeSettings() {
+		return _typeSettingsUnicodeProperties.toString();
+	}
+
+	@Override
 	public boolean isReadOnly() {
 		return _readOnly;
 	}
 
 	@Override
 	public String toString() {
-		return _typeSettingsUnicodeProperties.toString();
+		return getTypeSettings();
 	}
 
 	protected boolean getBoolean(String key) {

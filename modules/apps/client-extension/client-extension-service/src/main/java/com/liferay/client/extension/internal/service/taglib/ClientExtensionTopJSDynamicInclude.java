@@ -17,7 +17,7 @@ package com.liferay.client.extension.internal.service.taglib;
 import com.liferay.client.extension.constants.ClientExtensionEntryConstants;
 import com.liferay.client.extension.model.ClientExtensionEntryRel;
 import com.liferay.client.extension.service.ClientExtensionEntryRelLocalService;
-import com.liferay.client.extension.type.CETGlobalJS;
+import com.liferay.client.extension.type.GlobalJSCET;
 import com.liferay.client.extension.type.manager.CETManager;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Layout;
@@ -61,13 +61,13 @@ public class ClientExtensionTopJSDynamicInclude implements DynamicInclude {
 		for (ClientExtensionEntryRel clientExtensionEntryRel :
 				_getClientExtensionEntryRels(themeDisplay.getLayout())) {
 
-			CETGlobalJS cetGlobalJS = (CETGlobalJS)_cetManager.getCET(
+			GlobalJSCET globalJSCET = (GlobalJSCET)_cetManager.getCET(
 				clientExtensionEntryRel.getCompanyId(),
 				clientExtensionEntryRel.getCETExternalReferenceCode());
 
 			printWriter.print(
 				"<script data-senna-track=\"temporary\" src=\"" +
-					cetGlobalJS.getURL() +
+					globalJSCET.getURL() +
 						"\" type=\"text/javascript\"></script>");
 		}
 	}

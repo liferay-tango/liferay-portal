@@ -33,7 +33,7 @@ interface IProps {
 	objectActionTriggers: CustomItem[];
 	readOnly?: boolean;
 	requestParams: {
-		method: HTTPMethods;
+		method: 'GET' | 'POST' | 'DELETE' | 'PUT';
 		url: string;
 	};
 	successMessage: string;

@@ -20,13 +20,12 @@
 taglib uri="http://liferay.com/tld/aui" prefix="aui" %><%@
 taglib uri="http://liferay.com/tld/frontend" prefix="liferay-frontend" %><%@
 taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %><%@
-taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
+taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 
 <%@ page import="com.liferay.asset.kernel.model.AssetRenderer" %><%@
 page import="com.liferay.journal.model.JournalArticle" %><%@
 page import="com.liferay.journal.terms.of.use.internal.constants.JournalArticleTermsOfUseWebConstants" %><%@
-page import="com.liferay.journal.terms.of.use.internal.display.context.JournalArticleTermsOfUseDisplayContext" %><%@
-page import="com.liferay.portal.kernel.language.LanguageUtil" %>
+page import="com.liferay.journal.terms.of.use.internal.display.context.JournalArticleTermsOfUseDisplayContext" %>
 
 <liferay-frontend:defineObjects />
 
