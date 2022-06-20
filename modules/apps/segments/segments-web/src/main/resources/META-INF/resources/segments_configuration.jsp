@@ -62,6 +62,15 @@ SegmentsCompanyConfigurationDisplayContext segmentsCompanyConfigurationDisplayCo
 		</c:if>
 
 		<div class="form-group">
+			<c:choose>
+				<c:when test="<%= segmentsCompanyConfigurationDisplayContext.isSegmentationChecked() || !segmentsCompanyConfigurationDisplayContext.isSegmentationEnabled() %>">
+					<input disabled name='<%= liferayPortletResponse.getNamespace() + "segmentationEnabled" %>' type="hidden" value='false' />
+				</c:when>
+				<c:otherwise>
+					<input name="<portlet:namespace />segmentationEnabled" type="hidden" value="false" />
+				</c:otherwise>
+			</c:choose>
+
 			<clay:checkbox
 				checked="<%= segmentsConfigurationProvider.isSegmentationEnabled(themeDisplay.getCompanyId()) %>"
 				className="mb-3"
@@ -77,6 +86,15 @@ SegmentsCompanyConfigurationDisplayContext segmentsCompanyConfigurationDisplayCo
 		</div>
 
 		<div class="form-group">
+			<c:choose>
+				<c:when test="<%= segmentsCompanyConfigurationDisplayContext.isRoleSegmentationChecked() || !segmentsCompanyConfigurationDisplayContext.isRoleSegmentationEnabled()%>">
+					<input disabled name='<%= liferayPortletResponse.getNamespace() + "roleSegmentationEnabled" %>' type="hidden" value='false' />
+				</c:when>
+				<c:otherwise>
+					<input name="<portlet:namespace />roleSegmentationEnabled" type="hidden" value="false" />
+				</c:otherwise>
+			</c:choose>
+
 			<clay:checkbox
 				checked="<%= segmentsConfigurationProvider.isRoleSegmentationEnabled(themeDisplay.getCompanyId()) %>"
 				disabled="<%= !segmentsConfigurationProvider.isRoleSegmentationEnabled(themeDisplay.getCompanyGroupId()) %>"
@@ -130,3 +148,7 @@ SegmentsCompanyConfigurationDisplayContext segmentsCompanyConfigurationDisplayCo
 		</div>
 	</aui:form>
 </clay:sheet>
+
+<liferay-frontend:component
+	module="js/ConfigurationFormEventHandler"
+/>
