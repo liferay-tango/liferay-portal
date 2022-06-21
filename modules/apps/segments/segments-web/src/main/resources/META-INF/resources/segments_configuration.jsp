@@ -25,7 +25,7 @@ if (Validator.isNull(redirect)) {
 	redirect = portletURL.toString();
 }
 
-SegmentsConfigurationProvider segmentsConfigurationProvider = (SegmentsConfigurationProvider)request.getAttribute(SegmentsConfigurationProvider.class.getName());
+SegmentsCompanyConfigurationDisplayContext segmentsCompanyConfigurationDisplayContext = (SegmentsCompanyConfigurationDisplayContext)request.getAttribute(SegmentsCompanyConfigurationDisplayContext.class.getName());
 %>
 
 <clay:sheet
@@ -41,34 +41,16 @@ SegmentsConfigurationProvider segmentsConfigurationProvider = (SegmentsConfigura
 				markupView="lexicon"
 				showWhenSingleIcon="<%= true %>"
 			>
-				
-				<portlet:actionURL name="/configuration_admin/delete_configuration" var="deleteConfigActionURL">
-					<portlet:param name="redirect" value="" />
-					<portlet:param name="factoryPid" value="" />
-					<portlet:param name="pid" value="" />
-				</portlet:actionURL>
-
 				<liferay-ui:icon
 					message="reset-default-values"
 					method="post"
-					url=""
-				/>
-
-				<portlet:resourceURL id="/configuration_admin/export_configuration" var="exportURL">
-					<portlet:param name="factoryPid" value="" />
-					<portlet:param name="pid" value="" />
-				</portlet:resourceURL>
-
-				<liferay-ui:icon
-					message="export"
-					method="get"
-					url="http://example.com"
+					url="<%= segmentsCompanyConfigurationDisplayContext.getDeleteConfigActionURL() %>"
 				/>
 			</liferay-ui:icon-menu>
 		</c:if>
 	</h2>
 
-	<aui:form action="my_action" method="post" name="fm">
+	<aui:form action="<%= segmentsCompanyConfigurationDisplayContext.getBindConfigurationActionURL() %>" method="post" name="fm">
 		<c:if test="<%= true %>">
 			<aui:alert closeable="<%= false %>" id="errorAlert" type="info">
 				<liferay-ui:message key="this-configuration-is-not-saved-yet.-the-values-shown-are-the-default" />

@@ -17,10 +17,13 @@ package com.liferay.segments.web.internal.display.context;
 import com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys;
 import com.liferay.petra.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
+import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
+import com.liferay.portal.kernel.portlet.LiferayPortletURL;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.segments.configuration.SegmentsCompanyConfiguration;
 import com.liferay.segments.configuration.provider.SegmentsConfigurationProvider;
 
 import javax.portlet.PortletResponse;
@@ -50,6 +53,44 @@ public class SegmentsCompanyConfigurationDisplayContext {
 		).setActionName(
 			"/instance_settings/bind_segments_company_configuration"
 		).buildString();
+	}
+
+	public String getDeleteConfigActionURL() {
+		return PortletURLBuilder.createActionURL(
+			_portal.getLiferayPortletResponse(
+				(PortletResponse)_httpServletRequest.getAttribute(
+					JavaConstants.JAVAX_PORTLET_RESPONSE)),
+			ConfigurationAdminPortletKeys.INSTANCE_SETTINGS
+		).setActionName(
+			"/configuration_admin/delete_configuration"
+		).setRedirect(
+			_portal.getCurrentURL(_httpServletRequest)
+		).setParameter(
+			"factoryPid",
+			SegmentsCompanyConfiguration.class.getName() + ".scoped"
+		).setParameter(
+			"pid", SegmentsCompanyConfiguration.class.getName()
+		).buildString();
+	}
+
+	public String getExportURL() {
+		LiferayPortletResponse liferayPortletResponse =
+			_portal.getLiferayPortletResponse(
+				(PortletResponse)_httpServletRequest.getAttribute(
+					JavaConstants.JAVAX_PORTLET_RESPONSE));
+
+		LiferayPortletURL resourceURL =
+			liferayPortletResponse.createResourceURL(
+				ConfigurationAdminPortletKeys.INSTANCE_SETTINGS);
+
+		resourceURL.setParameter(
+			"pid", SegmentsCompanyConfiguration.class.getName());
+		resourceURL.setParameter(
+			"factoryPid",
+			SegmentsCompanyConfiguration.class.getName() + ".scoped");
+		resourceURL.setResourceID("/configuration_admin/export_configuration");
+
+		return resourceURL.toString();
 	}
 
 	public boolean isRoleSegmentationChecked() throws ConfigurationException {
