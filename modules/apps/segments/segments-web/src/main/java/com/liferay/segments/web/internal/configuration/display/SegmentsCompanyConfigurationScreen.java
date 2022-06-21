@@ -16,6 +16,7 @@ package com.liferay.segments.web.internal.configuration.display;
 
 import com.liferay.configuration.admin.display.ConfigurationScreen;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.segments.configuration.provider.SegmentsConfigurationProvider;
 import com.liferay.segments.web.internal.display.context.SegmentsCompanyConfigurationDisplayContext;
 
@@ -60,8 +61,8 @@ public class SegmentsCompanyConfigurationScreen implements ConfigurationScreen {
 
 	@Override
 	public void render(
-		HttpServletRequest httpServletRequest,
-		HttpServletResponse httpServletResponse)
+			HttpServletRequest httpServletRequest,
+			HttpServletResponse httpServletResponse)
 		throws IOException {
 
 		try {
@@ -72,7 +73,7 @@ public class SegmentsCompanyConfigurationScreen implements ConfigurationScreen {
 			httpServletRequest.setAttribute(
 				SegmentsCompanyConfigurationDisplayContext.class.getName(),
 				new SegmentsCompanyConfigurationDisplayContext(
-					httpServletRequest,
+					httpServletRequest, _portal,
 					_segmentsConfigurationProvider));
 
 			requestDispatcher.include(httpServletRequest, httpServletResponse);
@@ -82,6 +83,9 @@ public class SegmentsCompanyConfigurationScreen implements ConfigurationScreen {
 				"Unable to render /segments_configuration.jsp", exception);
 		}
 	}
+
+	@Reference
+	private Portal _portal;
 
 	@Reference
 	private SegmentsConfigurationProvider _segmentsConfigurationProvider;
