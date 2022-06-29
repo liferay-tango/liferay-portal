@@ -83,6 +83,10 @@ public class SegmentsSimulationPanelApp extends BaseJSPPanelApp {
 		throws IOException {
 
 		try {
+			String homeURL =  _portal.getHomeURL(httpServletRequest);
+
+			httpServletRequest.setAttribute("currentUrl", homeURL);
+
 			SegmentsSimulationDisplayContext segmentsSimulationDisplayContext =
 				new SegmentsSimulationDisplayContext(
 					httpServletRequest, _segmentsConfigurationProvider);
