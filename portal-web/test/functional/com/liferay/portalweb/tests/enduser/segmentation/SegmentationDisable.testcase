@@ -530,6 +530,8 @@ definition {
 	@priority = "5"
 	test ViewDisabledAlertAtExperiencesMenu {
 		task ("Open the Experience menu and check if warning appears") {
+			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name");
+
 			ContentPages.gotoPageEditor();
 
 			PageEditor.openExperienceMenu();
@@ -557,6 +559,28 @@ definition {
 
 		task ("Check if warning appears") {
 			Segmentation.checkSegmentationDisabledWarning();
+		}
+	}
+
+	@description = "LPS-151362: Given segmentation is disabled at Instance Settings
+	When user navigates to Dynamic Collection editor
+	Then the warning alert explains how to re-enable it"
+	@priority = "3"
+	test ViewReEnableAlertAtDynamicCollectionEditor {
+		task ("Create a Collection via JSONWS") {
+			JSONAssetlist.addDynamicAssetListEntry(
+				groupName = "Test Site Name",
+				title = "Dynamic Collection Test");
+		}
+
+		task ("Navigate to Collection Admin") {
+			AssetListsAdmin.openAssetListsAdmin(siteURLKey = "test-site-name");
+
+			AssetListsAdmin.editAssetList(assetListTitle = "Dynamic Collection Test");
+		}
+
+		task ("Check if warning appears") {
+			Segmentation.checkSegmentationReEnableWarning();
 		}
 	}
 
@@ -597,23 +621,39 @@ definition {
 	}
 
 	@description = "LPS-151362: Given segmentation is disabled at Instance Settings
-	When user navigates to Dynamic Collection editor
+	When user navigates to Experience simulation sidepanel
 	Then the warning alert explains how to re-enable it"
 	@priority = "3"
-	test ViewReEnableAlertAtDynamicCollectionEditor {
-		task ("Create a Collection via JSONWS") {
-			JSONAssetlist.addDynamicAssetListEntry(
-				groupName = "Test Site Name",
-				title = "Dynamic Collection Test");
+	test ViewReEnabledAlertAtExperienceSimulationSidepanel {
+		task ("Add segment") {
+			Segmentation.openSegmentsAdmin(siteURLKey = "guest");
+
+			LexiconEntry.gotoAdd();
+
+			Segmentation.addProperties(propertyOption = "Email Address");
+
+			Segmentation.fillTitle(titleField = "ViewReEnabledAlertAtExperienceSimulationSidepanel Test");
+
+			Segmentation.changeCriterionInput(criterionInputOption = "Contains");
+
+			Segmentation.fillProperty(propertyField = "@liferay.com");
+
+			Button.clickSave();
+
+			Alert.viewSuccessMessage();
 		}
 
-		task ("Navigate to Collection Admin") {
-			AssetListsAdmin.openAssetListsAdmin(siteURLKey = "test-site-name");
+		task ("Open the Experience simulation sidepanel and check if warning appears") {
+			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name");
 
-			AssetListsAdmin.editAssetList(assetListTitle = "Dynamic Collection Test");
-		}
+			MobileDevice.previewPG();
 
-		task ("Check if warning appears") {
+			SelectFrameTop();
+
+			WaitForElementPresent(
+				locator1 = "Message#ERROR_3",
+				value1 = "To enable, go to Instance Settings.");
+
 			Segmentation.checkSegmentationReEnableWarning();
 		}
 	}
@@ -624,6 +664,8 @@ definition {
 	@priority = "3"
 	test ViewReEnabledAlertAtExperiencesMenu {
 		task ("Open the Experience menu and check if warning appears") {
+			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name");
+
 			ContentPages.gotoPageEditor();
 
 			PageEditor.openExperienceMenu();
