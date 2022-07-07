@@ -618,4 +618,18 @@ definition {
 		}
 	}
 
+	@description = "LPS-151362: Given segmentation is disabled at Instance Settings
+	When user navigates to Experience menu
+	Then the warning alert explains how to re-enable it"
+	@priority = "3"
+	test ViewReEnabledAlertAtExperiencesMenu {
+		task ("Open the Experience menu and check if warning appears") {
+			ContentPages.gotoPageEditor();
+
+			PageEditor.openExperienceMenu();
+
+			Segmentation.checkSegmentationReEnableWarning();
+		}
+	}
+
 }
