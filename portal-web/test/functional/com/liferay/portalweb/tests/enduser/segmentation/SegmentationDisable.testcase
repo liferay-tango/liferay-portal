@@ -541,26 +541,35 @@ definition {
 	@description = "LPS-151362: Given the 'Enable Segmentation'
     When the 'Enable Segmentation' is disabled
     Then segmentation is disabled for Collections"
-    @priority = "4"
-    test ViewDisabledSegmentationAlertAtDynamicCollectionEditor {
+	@priority = "4"
+	test ViewDisabledSegmentationAlertAtDynamicCollectionEditor {
+		task ("Create a Collection via JSONWS") {
+			JSONAssetlist.addDynamicAssetListEntry(
+				groupName = "Test Site Name",
+				title = "Dynamic Collection Test");
+		}
 
-    	task ("Create a Collection via JSONWS") {
-            JSONAssetlist.addDynamicAssetListEntry(
-                groupName = "Test Site Name",
-                title = "Dynamic Collection Test");
-        }
+		task ("Navigate to Collection Admin") {
+			AssetListsAdmin.openAssetListsAdmin(siteURLKey = "test-site-name");
 
-   		 task ("Navigate to Collection Admin") {
-            AssetListsAdmin.openAssetListsAdmin(siteURLKey = "test-site-name");
+			AssetListsAdmin.editAssetList(assetListTitle = "Dynamic Collection Test");
+		}
 
-            AssetListsAdmin.editAssetList(assetListTitle = "Dynamic Collection Test");
-        }
-        
-    	task ("Check if warning appears"){
+		task ("Check if warning appears") {
+			Segmentation.checkSegmentationDisabledWarning();
+		}
+	}
 
-        Segmentation.checkSegmentationDisabledWarning();
+	@description = "LPS-151362: Given segmentation is disabled at Instance Settings
+	When user navigates to Segments page
+	Then the warning alert explains how to re-enable it"
+	@priority = "4"
+	test ViewReEnableAlertAtSegmentsList {
+		task ("Open the Segments List and check if warning appears") {
+			Segmentation.openSegmentsAdmin(siteURLKey = "guest");
 
-        }
-    }
+			Segmentation.checkSegmentationReEnableWarning();
+		}
+	}
 
 }
