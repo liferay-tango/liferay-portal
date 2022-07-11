@@ -126,6 +126,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>TRAFFIC_CHANNELS_EMPTY</td>
+	<td>//div[@class='pie-chart-wrapper'] //tr[td[./span[contains(text(),'Direct')]]]/td[text()='-']</td>
+	<td></td>
+</tr>
+<tr>
 	<td>TRAFFIC_CHANNELS_TEXT</td>
 	<td>//div[@class='pie-chart-wrapper'] //td/span[contains(text(),'${trafficChannel}')]</td>
 	<td></td>

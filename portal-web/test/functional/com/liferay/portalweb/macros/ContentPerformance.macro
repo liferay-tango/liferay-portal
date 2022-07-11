@@ -68,7 +68,12 @@ definition {
 	macro viewTrafficViews {
 		ContentPerformance.openContentPerformance();
 
-		while (IsElementPresent(locator1 = "ContentPerformance#TOTAL_VIEWS_EMPTY")) {
+		while (IsElementPresent(locator1 = "ContentPerformance#TRAFFIC_CHANNELS_EMPTY")) {
+
+			// Pausing 1 second due to LPS-152127
+
+			Pause(locator1 = "1000");
+
 			Refresh();
 		}
 
