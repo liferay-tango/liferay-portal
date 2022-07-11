@@ -12,8 +12,10 @@
  * details.
  */
 
+import ClayButton from '@clayui/button';
 import ClayIcon from '@clayui/icon';
 import ClayLabel from '@clayui/label';
+import ClayLink from '@clayui/link';
 import ClayPanel from '@clayui/panel';
 import ClaySticker from '@clayui/sticker';
 import classnames from 'classnames';
@@ -89,6 +91,8 @@ const SidebarPanelInfoView = ({
 
 	const showClipboard = clipboard && Object.keys(clipboard).length !== 0;
 
+	const hasActions = preview?.downloadURL || (classNameId && shareable);
+
 	return (
 		<>
 			<Sidebar.Header title={title} />
@@ -149,16 +153,31 @@ const SidebarPanelInfoView = ({
 					<span className="c-ml-2 text-secondary">{user.name}</span>
 				</div>
 
-				{(preview || preview?.downloadURL || shareable) && (
+				{preview && (
 					<Preview
-						classNameID={classNameId}
-						classPK={classPK}
-						downloadURL={preview?.downloadURL}
-						imageURL={preview?.imageURL}
-						shareable={shareable}
+						imageURL={preview.imageURL}
 						title={title}
-						url={preview?.url}
+						url={preview.url}
 					/>
+				)}
+
+				{hasActions && (
+					<div className="sidebar-section">
+						{preview?.downloadURL && (
+							<ClayLink
+								className="btn btn-primary mr-2"
+								href={preview.downloadURL}
+							>
+								{Liferay.Language.get('download')}
+							</ClayLink>
+						)}
+
+						{classNameId && shareable && (
+							<ClayButton displayType="secondary">
+								{Liferay.Language.get('share')}
+							</ClayButton>
+						)}
+					</div>
 				)}
 
 				{description && (
