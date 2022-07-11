@@ -129,6 +129,8 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 				contentDashboardItem -> JSONUtil.put(
 					"className", _getClassName(contentDashboardItem)
 				).put(
+					"classNameId", _getClassNameId(contentDashboardItem)
+				).put(
 					"classPK", _getClassPK(contentDashboardItem)
 				).put(
 					"clipboard", _getClipboardJSONObject(contentDashboardItem)
@@ -260,6 +262,13 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 			contentDashboardItem.getInfoItemReference();
 
 		return infoItemReference.getClassName();
+	}
+
+	private long _getClassNameId(ContentDashboardItem<?> contentDashboardItem) {
+		InfoItemReference infoItemReference =
+			contentDashboardItem.getInfoItemReference();
+
+		return _portal.getClassNameId(infoItemReference.getClassName());
 	}
 
 	private long _getClassPK(ContentDashboardItem<?> contentDashboardItem) {
