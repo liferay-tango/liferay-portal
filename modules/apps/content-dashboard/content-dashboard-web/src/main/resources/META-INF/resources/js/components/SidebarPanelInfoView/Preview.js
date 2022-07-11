@@ -12,15 +12,24 @@
  * details.
  */
 
+import ClayButton from '@clayui/button';
 import ClayIcon from '@clayui/icon';
 import ClayLink from '@clayui/link';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-const Preview = ({downloadURL, imageURL, title, url}) => {
+const Preview = ({
+	classNameID,
+	classPK,
+	downloadURL,
+	imageURL,
+	shareable,
+	title,
+	url,
+}) => {
 	return (
 		<div className="document-preview sidebar-section">
-			{imageURL && (
+			{imageURL && url && (
 				<figure className="document-preview-figure mb-2">
 					<a
 						className="align-items-center c-focus-inset d-flex h-100"
@@ -39,9 +48,18 @@ const Preview = ({downloadURL, imageURL, title, url}) => {
 
 			<div>
 				{downloadURL && (
-					<ClayLink className="btn btn-primary" href={downloadURL}>
+					<ClayLink
+						className="btn btn-primary mr-2"
+						href={downloadURL}
+					>
 						{Liferay.Language.get('download')}
 					</ClayLink>
+				)}
+
+				{classNameID && shareable && (
+					<ClayButton displayType="secondary">
+						{Liferay.Language.get('share')}
+					</ClayButton>
 				)}
 			</div>
 		</div>
@@ -53,8 +71,11 @@ Preview.defaultProps = {
 };
 
 Preview.propTypes = {
+	classNameID: PropTypes.string,
+	classPK: PropTypes.string,
 	downloadURL: PropTypes.string,
 	imageURL: PropTypes.string.isRequired,
+	shareable: PropTypes.bool,
 	title: PropTypes.string.isRequired,
 	viewURL: PropTypes.string,
 };

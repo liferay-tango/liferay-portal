@@ -47,6 +47,7 @@ const formatDate = (date, languageTag) => {
 };
 
 const SidebarPanelInfoView = ({
+	classNameId,
 	classPK,
 	createDate,
 	description,
@@ -59,6 +60,7 @@ const SidebarPanelInfoView = ({
 	title,
 	type,
 	preview,
+	shareable,
 	user,
 	versions = [],
 	viewURLs = [],
@@ -147,12 +149,15 @@ const SidebarPanelInfoView = ({
 					<span className="c-ml-2 text-secondary">{user.name}</span>
 				</div>
 
-				{preview && preview.url && (
+				{(preview || preview?.downloadURL || shareable) && (
 					<Preview
-						downloadURL={preview.downloadURL}
-						imageURL={preview.imageURL}
+						classNameID={classNameId}
+						classPK={classPK}
+						downloadURL={preview?.downloadURL}
+						imageURL={preview?.imageURL}
+						shareable={shareable}
 						title={title}
-						url={preview.url}
+						url={preview?.url}
 					/>
 				)}
 
@@ -299,12 +304,14 @@ SidebarPanelInfoView.defaultProps = {
 };
 
 SidebarPanelInfoView.propTypes = {
+	classNameId: PropTypes.string,
 	classPK: PropTypes.string.isRequired,
 	clipboard: PropTypes.object,
 	createDate: PropTypes.string.isRequired,
 	description: PropTypes.string,
 	modifiedDate: PropTypes.string.isRequired,
 	preview: PropTypes.object,
+	shareable: PropTypes.bool,
 	specificFields: PropTypes.object.isRequired,
 	subType: PropTypes.string.isRequired,
 	tags: PropTypes.array,
