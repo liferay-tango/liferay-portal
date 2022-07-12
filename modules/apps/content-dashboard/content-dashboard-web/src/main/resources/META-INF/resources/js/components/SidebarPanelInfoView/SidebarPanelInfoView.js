@@ -12,13 +12,13 @@
  * details.
  */
 
-import ClayButton from '@clayui/button';
 import ClayIcon from '@clayui/icon';
 import ClayLabel from '@clayui/label';
 import ClayLink from '@clayui/link';
 import ClayPanel from '@clayui/panel';
 import ClaySticker from '@clayui/sticker';
 import classnames from 'classnames';
+import {sub} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -28,6 +28,7 @@ import FileUrlCopyButton from './FileUrlCopyButton';
 import ItemLanguages from './ItemLanguages';
 import ItemVocabularies from './ItemVocabularies';
 import Preview from './Preview';
+import Share from './Share';
 import {
 	getCategoriesCountFromVocabularies,
 	groupVocabulariesBy,
@@ -173,9 +174,14 @@ const SidebarPanelInfoView = ({
 						)}
 
 						{classNameId && shareable && (
-							<ClayButton displayType="secondary">
-								{Liferay.Language.get('share')}
-							</ClayButton>
+							<Share
+								classNameId={classNameId}
+								classPK={classPK}
+								title={sub(
+									Liferay.Language.get('share-x'),
+									title
+								)}
+							/>
 						)}
 					</div>
 				)}
