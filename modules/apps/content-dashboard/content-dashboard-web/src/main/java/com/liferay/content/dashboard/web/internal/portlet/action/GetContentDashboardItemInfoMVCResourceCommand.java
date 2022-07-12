@@ -19,7 +19,6 @@ import com.liferay.asset.kernel.model.AssetTag;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.model.AssetVocabularyConstants;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
-import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.content.dashboard.item.action.ContentDashboardItemAction;
 import com.liferay.content.dashboard.web.internal.constants.ContentDashboardPortletKeys;
 import com.liferay.content.dashboard.web.internal.item.ContentDashboardItem;
@@ -36,10 +35,11 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
-import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -49,9 +49,11 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.sharing.configuration.SharingConfiguration;
+import com.liferay.sharing.configuration.SharingConfigurationFactory;
+import com.liferay.sharing.security.permission.SharingPermission;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -76,9 +78,6 @@ import javax.portlet.ResourceResponse;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.liferay.sharing.configuration.SharingConfiguration;
-import com.liferay.sharing.configuration.SharingConfigurationFactory;
-import com.liferay.sharing.security.permission.SharingPermission;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -133,76 +132,82 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 				}
 			).map(
 				contentDashboardItem -> {
-					long contentDashboardItemClassNameId = _getClassNameId(contentDashboardItem);
-					long contentDashboardClassPK = _getClassPK(contentDashboardItem);
+					long contentDashboardItemClassNameId = _getClassNameId(
+						contentDashboardItem);
+					long contentDashboardClassPK = _getClassPK(
+						contentDashboardItem);
+
 					return JSONUtil.put(
-					"className", _getClassName(contentDashboardItem)
-				).put(
-					"classNameId", contentDashboardItemClassNameId
-				).put(
-					"classPK", contentDashboardClassPK
-				).put(
-					"clipboard", _getClipboardJSONObject(contentDashboardItem)
-				).put(
-					"createDate",
-					_toString(contentDashboardItem.getCreateDate())
-				).put(
-					"description", contentDashboardItem.getDescription(locale)
-				).put(
-					"sharingEnabled", _isSharingEnabled(
-						contentDashboardItemClassNameId,
-						contentDashboardClassPK,
-						contentDashboardItem,
-						themeDisplay
+						"className", _getClassName(contentDashboardItem)
+					).put(
+						"classNameId", contentDashboardItemClassNameId
+					).put(
+						"classPK", contentDashboardClassPK
+					).put(
+						"clipboard",
+						_getClipboardJSONObject(contentDashboardItem)
+					).put(
+						"createDate",
+						_toString(contentDashboardItem.getCreateDate())
+					).put(
+						"description",
+						contentDashboardItem.getDescription(locale)
+					).put(
+						"languageTag", locale.toLanguageTag()
+					).put(
+						"modifiedDate",
+						_toString(contentDashboardItem.getModifiedDate())
+					).put(
+						"preview",
+						Optional.ofNullable(
+							contentDashboardItem.getPreview()
+						).map(
+							ContentDashboardItem.Preview::toJSONObject
+						).orElse(
+							null
 						)
-				).put(
-					"languageTag", locale.toLanguageTag()
-				).put(
-					"modifiedDate",
-					_toString(contentDashboardItem.getModifiedDate())
-				).put(
-					"preview",
-					Optional.ofNullable(
-						contentDashboardItem.getPreview()
-					).map(
-						ContentDashboardItem.Preview::toJSONObject
-					).orElse(
-						null
-					)
-				).put(
-					"specificFields",
-					_getSpecificFieldsJSONObject(contentDashboardItem, locale)
-				).put(
-					"subType",
-					Optional.ofNullable(
-						contentDashboardItem.getContentDashboardItemSubtype()
-					).map(
-						contentDashboardItemSubtype ->
-							contentDashboardItemSubtype.getLabel(locale)
-					).orElse(
-						StringPool.BLANK
-					)
-				).put(
-					"tags", _getAssetTagsJSONArray(contentDashboardItem)
-				).put(
-					"title", contentDashboardItem.getTitle(locale)
-				).put(
-					"type", contentDashboardItem.getTypeLabel(locale)
-				).put(
-					"user",
-					_getUserJSONObject(contentDashboardItem, themeDisplay)
-				).put(
-					"versions",
-					_getVersionsJSONArray(contentDashboardItem, locale)
-				).put(
-					"viewURLs",
-					_getViewURLsJSONArray(
-						contentDashboardItem, httpServletRequest)
-				).put(
-					"vocabularies",
-					_getAssetVocabulariesJSONObject(
-						contentDashboardItem, locale)
-				); }
+					).put(
+						"sharingEnabled",
+						_isSharingEnabled(
+							contentDashboardItemClassNameId,
+							contentDashboardClassPK, themeDisplay)
+					).put(
+						"specificFields",
+						_getSpecificFieldsJSONObject(
+							contentDashboardItem, locale)
+					).put(
+						"subType",
+						Optional.ofNullable(
+							contentDashboardItem.
+								getContentDashboardItemSubtype()
+						).map(
+							contentDashboardItemSubtype ->
+								contentDashboardItemSubtype.getLabel(locale)
+						).orElse(
+							StringPool.BLANK
+						)
+					).put(
+						"tags", _getAssetTagsJSONArray(contentDashboardItem)
+					).put(
+						"title", contentDashboardItem.getTitle(locale)
+					).put(
+						"type", contentDashboardItem.getTypeLabel(locale)
+					).put(
+						"user",
+						_getUserJSONObject(contentDashboardItem, themeDisplay)
+					).put(
+						"versions",
+						_getVersionsJSONArray(contentDashboardItem, locale)
+					).put(
+						"viewURLs",
+						_getViewURLsJSONArray(
+							contentDashboardItem, httpServletRequest)
+					).put(
+						"vocabularies",
+						_getAssetVocabulariesJSONObject(
+							contentDashboardItem, locale)
+					);
+				}
 			).orElseGet(
 				JSONFactoryUtil::createJSONObject
 			);
@@ -334,39 +339,6 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 			});
 	}
 
-	private boolean _isSharingEnabled(
-		long classNameId, long classPK, ContentDashboardItem<?> contentDashboardItem,
-		ThemeDisplay themeDisplay ) {
-
-		SharingConfiguration sharingConfiguration =
-				_sharingConfigurationFactory.getGroupSharingConfiguration(
-				themeDisplay.getSiteGroup());
-
-		if (!sharingConfiguration.isEnabled()) {
-			return false;
-		}
-
-		boolean sharingEnabled = false;
-
-		try {
-			sharingEnabled = _sharingPermission.containsSharePermission(
-				themeDisplay.getPermissionChecker(), classNameId,
-				classPK, themeDisplay.getScopeGroupId());
-		}
-
-		catch (PortalException portalException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(portalException);
-			}
-		}
-
-		if (sharingEnabled){
-			return true;
-		}
-
-		return false;
-	}
-
 	private JSONObject _getSpecificFieldsJSONObject(
 		ContentDashboardItem contentDashboardItem, Locale locale) {
 
@@ -490,6 +462,54 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 			).toArray());
 	}
 
+	private boolean _isSharingEnabled(
+		long classNameId, long classPK, ThemeDisplay themeDisplay) {
+
+		Company company = null;
+
+		try {
+			company = _companyLocalService.getCompany(
+				themeDisplay.getCompanyId());
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException);
+			}
+		}
+
+		SharingConfiguration companySharingConfiguration =
+			_sharingConfigurationFactory.getCompanySharingConfiguration(
+				company);
+
+		if (!companySharingConfiguration.isEnabled()) {
+			return false;
+		}
+
+		SharingConfiguration sharingConfiguration =
+			_sharingConfigurationFactory.getGroupSharingConfiguration(
+				themeDisplay.getSiteGroup());
+
+		if (!sharingConfiguration.isEnabled()) {
+			return false;
+		}
+
+		try {
+			if (_sharingPermission.containsSharePermission(
+					themeDisplay.getPermissionChecker(), classNameId, classPK,
+					themeDisplay.getScopeGroupId())) {
+
+				return true;
+			}
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException);
+			}
+		}
+
+		return false;
+	}
+
 	private String _toString(Date date) {
 		Instant instant = date.toInstant();
 
@@ -519,6 +539,9 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 	private AssetVocabularyLocalService _assetVocabularyLocalService;
 
 	@Reference
+	private CompanyLocalService _companyLocalService;
+
+	@Reference
 	private ContentDashboardItemFactoryTracker
 		_contentDashboardItemFactoryTracker;
 
@@ -532,11 +555,12 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 	private Portal _portal;
 
 	@Reference
-	private UserLocalService _userLocalService;
+	private SharingConfigurationFactory _sharingConfigurationFactory;
 
 	@Reference
 	private SharingPermission _sharingPermission;
 
 	@Reference
-	private SharingConfigurationFactory _sharingConfigurationFactory;
+	private UserLocalService _userLocalService;
+
 }
