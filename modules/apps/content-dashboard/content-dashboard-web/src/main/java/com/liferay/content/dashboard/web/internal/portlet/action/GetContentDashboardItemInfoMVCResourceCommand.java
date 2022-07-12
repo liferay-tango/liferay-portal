@@ -53,6 +53,7 @@ import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.sharing.configuration.SharingConfiguration;
 import com.liferay.sharing.configuration.SharingConfigurationFactory;
+import com.liferay.sharing.display.context.util.SharingJavaScriptFactory;
 import com.liferay.sharing.security.permission.SharingPermission;
 
 import java.time.Instant;
@@ -132,15 +133,30 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 				}
 			).map(
 				contentDashboardItem -> {
+					String classNameContentDashboard = _getClassName(
+						contentDashboardItem);
 					long contentDashboardItemClassNameId = _getClassNameId(
 						contentDashboardItem);
 					long contentDashboardClassPK = _getClassPK(
 						contentDashboardItem);
+					String onShareClick = "";
+
+					try {
+						onShareClick =
+							_sharingJavaScriptFactory.
+								createSharingOnClickMethod(
+									classNameContentDashboard,
+									contentDashboardClassPK,
+									httpServletRequest);
+					}
+					catch (PortalException portalException) {
+						if (_log.isInfoEnabled()) {
+							_log.info(portalException);
+						}
+					}
 
 					return JSONUtil.put(
-						"className", _getClassName(contentDashboardItem)
-					).put(
-						"classNameId", contentDashboardItemClassNameId
+						"className", classNameContentDashboard
 					).put(
 						"classPK", contentDashboardClassPK
 					).put(
@@ -158,6 +174,8 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 						"modifiedDate",
 						_toString(contentDashboardItem.getModifiedDate())
 					).put(
+						"onShareClick", onShareClick
+					).put(
 						"preview",
 						Optional.ofNullable(
 							contentDashboardItem.getPreview()
@@ -167,8 +185,8 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 							null
 						)
 					).put(
-						"sharingEnabled",
-						_isSharingEnabled(
+						"shareable",
+						_isShareable(
 							contentDashboardItemClassNameId,
 							contentDashboardClassPK, themeDisplay)
 					).put(
@@ -462,7 +480,7 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 			).toArray());
 	}
 
-	private boolean _isSharingEnabled(
+	private boolean _isShareable(
 		long classNameId, long classPK, ThemeDisplay themeDisplay) {
 
 		Company company = null;
@@ -556,6 +574,9 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 
 	@Reference
 	private SharingConfigurationFactory _sharingConfigurationFactory;
+
+	@Reference
+	private SharingJavaScriptFactory _sharingJavaScriptFactory;
 
 	@Reference
 	private SharingPermission _sharingPermission;
