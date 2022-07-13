@@ -139,21 +139,6 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 						contentDashboardItem);
 					long contentDashboardClassPK = _getClassPK(
 						contentDashboardItem);
-					String onShareClick = "";
-
-					try {
-						onShareClick =
-							_sharingJavaScriptFactory.
-								createSharingOnClickMethod(
-									classNameContentDashboard,
-									contentDashboardClassPK,
-									httpServletRequest);
-					}
-					catch (PortalException portalException) {
-						if (_log.isInfoEnabled()) {
-							_log.info(portalException);
-						}
-					}
 
 					return JSONUtil.put(
 						"className", classNameContentDashboard
@@ -174,7 +159,12 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 						"modifiedDate",
 						_toString(contentDashboardItem.getModifiedDate())
 					).put(
-						"onShareClick", onShareClick
+						"onShareClick",
+						() ->
+							_sharingJavaScriptFactory.
+								createSharingOnClickMethod(
+									classNameContentDashboard,
+									contentDashboardClassPK, httpServletRequest)
 					).put(
 						"preview",
 						Optional.ofNullable(
