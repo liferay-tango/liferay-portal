@@ -18,7 +18,6 @@ import ClayLink from '@clayui/link';
 import ClayPanel from '@clayui/panel';
 import ClaySticker from '@clayui/sticker';
 import classnames from 'classnames';
-import {sub} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -50,7 +49,6 @@ const formatDate = (date, languageTag) => {
 };
 
 const SidebarPanelInfoView = ({
-	classNameId,
 	classPK,
 	createDate,
 	description,
@@ -62,6 +60,7 @@ const SidebarPanelInfoView = ({
 	tags = [],
 	title,
 	type,
+	onShareClick,
 	preview,
 	shareable,
 	user,
@@ -92,7 +91,7 @@ const SidebarPanelInfoView = ({
 
 	const showClipboard = clipboard && Object.keys(clipboard).length !== 0;
 
-	const hasActions = preview?.downloadURL || (classNameId && shareable);
+	const hasActions = preview?.downloadURL || (onShareClick && shareable);
 
 	return (
 		<>
@@ -173,15 +172,8 @@ const SidebarPanelInfoView = ({
 							</ClayLink>
 						)}
 
-						{classNameId && shareable && (
-							<Share
-								classNameId={classNameId}
-								classPK={classPK}
-								title={sub(
-									Liferay.Language.get('share-x'),
-									title
-								)}
-							/>
+						{shareable && onShareClick && (
+							<Share onShareClick={onShareClick} />
 						)}
 					</div>
 				)}
@@ -329,12 +321,12 @@ SidebarPanelInfoView.defaultProps = {
 };
 
 SidebarPanelInfoView.propTypes = {
-	classNameId: PropTypes.string,
 	classPK: PropTypes.string.isRequired,
 	clipboard: PropTypes.object,
 	createDate: PropTypes.string.isRequired,
 	description: PropTypes.string,
 	modifiedDate: PropTypes.string.isRequired,
+	onShareClick: PropTypes.string,
 	preview: PropTypes.object,
 	shareable: PropTypes.bool,
 	specificFields: PropTypes.object.isRequired,

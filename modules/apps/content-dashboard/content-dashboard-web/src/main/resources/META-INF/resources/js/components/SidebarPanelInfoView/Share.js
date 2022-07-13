@@ -13,18 +13,34 @@
  */
 
 import ClayButton from '@clayui/button';
+import {runScriptsInElement} from 'frontend-js-web';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, {useMemo, useRef} from 'react';
 
-const Share = ({classNameId, classPK, title}) => {
+const Share = ({onShareClick}) => {
+	const contentMemoized = useMemo(
+		() => `<script>${onShareClick}</script>`,
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[]
+	);
+	const elRef = useRef(null);
+
 	const handleShareClick = () => {
-		Liferay.Sharing.share(classNameId, classPK, title);
+		if (elRef.current) {
+			runScriptsInElement(elRef.current);
+		}
 	};
 
 	return (
-		<ClayButton displayType="secondary" onClick={handleShareClick}>
-			{Liferay.Language.get('share')}
-		</ClayButton>
+		<>
+			<span
+				dangerouslySetInnerHTML={{__html: contentMemoized}}
+				ref={elRef}
+			/>
+			<ClayButton displayType="secondary" onClick={handleShareClick}>
+				{Liferay.Language.get('share')}
+			</ClayButton>
+		</>
 	);
 };
 
