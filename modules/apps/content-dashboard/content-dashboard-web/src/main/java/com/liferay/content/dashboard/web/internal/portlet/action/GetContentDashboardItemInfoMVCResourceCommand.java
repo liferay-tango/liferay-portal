@@ -152,6 +152,9 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 						null
 					)
 				).put(
+					"sharingURL",
+					_getSharingURL(contentDashboardItem, httpServletRequest)
+				).put(
 					"specificFields",
 					_getSpecificFieldsJSONObject(contentDashboardItem, locale)
 				).put(
@@ -307,6 +310,20 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 
 				return first;
 			});
+	}
+
+	private String _getSharingURL(
+		ContentDashboardItem contentDashboardItem,
+		HttpServletRequest httpServletRequest) {
+
+		List<ContentDashboardItemAction> contentDashboardItemActions =
+			contentDashboardItem.getContentDashboardItemActions(
+				httpServletRequest, ContentDashboardItemAction.Type.SHARING);
+
+		ContentDashboardItemAction contentDashboardItemAction =
+			contentDashboardItemActions.get(0);
+
+		return contentDashboardItemAction.getURL();
 	}
 
 	private JSONObject _getSpecificFieldsJSONObject(
