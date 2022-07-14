@@ -25,6 +25,7 @@ import com.liferay.content.dashboard.web.internal.item.ContentDashboardItem;
 import com.liferay.content.dashboard.web.internal.item.ContentDashboardItemFactory;
 import com.liferay.content.dashboard.web.internal.item.ContentDashboardItemFactoryTracker;
 import com.liferay.content.dashboard.web.internal.util.ContentDashboardGroupUtil;
+import com.liferay.document.library.kernel.model.DLFileEntryConstants;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -39,6 +40,7 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -219,6 +221,8 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 			).orElseGet(
 				JSONFactoryUtil::createJSONObject
 			);
+
+			_sharingJavaScriptFactory.requestSharingJavascript();
 
 			JSONPortletResponseUtil.writeJSON(
 				resourceRequest, resourceResponse, jsonObject);
@@ -502,6 +506,15 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 		}
 
 		try {
+			String className = _portal.getClassName(classNameId);
+
+			// LPS-111037
+
+			if (Objects.equals(FileEntry.class.getName(), className)) {
+				classNameId = _portal.getClassNameId(
+					DLFileEntryConstants.getClassName());
+			}
+
 			if (_sharingPermission.containsSharePermission(
 					themeDisplay.getPermissionChecker(), classNameId, classPK,
 					themeDisplay.getScopeGroupId())) {
