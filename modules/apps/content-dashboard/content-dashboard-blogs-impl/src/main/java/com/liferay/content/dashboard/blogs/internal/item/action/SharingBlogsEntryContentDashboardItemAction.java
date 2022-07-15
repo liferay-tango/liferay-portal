@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
+import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.Portal;
 
@@ -88,6 +89,8 @@ public class SharingBlogsEntryContentDashboardItemAction
 				"className", BlogsEntry.class.getName()
 			).setParameter(
 				"classPK", _blogsEntry.getEntryId()
+			).setWindowState(
+				LiferayWindowState.EXCLUSIVE
 			).buildPortletURL();
 
 			return portletURL.toString();
