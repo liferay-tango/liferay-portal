@@ -27,6 +27,7 @@ import FileUrlCopyButton from './FileUrlCopyButton';
 import ItemLanguages from './ItemLanguages';
 import ItemVocabularies from './ItemVocabularies';
 import Preview from './Preview';
+import Share from './Share';
 import {
 	getCategoriesCountFromVocabularies,
 	groupVocabulariesBy,
@@ -60,6 +61,7 @@ const SidebarPanelInfoView = ({
 	title,
 	type,
 	preview,
+	sharingURL,
 	user,
 	versions = [],
 	viewURLs = [],
@@ -88,7 +90,7 @@ const SidebarPanelInfoView = ({
 
 	const showClipboard = clipboard && Object.keys(clipboard).length !== 0;
 
-	const hasActions = preview?.downloadURL;
+	const hasActions = preview?.downloadURL || sharingURL;
 
 	return (
 		<>
@@ -168,6 +170,8 @@ const SidebarPanelInfoView = ({
 								{Liferay.Language.get('download')}
 							</ClayLink>
 						)}
+
+						{sharingURL && <Share sharingURL={sharingURL} />}
 					</div>
 				)}
 
@@ -320,6 +324,7 @@ SidebarPanelInfoView.propTypes = {
 	description: PropTypes.string,
 	modifiedDate: PropTypes.string.isRequired,
 	preview: PropTypes.object,
+	sharingURL: PropTypes.string,
 	specificFields: PropTypes.object.isRequired,
 	subType: PropTypes.string.isRequired,
 	tags: PropTypes.array,
