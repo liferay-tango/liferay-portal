@@ -82,7 +82,7 @@ public class SharingFileEntryContentDashboardItemAction
 			PortletURL portletURL = PortletURLBuilder.createRenderURL(
 				liferayPortletResponse,
 				"com_liferay_content_dashboard_web_portlet_" +
-				"ContentDashboardAdminPortlet"
+					"ContentDashboardAdminPortlet"
 			).setMVCPath(
 				"/sharing_button.jsp"
 			).setParameter(

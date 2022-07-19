@@ -17,12 +17,11 @@ package com.liferay.content.dashboard.document.library.internal.item.action.prov
 import com.liferay.content.dashboard.document.library.internal.item.action.SharingFileEntryContentDashboardItemAction;
 import com.liferay.content.dashboard.item.action.ContentDashboardItemAction;
 import com.liferay.content.dashboard.item.action.provider.ContentDashboardItemActionProvider;
-
+import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
@@ -81,8 +80,9 @@ public class SharingFileEntryContentDashboardItemActionProvider
 				_sharingPermission.containsSharePermission(
 					themeDisplay.getPermissionChecker(),
 					_classNameLocalService.getClassNameId(
-						FileEntry.class.getName()),
-					fileEntry.getFileEntryId(), themeDisplay.getScopeGroupId())) {
+						DLFileEntry.class.getName()),
+					fileEntry.getFileEntryId(),
+					themeDisplay.getScopeGroupId())) {
 
 				return true;
 			}
@@ -116,7 +116,9 @@ public class SharingFileEntryContentDashboardItemActionProvider
 	@Reference
 	private Language _language;
 
-	@Reference(target = "(model.class.name=com.liferay.portal.kernel.repository.model.FileEntry)")
+	@Reference(
+		target = "(model.class.name=com.liferay.portal.kernel.repository.model.FileEntry)"
+	)
 	private ModelResourcePermission<FileEntry> _modelResourcePermission;
 
 	@Reference

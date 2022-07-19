@@ -50,12 +50,16 @@ public class ContentDashboardAdminSharingDisplayContext {
 	}
 
 	public String getClassName() {
-		return _contentDashboardItemSearchClassMapperTracker.getSearchClassName(
-			ParamUtil.getString(_httpServletRequest, "className"));
+		return ParamUtil.getString(_httpServletRequest, "className");
 	}
 
 	public long getClassPK() {
 		return ParamUtil.getLong(_httpServletRequest, "classPK");
+	}
+
+	public String getSearchClassName() {
+		return _contentDashboardItemSearchClassMapperTracker.getSearchClassName(
+			ParamUtil.getString(_httpServletRequest, "className"));
 	}
 
 	public boolean isSharingButtonVisible() throws PortalException {

@@ -22,7 +22,7 @@ ContentDashboardAdminSharingDisplayContext contentDashboardAdminConfigurationDis
 
 <c:if test="<%= contentDashboardAdminConfigurationDisplayContext.isSharingButtonVisible() %>">
 	<liferay-sharing:button
-		className="<%= contentDashboardAdminConfigurationDisplayContext.getClassName() %>"
+		className="<%= contentDashboardAdminConfigurationDisplayContext.getSearchClassName() %>"
 		classPK="<%= contentDashboardAdminConfigurationDisplayContext.getClassPK() %>"
 	/>
 </c:if>
