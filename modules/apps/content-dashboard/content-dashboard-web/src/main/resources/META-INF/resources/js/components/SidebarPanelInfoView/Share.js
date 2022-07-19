@@ -36,7 +36,7 @@ const Share = ({fetchSharingButtonURL}) => {
 		}
 	}, [fetchSharingButtonURL]);
 
-	return <div ref={elRef} />;
+	return <span ref={elRef} />;
 };
 
 Share.propTypes = {
