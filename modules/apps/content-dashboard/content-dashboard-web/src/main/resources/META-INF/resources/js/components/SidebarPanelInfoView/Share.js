@@ -16,12 +16,12 @@ import {fetch, runScriptsInElement} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, {useEffect, useRef} from 'react';
 
-const Share = ({sharingURL}) => {
+const Share = ({fetchSharingButtonURL}) => {
 	const elRef = useRef(null);
 
 	useEffect(() => {
 		if (elRef.current) {
-			fetch(sharingURL, {
+			fetch(fetchSharingButtonURL, {
 				method: 'GET',
 			})
 				.then((response) =>
@@ -34,13 +34,13 @@ const Share = ({sharingURL}) => {
 					console.log('Failed to fetch share button: ', error);
 				});
 		}
-	}, [sharingURL]);
+	}, [fetchSharingButtonURL]);
 
 	return <div ref={elRef} />;
 };
 
 Share.propTypes = {
-	sharingURL: PropTypes.string.isRequired,
+	fetchSharingButtonURL: PropTypes.string.isRequired,
 };
 
 export default Share;

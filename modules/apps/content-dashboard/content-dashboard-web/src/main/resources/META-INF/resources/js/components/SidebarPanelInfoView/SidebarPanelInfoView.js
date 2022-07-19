@@ -61,7 +61,7 @@ const SidebarPanelInfoView = ({
 	title,
 	type,
 	preview,
-	sharingURL,
+	fetchSharingButtonURL,
 	user,
 	versions = [],
 	viewURLs = [],
@@ -90,7 +90,7 @@ const SidebarPanelInfoView = ({
 
 	const showClipboard = clipboard && Object.keys(clipboard).length !== 0;
 
-	const hasActions = preview?.downloadURL || sharingURL;
+	const hasActions = preview?.downloadURL || fetchSharingButtonURL;
 
 	return (
 		<>
@@ -171,7 +171,7 @@ const SidebarPanelInfoView = ({
 							</ClayLink>
 						)}
 
-						{sharingURL && <Share sharingURL={sharingURL} />}
+						{fetchSharingButtonURL && <Share fetchSharingButtonURL={fetchSharingButtonURL} />}
 					</div>
 				)}
 
@@ -324,7 +324,7 @@ SidebarPanelInfoView.propTypes = {
 	description: PropTypes.string,
 	modifiedDate: PropTypes.string.isRequired,
 	preview: PropTypes.object,
-	sharingURL: PropTypes.string,
+	fetchSharingButtonURL: PropTypes.string,
 	specificFields: PropTypes.object.isRequired,
 	subType: PropTypes.string.isRequired,
 	tags: PropTypes.array,

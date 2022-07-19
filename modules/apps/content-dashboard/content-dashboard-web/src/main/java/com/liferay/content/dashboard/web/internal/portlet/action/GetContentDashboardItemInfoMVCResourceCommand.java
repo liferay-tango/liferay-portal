@@ -138,6 +138,10 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 				).put(
 					"description", contentDashboardItem.getDescription(locale)
 				).put(
+					"fetchSharingButtonURL",
+					_getFetchSharingButtonURL(
+						contentDashboardItem, httpServletRequest)
+				).put(
 					"languageTag", locale.toLanguageTag()
 				).put(
 					"modifiedDate",
@@ -151,9 +155,6 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 					).orElse(
 						null
 					)
-				).put(
-					"sharingURL",
-					_getSharingURL(contentDashboardItem, httpServletRequest)
 				).put(
 					"specificFields",
 					_getSpecificFieldsJSONObject(contentDashboardItem, locale)
@@ -312,7 +313,7 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 			});
 	}
 
-	private String _getSharingURL(
+	private String _getFetchSharingButtonURL(
 		ContentDashboardItem contentDashboardItem,
 		HttpServletRequest httpServletRequest) {
 
