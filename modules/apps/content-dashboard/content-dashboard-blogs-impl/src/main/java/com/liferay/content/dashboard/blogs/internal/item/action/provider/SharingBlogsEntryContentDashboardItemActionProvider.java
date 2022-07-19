@@ -63,7 +63,7 @@ public class SharingBlogsEntryContentDashboardItemActionProvider
 
 	@Override
 	public ContentDashboardItemAction.Type getType() {
-		return ContentDashboardItemAction.Type.SHARING;
+		return ContentDashboardItemAction.Type.SHARING_BUTTON;
 	}
 
 	@Override

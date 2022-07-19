@@ -66,7 +66,7 @@ public class SharingBlogsEntryContentDashboardItemAction
 
 	@Override
 	public Type getType() {
-		return Type.SHARING;
+		return Type.SHARING_BUTTON;
 	}
 
 	@Override

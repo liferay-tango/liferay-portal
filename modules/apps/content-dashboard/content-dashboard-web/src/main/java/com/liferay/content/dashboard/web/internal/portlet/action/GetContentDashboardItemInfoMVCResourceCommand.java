@@ -318,17 +318,17 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 
 		List<ContentDashboardItemAction> contentDashboardItemActions =
 			contentDashboardItem.getContentDashboardItemActions(
-				httpServletRequest, ContentDashboardItemAction.Type.SHARING);
+				httpServletRequest,
+				ContentDashboardItemAction.Type.SHARING_BUTTON);
 
-		if (ListUtil.isNotEmpty(contentDashboardItemActions)){
+		if (ListUtil.isNotEmpty(contentDashboardItemActions)) {
 			ContentDashboardItemAction contentDashboardItemAction =
 				contentDashboardItemActions.get(0);
+
 			return contentDashboardItemAction.getURL();
-
 		}
+
 		return null;
-
-
 	}
 
 	private JSONObject _getSpecificFieldsJSONObject(
