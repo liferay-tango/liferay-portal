@@ -320,10 +320,15 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 			contentDashboardItem.getContentDashboardItemActions(
 				httpServletRequest, ContentDashboardItemAction.Type.SHARING);
 
-		ContentDashboardItemAction contentDashboardItemAction =
-			contentDashboardItemActions.get(0);
+		if (ListUtil.isNotEmpty(contentDashboardItemActions)){
+			ContentDashboardItemAction contentDashboardItemAction =
+				contentDashboardItemActions.get(0);
+			return contentDashboardItemAction.getURL();
 
-		return contentDashboardItemAction.getURL();
+		}
+		return null;
+
+
 	}
 
 	private JSONObject _getSpecificFieldsJSONObject(
