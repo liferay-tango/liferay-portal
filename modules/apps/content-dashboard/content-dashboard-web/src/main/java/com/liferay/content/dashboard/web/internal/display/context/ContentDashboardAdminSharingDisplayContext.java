@@ -93,6 +93,38 @@ public class ContentDashboardAdminSharingDisplayContext {
 		return false;
 	}
 
+	public boolean isSharingCollaboratorsButtonVisible() throws PortalException {
+		Optional<ContentDashboardItemFactory<?>>
+			contentDashboardItemFactoryOptional =
+			_contentDashboardItemFactoryTracker.
+				getContentDashboardItemFactoryOptional(getClassName());
+
+		Optional<ContentDashboardItem<?>> contentDashboardItemOptional =
+			contentDashboardItemFactoryOptional.map(
+				contentDashboardItemFactory -> _toContentDashboardItemOptional(
+					contentDashboardItemFactory, getClassPK())
+			).orElse(
+				Optional.empty()
+			);
+
+		if (!contentDashboardItemOptional.isPresent()) {
+			return false;
+		}
+
+		ContentDashboardItem<?> contentDashboardItem =
+			contentDashboardItemOptional.get();
+
+		ContentDashboardItemAction contentDashboardItemAction =
+			_getSharingCollaboratorsContentDashboardItemAction(
+				contentDashboardItem);
+
+		if (contentDashboardItemAction.getURL() != null) {
+			return true;
+		}
+
+		return false;
+	}
+
 	private ContentDashboardItemAction _getSharingContentDashboardItemAction(
 		ContentDashboardItem<?> contentDashboardItem) {
 
@@ -100,6 +132,23 @@ public class ContentDashboardAdminSharingDisplayContext {
 			contentDashboardItem.getContentDashboardItemActions(
 				_httpServletRequest,
 				ContentDashboardItemAction.Type.SHARING_BUTTON);
+
+		if (!ListUtil.isEmpty(contentDashboardItemActions)) {
+			return contentDashboardItemActions.get(0);
+		}
+
+		return null;
+	}
+
+
+	private ContentDashboardItemAction
+		_getSharingCollaboratorsContentDashboardItemAction(
+			ContentDashboardItem<?> contentDashboardItem) {
+
+		List<ContentDashboardItemAction> contentDashboardItemActions =
+			contentDashboardItem.getContentDashboardItemActions(
+				_httpServletRequest,
+				ContentDashboardItemAction.Type.SHARING_COLLABORATORS_BUTTON);
 
 		if (!ListUtil.isEmpty(contentDashboardItemActions)) {
 			return contentDashboardItemActions.get(0);
