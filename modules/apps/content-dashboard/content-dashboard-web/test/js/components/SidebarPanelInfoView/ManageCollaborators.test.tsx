@@ -37,6 +37,7 @@ const _getComponent = () => {
 	return (
 		<ManageCollaborators
 			fetchSharingContactsButtonURL={fetchSharingContactsButtonURL}
+			onError={() => {}}
 		/>
 	);
 };
