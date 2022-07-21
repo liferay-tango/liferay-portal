@@ -11,3 +11,51 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
+
+import {cleanup, render, waitFor} from '@testing-library/react';
+import {fetch, openToast, runScriptsInElement} from 'frontend-js-web';
+import React from 'react';
+
+import '@testing-library/jest-dom/extend-expect';
+
+import ManageCollaborators from '../../../../src/main/resources/META-INF/resources/js/components/SidebarPanelInfoView/ManageCollaborators';
+
+jest.mock('frontend-js-web', () => ({
+	fetch: jest.fn().mockReturnValue({
+		ok: true,
+		text: jest
+			.fn()
+			.mockReturnValue('<button>Manage Collaborators</button>'),
+	}),
+	openToast: jest.fn(),
+	runScriptsInElement: jest.fn(),
+}));
+
+const _getComponent = () => {
+	const fetchSharingContactsButtonURL =
+		'http://localhost:8080/fetch-manage-collaborators-button-url';
+
+	return (
+		<ManageCollaborators
+			fetchSharingContactsButtonURL={fetchSharingContactsButtonURL}
+		/>
+	);
+};
+
+describe('Manage collaborators component', () => {
+	afterEach(() => {
+		jest.restoreAllMocks();
+		cleanup();
+	});
+
+	it('call the endpoint and renders', async () => {
+		const {getByText} = render(_getComponent());
+
+		expect(fetch).toHaveBeenCalled();
+
+		await waitFor(() => {
+			expect(getByText('Manage Collaborators')).toBeInTheDocument();
+			expect(runScriptsInElement).toHaveBeenCalled();
+		});
+	});
+});
