@@ -22,7 +22,7 @@ ContentDashboardAdminSharingDisplayContext contentDashboardAdminConfigurationDis
 
 <c:if test="<%= contentDashboardAdminConfigurationDisplayContext.isSharingCollaboratorsButtonVisible() %>">
 	<liferay-sharing:collaborators
-		className="<%= contentDashboardAdminConfigurationDisplayContext.getClassName() %>"
+		className="<%= contentDashboardAdminConfigurationDisplayContext.getSearchClassName() %>"
 		classPK="<%= contentDashboardAdminConfigurationDisplayContext.getClassPK() %>"
 	/>
 </c:if>
