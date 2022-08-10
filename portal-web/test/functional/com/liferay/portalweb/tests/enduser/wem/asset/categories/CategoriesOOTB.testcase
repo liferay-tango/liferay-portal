@@ -24,6 +24,43 @@ definition {
 		}
 	}
 
+	@description = "LPS-148882: Given blogs entry editor screen
+	When user expands Categorization section
+	Then Audience and Stage vocabularies are visible"
+	@priority = "5"
+	test CheckCategoriesAtBlogs {
+
+		task ("Create a blog"){
+			HeadlessBlog.addBlogEntry(
+				content = "Blogs Entry Content",
+				groupName = "Test Site Name",
+				title = "Blogs Entry Title");
+		}
+
+		task ("Go to Blogs Admin and click to edit"){
+
+			BlogsNavigator.openBlogsAdmin(siteURLKey = "test-site-name");
+
+			BlogsNavigator.gotoEditCP(entryTitle = "Blogs Entry Title");
+
+		}
+
+		task ("Click to see categorization, assert if Audience and Stage are visible") {
+
+			Panel.expandPanel(panel = "Categorization");
+
+			AssertElementPresent(
+				key_categoryName = "Audience",
+				locator1 = "Categories#VOCABULARY_CATEGORY");
+
+			AssertElementPresent(
+				key_categoryName = "Stage",
+				locator1 = "Categories#VOCABULARY_CATEGORY");
+
+		}
+
+	}
+
 	@description = "LPS-131793 Given select modal window in the the categorization section in Documents and Media
 	When the user has NOT permissions to add new categories to Global vocabularies
 	Then the user is NOT able to add new categories from the select modal window"
