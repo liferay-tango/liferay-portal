@@ -14,186 +14,77 @@
 
 import {addParams, navigate, openSelectionModal} from 'frontend-js-web';
 
+const DEFAULT_VALUES = {
+	buttonAddLabel: Liferay.Language.get('select'),
+	iframeBodyCssClass: '',
+	modalHeight: '70vh',
+};
+
+/**
+ * Returns true if the specified value is an object. Not arrays, native events or functions.
+ * @param {?} value Variable to test.
+ * @return {boolean} Whether variable is an object.
+ */
+const _isObjectStrict = (value) =>
+	typeof value === 'object' &&
+	!Array.isArray(value) &&
+	value !== null &&
+	!Object.hasOwn(value, 'currentTarget');
+
+/**
+ * Returns URL with proper search params.
+ */
+const _getRedirectURLWithParams = ({data, portletNamespace, selection}) => {
+	const {itemValueKey, redirectURL, urlParamName} = data;
+
+	return [selection].flat().reduce((acc, item) => {
+		return addParams(
+			`${portletNamespace}${urlParamName}=${
+				itemValueKey ? item[itemValueKey] : JSON.stringify(item)
+			}`,
+			acc
+		);
+	}, redirectURL);
+};
+
+const _handleOnSelect = ({data, portletNamespace, selection}) => {
+	if (_isObjectStrict(selection)) {
+		selection = Object.values(selection).filter((item) => !item.unchecked);
+	}
+
+	navigate(
+		_getRedirectURLWithParams({
+			data,
+			portletNamespace,
+			selection,
+		})
+	);
+};
+
 export default function propsTransformer({portletNamespace, ...otherProps}) {
-	const selectAuthor = (itemData) => {
-		openSelectionModal({
-			buttonAddLabel: Liferay.Language.get('select'),
-			height: '70vh',
-			multiple: true,
-			onSelect: (selectedItem) => {
-				if (selectedItem) {
-					let redirectURL = itemData?.redirectURL;
-
-					selectedItem.forEach((item) => {
-						redirectURL = addParams(
-							`${portletNamespace}authorIds=${item.id}`,
-							redirectURL
-						);
-					});
-
-					navigate(redirectURL);
-				}
-			},
-			selectEventName: `${portletNamespace}selectedAuthorItem`,
-			size: 'lg',
-			title: itemData?.dialogTitle,
-			url: itemData?.selectAuthorURL,
-		});
-	};
-
-	const selectAssetCategory = (itemData) => {
-		openSelectionModal({
-			buttonAddLabel: Liferay.Language.get('select'),
-			height: '70vh',
-			iframeBodyCssClass: '',
-			multiple: true,
-			onSelect: (selectedItem) => {
-				if (selectedItem) {
-					const assetCategories = Object.keys(selectedItem).filter(
-						(key) => !selectedItem[key].unchecked
-					);
-
-					let redirectURL = itemData?.redirectURL;
-
-					assetCategories.forEach((assetCategory) => {
-						redirectURL = addParams(
-							`${portletNamespace}assetCategoryId=${selectedItem[assetCategory].categoryId}`,
-							redirectURL
-						);
-					});
-
-					navigate(redirectURL);
-				}
-			},
-			selectEventName: `${portletNamespace}selectedAssetCategory`,
-			size: 'md',
-			title: itemData?.dialogTitle,
-			url: itemData?.selectAssetCategoryURL,
-		});
-	};
-
-	const selectAssetTag = (itemData) => {
-		openSelectionModal({
-			buttonAddLabel: Liferay.Language.get('select'),
-			height: '70vh',
-			multiple: true,
-			onSelect: (selectedItem) => {
-				if (selectedItem) {
-					const assetTags = selectedItem.map((tag) => tag.value);
-
-					let redirectURL = itemData?.redirectURL;
-
-					assetTags.forEach((assetTag) => {
-						redirectURL = addParams(
-							`${portletNamespace}assetTagId=${assetTag}`,
-							redirectURL
-						);
-					});
-
-					navigate(redirectURL);
-				}
-			},
-			selectEventName: `${portletNamespace}selectedAssetTag`,
-			size: 'lg',
-			title: itemData?.dialogTitle,
-			url: itemData?.selectTagURL,
-		});
-	};
-
-	const selectContentDashboardItemSubtype = (itemData) => {
-		openSelectionModal({
-			buttonAddLabel: Liferay.Language.get('select'),
-			height: '70vh',
-			multiple: true,
-			onSelect: (selectedItems) => {
-				let redirectURL = itemData?.redirectURL;
-
-				selectedItems.forEach((item) => {
-					redirectURL = addParams(
-						`${portletNamespace}contentDashboardItemSubtypePayload=${JSON.stringify(
-							item
-						)}`,
-						redirectURL
-					);
-				});
-
-				navigate(redirectURL);
-			},
-			selectEventName: `${portletNamespace}selectedContentDashboardItemSubtype`,
-			size: 'md',
-			title: itemData?.dialogTitle,
-			url: itemData?.selectContentDashboardItemSubtypeURL,
-		});
-	};
-
-	const selectFileExtension = (itemData) => {
-		openSelectionModal({
-			buttonAddLabel: Liferay.Language.get('select'),
-			height: '70vh',
-			multiple: true,
-			onSelect: (selectedItems) => {
-				let redirectURL = itemData?.redirectURL;
-
-				selectedItems.forEach((item) => {
-					redirectURL = addParams(
-						`${portletNamespace}fileExtension=${item}`,
-						redirectURL
-					);
-				});
-
-				navigate(redirectURL);
-			},
-			selectEventName: `${portletNamespace}selectedFileExtension`,
-			size: 'md',
-			title: itemData?.dialogTitle,
-			url: itemData?.selectFileExtensionURL,
-		});
-	};
-
-	const selectScope = (itemData) => {
-		openSelectionModal({
-			height: '70vh',
-			id: `${portletNamespace}selectedScopeIdItem`,
-			onSelect: (selectedItem) => {
-				navigate(
-					addParams(
-						`${portletNamespace}scopeId=${selectedItem.groupid}`,
-						itemData?.redirectURL
-					)
-				);
-			},
-			selectEventName: `${portletNamespace}selectedScopeIdItem`,
-			size: 'lg',
-			title: itemData?.dialogTitle,
-			url: itemData?.selectScopeURL,
-		});
-	};
-
 	return {
 		...otherProps,
-		onFilterDropdownItemClick(event, {item}) {
-			const data = item?.data;
+		onFilterDropdownItemClick(_event, {item}) {
+			const {data, multiple, size} = item;
 
-			const action = data?.action;
+			const {dialogTitle, selectEventName, selectItemURL} = data;
 
-			if (action === 'selectAssetCategory') {
-				selectAssetCategory(data);
-			}
-			else if (action === 'selectAssetTag') {
-				selectAssetTag(data);
-			}
-			else if (action === 'selectAuthor') {
-				selectAuthor(data);
-			}
-			else if (action === 'selectContentDashboardItemSubtype') {
-				selectContentDashboardItemSubtype(data);
-			}
-			else if (action === 'selectScope') {
-				selectScope(data);
-			}
-			else if (action === 'selectFileExtension') {
-				selectFileExtension(data);
-			}
+			openSelectionModal({
+				buttonAddLabel: DEFAULT_VALUES.buttonAddLabel,
+				height: DEFAULT_VALUES.modalHeight,
+				iframeBodyCssClass: DEFAULT_VALUES.iframeBodyCssClass,
+				multiple,
+				onSelect: (selection) =>
+					_handleOnSelect({
+						data,
+						portletNamespace,
+						selection,
+					}),
+				selectEventName: portletNamespace + selectEventName,
+				size,
+				title: dialogTitle,
+				url: selectItemURL,
+			});
 		},
 	};
 }
