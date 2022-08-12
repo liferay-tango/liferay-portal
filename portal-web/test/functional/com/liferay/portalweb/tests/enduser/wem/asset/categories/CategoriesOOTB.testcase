@@ -251,6 +251,48 @@ definition {
 		}
 	}
 
+	@description = "LPS-148882: Given a Blog Entry with Audience and/or Stage categories
+	When the user filters by clicking at category's bar
+	Then the Blogs Entry is listed"
+	@priority = "4"
+	test CheckBlogFilterByCategoryBar {
+
+		task ("Add a global category") {
+			var categoryId1 = JSONCategory.addCategory(
+				groupName = "Global",
+				title = "Audience 1",
+				vocabularyName = "Audience");
+			var categoryId2 = JSONCategory.addCategory(
+				groupName = "Global",
+				title = "Stage 1",
+				vocabularyName = "Stage");
+		}
+
+		task ("Create a blog"){
+			HeadlessBlog.addBlogEntry(
+				assetCategoryIds = "${categoryId1},${categoryId2}",
+				content = "Blogs Entry Content",
+				groupName = "Test Site Name",
+				title = "Blogs Entry Title");
+		}
+
+		task ("Go to Content Dashboard and check the asset is being counted at graph") {
+			ApplicationsMenu.gotoSite(site = "Test Site Name");
+
+			ContentDashboard.goToContentDashboard();
+
+			Click(locator1 = "ContentDashboard#COLUMN_FILTER");
+
+			WaitForPageLoad();
+
+			AssertTextPresent(
+				locator1 = "ContentDashboard#FIRST_ELEMENT_LISTED",
+				value1 = "Blogs Entry Title");
+
+			
+		}
+	}
+
 	@description = "LPS-131793 Given select modal window in the the categorization section in Documents and Media
 	When the user has NOT permissions to add new categories to Global vocabularies
 	Then the user is NOT able to add new categories from the select modal window"
