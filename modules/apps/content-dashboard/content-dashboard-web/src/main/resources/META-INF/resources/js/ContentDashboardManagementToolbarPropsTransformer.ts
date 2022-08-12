@@ -121,9 +121,9 @@ const _getRedirectURLWithParams = ({
 	const {itemValueKey, redirectURL, urlParamName} = data;
 
 	return [selection]
-		.flat()
+		.reduce((acc, val) => acc.concat(val), []) // replace with flat()
 		.reduce(
-			(acc, item) =>
+			(acc: string, item: any) =>
 				addParams(
 					`${portletNamespace}${urlParamName}=${
 						itemValueKey ? item[itemValueKey] : JSON.stringify(item)
