@@ -1,7 +1,6 @@
 {
 	"@generated": "0352eebcea8943fb70090d8182ff86a222cd4206",
-	"@overrides": {
-	},
+	"@overrides": {},
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT OUTSIDE @overrides **",
 	"@see": "https://git.io/JY2EA",
 	"compilerOptions": {
@@ -20,17 +19,11 @@
 		"sourceMap": false,
 		"strict": true,
 		"target": "es6",
+		"lib": ["es2019"],
 		"tsBuildInfoFile": "tmp/tsconfig.tsbuildinfo",
-		"typeRoots": [
-			"../../../node_modules/@types",
-			"./node_modules/@types"
-		]
+		"typeRoots": ["../../../node_modules/@types", "./node_modules/@types"]
 	},
-	"include": [
-		"src/**/*",
-		"test/**/*",
-		"../../../global.d.ts"
-	],
+	"include": ["src/**/*", "test/**/*", "../../../global.d.ts"],
 	"references": [
 		{
 			"path": "../../frontend-js/frontend-js-web"
