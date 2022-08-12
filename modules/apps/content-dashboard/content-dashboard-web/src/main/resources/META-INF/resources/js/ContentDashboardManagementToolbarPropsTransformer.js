@@ -14,6 +14,85 @@
 
 import {addParams, navigate, openSelectionModal} from 'frontend-js-web';
 
+// FAKE
+
+const _getfakeData = (item) => {
+	const options = {
+		selectAssetCategory: {
+			data: {
+				itemValueKey: 'categoryId',
+				selectEventName: 'selectedAssetCategory',
+				selectItemURL: item.data.selectAssetCategoryURL,
+				urlParamName: 'assetCategoryId',
+			},
+			multiple: true,
+			size: 'md',
+		},
+		selectAssetTag: {
+			data: {
+				itemValueKey: 'value',
+				selectEventName: 'selectedAssetTag',
+				selectItemURL: item.data.selectTagURL,
+				urlParamName: 'assetTagId',
+			},
+			multiple: true,
+			size: 'lg',
+		},
+		selectAuthor: {
+			data: {
+				itemValueKey: 'id',
+				selectEventName: 'selectedAuthorItem',
+				selectItemURL: item.data.selectAuthorURL,
+				urlParamName: 'authorIds',
+			},
+			multiple: true,
+			size: 'lg',
+		},
+		selectContentDashboardItemSubtype: {
+			data: {
+				itemValueKey: false,
+				selectEventName: 'selectedContentDashboardItemSubtype',
+				selectItemURL: item.data.selectContentDashboardItemSubtypeURL,
+				urlParamName: 'contentDashboardItemSubtypePayload',
+			},
+			multiple: true,
+			size: 'md',
+		},
+		selectFileExtension: {
+			data: {
+				itemValueKey: false,
+				selectEventName: 'selectedFileExtension',
+				selectItemURL: item.data.selectFileExtensionURL,
+				urlParamName: 'fileExtension',
+			},
+			multiple: true,
+			size: 'md',
+		},
+		selectScope: {
+			data: {
+				itemValueKey: 'groupid',
+				selectEventName: 'selectedScopeIdItem',
+				selectItemURL: item.data.selectScopeURL,
+				urlParamName: 'scopeId',
+			},
+			multiple: false,
+			size: 'lg',
+		},
+	};
+
+	return {
+		...item,
+		data: {
+			...item.data,
+			...options[item.data.action].data,
+		},
+		multiple: options[item.data.action].multiple,
+		size: options[item.data.action].size,
+	};
+};
+
+// /FAKE
+
 const DEFAULT_VALUES = {
 	buttonAddLabel: Liferay.Language.get('select'),
 	iframeBodyCssClass: '',
@@ -64,7 +143,14 @@ const _handleOnSelect = ({data, portletNamespace, selection}) => {
 export default function propsTransformer({portletNamespace, ...otherProps}) {
 	return {
 		...otherProps,
-		onFilterDropdownItemClick(_event, {item}) {
+		onFilterDropdownItemClick(_event, {item: originalItem}) {
+
+			// FAKE
+
+			const item = _getfakeData(originalItem);
+
+			// /FAKE
+
 			const {data, multiple, size} = item;
 
 			const {dialogTitle, selectEventName, selectItemURL} = data;
