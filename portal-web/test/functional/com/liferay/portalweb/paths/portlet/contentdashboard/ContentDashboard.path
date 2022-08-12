@@ -160,6 +160,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>COLUMN_FILTER</td>
+	<td>//*[contains(@class,'recharts-bar-rectangles')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>DELETE_SECOND_FILTER_SELECTED</td>
 	<td>//*[contains(@class, 'tbar-item-expand')]//*[contains(@class, 'close')]</td>
 	<td></td>
