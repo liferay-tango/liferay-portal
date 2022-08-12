@@ -100,7 +100,7 @@ const DEFAULT_VALUES: IDefaultValues = {
 };
 
 /**
- * Returns true if the specified value is an object. Not arrays, native events or functions.
+ * Returns true if the specified value is an object. Not arrays, custom events or functions.
  * @param {?} value Variable to test.
  * @return {boolean} Whether variable is an object.
  */
@@ -117,13 +117,16 @@ const _getRedirectURLWithParams = ({
 	data,
 	portletNamespace,
 	selection,
-}: IParams) => {
+}: IParams): string => {
 	const {itemValueKey, redirectURL, urlParamName} = data;
 
 	return [selection]
-		.reduce((acc, val) => acc.concat(val), []) // replace with flat()
 		.reduce(
-			(acc: string, item: any) =>
+			(acc: Array<any>, val: Array<any>): Array<any> => acc.concat(val),
+			[]
+		) // replace with flat()
+		.reduce(
+			(acc: string, item: any): string =>
 				addParams(
 					`${portletNamespace}${urlParamName}=${
 						itemValueKey ? item[itemValueKey] : JSON.stringify(item)
@@ -134,9 +137,15 @@ const _getRedirectURLWithParams = ({
 		);
 };
 
-const _handleOnSelect = ({data, portletNamespace, selection}: IParams) => {
+const _handleOnSelect = ({
+	data,
+	portletNamespace,
+	selection,
+}: IParams): void => {
 	if (_isObjectStrict(selection)) {
-		selection = Object.values(selection).filter((item) => !item.unchecked);
+		selection = Object.values(selection).filter(
+			(item): boolean => !item.unchecked
+		);
 	}
 
 	navigate(
@@ -151,13 +160,13 @@ const _handleOnSelect = ({data, portletNamespace, selection}: IParams) => {
 export default function propsTransformer({
 	portletNamespace,
 	...otherProps
-}: IPropsTransformerProps) {
+}: IPropsTransformerProps): Object {
 	return {
 		...otherProps,
 		onFilterDropdownItemClick(
 			_event: Event,
 			{item: originalItem}: {item: Item}
-		) {
+		): void {
 
 			// FAKE
 
@@ -174,7 +183,7 @@ export default function propsTransformer({
 				height: DEFAULT_VALUES.modalHeight,
 				iframeBodyCssClass: DEFAULT_VALUES.iframeBodyCssClass,
 				multiple,
-				onSelect: (selection: any[]) =>
+				onSelect: (selection: any[]): void =>
 					_handleOnSelect({
 						data,
 						portletNamespace,
@@ -191,31 +200,32 @@ export default function propsTransformer({
 
 interface IPropsTransformerProps {
 	otherProps: unknown;
-	portletNamespace: string;
+	readonly portletNamespace: string;
 }
 
 interface Item {
-	data: ItemData;
-	multiple: boolean;
-	size: string;
+	readonly data: ItemData;
+	readonly multiple: boolean;
+	readonly size: 'full-screen' | 'lg' | 'md' | 'sm' | undefined;
 }
 
 interface ItemData {
-	itemValueKey: string;
-	redirectURL: string;
-	selectEventName: string;
-	selectItemURL: string;
-	urlParamName: string;
+	readonly dialogTitle: string;
+	readonly itemValueKey: string;
+	readonly redirectURL: string;
+	readonly selectEventName: string;
+	readonly selectItemURL: string;
+	readonly urlParamName: string;
 }
 
 interface IParams {
-	data: ItemData;
-	portletNamespace: string;
-	selection: any[];
+	readonly data: ItemData;
+	readonly portletNamespace: string;
+	readonly selection: any[];
 }
 
 interface IDefaultValues {
-	buttonAddLabel: string;
-	iframeBodyCssClass: string;
-	modalHeight: string;
+	readonly buttonAddLabel: string;
+	readonly iframeBodyCssClass: string;
+	readonly modalHeight: string;
 }
