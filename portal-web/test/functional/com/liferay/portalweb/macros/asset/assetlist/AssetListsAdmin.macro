@@ -36,15 +36,6 @@ definition {
 		PortletEntry.save();
 	}
 
-	macro gotoEllipsisMenuItemInItemSelector {
-		Click(
-			key_fieldLabel = "${fieldLabel}",
-			key_text = "ellipsis-v",
-			locator1 = "Categories#ANY_ITEM_SELECTOR");
-
-		MenuItem.click(menuItem = "${menuItem}");
-	}
-
 	macro addDynamicSelection {
 		if (isSet(depotName)) {
 			LexiconEntry.gotoAddMenuItem(menuItem = "Dynamic Collection");
@@ -424,6 +415,15 @@ definition {
 		}
 
 		Alert.viewSuccessMessage();
+	}
+
+	macro gotoEllipsisMenuItemInItemSelector {
+		Click(
+			key_fieldLabel = "${fieldLabel}",
+			key_text = "ellipsis-v",
+			locator1 = "Categories#ANY_ITEM_SELECTOR");
+
+		MenuItem.click(menuItem = "${menuItem}");
 	}
 
 	macro gotoEntry {
