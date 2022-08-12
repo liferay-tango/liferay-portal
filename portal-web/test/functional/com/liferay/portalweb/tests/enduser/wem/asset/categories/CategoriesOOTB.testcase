@@ -433,6 +433,84 @@ definition {
 
 	}
 
+	@description = "LPS-148882: Given a Dynamic Collection has a Blogs Entry item type
+	And is filtered by Audience's or Stage's audience
+	When the Collection is selected at Asset Publisher
+	Then all blogs entries with the corresponding category is shown"
+	@priority = "4"
+	test CheckBlogFilterByCategoryAtAssetPublisher {
+
+		task ("Add a global category") {
+			var categoryId1 = JSONCategory.addCategory(
+				groupName = "Global",
+				title = "Audience 1",
+				vocabularyName = "Audience");
+			var categoryId2 = JSONCategory.addCategory(
+				groupName = "Global",
+				title = "Stage 1",
+				vocabularyName = "Stage");
+		}
+
+		task ("Create a blog"){
+			HeadlessBlog.addBlogEntry(
+				assetCategoryIds = "${categoryId1},${categoryId2}",
+				content = "Blogs Entry Content",
+				groupName = "Test Site Name",
+				title = "Blogs Entry Title");
+		}
+
+		task ("Create a Dynamic Collection") {
+			JSONAssetlist.addDynamicAssetListEntryWithItemType(
+				groupName = "Test Site Name",
+				itemSubtype = "All Subtypes",
+				itemType = "Blogs Entry",
+				title = "Dynamic Collection Test");
+		}
+
+		task ("Filter blogs entry by category") {
+			AssetListsAdmin.openAssetListsAdmin(siteURLKey = "test-site-name");
+
+			AssetListsAdmin.editAssetList(assetListTitle = "Dynamic Collection Test");
+
+			AssetListsAdmin.addCategoriesFilter(
+				categoryNameList = "Audience 1,Stage 1",
+				queryAndOperator = "All",
+				queryContains = "Contains");
+		}
+
+		task ("Add a Collection Display to page") {
+			JSONLayout.addPublicLayout(
+				groupName = "Test Site Name",
+				layoutName = "Test Page Name",
+				type = "content");
+
+			ContentPagesNavigator.openEditContentPage(
+				pageName = "Test Page Name",
+				siteName = "Test Site Name");
+
+			PageEditor.addWidget(portletName = "Asset Publisher");
+
+			Button.clickPublish();
+
+		}
+
+		task ("Assert the correct asset is shown") {
+
+			Navigator.openWithAppendToBaseURL(urlAppend = "web/test-site-name/test-page-name");
+
+			AssertTextEquals.assertPartialText(
+				key_assetTitle = "Blogs Entry Title",
+				locator1 = "AP#ASSET_ABSTRACT_TITLE",
+				value1 = "Blogs Entry Title");
+
+			AssertTextEquals.assertPartialText(
+				key_assetContent = "Blogs Entry Content",
+				locator1 = "APAsset#ASSET_CONTENT",
+				value1 = "Blogs Entry Content");
+		}
+
+	}
+
 	@description = "LPS-131793 Given select modal window in the the categorization section in Documents and Media
 	When the user has NOT permissions to add new categories to Global vocabularies
 	Then the user is NOT able to add new categories from the select modal window"
