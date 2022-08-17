@@ -401,10 +401,6 @@ public class FileEntryContentDashboardItem
 				_fileEntry, _infoItemFieldValuesProvider, "fileName"));
 	}
 
-	private String _getFileName() {
-		return _fileEntry.getFileName();
-	}
-
 	private Version _getLastVersion(Locale locale) {
 		List<Version> versions = getVersions(locale);
 
