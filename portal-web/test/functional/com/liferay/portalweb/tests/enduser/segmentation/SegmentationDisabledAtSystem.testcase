@@ -82,6 +82,7 @@ definition {
 	@description = "LPS-152542: Add breadcrumbs to Instance Settings alerts"
 	@priority = "3"
 	test ViewAssignRoleBySegmentDisabledWarningUserWithoutsPermissionToSystemSettings {
+		property custom.properties = "virtual.hosts.valid.hosts=localhost,127.0.0.1,www.able.com";
 		property test.name.skip.portal.instance = "SegmentationDisabled#ViewAssignRoleBySegmentDisabledWarningUserWithoutsPermissionToSystemSettings";
 
 		task ("Given the 'Assign Roles by Segments' is disabled at System Settings") {
@@ -128,6 +129,7 @@ definition {
 	@description = "LPS-152542: Add breadcrumbs to Instance Settings alerts"
 	@priority = "3"
 	test ViewSegmentationDisabledWarningUserWithoutsPermissionToSystemSettings {
+		property custom.properties = "virtual.hosts.valid.hosts=localhost,127.0.0.1,www.able.com";
 		property test.name.skip.portal.instance = "SegmentationDisabled#ViewSegmentationDisabledWarningUserWithoutsPermissionToSystemSettings";
 
 		task ("Given 'Segmentation' is disabled at System Settings") {
