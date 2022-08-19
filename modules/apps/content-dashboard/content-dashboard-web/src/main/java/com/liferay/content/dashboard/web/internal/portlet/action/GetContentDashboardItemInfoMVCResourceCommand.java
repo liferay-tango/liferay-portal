@@ -51,13 +51,14 @@ import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import java.net.URL;
+
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -388,7 +389,7 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
 
 		stream.sorted(
-			Comparator.comparing(entry -> entry.getKey())
+			Map.Entry.comparingByKey()
 		).forEach(
 			entry -> jsonObject.put(
 				entry.getKey(),
@@ -407,6 +408,9 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 	private String _getSpecificInformationType(Object object) {
 		if (object instanceof Date) {
 			return "Date";
+		}
+		else if (object instanceof URL) {
+			return "URL";
 		}
 
 		return "String";

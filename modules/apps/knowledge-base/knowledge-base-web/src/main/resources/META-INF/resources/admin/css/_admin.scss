@@ -16,11 +16,26 @@ $controlMenuHeight: 56px;
 			border-right: 1px solid $gray-300;
 		}
 
-		.tbar-light {
+		.knowledge-base-navigation-item-active {
 			background-color: $gray-200;
+			color: $dark;
+			font-weight: 600;
+		}
+
+		.sidebar {
+			border-right: 1px solid $secondary-l3;
+			box-shadow: none;
 
 			.sidebar-header .component-title {
 				font-size: 1rem;
+			}
+		}
+
+		.tbar-light {
+			background-color: $gray-200;
+
+			.active {
+				background-color: $light-d1;
 			}
 		}
 	}

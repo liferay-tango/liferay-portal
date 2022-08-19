@@ -3815,12 +3815,7 @@ return	Array.from(getWebElement("(//div[@aria-label='${fragmentName}'])[${index}
 	}
 
 	macro gotoTab {
-		if (IsElementPresent(locator1 = "ProductMenu#PRODUCT_MENU_OPENED")) {
-			Click(
-				key_tabName = "${tabName}",
-				locator1 = "PageEditor#FRAGMENT_SIDEBAR_TAB_BUTTON");
-		}
-		else if (IsElementNotPresent(locator1 = "ProductMenu#TOGGLE")) {
+		if ((IsElementPresent(locator1 = "ProductMenu#PRODUCT_MENU_OPENED")) && (IsElementNotPresent(key_tabName = "${tabName}", locator1 = "PageEditor#FRAGMENT_SIDEBAR_TAB_BUTTON_ACTIVE"))) {
 			Click(
 				key_tabName = "${tabName}",
 				locator1 = "PageEditor#FRAGMENT_SIDEBAR_TAB_BUTTON");
@@ -3940,12 +3935,7 @@ return	Array.from(getWebElement("(//div[@aria-label='${fragmentName}'])[${index}
 	macro publish {
 		Button.click(button = "Publish");
 
-		if ((IsElementPresent(locator1 = "Modal#BODY")) && (IsTextEqual(locator1 = "Modal#HEADER", value1 = "Style Errors Detected"))) {
-			Modal.publish(
-				action = "${action}",
-				warningMessage = "Some of the fields have invalid values. If you continue publishing, the latest valid values will display.");
-		}
-		else if ((IsElementPresent(locator1 = "Modal#BODY")) && (IsTextEqual(locator1 = "Modal#HEADER", value1 = "Form Errors"))) {
+		if ((IsElementPresent(locator1 = "Modal#BODY")) && (IsTextEqual(locator1 = "Modal#HEADER", value1 = "Form Errors"))) {
 			Modal.publish(
 				action = "${action}",
 				warningMessage = "The following errors have been found with the forms on the page. Publishing without fixing these errors may affect form performance. Are you sure you want to publish?");

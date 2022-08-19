@@ -64,7 +64,7 @@ public class WalkthroughBottomJSPDynamicInclude implements DynamicInclude {
 				_configurationProvider.getGroupConfiguration(
 					WalkthroughConfiguration.class, group.getGroupId());
 
-			if (!walkthroughConfiguration.enableWalkthrough()) {
+			if (!walkthroughConfiguration.enabled()) {
 				return;
 			}
 

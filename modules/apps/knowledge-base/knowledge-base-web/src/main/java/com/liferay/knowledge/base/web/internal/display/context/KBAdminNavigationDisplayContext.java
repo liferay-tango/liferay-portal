@@ -200,6 +200,11 @@ public class KBAdminNavigationDisplayContext {
 				).put(
 					"navigationItems", navigationItemsJSONArray
 				).put(
+					"selectedItemId",
+					ParamUtil.getLong(
+						_httpServletRequest, "parentResourcePrimKey",
+						KBFolderConstants.DEFAULT_PARENT_FOLDER_ID)
+				).put(
 					"title",
 					LanguageUtil.get(
 						_httpServletRequest, "folders-and-articles")
