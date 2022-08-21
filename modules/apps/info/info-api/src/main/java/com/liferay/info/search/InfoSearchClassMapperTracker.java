@@ -12,16 +12,18 @@
  * details.
  */
 
-package com.liferay.layout.page.template.admin.web.internal.constants;
+package com.liferay.info.search;
+
+import org.osgi.annotation.versioning.ProviderType;
 
 /**
- * @author Jürgen Kappler
+ * @author Cristina González
  */
-public class LayoutPageTemplateAdminWebKeys {
+@ProviderType
+public interface InfoSearchClassMapperTracker {
 
-	public static final String ASSET_DISPLAY_PAGE_USAGES_DISPLAY_CONTEXT =
-		"ASSET_DISPLAY_PAGE_USAGES_DISPLAY_CONTEXT";
+	public String getClassName(String searchClassName);
 
-	public static final String ITEM_SELECTOR = "ITEM_SELECTOR";
+	public String getSearchClassName(String className);
 
 }

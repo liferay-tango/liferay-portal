@@ -12,12 +12,12 @@
  * details.
  */
 
-package com.liferay.content.dashboard.web.internal.search.request;
+package com.liferay.info.search;
 
 /**
  * @author Cristina González
  */
-public interface ContentDashboardItemSearchClassMapper<T> {
+public interface InfoSearchClassMapper<T> {
 
 	public String getSearchClassName();
 

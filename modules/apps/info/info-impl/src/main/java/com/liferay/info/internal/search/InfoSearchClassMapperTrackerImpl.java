@@ -12,8 +12,10 @@
  * details.
  */
 
-package com.liferay.content.dashboard.web.internal.search.request;
+package com.liferay.info.internal.search;
 
+import com.liferay.info.search.InfoSearchClassMapper;
+import com.liferay.info.search.InfoSearchClassMapperTracker;
 import com.liferay.osgi.service.tracker.collections.map.ServiceReferenceMapperFactory;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
@@ -32,25 +34,23 @@ import org.osgi.service.component.annotations.Deactivate;
 /**
  * @author Cristina González
  */
-@Component(service = ContentDashboardItemSearchClassMapperTracker.class)
-public class ContentDashboardItemSearchClassMapperTracker {
+@Component(service = InfoSearchClassMapperTracker.class)
+public class InfoSearchClassMapperTrackerImpl
+	implements InfoSearchClassMapperTracker {
 
 	public String getClassName(String searchClassName) {
-		Collection<ContentDashboardItemSearchClassMapper<?>>
-			contentDashboardItemSearchClassMappers =
-				_serviceTrackerMap.values();
+		Collection<InfoSearchClassMapper<?>> infoSearchClassMappers =
+			_serviceTrackerMap.values();
 
-		Stream<ContentDashboardItemSearchClassMapper<?>> stream =
-			contentDashboardItemSearchClassMappers.stream();
+		Stream<InfoSearchClassMapper<?>> stream =
+			infoSearchClassMappers.stream();
 
 		return stream.filter(
-			contentDashboardItemSearchClassMapper -> Objects.equals(
-				searchClassName,
-				contentDashboardItemSearchClassMapper.getSearchClassName())
+			infoSearchClassMapper -> Objects.equals(
+				searchClassName, infoSearchClassMapper.getSearchClassName())
 		).map(
-			contentDashboardItemSearchClassMapper ->
-				GenericUtil.getGenericClass(
-					contentDashboardItemSearchClassMapper)
+			infoSearchClassMapper -> GenericUtil.getGenericClass(
+				infoSearchClassMapper)
 		).map(
 			Class::getName
 		).findFirst(
@@ -63,7 +63,7 @@ public class ContentDashboardItemSearchClassMapperTracker {
 		return Optional.ofNullable(
 			_serviceTrackerMap.getService(className)
 		).map(
-			ContentDashboardItemSearchClassMapper::getSearchClassName
+			InfoSearchClassMapper::getSearchClassName
 		).orElse(
 			className
 		);
@@ -73,14 +73,12 @@ public class ContentDashboardItemSearchClassMapperTracker {
 	protected void activate(BundleContext bundleContext) {
 		_serviceTrackerMap =
 			(ServiceTrackerMap)ServiceTrackerMapFactory.openSingleValueMap(
-				bundleContext, ContentDashboardItemSearchClassMapper.class,
-				null,
+				bundleContext, InfoSearchClassMapper.class, null,
 				ServiceReferenceMapperFactory.create(
 					bundleContext,
-					(contentDashboardItemSearchClassMapper, emitter) ->
-						emitter.emit(
-							GenericUtil.getGenericClassName(
-								contentDashboardItemSearchClassMapper))));
+					(infoSearchClassMapper, emitter) -> emitter.emit(
+						GenericUtil.getGenericClassName(
+							infoSearchClassMapper))));
 	}
 
 	@Deactivate
@@ -88,7 +86,7 @@ public class ContentDashboardItemSearchClassMapperTracker {
 		_serviceTrackerMap.close();
 	}
 
-	private volatile ServiceTrackerMap
-		<String, ContentDashboardItemSearchClassMapper<?>> _serviceTrackerMap;
+	private volatile ServiceTrackerMap<String, InfoSearchClassMapper<?>>
+		_serviceTrackerMap;
 
 }

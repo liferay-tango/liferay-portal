@@ -12,9 +12,10 @@
  * details.
  */
 
-package com.liferay.content.dashboard.web.internal.search.request;
+package com.liferay.document.library.web.internal.info.search;
 
 import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.info.search.InfoSearchClassMapper;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 
 import org.osgi.service.component.annotations.Component;
@@ -22,9 +23,9 @@ import org.osgi.service.component.annotations.Component;
 /**
  * @author Cristina González
  */
-@Component(service = ContentDashboardItemSearchClassMapper.class)
-public class FileEntryContentDashboardItemSearchClassMapper
-	implements ContentDashboardItemSearchClassMapper<FileEntry> {
+@Component(service = InfoSearchClassMapper.class)
+public class FileEntryInfoSearchClassMapper
+	implements InfoSearchClassMapper<FileEntry> {
 
 	@Override
 	public String getSearchClassName() {
