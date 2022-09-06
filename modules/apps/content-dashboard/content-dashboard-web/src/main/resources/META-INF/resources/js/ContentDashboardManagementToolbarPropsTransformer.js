@@ -192,8 +192,12 @@ export default function propsTransformer({portletNamespace, ...otherProps}) {
 
 	return {
 		...otherProps,
-		onFilterDropdownItemClick(_event, {item}) {
+		onFilterDropdownItemClick(_event, {item = {}}) {
 			const {data} = item;
+
+			if (!Object.keys(data).length) {
+				return;
+			}
 
 			const {
 				action,
