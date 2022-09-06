@@ -743,8 +743,17 @@ public class ContentDashboardAdminManagementToolbarDisplayContext
 					"assetCategoryId", (String)null
 				).buildString()
 			).putData(
-				"selectAssetCategoryURL",
+				"selectItemURL",
 				String.valueOf(_getAssetCategorySelectorURL())
+			).putData(
+				"selectEventName",
+				"selectedAssetCategory"
+			).putData(
+				"multiple", String.valueOf(Boolean.TRUE)
+			).putData(
+				"itemValueKey", "categoryId"
+			).putData(
+				"urlParamName", "assetCategoryId"
 			).setActive(
 				!ListUtil.isEmpty(
 					_contentDashboardAdminDisplayContext.getAssetCategoryIds())

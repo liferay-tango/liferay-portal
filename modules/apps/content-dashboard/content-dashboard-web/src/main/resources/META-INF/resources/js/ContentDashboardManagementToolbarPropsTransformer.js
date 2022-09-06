@@ -193,9 +193,12 @@ export default function propsTransformer({portletNamespace, ...otherProps}) {
 	return {
 		...otherProps,
 		onFilterDropdownItemClick(_event, {item}) {
-			const {data, multiple, size = DEFAULT_VALUES.size} = item;
+			const {data} = item;
 
-			const {action, dialogTitle, selectEventName, selectItemURL} = data;
+			const {action, dialogTitle, selectEventName, selectItemURL,
+				multiple, size = DEFAULT_VALUES.size} = data;
+
+			const isMultiple = multiple === 'true';
 
 			if (action === 'selectAssetTag') {
 				selectAssetTag(data);
@@ -217,7 +220,7 @@ export default function propsTransformer({portletNamespace, ...otherProps}) {
 					buttonAddLabel: DEFAULT_VALUES.buttonAddLabel,
 					height: DEFAULT_VALUES.modalHeight,
 					iframeBodyCssClass: DEFAULT_VALUES.iframeBodyCssClass,
-					multiple,
+					multiple: isMultiple,
 					onSelect: (selection) =>
 						_handleOnSelect({
 							data,
