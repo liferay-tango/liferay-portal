@@ -2042,9 +2042,7 @@ public class ObjectEntryLocalServiceImpl
 			dynamicObjectDefinitionTable.getObjectFields();
 
 		for (ObjectField objectField : objectFields) {
-			Object value = values.get(objectField.getName());
-
-			if (Validator.isNull(value)) {
+			if (!values.containsKey(objectField.getName())) {
 				if (objectField.isRequired()) {
 					throw new ObjectEntryValuesException.Required(
 						objectField.getName());
@@ -2064,7 +2062,8 @@ public class ObjectEntryLocalServiceImpl
 					ObjectRelationshipConstants.TYPE_ONE_TO_ONE)) {
 
 				_validateOneToOneInsert(
-					objectField.getDBColumnName(), GetterUtil.getLong(value),
+					objectField.getDBColumnName(),
+					GetterUtil.getLong(values.get(objectField.getName())),
 					dynamicObjectDefinitionTable);
 			}
 
@@ -2073,14 +2072,6 @@ public class ObjectEntryLocalServiceImpl
 
 			count++;
 		}
-
-		/*if (count == 1) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(
-					"No values were provided for object entry " +
-						objectEntryId);
-			}
-		}*/
 
 		sb.append(") values (?");
 
@@ -2107,9 +2098,7 @@ public class ObjectEntryLocalServiceImpl
 			_setColumn(preparedStatement, index++, Types.BIGINT, objectEntryId);
 
 			for (ObjectField objectField : objectFields) {
-				Object value = values.get(objectField.getName());
-
-				if (Validator.isNull(value)) {
+				if (!values.containsKey(objectField.getName())) {
 					continue;
 				}
 
@@ -2117,7 +2106,8 @@ public class ObjectEntryLocalServiceImpl
 					objectField.getDBColumnName());
 
 				_setColumn(
-					preparedStatement, index++, column.getSQLType(), value);
+					preparedStatement, index++, column.getSQLType(),
+					values.get(objectField.getName()));
 			}
 
 			preparedStatement.executeUpdate();
@@ -2451,9 +2441,7 @@ public class ObjectEntryLocalServiceImpl
 			dynamicObjectDefinitionTable.getObjectFields();
 
 		for (ObjectField objectField : objectFields) {
-			Object value = values.get(objectField.getName());
-
-			if (value == null) {
+			if (!values.containsKey(objectField.getName())) {
 				if (_log.isDebugEnabled()) {
 					_log.debug(
 						"No value was provided for object field \"" +
@@ -2468,7 +2456,8 @@ public class ObjectEntryLocalServiceImpl
 					ObjectRelationshipConstants.TYPE_ONE_TO_ONE)) {
 
 				_validateOneToOneUpdate(
-					objectField.getDBColumnName(), GetterUtil.getLong(value),
+					objectField.getDBColumnName(),
+					GetterUtil.getLong(values.get(objectField.getName())),
 					dynamicObjectDefinitionTable, objectEntryId);
 			}
 
@@ -2516,9 +2505,7 @@ public class ObjectEntryLocalServiceImpl
 			int index = 1;
 
 			for (ObjectField objectField : objectFields) {
-				Object value = values.get(objectField.getName());
-
-				if (value == null) {
+				if (!values.containsKey(objectField.getName())) {
 					continue;
 				}
 
@@ -2526,7 +2513,8 @@ public class ObjectEntryLocalServiceImpl
 					objectField.getDBColumnName());
 
 				_setColumn(
-					preparedStatement, index++, column.getSQLType(), value);
+					preparedStatement, index++, column.getSQLType(),
+					values.get(objectField.getName()));
 			}
 
 			_setColumn(preparedStatement, index++, Types.BIGINT, objectEntryId);
