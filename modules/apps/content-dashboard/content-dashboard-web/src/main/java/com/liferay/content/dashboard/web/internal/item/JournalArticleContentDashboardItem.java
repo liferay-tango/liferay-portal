@@ -63,7 +63,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Cristina González
  */
 public class JournalArticleContentDashboardItem
-	implements ContentDashboardItem<JournalArticle> {
+	implements VersionableContentDashboardItem<JournalArticle> {
 
 	public JournalArticleContentDashboardItem(
 		List<AssetCategory> assetCategories, List<AssetTag> assetTags,
