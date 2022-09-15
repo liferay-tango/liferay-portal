@@ -27,4 +27,9 @@ public interface VersionableContentDashboardItem<T>
 	public List<ContentDashboardItem.Version> getAllVersions(
 		ThemeDisplay themeDisplay);
 
+	public List<ContentDashboardItem.Version> getVersions(
+		ThemeDisplay themeDisplay, int start, int end);
+
+	public int getVersionsCount(ThemeDisplay themeDisplay);
+
 }

@@ -110,36 +110,7 @@ public class JournalArticleContentDashboardItem
 
 	@Override
 	public List<Version> getAllVersions(ThemeDisplay themeDisplay) {
-		int status = WorkflowConstants.STATUS_APPROVED;
-
-		PermissionChecker permissionChecker =
-			themeDisplay.getPermissionChecker();
-
-		User user = themeDisplay.getUser();
-
-		if ((user.getUserId() == _journalArticle.getUserId()) ||
-			permissionChecker.isContentReviewer(
-				user.getCompanyId(), themeDisplay.getScopeGroupId())) {
-
-			status = WorkflowConstants.STATUS_ANY;
-		}
-
-		List<JournalArticle> journalArticles =
-			_journalArticleService.getArticlesByArticleId(
-				_journalArticle.getGroupId(), _journalArticle.getArticleId(),
-				status, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-				new ArticleVersionComparator());
-
-		return ListUtil.toList(
-			journalArticles,
-			journalArticle -> new Version(
-				_language.get(
-					themeDisplay.getLocale(),
-					WorkflowConstants.getStatusLabel(
-						journalArticle.getStatus())),
-				WorkflowConstants.getStatusStyle(journalArticle.getStatus()),
-				String.valueOf(journalArticle.getVersion()), null,
-				journalArticle.getUserName(), journalArticle.getStatusDate()));
+		return getVersions(themeDisplay, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 	}
 
 	@Override
@@ -391,6 +362,62 @@ public class JournalArticleContentDashboardItem
 		}
 
 		return _journalArticle.getUserName();
+	}
+
+	@Override
+	public List<Version> getVersions(
+		ThemeDisplay themeDisplay, int start, int end) {
+
+		int status = WorkflowConstants.STATUS_APPROVED;
+
+		PermissionChecker permissionChecker =
+			themeDisplay.getPermissionChecker();
+
+		User user = themeDisplay.getUser();
+
+		if ((user.getUserId() == _journalArticle.getUserId()) ||
+			permissionChecker.isContentReviewer(
+				user.getCompanyId(), themeDisplay.getScopeGroupId())) {
+
+			status = WorkflowConstants.STATUS_ANY;
+		}
+
+		List<JournalArticle> journalArticles =
+			_journalArticleService.getArticlesByArticleId(
+				_journalArticle.getGroupId(), _journalArticle.getArticleId(),
+				status, start, end, new ArticleVersionComparator());
+
+		return ListUtil.toList(
+			journalArticles,
+			journalArticle -> new Version(
+				_language.get(
+					themeDisplay.getLocale(),
+					WorkflowConstants.getStatusLabel(
+						journalArticle.getStatus())),
+				WorkflowConstants.getStatusStyle(journalArticle.getStatus()),
+				String.valueOf(journalArticle.getVersion()), null,
+				journalArticle.getUserName(), journalArticle.getStatusDate()));
+	}
+
+	@Override
+	public int getVersionsCount(ThemeDisplay themeDisplay) {
+		int status = WorkflowConstants.STATUS_APPROVED;
+
+		PermissionChecker permissionChecker =
+			themeDisplay.getPermissionChecker();
+
+		User user = themeDisplay.getUser();
+
+		if ((user.getUserId() == _journalArticle.getUserId()) ||
+			permissionChecker.isContentReviewer(
+				user.getCompanyId(), themeDisplay.getScopeGroupId())) {
+
+			status = WorkflowConstants.STATUS_ANY;
+		}
+
+		return _journalArticleService.getArticlesCountByArticleId(
+			_journalArticle.getGroupId(), _journalArticle.getArticleId(),
+			status);
 	}
 
 	@Override

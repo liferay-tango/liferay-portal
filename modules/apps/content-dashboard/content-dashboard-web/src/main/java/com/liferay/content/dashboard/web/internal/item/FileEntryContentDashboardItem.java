@@ -29,6 +29,7 @@ import com.liferay.info.item.InfoItemClassDetails;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.info.item.provider.InfoItemFieldValuesProvider;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -111,36 +112,7 @@ public class FileEntryContentDashboardItem
 
 	@Override
 	public List<Version> getAllVersions(ThemeDisplay themeDisplay) {
-		int status = WorkflowConstants.STATUS_APPROVED;
-
-		PermissionChecker permissionChecker =
-			themeDisplay.getPermissionChecker();
-
-		User user = themeDisplay.getUser();
-
-		if ((user.getUserId() == _fileEntry.getUserId()) ||
-			permissionChecker.isContentReviewer(
-				user.getCompanyId(), themeDisplay.getScopeGroupId())) {
-
-			status = WorkflowConstants.STATUS_ANY;
-		}
-
-		Stream<FileVersion> stream = _fileEntry.getFileVersions(
-			status
-		).stream();
-
-		return stream.map(
-			fileVersion -> new Version(
-				_language.get(
-					themeDisplay.getLocale(),
-					WorkflowConstants.getStatusLabel(fileVersion.getStatus())),
-				WorkflowConstants.getStatusStyle(fileVersion.getStatus()),
-				String.valueOf(fileVersion.getVersion()),
-				fileVersion.getChangeLog(), fileVersion.getUserName(),
-				fileVersion.getCreateDate())
-		).collect(
-			Collectors.toList()
-		);
+		return getVersions(themeDisplay, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 	}
 
 	@Override
@@ -404,6 +376,61 @@ public class FileEntryContentDashboardItem
 	@Override
 	public String getUserName() {
 		return _fileEntry.getUserName();
+	}
+
+	@Override
+	public List<Version> getVersions(
+		ThemeDisplay themeDisplay, int start, int end) {
+
+		int status = WorkflowConstants.STATUS_APPROVED;
+
+		PermissionChecker permissionChecker =
+			themeDisplay.getPermissionChecker();
+
+		User user = themeDisplay.getUser();
+
+		if ((user.getUserId() == _fileEntry.getUserId()) ||
+			permissionChecker.isContentReviewer(
+				user.getCompanyId(), themeDisplay.getScopeGroupId())) {
+
+			status = WorkflowConstants.STATUS_ANY;
+		}
+
+		Stream<FileVersion> stream = _fileEntry.getFileVersions(
+			status
+		).stream();
+
+		return stream.map(
+			fileVersion -> new Version(
+				_language.get(
+					themeDisplay.getLocale(),
+					WorkflowConstants.getStatusLabel(fileVersion.getStatus())),
+				WorkflowConstants.getStatusStyle(fileVersion.getStatus()),
+				String.valueOf(fileVersion.getVersion()),
+				fileVersion.getChangeLog(), fileVersion.getUserName(),
+				fileVersion.getCreateDate())
+		).collect(
+			Collectors.toList()
+		);
+	}
+
+	@Override
+	public int getVersionsCount(ThemeDisplay themeDisplay) {
+		int status = WorkflowConstants.STATUS_APPROVED;
+
+		PermissionChecker permissionChecker =
+			themeDisplay.getPermissionChecker();
+
+		User user = themeDisplay.getUser();
+
+		if ((user.getUserId() == _fileEntry.getUserId()) ||
+			permissionChecker.isContentReviewer(
+				user.getCompanyId(), themeDisplay.getScopeGroupId())) {
+
+			status = WorkflowConstants.STATUS_ANY;
+		}
+
+		return _fileEntry.getFileVersionsCount(status);
 	}
 
 	@Override
