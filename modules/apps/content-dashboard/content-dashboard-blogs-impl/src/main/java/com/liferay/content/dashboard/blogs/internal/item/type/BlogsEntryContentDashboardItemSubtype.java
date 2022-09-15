@@ -15,6 +15,7 @@
 package com.liferay.content.dashboard.blogs.internal.item.type;
 
 import com.liferay.blogs.model.BlogsEntry;
+import com.liferay.content.dashboard.info.item.ClassNameClassPKInfoItemIdentifier;
 import com.liferay.content.dashboard.item.type.ContentDashboardItemSubtype;
 import com.liferay.info.item.InfoItemClassDetails;
 import com.liferay.info.item.InfoItemReference;
@@ -47,7 +48,9 @@ public class BlogsEntryContentDashboardItemSubtype
 
 	@Override
 	public InfoItemReference getInfoItemReference() {
-		return new InfoItemReference(BlogsEntry.class.getName(), 0);
+		return new InfoItemReference(BlogsEntry.class.getName(),
+			new ClassNameClassPKInfoItemIdentifier(
+				BlogsEntry.class.getTypeName(), 0));
 	}
 
 	@Override

@@ -299,8 +299,17 @@ public class ContentDashboardItemSubtypeItemSelectorView
 						return infoItemClassDetailsLabelInfoLocalizedValue.
 							getValue(themeDisplay.getLocale());
 					}
-				));
-
+				).put("selected",
+					() -> {
+						for (InfoItemReference infoItemReference : checkedContentDashboardItemSubtypeInfoItemReferences){
+							if (StringUtil.equals(infoItemReference.getClassName(),
+								className)) {
+								return true;
+							}
+						}
+						return  false;
+					}
+					));
 			return;
 		}
 
