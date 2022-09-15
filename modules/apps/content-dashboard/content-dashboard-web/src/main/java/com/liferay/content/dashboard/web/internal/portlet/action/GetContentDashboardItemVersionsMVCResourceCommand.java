@@ -15,24 +15,33 @@
 package com.liferay.content.dashboard.web.internal.portlet.action;
 
 import com.liferay.content.dashboard.web.internal.constants.ContentDashboardPortletKeys;
+import com.liferay.content.dashboard.web.internal.item.ContentDashboardItem;
 import com.liferay.content.dashboard.web.internal.item.ContentDashboardItemFactory;
 import com.liferay.content.dashboard.web.internal.item.ContentDashboardItemFactoryTracker;
 import com.liferay.content.dashboard.web.internal.item.VersionableContentDashboardItem;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
+import com.liferay.portal.kernel.util.WebKeys;
 
+import java.util.List;
 import java.util.Locale;
 
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -66,8 +75,22 @@ public class GetContentDashboardItemVersionsMVCResourceCommand
 				_contentDashboardItemFactoryTracker.
 					getContentDashboardItemFactory(className);
 
-			if ((contentDashboardItemFactory == null) ||
-				!(contentDashboardItemFactory instanceof
+			if (contentDashboardItemFactory == null) {
+				JSONPortletResponseUtil.writeJSON(
+					resourceRequest, resourceResponse,
+					JSONFactoryUtil.createJSONArray());
+
+				return;
+			}
+
+			long classPK = GetterUtil.getLong(
+				ParamUtil.getLong(resourceRequest, "classPK"));
+
+			ContentDashboardItem<?> contentDashboardItem =
+				contentDashboardItemFactory.create(classPK);
+
+			if ((contentDashboardItem == null) ||
+				!(contentDashboardItem instanceof
 					VersionableContentDashboardItem)) {
 
 				JSONPortletResponseUtil.writeJSON(
@@ -77,9 +100,12 @@ public class GetContentDashboardItemVersionsMVCResourceCommand
 				return;
 			}
 
+			JSONObject jsonObject = _getVersionsJSONObject(
+				resourceRequest,
+				(VersionableContentDashboardItem<?>)contentDashboardItem);
+
 			JSONPortletResponseUtil.writeJSON(
-				resourceRequest, resourceResponse,
-				JSONFactoryUtil.createJSONArray());
+				resourceRequest, resourceResponse, jsonObject);
 		}
 		catch (Exception exception) {
 			if (_log.isInfoEnabled()) {
@@ -96,8 +122,67 @@ public class GetContentDashboardItemVersionsMVCResourceCommand
 		}
 	}
 
+	private JSONArray _getVersionsJSONArray(
+		ResourceRequest resourceRequest, ThemeDisplay themeDisplay,
+		VersionableContentDashboardItem versionableContentDashboardItem,
+		int versionCount) {
+
+		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
+
+		if (versionCount == 0) {
+			return jsonArray;
+		}
+
+		int pageNumber = ParamUtil.getInteger(resourceRequest, "pageNumber");
+
+		int end = ((pageNumber + 1) * _DELTA) - 1;
+		int start = pageNumber * _DELTA;
+
+		List<ContentDashboardItem.Version> versions =
+			versionableContentDashboardItem.getVersions(
+				themeDisplay, start, end);
+
+		for (ContentDashboardItem.Version version : versions) {
+			jsonArray.put(version.toJSONObject());
+		}
+
+		return jsonArray;
+	}
+
+	private JSONObject _getVersionsJSONObject(
+		ResourceRequest resourceRequest,
+		VersionableContentDashboardItem<?> versionableContentDashboardItem) {
+
+		HttpServletRequest httpServletRequest = _portal.getHttpServletRequest(
+			resourceRequest);
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		int versionsCount = versionableContentDashboardItem.getVersionsCount(
+			themeDisplay);
+
+		int totalPages = 0;
+
+		if (versionsCount != 0) {
+			totalPages = versionsCount / _DELTA;
+		}
+
+		return JSONUtil.put(
+			"totalPages", totalPages
+		).put(
+			"versions",
+			_getVersionsJSONArray(
+				resourceRequest, themeDisplay, versionableContentDashboardItem,
+				versionsCount)
+		);
+	}
+
+	private static final int _DELTA = 10;
+
 	private static final Log _log = LogFactoryUtil.getLog(
-		GetContentDashboardItemPaginatedVersionsMVCResourceCommand.class);
+		GetContentDashboardItemVersionsMVCResourceCommand.class);
 
 	@Reference
 	private ContentDashboardItemFactoryTracker
