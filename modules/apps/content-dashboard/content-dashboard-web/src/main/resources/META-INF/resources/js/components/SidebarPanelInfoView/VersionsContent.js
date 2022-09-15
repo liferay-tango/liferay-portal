@@ -13,42 +13,80 @@
  */
 
 import ClayLayout from '@clayui/layout';
-import {sub} from 'frontend-js-web';
+import ClayLoadingIndicator from '@clayui/loading-indicator';
+import {fetch, sub} from 'frontend-js-web';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 
-const VersionsContent = ({allVersions, formatDate, languageTag = 'en'}) => {
+const VersionsContent = ({
+	formatDate,
+	getItemVersionsURL,
+	languageTag = 'en',
+	onError,
+}) => {
+	const [currentPage, setCurrentPage] = useState(0);
+	const [loading, setLoading] = useState(false);
+	const [versions, setVersions] = useState([]);
+
+	useEffect(() => {
+		setLoading(true);
+		fetch(`${getItemVersionsURL}&pageNumber=${currentPage}`)
+			.then((response) => {
+				response.json().then((data) => {
+					setVersions(data.versions);
+					setLoading(false);
+				});
+			})
+			.catch((error) => {
+				if (onError) {
+					onError();
+				}
+				if (process.env.NODE_ENV === 'development') {
+					console.error('Failed to fetch versions: ', error);
+				}
+			});
+	}, [currentPage, getItemVersionsURL, onError]);
+
 	return (
 		<>
-			<ul className="list-group sidebar-list-group">
-				{allVersions.map((version) => (
-					<li
-						className="list-group-item list-group-item-flex"
-						key={version.version}
-					>
-						<ClayLayout.ContentCol expand>
-							<div className="list-group-title">
-								{Liferay.Language.get('version') + ' '}
+			{loading ? (
+				<div className="align-items-center d-flex loading-indicator-wrapper">
+					<ClayLoadingIndicator small />
+				</div>
+			) : (
+				<ul className="list-group sidebar-list-group">
+					{versions.map((version) => (
+						<li
+							className="list-group-item list-group-item-flex"
+							key={version.version}
+						>
+							<ClayLayout.ContentCol expand>
+								<div className="list-group-title">
+									{Liferay.Language.get('version') + ' '}
 
-								{version.version}
-							</div>
+									{version.version}
+								</div>
 
-							<div className="list-group-subtitle">
-								{sub(Liferay.Language.get('x-by-x'), [
-									formatDate(version.createDate, languageTag),
-									version.userName,
-								])}
-							</div>
+								<div className="list-group-subtitle">
+									{sub(Liferay.Language.get('x-by-x'), [
+										formatDate(
+											version.createDate,
+											languageTag
+										),
+										version.userName,
+									])}
+								</div>
 
-							<div className="list-group-subtext">
-								{version.changeLog
-									? version.changeLog
-									: Liferay.Language.get('no-change-log')}
-							</div>
-						</ClayLayout.ContentCol>
-					</li>
-				))}
-			</ul>
+								<div className="list-group-subtext">
+									{version.changeLog
+										? version.changeLog
+										: Liferay.Language.get('no-change-log')}
+								</div>
+							</ClayLayout.ContentCol>
+						</li>
+					))}
+				</ul>
+			)}
 		</>
 	);
 };
@@ -58,8 +96,8 @@ VersionsContent.defaultProps = {
 };
 
 VersionsContent.propTypes = {
-	allVersions: PropTypes.array.isRequired,
 	formatDate: PropTypes.func.isRequired,
+	getItemVersionsURL: PropTypes.string.isRequired,
 };
 
 export default VersionsContent;
