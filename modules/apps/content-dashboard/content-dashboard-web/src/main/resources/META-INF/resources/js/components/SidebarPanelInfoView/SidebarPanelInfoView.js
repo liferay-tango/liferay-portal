@@ -27,7 +27,6 @@ import DetailsContent from './DetailsContent';
 import ManageCollaborators from './ManageCollaborators';
 import Subscribe from './Subscribe';
 import VersionsContent from './VersionsContent';
-import formatDate from './utils/formatDate';
 
 const SidebarPanelInfoView = ({
 	classPK,
@@ -184,7 +183,6 @@ const SidebarPanelInfoView = ({
 									fetchSharingButtonURL={
 										fetchSharingButtonURL
 									}
-									formatDate={formatDate}
 									languageTag={languageTag}
 									modifiedDate={modifiedDate}
 									preview={preview}
@@ -198,7 +196,6 @@ const SidebarPanelInfoView = ({
 
 							<ClayTabs.TabPane aria-labelledby="tab-2">
 								<VersionsContent
-									formatDate={formatDate}
 									getItemVersionsURL={getItemVersionsURL}
 									languageTag={languageTag}
 									namespace={namespace}
