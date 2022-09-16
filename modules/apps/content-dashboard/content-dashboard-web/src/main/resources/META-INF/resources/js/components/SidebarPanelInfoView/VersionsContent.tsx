@@ -16,7 +16,7 @@ import ClayLayout from '@clayui/layout';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {ClayPaginationWithBasicItems} from '@clayui/pagination';
 import {fetch, sub} from 'frontend-js-web';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 
 import formatDate from './utils/formatDate';
 
@@ -32,42 +32,49 @@ const VersionsContent = ({
 	const [totalPages, setTotalPages] = useState(1);
 	const [versions, setVersions] = useState([] as IVersion[]);
 
-	useEffect((): void => {
-		const getVersionsData = async (): Promise<void> => {
-			try {
-				setLoading(true);
+	const getVersionsData = useCallback(async (): Promise<void> => {
+		try {
+			setLoading(true);
 
-				const response: Response = await fetch(
-					`${getItemVersionsURL}&${namespace}pageNumber=${currentPage}`
+			const response: Response = await fetch(
+				`${getItemVersionsURL}&${namespace}pageNumber=${currentPage}`
+			);
+
+			if (!response.ok) {
+				throw new Error(
+					`Failed to fetch ${getItemVersionsURL}&${namespace}pageNumber=${currentPage}`
 				);
-
-				if (!response.ok) {
-					throw new Error(
-						`Failed to fetch ${getItemVersionsURL}&${namespace}pageNumber=${currentPage}`
-					);
-				}
-
-				const {totalPages, versions}: IData = await response.json();
-
-				setVersions(versions);
-				setTotalPages(totalPages);
 			}
-			catch (error: unknown) {
-				onError();
 
-				if (process.env.NODE_ENV === 'development') {
-					console.error(error);
-				}
-			}
-			finally {
-				setLoading(false);
-			}
-		};
+			const {totalPages, versions}: IData = await response.json();
 
-		if (isActive) {
+			setVersions(versions);
+			setTotalPages(totalPages);
+		}
+		catch (error: unknown) {
+			onError();
+
+			if (process.env.NODE_ENV === 'development') {
+				console.error(error);
+			}
+		}
+		finally {
+			setLoading(false);
+		}
+	}, [currentPage, getItemVersionsURL, namespace, onError]);
+
+	useEffect((): void => {
+		if (isActive && !versions.length) {
 			getVersionsData();
 		}
-	}, [currentPage, getItemVersionsURL, isActive, namespace, onError]);
+	}, [getVersionsData, isActive, versions.length]);
+
+	useEffect(() => {
+		if (isActive && versions.length) {
+			getVersionsData();
+		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [currentPage, getVersionsData])
 
 	return (
 		<>
