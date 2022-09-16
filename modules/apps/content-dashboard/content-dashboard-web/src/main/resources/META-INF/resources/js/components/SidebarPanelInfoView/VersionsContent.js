@@ -51,10 +51,6 @@ const VersionsContent = ({
 			});
 	}, [currentPage, getItemVersionsURL, namespace, onError]);
 
-	const handlePagination = (page) => {
-		setCurrentPage(page);
-	};
-
 	return (
 		<>
 			{loading ? (
@@ -98,7 +94,7 @@ const VersionsContent = ({
 			{totalPages > 1 && (
 				<ClayPaginationWithBasicItems
 					activePage={currentPage}
-					onActiveChange={handlePagination}
+					onActiveChange={setCurrentPage}
 					totalPages={totalPages}
 				/>
 			)}
