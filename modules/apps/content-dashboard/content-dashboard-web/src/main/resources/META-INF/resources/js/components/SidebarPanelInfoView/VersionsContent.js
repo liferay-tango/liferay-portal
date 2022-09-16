@@ -23,6 +23,7 @@ import formatDate from './utils/formatDate';
 
 const VersionsContent = ({
 	getItemVersionsURL,
+	isActive,
 	languageTag = 'en',
 	namespace,
 	onError,
@@ -64,8 +65,10 @@ const VersionsContent = ({
 			}
 		};
 
-		getVersionsData();
-	}, [currentPage, getItemVersionsURL, namespace, onError]);
+		if (isActive) {
+			getVersionsData();
+		}
+	}, [currentPage, getItemVersionsURL, isActive, namespace, onError]);
 
 	return (
 		<>
