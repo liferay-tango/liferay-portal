@@ -38,6 +38,7 @@ const SidebarPanelInfoView = ({
 	languageTag = 'en',
 	latestVersions = [],
 	modifiedDate,
+	namespace,
 	specificFields = {},
 	subscribe,
 	subType,
@@ -200,6 +201,7 @@ const SidebarPanelInfoView = ({
 									formatDate={formatDate}
 									getItemVersionsURL={getItemVersionsURL}
 									languageTag={languageTag}
+									namespace={namespace}
 									onError={handleError}
 								/>
 							</ClayTabs.TabPane>
@@ -227,6 +229,7 @@ SidebarPanelInfoView.propTypes = {
 	getItemVersionsURL: PropTypes.string,
 	latestVersions: PropTypes.array.isRequired,
 	modifiedDate: PropTypes.string.isRequired,
+	namespace: PropTypes.string.isRequired,
 	preview: PropTypes.object,
 	specificFields: PropTypes.object.isRequired,
 	subType: PropTypes.string.isRequired,

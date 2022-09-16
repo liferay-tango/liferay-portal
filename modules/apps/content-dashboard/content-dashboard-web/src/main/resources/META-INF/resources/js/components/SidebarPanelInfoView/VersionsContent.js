@@ -14,6 +14,7 @@
 
 import ClayLayout from '@clayui/layout';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
+import {ClayPaginationWithBasicItems} from '@clayui/pagination';
 import {fetch, sub} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, {useEffect, useState} from 'react';
@@ -22,18 +23,21 @@ const VersionsContent = ({
 	formatDate,
 	getItemVersionsURL,
 	languageTag = 'en',
+	namespace,
 	onError,
 }) => {
-	const [currentPage, setCurrentPage] = useState(0);
+	const [currentPage, setCurrentPage] = useState(1);
 	const [loading, setLoading] = useState(false);
+	const [totalPages, setTotalPages] = useState(0);
 	const [versions, setVersions] = useState([]);
 
 	useEffect(() => {
 		setLoading(true);
-		fetch(`${getItemVersionsURL}&pageNumber=${currentPage}`)
+		fetch(`${getItemVersionsURL}&${namespace}pageNumber=${currentPage}`)
 			.then((response) => {
 				response.json().then((data) => {
 					setVersions(data.versions);
+					setTotalPages(data.totalPages);
 					setLoading(false);
 				});
 			})
@@ -45,7 +49,11 @@ const VersionsContent = ({
 					console.error('Failed to fetch versions: ', error);
 				}
 			});
-	}, [currentPage, getItemVersionsURL, onError]);
+	}, [currentPage, getItemVersionsURL, namespace, onError]);
+
+	const handlePagination = (page) => {
+		setCurrentPage(page);
+	};
 
 	return (
 		<>
@@ -87,6 +95,13 @@ const VersionsContent = ({
 					))}
 				</ul>
 			)}
+			{totalPages > 1 && (
+				<ClayPaginationWithBasicItems
+					activePage={currentPage}
+					onActiveChange={handlePagination}
+					totalPages={totalPages}
+				/>
+			)}
 		</>
 	);
 };
@@ -98,6 +113,7 @@ VersionsContent.defaultProps = {
 VersionsContent.propTypes = {
 	formatDate: PropTypes.func.isRequired,
 	getItemVersionsURL: PropTypes.string.isRequired,
+	namespace: PropTypes.string.isRequired,
 };
 
 export default VersionsContent;
