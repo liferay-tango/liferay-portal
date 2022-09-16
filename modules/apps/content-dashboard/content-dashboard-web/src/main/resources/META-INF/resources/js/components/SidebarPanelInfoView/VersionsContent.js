@@ -33,23 +33,38 @@ const VersionsContent = ({
 	const [versions, setVersions] = useState([]);
 
 	useEffect(() => {
-		setLoading(true);
-		fetch(`${getItemVersionsURL}&${namespace}pageNumber=${currentPage}`)
-			.then((response) => {
-				response.json().then((data) => {
-					setVersions(data.versions);
-					setTotalPages(data.totalPages);
-					setLoading(false);
-				});
-			})
-			.catch((error) => {
-				if (onError) {
-					onError();
+		const getVersionsData = async () => {
+			try {
+				setLoading(true);
+
+				const response = await fetch(
+					`${getItemVersionsURL}&${namespace}pageNumber=${currentPage}`
+				);
+
+				if (!response.ok) {
+					throw new Error(
+						`Failed to fetch ${getItemVersionsURL}&${namespace}pageNumber=${currentPage}`
+					);
 				}
+
+				const {totalPages, versions} = await response.json();
+
+				setVersions(versions);
+				setTotalPages(totalPages);
+			}
+			catch (error) {
+				onError();
+
 				if (process.env.NODE_ENV === 'development') {
-					console.error('Failed to fetch versions: ', error);
+					console.error(error);
 				}
-			});
+			}
+			finally {
+				setLoading(false);
+			}
+		};
+
+		getVersionsData();
 	}, [currentPage, getItemVersionsURL, namespace, onError]);
 
 	return (
