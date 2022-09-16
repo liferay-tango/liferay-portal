@@ -179,6 +179,8 @@ public class GetContentDashboardItemInfoMVCResourceCommand
 					"modifiedDate",
 					_toString(contentDashboardItem.getModifiedDate())
 				).put(
+					"namespace", resourceResponse.getNamespace()
+				).put(
 					"preview",
 					Optional.ofNullable(
 						contentDashboardItem.getPreview()
