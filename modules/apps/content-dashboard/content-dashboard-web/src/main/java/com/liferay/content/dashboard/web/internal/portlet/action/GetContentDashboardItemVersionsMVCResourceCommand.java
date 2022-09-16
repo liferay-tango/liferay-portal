@@ -124,6 +124,7 @@ public class GetContentDashboardItemVersionsMVCResourceCommand
 
 	private JSONArray _getVersionsJSONArray(
 		ResourceRequest resourceRequest, ThemeDisplay themeDisplay,
+		int totalPages,
 		VersionableContentDashboardItem versionableContentDashboardItem,
 		int versionCount) {
 
@@ -134,6 +135,13 @@ public class GetContentDashboardItemVersionsMVCResourceCommand
 		}
 
 		int pageNumber = ParamUtil.getInteger(resourceRequest, "pageNumber", 1);
+
+		if (pageNumber < 1) {
+			pageNumber = 1;
+		}
+		else if (pageNumber > totalPages) {
+			pageNumber = totalPages;
+		}
 
 		int end = pageNumber * _DELTA;
 		int start = (pageNumber - 1) * _DELTA;
@@ -174,8 +182,8 @@ public class GetContentDashboardItemVersionsMVCResourceCommand
 		).put(
 			"versions",
 			_getVersionsJSONArray(
-				resourceRequest, themeDisplay, versionableContentDashboardItem,
-				versionsCount)
+				resourceRequest, themeDisplay, totalPages,
+				versionableContentDashboardItem, versionsCount)
 		);
 	}
 
