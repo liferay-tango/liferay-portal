@@ -16,7 +16,6 @@ import ClayLayout from '@clayui/layout';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {ClayPaginationWithBasicItems} from '@clayui/pagination';
 import {fetch, sub} from 'frontend-js-web';
-import PropTypes from 'prop-types';
 import React, {useEffect, useState} from 'react';
 
 import formatDate from './utils/formatDate';
@@ -27,18 +26,18 @@ const VersionsContent = ({
 	languageTag = 'en',
 	namespace,
 	onError,
-}) => {
+}: IProps) => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [loading, setLoading] = useState(false);
-	const [totalPages, setTotalPages] = useState(0);
-	const [versions, setVersions] = useState([]);
+	const [totalPages, setTotalPages] = useState(1);
+	const [versions, setVersions] = useState([] as IVersion[]);
 
-	useEffect(() => {
-		const getVersionsData = async () => {
+	useEffect((): void => {
+		const getVersionsData = async (): Promise<void> => {
 			try {
 				setLoading(true);
 
-				const response = await fetch(
+				const response: Response = await fetch(
 					`${getItemVersionsURL}&${namespace}pageNumber=${currentPage}`
 				);
 
@@ -48,12 +47,12 @@ const VersionsContent = ({
 					);
 				}
 
-				const {totalPages, versions} = await response.json();
+				const {totalPages, versions}: IData = await response.json();
 
 				setVersions(versions);
 				setTotalPages(totalPages);
 			}
-			catch (error) {
+			catch (error: unknown) {
 				onError();
 
 				if (process.env.NODE_ENV === 'development') {
@@ -73,41 +72,42 @@ const VersionsContent = ({
 	return (
 		<>
 			{loading ? (
-				<div className="align-items-center d-flex loading-indicator-wrapper">
+				<div className="align-items-center d-flex loading-indicator-wrapper p-6">
 					<ClayLoadingIndicator small />
 				</div>
 			) : (
 				<ul className="list-group sidebar-list-group">
-					{versions.map((version) => (
-						<li
-							className="list-group-item list-group-item-flex"
-							key={version.version}
-						>
-							<ClayLayout.ContentCol expand>
-								<div className="list-group-title">
-									{Liferay.Language.get('version') + ' '}
+					{versions.map(
+						({changeLog, createDate, userName, version}) => (
+							<li
+								className="list-group-item list-group-item-flex"
+								key={version}
+							>
+								<ClayLayout.ContentCol expand>
+									<div className="list-group-title">
+										{Liferay.Language.get('version') + ' '}
 
-									{version.version}
-								</div>
+										{version}
+									</div>
 
-								<div className="list-group-subtitle">
-									{sub(Liferay.Language.get('x-by-x'), [
-										formatDate(
-											version.createDate,
-											languageTag
-										),
-										version.userName,
-									])}
-								</div>
+									<div className="list-group-subtitle">
+										{sub(Liferay.Language.get('x-by-x'), [
+											formatDate(createDate, languageTag),
+											userName,
+										])}
+									</div>
 
-								<div className="list-group-subtext">
-									{version.changeLog
-										? version.changeLog
-										: Liferay.Language.get('no-change-log')}
-								</div>
-							</ClayLayout.ContentCol>
-						</li>
-					))}
+									<div className="list-group-subtext">
+										{changeLog
+											? changeLog
+											: Liferay.Language.get(
+													'no-change-log'
+											  )}
+									</div>
+								</ClayLayout.ContentCol>
+							</li>
+						)
+					)}
 				</ul>
 			)}
 			{totalPages > 1 && (
@@ -121,13 +121,26 @@ const VersionsContent = ({
 	);
 };
 
-VersionsContent.defaultProps = {
-	languageTag: 'en-US',
-};
+interface IData {
+	totalPages: number;
+	versions: IVersion[];
+}
 
-VersionsContent.propTypes = {
-	getItemVersionsURL: PropTypes.string.isRequired,
-	namespace: PropTypes.string.isRequired,
-};
+interface IProps {
+	getItemVersionsURL: string;
+	isActive: boolean;
+	languageTag?: string;
+	namespace: string;
+	onError: () => void;
+}
+
+interface IVersion {
+	changeLog?: string;
+	createDate: string;
+	statusLabel: string;
+	statusStyle: string;
+	userName: string;
+	version: string;
+}
 
 export default VersionsContent;
