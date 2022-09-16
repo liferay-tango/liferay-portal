@@ -133,10 +133,10 @@ public class GetContentDashboardItemVersionsMVCResourceCommand
 			return jsonArray;
 		}
 
-		int pageNumber = ParamUtil.getInteger(resourceRequest, "pageNumber");
+		int pageNumber = ParamUtil.getInteger(resourceRequest, "pageNumber", 1);
 
-		int end = ((pageNumber + 1) * _DELTA) - 1;
-		int start = pageNumber * _DELTA;
+		int end = pageNumber * _DELTA;
+		int start = (pageNumber - 1) * _DELTA;
 
 		List<ContentDashboardItem.Version> versions =
 			versionableContentDashboardItem.getVersions(
@@ -163,10 +163,10 @@ public class GetContentDashboardItemVersionsMVCResourceCommand
 		int versionsCount = versionableContentDashboardItem.getVersionsCount(
 			themeDisplay);
 
-		int totalPages = 0;
+		int totalPages = 1;
 
 		if (versionsCount != 0) {
-			totalPages = versionsCount / _DELTA;
+			totalPages = (int)Math.ceil((double)versionsCount / _DELTA);
 		}
 
 		return JSONUtil.put(
