@@ -16,13 +16,24 @@ import ClayLayout from '@clayui/layout';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {ClayPaginationWithBasicItems} from '@clayui/pagination';
 import {fetch, sub} from 'frontend-js-web';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 
 import formatDate from './utils/formatDate';
 
+const useIsFirstRender = (): boolean => {
+	const isFirstRef = useRef(true);
+
+	if (isFirstRef.current) {
+		isFirstRef.current = false;
+
+		return true;
+	}
+
+	return isFirstRef.current;
+};
+
 const VersionsContent = ({
 	getItemVersionsURL,
-	isActive,
 	languageTag = 'en',
 	namespace,
 	onError,
@@ -31,6 +42,8 @@ const VersionsContent = ({
 	const [loading, setLoading] = useState(false);
 	const [totalPages, setTotalPages] = useState(1);
 	const [versions, setVersions] = useState([] as IVersion[]);
+
+	const isFirst: boolean = useIsFirstRender();
 
 	const getVersionsData = useCallback(async (): Promise<void> => {
 		try {
@@ -64,17 +77,15 @@ const VersionsContent = ({
 	}, [currentPage, getItemVersionsURL, namespace, onError]);
 
 	useEffect((): void => {
-		if (isActive && !versions.length) {
-			getVersionsData();
-		}
-	}, [getVersionsData, isActive, versions.length]);
 
-	useEffect(() => {
-		if (isActive && versions.length) {
-			getVersionsData();
+		// prevent the initial fetch when the tab is inactive
+
+		if (isFirst) {
+			return;
 		}
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [currentPage, getVersionsData])
+
+		getVersionsData();
+	}, [getVersionsData, isFirst]);
 
 	return (
 		<>
@@ -135,7 +146,6 @@ interface IData {
 
 interface IProps {
 	getItemVersionsURL: string;
-	isActive: boolean;
 	languageTag?: string;
 	namespace: string;
 	onError: () => void;

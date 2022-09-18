@@ -14,14 +14,12 @@
 
 declare const VersionsContent: ({
 	getItemVersionsURL,
-	isActive,
 	languageTag,
 	namespace,
 	onError,
 }: IProps) => JSX.Element;
 interface IProps {
 	getItemVersionsURL: string;
-	isActive: boolean;
 	languageTag?: string;
 	namespace: string;
 	onError: () => void;
