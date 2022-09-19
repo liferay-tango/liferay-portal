@@ -24,9 +24,6 @@ import java.util.List;
 public interface VersionableContentDashboardItem<T>
 	extends ContentDashboardItem<T> {
 
-	public List<ContentDashboardItem.Version> getAllVersions(
-		ThemeDisplay themeDisplay);
-
 	public List<ContentDashboardItem.Version> getVersions(
 		ThemeDisplay themeDisplay, int start, int end);
 
