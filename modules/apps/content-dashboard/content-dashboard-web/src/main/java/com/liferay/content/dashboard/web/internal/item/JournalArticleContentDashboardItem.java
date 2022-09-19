@@ -30,7 +30,6 @@ import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.service.JournalArticleService;
 import com.liferay.journal.util.comparator.ArticleVersionComparator;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -106,11 +105,6 @@ public class JournalArticleContentDashboardItem
 		}
 
 		_portal = portal;
-	}
-
-	@Override
-	public List<Version> getAllVersions(ThemeDisplay themeDisplay) {
-		return getVersions(themeDisplay, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 	}
 
 	@Override

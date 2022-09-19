@@ -29,7 +29,6 @@ import com.liferay.info.item.InfoItemClassDetails;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.info.item.provider.InfoItemFieldValuesProvider;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -108,11 +107,6 @@ public class FileEntryContentDashboardItem
 		_infoItemFieldValuesProvider = infoItemFieldValuesProvider;
 		_language = language;
 		_portal = portal;
-	}
-
-	@Override
-	public List<Version> getAllVersions(ThemeDisplay themeDisplay) {
-		return getVersions(themeDisplay, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 	}
 
 	@Override
