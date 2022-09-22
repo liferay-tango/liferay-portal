@@ -118,8 +118,13 @@ const VersionsContent = ({
 			)}
 			{viewVersionsURL && (
 				<ClayLink
-					className="d-flex justify-content-center mt-3"
+					borderless
+					button
+					className="mt-3"
+					displayType="secondary"
 					href={viewVersionsURL}
+					outline
+					small
 				>
 					{Liferay.Language.get('view-more')}
 				</ClayLink>
