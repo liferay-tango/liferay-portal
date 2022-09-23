@@ -91,51 +91,62 @@ const VersionsContent = ({
 					<ClayLoadingIndicator small />
 				</div>
 			) : (
-				<ul className="list-group sidebar-list-group">
-					{versions.map((version) => (
-						<li
-							className="list-group-item list-group-item-flex"
-							key={version.version}
+				<>
+					{versions && (
+						<ul className="list-group sidebar-list-group">
+							{versions.map((version) => (
+								<li
+									className="list-group-item list-group-item-flex"
+									key={version.version}
+								>
+									<ClayLayout.ContentCol expand>
+										<div className="list-group-title">
+											{Liferay.Language.get('version') +
+												' '}
+
+											{version.version}
+										</div>
+
+										<div className="list-group-subtitle">
+											{sub(
+												Liferay.Language.get('x-by-x'),
+												[
+													formatDate(
+														version.createDate,
+														languageTag
+													),
+													version.userName,
+												]
+											)}
+										</div>
+
+										<div className="list-group-subtext">
+											{version.changeLog
+												? version.changeLog
+												: Liferay.Language.get(
+														'no-change-log'
+												  )}
+										</div>
+									</ClayLayout.ContentCol>
+								</li>
+							))}
+						</ul>
+					)}
+
+					{viewVersionsURL && (
+						<ClayLink
+							borderless
+							button
+							className="mt-3"
+							displayType="secondary"
+							href={viewVersionsURL}
+							outline
+							small
 						>
-							<ClayLayout.ContentCol expand>
-								<div className="list-group-title">
-									{Liferay.Language.get('version') + ' '}
-
-									{version.version}
-								</div>
-
-								<div className="list-group-subtitle">
-									{sub(Liferay.Language.get('x-by-x'), [
-										formatDate(
-											version.createDate,
-											languageTag
-										),
-										version.userName,
-									])}
-								</div>
-
-								<div className="list-group-subtext">
-									{version.changeLog
-										? version.changeLog
-										: Liferay.Language.get('no-change-log')}
-								</div>
-							</ClayLayout.ContentCol>
-						</li>
-					))}
-				</ul>
-			)}
-			{viewVersionsURL && (
-				<ClayLink
-					borderless
-					button
-					className="mt-3"
-					displayType="secondary"
-					href={viewVersionsURL}
-					outline
-					small
-				>
-					{Liferay.Language.get('view-more')}
-				</ClayLink>
+							{Liferay.Language.get('view-more')}
+						</ClayLink>
+					)}
+				</>
 			)}
 		</>
 	);
