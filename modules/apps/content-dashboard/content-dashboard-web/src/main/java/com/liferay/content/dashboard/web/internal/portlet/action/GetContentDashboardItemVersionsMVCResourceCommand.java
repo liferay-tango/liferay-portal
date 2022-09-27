@@ -19,6 +19,7 @@ import com.liferay.content.dashboard.item.ContentDashboardItemFactory;
 import com.liferay.content.dashboard.item.VersionableContentDashboardItem;
 import com.liferay.content.dashboard.web.internal.constants.ContentDashboardPortletKeys;
 import com.liferay.content.dashboard.web.internal.item.ContentDashboardItemFactoryTracker;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -63,7 +64,7 @@ public class GetContentDashboardItemVersionsMVCResourceCommand
 
 	@Override
 	protected void doServeResource(
-			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
+		ResourceRequest resourceRequest, ResourceResponse resourceResponse)
 		throws Exception {
 
 		Locale locale = _portal.getLocale(resourceRequest);
@@ -124,17 +125,9 @@ public class GetContentDashboardItemVersionsMVCResourceCommand
 	}
 
 	private JSONArray _getVersionsJSONArray(
-		int displayVersions, HttpServletRequest httpServletRequest,
-		VersionableContentDashboardItem versionableContentDashboardItem) {
+		int displayVersions, List<ContentDashboardItem.Version> versions) {
 
 		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
-
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
-		List<ContentDashboardItem.Version> versions =
-			versionableContentDashboardItem.getAllVersions(themeDisplay);
 
 		if (ListUtil.isEmpty(versions)) {
 			return jsonArray;
@@ -156,21 +149,31 @@ public class GetContentDashboardItemVersionsMVCResourceCommand
 		HttpServletRequest httpServletRequest = _portal.getHttpServletRequest(
 			resourceRequest);
 
-		return JSONUtil.put(
-			"versions",
-			() -> {
-				int displayVersions = ParamUtil.getInteger(
-					resourceRequest, "maxDisplayVersions",
-					_DEFAULT_MAX_DISPLAY_VERSIONS);
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
 
-				return _getVersionsJSONArray(
-					displayVersions, httpServletRequest,
-					versionableContentDashboardItem);
-			}
+		int displayVersions = ParamUtil.getInteger(
+			resourceRequest, "maxDisplayVersions",
+			_DEFAULT_MAX_DISPLAY_VERSIONS);
+
+		List<ContentDashboardItem.Version> versions =
+			versionableContentDashboardItem.getAllVersions(themeDisplay);
+
+		return JSONUtil.put(
+			"versions", _getVersionsJSONArray(displayVersions, versions)
 		).put(
 			"viewVersionsURL",
-			versionableContentDashboardItem.getViewVersionsURL(
-				httpServletRequest)
+			() -> {
+				if (ListUtil.isEmpty(versions) ||
+					(versions.size() <= displayVersions)) {
+
+					return StringPool.BLANK;
+				}
+
+				return versionableContentDashboardItem.getViewVersionsURL(
+					httpServletRequest);
+			}
 		);
 	}
 
