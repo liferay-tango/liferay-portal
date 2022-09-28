@@ -12,8 +12,7 @@
  * details.
  */
 
-/// <reference types="react" />
-
+import {IAction} from './VersionActions';
 declare const VersionsContent: ({
 	getItemVersionsURL,
 	languageTag,
@@ -23,5 +22,6 @@ interface IProps {
 	getItemVersionsURL: string;
 	languageTag?: string;
 	onError: () => void;
+	versionActions: IAction[];
 }
 export default VersionsContent;

@@ -17,6 +17,7 @@ import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {fetch, sub} from 'frontend-js-web';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 
+import VersionActions, {IAction} from './VersionActions';
 import formatDate from './utils/formatDate';
 
 const useIsFirstRender = (): boolean => {
@@ -109,6 +110,20 @@ const VersionsContent = ({
 										: Liferay.Language.get('no-change-log')}
 								</div>
 							</ClayLayout.ContentCol>
+
+							<VersionActions
+								actions={[
+									{
+										action: 'expire',
+										actionLabel: 'Expire',
+										actionURL:
+											// eslint-disable-next-line @liferay/portal/no-localhost-reference
+											'http://localhost:8080/group/guest/~/control_panel/manage?p_p_id=com_liferay_journal_web_portlet_JournalPortlet&p_p_lifecycle=1&p_p_state=maximized&p_p_mode=view&_com_liferay_journal_web_portlet_JournalPortlet_javax.portlet.action=%2Fjournal%2Fexpire_articles&_com_liferay_journal_web_portlet_JournalPortlet_redirect=%2Fgroup%2Fguest%2F%7E%2Fcontrol_panel%2Fmanage%3Fp_p_id%3Dcom_liferay_journal_web_portlet_JournalPortlet%26p_p_lifecycle%3D0%26p_p_state%3Dmaximized%26p_p_mode%3Dview%26_com_liferay_journal_web_portlet_JournalPortlet_mvcPath%3D%252Fview_article_history.jsp%26_com_liferay_journal_web_portlet_JournalPortlet_redirect%3D%252Fgroup%252Fguest%252F%257E%252Fcontrol_panel%252Fmanage%253Fp_p_id%253Dcom_liferay_journal_web_portlet_JournalPortlet%2526p_p_lifecycle%253D0%2526p_p_state%253Dmaximized%2526p_p_mode%253Dview%2526p_p_auth%253D4aUqY2iX%2526wkrh___tabs1%253Dproperties%26_com_liferay_journal_web_portlet_JournalPortlet_backURL%3D%252Fgroup%252Fguest%252F%257E%252Fcontrol_panel%252Fmanage%253Fp_p_id%253Dcom_liferay_journal_web_portlet_JournalPortlet%2526p_p_lifecycle%253D0%2526p_p_state%253Dmaximized%2526p_p_mode%253Dview%2526p_p_auth%253D4aUqY2iX%2526wkrh___tabs1%253Dproperties%26_com_liferay_journal_web_portlet_JournalPortlet_articleId%3D43815%26p_p_auth%3D4aUqY2iX&_com_liferay_journal_web_portlet_JournalPortlet_articleId=43815_version_1.8&_com_liferay_journal_web_portlet_JournalPortlet_groupId=20121&p_p_auth=4aUqY2iX',
+										icon: 'time',
+										title: 'Expire',
+									},
+								]}
+							/>
 						</li>
 					))}
 				</ul>
@@ -125,6 +140,7 @@ interface IProps {
 	getItemVersionsURL: string;
 	languageTag?: string;
 	onError: () => void;
+	versionActions: IAction[];
 }
 
 interface IVersion {

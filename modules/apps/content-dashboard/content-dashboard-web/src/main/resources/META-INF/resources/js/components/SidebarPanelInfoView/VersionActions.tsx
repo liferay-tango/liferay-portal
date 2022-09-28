@@ -18,13 +18,9 @@ import ClayIcon from '@clayui/icon';
 import React from 'react';
 
 const VersionActions = ({actions}: IProps) => {
-	const handleActionClick = ({
-		actionURL: _actionURL,
-		title: _title,
-	}: {
-		actionURL: string;
-		title: string;
-	}): void => {};
+	const handleActionClick = ({actionURL}: {actionURL: string}): void => {
+		window.submitForm((document as IDocument).hrefFm, actionURL);
+	};
 
 	return (
 		<ClayDropDown
@@ -41,20 +37,16 @@ const VersionActions = ({actions}: IProps) => {
 			}
 		>
 			<ClayDropDown.ItemList>
-				{actions.map(
-					({action, actionLabel, actionURL, icon, title}) => (
-						<ClayDropDown.Item
-							key={action}
-							onClick={() =>
-								handleActionClick({actionURL, title})
-							}
-						>
-							<ClayIcon symbol={icon || ''} />
+				{actions.map(({action, actionLabel, actionURL, icon}) => (
+					<ClayDropDown.Item
+						key={action}
+						onClick={() => handleActionClick({actionURL})}
+					>
+						<ClayIcon symbol={icon || ''} />
 
-							<span className="pl-3">{actionLabel}</span>
-						</ClayDropDown.Item>
-					)
-				)}
+						<span className="pl-3">{actionLabel}</span>
+					</ClayDropDown.Item>
+				))}
 			</ClayDropDown.ItemList>
 		</ClayDropDown>
 	);
@@ -64,12 +56,22 @@ interface IProps {
 	actions: IAction[];
 }
 
-interface IAction {
+export interface IAction {
 	action: string;
 	actionLabel: string;
 	actionURL: string;
 	icon?: string;
 	title: string;
+}
+
+declare global {
+	interface Window {
+		submitForm: (form: HTMLElement, url: string) => void;
+	}
+
+	interface IDocument extends Document {
+		hrefFm: HTMLElement;
+	}
 }
 
 export default VersionActions;
