@@ -9,13 +9,35 @@
  * distribution rights of the Software.
  */
 
-import React, {useEffect} from 'react';
+import {getSessionValue, setSessionValue} from 'frontend-js-web';
+import React, {useEffect, useState} from 'react';
 
 import SegmentsExperimentsMain from './components/SegmentsExperimentsMain.es';
 
 import '../css/main.scss';
 
-export default function ({context, props}) {
+const SEGMENTS_EXPERIMENT_CLOSED_PANEL_VALUE = 'closed';
+const SEGMENTS_EXPERIMENT_OPEN_PANEL_VALUE = 'open';
+const SEGMENTS_EXPERIMENT_PANEL_ID =
+	'com.liferay.segments.experiment.web_panelState';
+
+const useInitialPanelState = () => {
+	const [panelState, setPanelState] = useState(
+		SEGMENTS_EXPERIMENT_CLOSED_PANEL_VALUE
+	);
+
+	useEffect(() => {
+		getSessionValue(SEGMENTS_EXPERIMENT_PANEL_ID).then((value) => {
+			setPanelState(value);
+		});
+	}, []);
+
+	return [panelState, setPanelState];
+};
+
+export default function SegmentsExperimentApp({context, props}) {
+	const [panelState, setPanelState] = useInitialPanelState();
+
 	const {namespace} = context;
 	const {segmentExperimentDataURL} = props;
 
@@ -25,33 +47,40 @@ export default function ({context, props}) {
 
 	useEffect(() => {
 		if (segmentsExperimentPanelToggle) {
-			const sidenavInstance = Liferay.SideNavigation.initialize(
+			const sidenavInstance = Liferay.SideNavigation.instance(
 				segmentsExperimentPanelToggle
 			);
 
 			sidenavInstance.on('open.lexicon.sidenav', () => {
-				Liferay.Util.Session.set(
-					'com.liferay.segments.experiment.web_panelState',
-					'open'
+				setSessionValue(
+					SEGMENTS_EXPERIMENT_PANEL_ID,
+					SEGMENTS_EXPERIMENT_OPEN_PANEL_VALUE
 				);
+				setPanelState(SEGMENTS_EXPERIMENT_OPEN_PANEL_VALUE);
 			});
 
 			sidenavInstance.on('closed.lexicon.sidenav', () => {
-				Liferay.Util.Session.set(
-					'com.liferay.segments.experiment.web_panelState',
-					'closed'
+				setSessionValue(
+					SEGMENTS_EXPERIMENT_PANEL_ID,
+					SEGMENTS_EXPERIMENT_CLOSED_PANEL_VALUE
 				);
+				setPanelState(SEGMENTS_EXPERIMENT_CLOSED_PANEL_VALUE);
 			});
 
 			Liferay.once('screenLoad', () => {
 				Liferay.SideNavigation.destroy(segmentsExperimentPanelToggle);
 			});
 		}
-	}, [segmentsExperimentPanelToggle]);
+	}, [segmentsExperimentPanelToggle, setPanelState]);
 
 	return (
 		<div id={`${namespace}-segments-experiment-root`}>
-			<SegmentsExperimentsMain fetchDataURL={segmentExperimentDataURL} />
+			<SegmentsExperimentsMain
+				fetchDataURL={segmentExperimentDataURL}
+				isPanelStateOpen={
+					panelState === SEGMENTS_EXPERIMENT_OPEN_PANEL_VALUE
+				}
+			/>
 		</div>
 	);
 }
