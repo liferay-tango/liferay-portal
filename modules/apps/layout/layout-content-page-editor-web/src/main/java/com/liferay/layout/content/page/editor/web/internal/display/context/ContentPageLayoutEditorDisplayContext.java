@@ -58,6 +58,7 @@ import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -138,8 +139,13 @@ public class ContentPageLayoutEditorDisplayContext
 
 		configContext.put(
 			"addSegmentsExperienceURL",
-			getFragmentEntryActionURL(
-				"/layout_content_page_editor/add_segments_experience"));
+			HttpComponentsUtil.addParameter(
+				HttpComponentsUtil.addParameter(
+					getFragmentEntryActionURL(
+						"/layout_content_page_editor/add_segments_experience"),
+					getPortletNamespace() + "plid", themeDisplay.getPlid()),
+				getPortletNamespace() + "groupId",
+				themeDisplay.getScopeGroupId()));
 		configContext.put(
 			"availableSegmentsEntries", _getAvailableSegmentsEntries());
 		configContext.put(
