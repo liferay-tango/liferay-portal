@@ -55,6 +55,7 @@ import com.liferay.segments.service.SegmentsExperienceLocalService;
 import com.liferay.segments.service.SegmentsExperienceService;
 import com.liferay.segments.service.SegmentsExperimentRelService;
 import com.liferay.segments.service.SegmentsExperimentService;
+import com.liferay.staging.StagingGroupHelper;
 import com.liferay.taglib.aui.IconTag;
 import com.liferay.taglib.util.BodyBottomTag;
 
@@ -353,7 +354,8 @@ public class SegmentsExperimentProductNavigationControlMenuEntry
 						_segmentsExperienceLocalService),
 					_segmentsExperienceService,
 					_segmentsExperimentConfiguration,
-					_segmentsExperimentRelService, _segmentsExperimentService);
+					_segmentsExperimentRelService, _segmentsExperimentService,
+					_stagingGroupHelper);
 
 			_reactRenderer.renderReact(
 				new ComponentDescriptor(
@@ -420,5 +422,8 @@ public class SegmentsExperimentProductNavigationControlMenuEntry
 		target = "(osgi.web.symbolicname=com.liferay.segments.experiment.web)"
 	)
 	private ServletContext _servletContext;
+
+	@Reference
+	private StagingGroupHelper _stagingGroupHelper;
 
 }
