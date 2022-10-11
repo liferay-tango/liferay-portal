@@ -159,10 +159,9 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 			SegmentsExperimentUtil.isAnalyticsConnected(companyId)
 		).put(
 			"isSynced",
-			() -> SegmentsExperimentUtil.isAnalyticsSynced(companyId, groupId)
+			SegmentsExperimentUtil.isAnalyticsSynced(companyId, groupId)
 		).put(
-			"url",
-			() -> PrefsPropsUtil.getString(companyId, "liferayAnalyticsURL")
+			"url", PrefsPropsUtil.getString(companyId, "liferayAnalyticsURL")
 		);
 	}
 
@@ -393,7 +392,7 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 		).put(
 			"segmentsExperiment",
 			SegmentsExperimentUtil.toSegmentsExperimentJSONObject(
-			locale, _getSegmentsExperiment(layout, segmentsExperienceId))
+				locale, _getSegmentsExperiment(layout, segmentsExperienceId))
 		).put(
 			"segmentsExperimentGoals",
 			_getSegmentsExperimentGoalsJSONArray(locale)
