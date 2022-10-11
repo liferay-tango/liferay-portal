@@ -149,22 +149,6 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 				SegmentsExperimentConstants.Status.getExclusiveStatusValues()));
 	}
 
-	private JSONObject _getAnalyticsDataJSONObject(
-		long companyId, long groupId) {
-
-		return JSONUtil.put(
-			"cloudTrialURL", SegmentsExperimentUtil.ANALYTICS_CLOUD_TRIAL_URL
-		).put(
-			"isConnected",
-			SegmentsExperimentUtil.isAnalyticsConnected(companyId)
-		).put(
-			"isSynced",
-			SegmentsExperimentUtil.isAnalyticsSynced(companyId, groupId)
-		).put(
-			"url", PrefsPropsUtil.getString(companyId, "liferayAnalyticsURL")
-		);
-	}
-
 	private String _getContentPageEditorActionURL(
 		String action, Group group, HttpServletRequest httpServletRequest) {
 
@@ -359,9 +343,22 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 
 		return JSONUtil.put(
 			"analyticsData",
-			_getAnalyticsDataJSONObject(
-				_portal.getCompanyId(httpServletRequest),
-				_getLiveGroupId(group.getGroupId()))
+			JSONUtil.put(
+				"cloudTrialURL",
+				SegmentsExperimentUtil.ANALYTICS_CLOUD_TRIAL_URL
+			).put(
+				"isConnected",
+				SegmentsExperimentUtil.isAnalyticsConnected(
+					group.getCompanyId())
+			).put(
+				"isSynced",
+				SegmentsExperimentUtil.isAnalyticsSynced(
+					group.getCompanyId(), _getLiveGroupId(group.getGroupId()))
+			).put(
+				"url",
+				PrefsPropsUtil.getString(
+					group.getCompanyId(), "liferayAnalyticsURL")
+			)
 		).put(
 			"hideSegmentsExperimentPanelURL",
 			PortletURLBuilder.create(
