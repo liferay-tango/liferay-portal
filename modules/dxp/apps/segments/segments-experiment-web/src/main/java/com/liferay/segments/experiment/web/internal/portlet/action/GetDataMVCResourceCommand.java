@@ -186,7 +186,8 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 		).put(
 			"imagesPath", _getImagesPath(httpServletRequest)
 		).put(
-			"namespace", _getSegmentsExperimentPortletNamespace()
+			"namespace",
+			_portal.getPortletNamespace(SegmentsPortletKeys.SEGMENTS_EXPERIMENT)
 		).put(
 			"page",
 			JSONUtil.put(
@@ -485,11 +486,6 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 		);
 
 		return segmentsExperimentGoalsJSONArray;
-	}
-
-	private String _getSegmentsExperimentPortletNamespace() {
-		return _portal.getPortletNamespace(
-			SegmentsPortletKeys.SEGMENTS_EXPERIMENT);
 	}
 
 	private JSONArray _getSegmentsExperimentRelsJSONArray(
