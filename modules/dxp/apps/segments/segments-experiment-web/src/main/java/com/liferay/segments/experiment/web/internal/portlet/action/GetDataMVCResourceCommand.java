@@ -395,7 +395,23 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 			"selectedSegmentsExperienceId", segmentsExperienceId
 		).put(
 			"winnerSegmentsVariantId",
-			_getWinnerSegmentsExperienceId(layout, segmentsExperienceId)
+			() -> {
+				SegmentsExperiment segmentsExperiment =
+					_fetchSegmentsExperiment(layout, segmentsExperienceId);
+
+				if (segmentsExperiment == null) {
+					return StringPool.BLANK;
+				}
+
+				long winnerSegmentsExperienceId =
+					segmentsExperiment.getWinnerSegmentsExperienceId();
+
+				if (winnerSegmentsExperienceId == -1) {
+					return StringPool.BLANK;
+				}
+
+				return String.valueOf(winnerSegmentsExperienceId);
+			}
 		);
 	}
 
@@ -434,27 +450,6 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 			segmentsExperimentRel ->
 				SegmentsExperimentUtil.toSegmentsExperimentRelJSONObject(
 					locale, segmentsExperimentRel));
-	}
-
-	private String _getWinnerSegmentsExperienceId(
-			Layout layout, long segmentsExperienceId)
-		throws Exception {
-
-		SegmentsExperiment segmentsExperiment = _fetchSegmentsExperiment(
-			layout, segmentsExperienceId);
-
-		if (segmentsExperiment == null) {
-			return StringPool.BLANK;
-		}
-
-		long winnerSegmentsExperienceId =
-			segmentsExperiment.getWinnerSegmentsExperienceId();
-
-		if (winnerSegmentsExperienceId == -1) {
-			return StringPool.BLANK;
-		}
-
-		return String.valueOf(winnerSegmentsExperienceId);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
