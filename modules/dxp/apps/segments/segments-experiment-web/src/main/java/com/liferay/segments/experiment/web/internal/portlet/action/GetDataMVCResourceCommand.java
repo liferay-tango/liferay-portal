@@ -178,7 +178,7 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 				backURL, layout, httpServletRequest, redirect,
 				segmentsExperienceId)
 		).put(
-			"imagesPath", _getImagesPath(httpServletRequest)
+			"imagesPath", _portal.getPathContext(httpServletRequest) + "/images"
 		).put(
 			"namespace",
 			_portal.getPortletNamespace(SegmentsPortletKeys.SEGMENTS_EXPERIMENT)
@@ -315,10 +315,6 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 		return segmentsExperimentsJSONArray;
 	}
 
-	private String _getImagesPath(HttpServletRequest httpServletRequest) {
-		return _portal.getPathContext(httpServletRequest) + "/images";
-	}
-
 	private long _getLiveGroupId(long groupId) throws Exception {
 		Group group = _stagingGroupHelper.fetchLiveGroup(groupId);
 
@@ -380,7 +376,25 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 			"pathToAssets", _portal.getPathContext(httpServletRequest)
 		).put(
 			"segmentsExperiences",
-			_getSegmentsExperiencesJSONArray(layout, locale)
+			JSONUtil.toJSONArray(
+				_segmentsExperienceService.getSegmentsExperiences(
+					layout.getGroupId(), _portal.getClassNameId(Layout.class),
+					layout.getPlid(), true),
+				segmentsExperience -> JSONUtil.put(
+					"name", segmentsExperience.getName(locale)
+				).put(
+					"segmentsExperienceId",
+					String.valueOf(segmentsExperience.getSegmentsExperienceId())
+				).put(
+					"segmentsExperiment",
+					SegmentsExperimentUtil.toSegmentsExperimentJSONObject(
+						locale,
+						_getActiveSegmentsExperimentOptional(
+							layout, segmentsExperience.getSegmentsExperienceId()
+						).orElse(
+							null
+						))
+				))
 		).put(
 			"segmentsExperiment",
 			SegmentsExperimentUtil.toSegmentsExperimentJSONObject(
@@ -409,31 +423,6 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 			"winnerSegmentsVariantId",
 			_getWinnerSegmentsExperienceId(layout, segmentsExperienceId)
 		);
-	}
-
-	private JSONArray _getSegmentsExperiencesJSONArray(
-			Layout layout, Locale locale)
-		throws Exception {
-
-		return JSONUtil.toJSONArray(
-			_segmentsExperienceService.getSegmentsExperiences(
-				layout.getGroupId(), _portal.getClassNameId(Layout.class),
-				layout.getPlid(), true),
-			segmentsExperience -> JSONUtil.put(
-				"name", segmentsExperience.getName(locale)
-			).put(
-				"segmentsExperienceId",
-				String.valueOf(segmentsExperience.getSegmentsExperienceId())
-			).put(
-				"segmentsExperiment",
-				SegmentsExperimentUtil.toSegmentsExperimentJSONObject(
-					locale,
-					_getActiveSegmentsExperimentOptional(
-						layout, segmentsExperience.getSegmentsExperienceId()
-					).orElse(
-						null
-					))
-			));
 	}
 
 	private SegmentsExperiment _getSegmentsExperiment(
