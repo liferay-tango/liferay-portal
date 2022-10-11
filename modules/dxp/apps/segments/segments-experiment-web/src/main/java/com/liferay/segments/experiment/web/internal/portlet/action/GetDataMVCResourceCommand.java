@@ -346,8 +346,25 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 						locale, segmentsExperiment))
 		).put(
 			"initialSegmentsVariants",
-			_getSegmentsExperimentRelsJSONArray(
-				layout, locale, segmentsExperienceId)
+			() -> {
+				JSONArray segmentsExperimentRelsJSONArray =
+					JSONFactoryUtil.createJSONArray();
+
+				SegmentsExperiment segmentsExperiment =
+					_fetchSegmentsExperiment(layout, segmentsExperienceId);
+
+				if (segmentsExperiment == null) {
+					return segmentsExperimentRelsJSONArray;
+				}
+
+				return JSONUtil.toJSONArray(
+					_segmentsExperimentRelService.getSegmentsExperimentRels(
+						segmentsExperiment.getSegmentsExperimentId()),
+					segmentsExperimentRel ->
+						SegmentsExperimentUtil.
+							toSegmentsExperimentRelJSONObject(
+								locale, segmentsExperimentRel));
+			}
 		).put(
 			"pathToAssets", _portal.getPathContext(httpServletRequest)
 		).put(
@@ -428,28 +445,6 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 		).setParameter(
 			"p_l_mode", Constants.VIEW
 		).buildString();
-	}
-
-	private JSONArray _getSegmentsExperimentRelsJSONArray(
-			Layout layout, Locale locale, long segmentExperienceId)
-		throws Exception {
-
-		SegmentsExperiment segmentsExperiment = _fetchSegmentsExperiment(
-			layout, segmentExperienceId);
-
-		JSONArray segmentsExperimentRelsJSONArray =
-			JSONFactoryUtil.createJSONArray();
-
-		if (segmentsExperiment == null) {
-			return segmentsExperimentRelsJSONArray;
-		}
-
-		return JSONUtil.toJSONArray(
-			_segmentsExperimentRelService.getSegmentsExperimentRels(
-				segmentsExperiment.getSegmentsExperimentId()),
-			segmentsExperimentRel ->
-				SegmentsExperimentUtil.toSegmentsExperimentRelJSONObject(
-					locale, segmentsExperimentRel));
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
