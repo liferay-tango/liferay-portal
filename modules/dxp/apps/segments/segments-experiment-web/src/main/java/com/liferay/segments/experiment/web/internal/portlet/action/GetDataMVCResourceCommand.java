@@ -51,12 +51,10 @@ import com.liferay.segments.service.SegmentsExperimentRelService;
 import com.liferay.segments.service.SegmentsExperimentService;
 import com.liferay.staging.StagingGroupHelper;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import javax.portlet.PortletRequest;
 import javax.portlet.ResourceRequest;
@@ -464,20 +462,23 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 		JSONArray segmentsExperimentGoalsJSONArray =
 			JSONFactoryUtil.createJSONArray();
 
-		Stream<SegmentsExperimentConstants.Goal> stream = Arrays.stream(
-			SegmentsExperimentConstants.Goal.values());
+		for (SegmentsExperimentConstants.Goal goal :
+				SegmentsExperimentConstants.Goal.values()) {
 
-		stream.filter(
-			goal -> ArrayUtil.contains(
-				_segmentsExperimentConfiguration.goalsEnabled(), goal.name())
-		).forEach(
-			goal -> segmentsExperimentGoalsJSONArray.put(
+			if (!ArrayUtil.contains(
+					_segmentsExperimentConfiguration.goalsEnabled(),
+					goal.name())) {
+
+				continue;
+			}
+
+			segmentsExperimentGoalsJSONArray.put(
 				JSONUtil.put(
 					"label", _language.get(locale, goal.getLabel())
 				).put(
 					"value", goal.getLabel()
-				))
-		);
+				));
+		}
 
 		return segmentsExperimentGoalsJSONArray;
 	}
