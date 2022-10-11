@@ -132,15 +132,14 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 		}
 	}
 
-	private Optional<SegmentsExperiment> _getActiveSegmentsExperimentOptional(
+	private SegmentsExperiment _fetchSegmentsExperiment(
 			Layout layout, long segmentsExperienceId)
 		throws Exception {
 
-		return Optional.ofNullable(
-			_segmentsExperimentService.fetchSegmentsExperiment(
-				segmentsExperienceId, _portal.getClassNameId(Layout.class),
-				layout.getPlid(),
-				SegmentsExperimentConstants.Status.getExclusiveStatusValues()));
+		return _segmentsExperimentService.fetchSegmentsExperiment(
+			segmentsExperienceId, _portal.getClassNameId(Layout.class),
+			layout.getPlid(),
+			SegmentsExperimentConstants.Status.getExclusiveStatusValues());
 	}
 
 	private String _getContentPageEditorActionURL(
@@ -389,16 +388,14 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 					"segmentsExperiment",
 					SegmentsExperimentUtil.toSegmentsExperimentJSONObject(
 						locale,
-						_getActiveSegmentsExperimentOptional(
-							layout, segmentsExperience.getSegmentsExperienceId()
-						).orElse(
-							null
-						))
+						_fetchSegmentsExperiment(
+							layout,
+							segmentsExperience.getSegmentsExperienceId()))
 				))
 		).put(
 			"segmentsExperiment",
 			SegmentsExperimentUtil.toSegmentsExperimentJSONObject(
-				locale, _getSegmentsExperiment(layout, segmentsExperienceId))
+				locale, _fetchSegmentsExperiment(layout, segmentsExperienceId))
 		).put(
 			"segmentsExperimentGoals",
 			JSONUtil.toJSONArray(
@@ -425,17 +422,6 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 		);
 	}
 
-	private SegmentsExperiment _getSegmentsExperiment(
-			Layout layout, long segmentsExperienceId)
-		throws Exception {
-
-		return _getActiveSegmentsExperimentOptional(
-			layout, segmentsExperienceId
-		).orElse(
-			null
-		);
-	}
-
 	private String _getSegmentsExperimentActionURL(
 		String action, Group group, HttpServletRequest httpServletRequest) {
 
@@ -455,7 +441,7 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 			Layout layout, Locale locale, long segmentExperienceId)
 		throws Exception {
 
-		SegmentsExperiment segmentsExperiment = _getSegmentsExperiment(
+		SegmentsExperiment segmentsExperiment = _fetchSegmentsExperiment(
 			layout, segmentExperienceId);
 
 		JSONArray segmentsExperimentRelsJSONArray =
@@ -477,7 +463,7 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 			Layout layout, long segmentsExperienceId)
 		throws Exception {
 
-		SegmentsExperiment segmentsExperiment = _getSegmentsExperiment(
+		SegmentsExperiment segmentsExperiment = _fetchSegmentsExperiment(
 			layout, segmentsExperienceId);
 
 		if (segmentsExperiment == null) {
