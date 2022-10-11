@@ -283,22 +283,6 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 		);
 	}
 
-	private JSONArray _getHistorySegmentsExperimentsJSONArray(
-			Layout layout, Locale locale, long segmentsExperienceId)
-		throws Exception {
-
-		return JSONUtil.toJSONArray(
-			_segmentsExperimentService.getSegmentsExperiments(
-				segmentsExperienceId, _portal.getClassNameId(Layout.class),
-				layout.getPlid(),
-				SegmentsExperimentConstants.Status.
-					getNonexclusiveStatusValues(),
-				new SegmentsExperimentModifiedDateComparator()),
-			segmentsExperiment ->
-				SegmentsExperimentUtil.toSegmentsExperimentJSONObject(
-					locale, segmentsExperiment));
-	}
-
 	private long _getLiveGroupId(long groupId) throws Exception {
 		Group group = _stagingGroupHelper.fetchLiveGroup(groupId);
 
@@ -350,8 +334,16 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 			).buildString()
 		).put(
 			"historySegmentsExperiments",
-			_getHistorySegmentsExperimentsJSONArray(
-				layout, locale, segmentsExperienceId)
+			JSONUtil.toJSONArray(
+				_segmentsExperimentService.getSegmentsExperiments(
+					segmentsExperienceId, _portal.getClassNameId(Layout.class),
+					layout.getPlid(),
+					SegmentsExperimentConstants.Status.
+						getNonexclusiveStatusValues(),
+					new SegmentsExperimentModifiedDateComparator()),
+				segmentsExperiment ->
+					SegmentsExperimentUtil.toSegmentsExperimentJSONObject(
+						locale, segmentsExperiment))
 		).put(
 			"initialSegmentsVariants",
 			_getSegmentsExperimentRelsJSONArray(
