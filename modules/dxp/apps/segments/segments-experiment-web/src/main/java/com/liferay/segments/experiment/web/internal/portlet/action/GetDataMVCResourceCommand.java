@@ -165,14 +165,67 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 			long segmentsExperienceId)
 		throws Exception {
 
+		Group group = layout.getGroup();
+
 		return JSONUtil.put(
 			"contentPageEditorNamespace",
 			_getContentPageEditorPortletNamespace()
 		).put(
 			"endpoints",
-			_getEndpointsJSONObject(
-				backURL, layout, httpServletRequest, redirect,
-				segmentsExperienceId)
+			JSONUtil.put(
+				"calculateSegmentsExperimentEstimatedDurationURL",
+				_getSegmentsExperimentActionURL(
+					"/calculate_segments_experiment_estimated_duration", group,
+					httpServletRequest)
+			).put(
+				"createSegmentsExperimentURL",
+				_getSegmentsExperimentActionURL(
+					"/segments_experiment/add_segments_experiment", group,
+					httpServletRequest)
+			).put(
+				"createSegmentsVariantURL",
+				HttpComponentsUtil.addParameter(
+					HttpComponentsUtil.addParameter(
+						url,
+						_getContentPageEditorPortletNamespace() + "plid",
+						layout.getPlid()),
+					_getContentPageEditorPortletNamespace() + "groupId",
+					group.getGroupId())
+			).put(
+				"deleteSegmentsExperimentURL",
+				_getSegmentsExperimentActionURL(
+					"/segments_experiment/delete_segments_experiment", group,
+					httpServletRequest)
+			).put(
+				"deleteSegmentsVariantURL",
+				_getSegmentsExperimentActionURL(
+					"/segments_experiment/delete_segments_experiment_rel",
+					group, httpServletRequest)
+			).put(
+				"editSegmentsExperimentStatusURL",
+				_getSegmentsExperimentActionURL(
+					"/segments_experiment/edit_segments_experiment_status",
+					group, httpServletRequest)
+			).put(
+				"editSegmentsExperimentURL",
+				_getSegmentsExperimentActionURL(
+					"/segments_experiment/edit_segments_experiment", group,
+					httpServletRequest)
+			).put(
+				"editSegmentsVariantLayoutURL",
+				_getEditSegmentsVariantLayoutURL(
+					backURL, layout, redirect, segmentsExperienceId)
+			).put(
+				"editSegmentsVariantURL",
+				_getSegmentsExperimentActionURL(
+					"/segments_experiment/edit_segments_experiment_rel", group,
+					httpServletRequest)
+			).put(
+				"runSegmentsExperimentURL",
+				_getSegmentsExperimentActionURL(
+					"/segments_experiment/run_segments_experiment", group,
+					httpServletRequest)
+			)
 		).put(
 			"imagesPath", _portal.getPathContext(httpServletRequest) + "/images"
 		).put(
@@ -215,72 +268,6 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 			redirect, "redirect", redirect);
 
 		return redirect;
-	}
-
-	private JSONObject _getEndpointsJSONObject(
-			String backURL, Layout layout,
-			HttpServletRequest httpServletRequest, String redirect,
-			long segmentsExperienceId)
-		throws Exception {
-
-		Group group = layout.getGroup();
-
-		return JSONUtil.put(
-			"calculateSegmentsExperimentEstimatedDurationURL",
-			_getSegmentsExperimentActionURL(
-				"/calculate_segments_experiment_estimated_duration", group,
-				httpServletRequest)
-		).put(
-			"createSegmentsExperimentURL",
-			_getSegmentsExperimentActionURL(
-				"/segments_experiment/add_segments_experiment", group,
-				httpServletRequest)
-		).put(
-			"createSegmentsVariantURL",
-			HttpComponentsUtil.addParameter(
-				HttpComponentsUtil.addParameter(
-					_getContentPageEditorActionURL(
-						"/layout_content_page_editor/add_segments_experience",
-						group, httpServletRequest),
-					_getContentPageEditorPortletNamespace() + "plid",
-					layout.getPlid()),
-				_getContentPageEditorPortletNamespace() + "groupId",
-				group.getGroupId())
-		).put(
-			"deleteSegmentsExperimentURL",
-			_getSegmentsExperimentActionURL(
-				"/segments_experiment/delete_segments_experiment", group,
-				httpServletRequest)
-		).put(
-			"deleteSegmentsVariantURL",
-			_getSegmentsExperimentActionURL(
-				"/segments_experiment/delete_segments_experiment_rel", group,
-				httpServletRequest)
-		).put(
-			"editSegmentsExperimentStatusURL",
-			_getSegmentsExperimentActionURL(
-				"/segments_experiment/edit_segments_experiment_status", group,
-				httpServletRequest)
-		).put(
-			"editSegmentsExperimentURL",
-			_getSegmentsExperimentActionURL(
-				"/segments_experiment/edit_segments_experiment", group,
-				httpServletRequest)
-		).put(
-			"editSegmentsVariantLayoutURL",
-			_getEditSegmentsVariantLayoutURL(
-				backURL, layout, redirect, segmentsExperienceId)
-		).put(
-			"editSegmentsVariantURL",
-			_getSegmentsExperimentActionURL(
-				"/segments_experiment/edit_segments_experiment_rel", group,
-				httpServletRequest)
-		).put(
-			"runSegmentsExperimentURL",
-			_getSegmentsExperimentActionURL(
-				"/segments_experiment/run_segments_experiment", group,
-				httpServletRequest)
-		);
 	}
 
 	private long _getLiveGroupId(long groupId) throws Exception {
