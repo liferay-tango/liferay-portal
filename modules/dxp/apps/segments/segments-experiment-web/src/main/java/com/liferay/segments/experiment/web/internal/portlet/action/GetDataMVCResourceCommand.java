@@ -166,14 +166,6 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 		);
 	}
 
-	private String _getCalculateSegmentsExperimentEstimatedDurationURL(
-		HttpServletRequest httpServletRequest, Group group) {
-
-		return _getSegmentsExperimentActionURL(
-			"/calculate_segments_experiment_estimated_duration", group,
-			httpServletRequest);
-	}
-
 	private String _getContentPageEditorActionURL(
 		String action, Group group, HttpServletRequest httpServletRequest) {
 
@@ -213,62 +205,15 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 		).put(
 			"namespace", _getSegmentsExperimentPortletNamespace()
 		).put(
-			"page", _getPageJSONObject(layout)
+			"page",
+			JSONUtil.put(
+				"classNameId", _portal.getClassNameId(Layout.class.getName())
+			).put(
+				"classPK", layout.getPlid()
+			).put(
+				"type", layout.getType()
+			)
 		);
-	}
-
-	private String _getCreateSegmentsExperimentURL(
-		Group group, HttpServletRequest httpServletRequest) {
-
-		return _getSegmentsExperimentActionURL(
-			"/segments_experiment/add_segments_experiment", group,
-			httpServletRequest);
-	}
-
-	private String _getCreateSegmentsVariantURL(
-		Group group, HttpServletRequest httpServletRequest, Layout layout) {
-
-		return HttpComponentsUtil.addParameter(
-			HttpComponentsUtil.addParameter(
-				_getContentPageEditorActionURL(
-					"/layout_content_page_editor/add_segments_experience",
-					group, httpServletRequest),
-				_getContentPageEditorPortletNamespace() + "plid",
-				layout.getPlid()),
-			_getContentPageEditorPortletNamespace() + "groupId",
-			group.getGroupId());
-	}
-
-	private String _getDeleteSegmentsExperimentURL(
-		Group group, HttpServletRequest httpServletRequest) {
-
-		return _getSegmentsExperimentActionURL(
-			"/segments_experiment/delete_segments_experiment", group,
-			httpServletRequest);
-	}
-
-	private String _getDeleteSegmentsVariantURL(
-		Group group, HttpServletRequest httpServletRequest) {
-
-		return _getSegmentsExperimentActionURL(
-			"/segments_experiment/delete_segments_experiment_rel", group,
-			httpServletRequest);
-	}
-
-	private String _getEditSegmentsExperimentStatusURL(
-		Group group, HttpServletRequest httpServletRequest) {
-
-		return _getSegmentsExperimentActionURL(
-			"/segments_experiment/edit_segments_experiment_status", group,
-			httpServletRequest);
-	}
-
-	private String _getEditSegmentsExperimentURL(
-		Group group, HttpServletRequest httpServletRequest) {
-
-		return _getSegmentsExperimentActionURL(
-			"/segments_experiment/edit_segments_experiment", group,
-			httpServletRequest);
 	}
 
 	private String _getEditSegmentsVariantLayoutURL(
@@ -298,14 +243,6 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 		return redirect;
 	}
 
-	private String _getEditSegmentsVariantURL(
-		Group group, HttpServletRequest httpServletRequest) {
-
-		return _getSegmentsExperimentActionURL(
-			"/segments_experiment/edit_segments_experiment_rel", group,
-			httpServletRequest);
-	}
-
 	private JSONObject _getEndpointsJSONObject(
 			String backURL, Layout layout,
 			HttpServletRequest httpServletRequest, String redirect,
@@ -316,36 +253,59 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 
 		return JSONUtil.put(
 			"calculateSegmentsExperimentEstimatedDurationURL",
-			_getCalculateSegmentsExperimentEstimatedDurationURL(
-				httpServletRequest, group)
+			_getSegmentsExperimentActionURL(
+				"/calculate_segments_experiment_estimated_duration", group,
+				httpServletRequest)
 		).put(
 			"createSegmentsExperimentURL",
-			_getCreateSegmentsExperimentURL(group, httpServletRequest)
+			_getSegmentsExperimentActionURL(
+				"/segments_experiment/add_segments_experiment", group,
+				httpServletRequest)
 		).put(
 			"createSegmentsVariantURL",
-			_getCreateSegmentsVariantURL(group, httpServletRequest, layout)
+			HttpComponentsUtil.addParameter(
+				HttpComponentsUtil.addParameter(
+					_getContentPageEditorActionURL(
+						"/layout_content_page_editor/add_segments_experience",
+						group, httpServletRequest),
+					_getContentPageEditorPortletNamespace() + "plid",
+					layout.getPlid()),
+				_getContentPageEditorPortletNamespace() + "groupId",
+				group.getGroupId())
 		).put(
 			"deleteSegmentsExperimentURL",
-			_getDeleteSegmentsExperimentURL(group, httpServletRequest)
+			_getSegmentsExperimentActionURL(
+				"/segments_experiment/delete_segments_experiment", group,
+				httpServletRequest)
 		).put(
 			"deleteSegmentsVariantURL",
-			_getDeleteSegmentsVariantURL(group, httpServletRequest)
+			_getSegmentsExperimentActionURL(
+				"/segments_experiment/delete_segments_experiment_rel", group,
+				httpServletRequest)
 		).put(
 			"editSegmentsExperimentStatusURL",
-			_getEditSegmentsExperimentStatusURL(group, httpServletRequest)
+			_getSegmentsExperimentActionURL(
+				"/segments_experiment/edit_segments_experiment_status", group,
+				httpServletRequest)
 		).put(
 			"editSegmentsExperimentURL",
-			_getEditSegmentsExperimentURL(group, httpServletRequest)
+			_getSegmentsExperimentActionURL(
+				"/segments_experiment/edit_segments_experiment", group,
+				httpServletRequest)
 		).put(
 			"editSegmentsVariantLayoutURL",
 			_getEditSegmentsVariantLayoutURL(
 				backURL, layout, redirect, segmentsExperienceId)
 		).put(
 			"editSegmentsVariantURL",
-			_getEditSegmentsVariantURL(group, httpServletRequest)
+			_getSegmentsExperimentActionURL(
+				"/segments_experiment/edit_segments_experiment_rel", group,
+				httpServletRequest)
 		).put(
 			"runSegmentsExperimentURL",
-			_getRunSegmentsExperimenttURL(group, httpServletRequest)
+			_getSegmentsExperimentActionURL(
+				"/segments_experiment/run_segments_experiment", group,
+				httpServletRequest)
 		);
 	}
 
@@ -389,16 +349,6 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 		}
 
 		return groupId;
-	}
-
-	private JSONObject _getPageJSONObject(Layout layout) {
-		return JSONUtil.put(
-			"classNameId", _portal.getClassNameId(Layout.class.getName())
-		).put(
-			"classPK", layout.getPlid()
-		).put(
-			"type", layout.getType()
-		);
 	}
 
 	private JSONObject _getPropsJSONObject(
@@ -453,14 +403,6 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 			"winnerSegmentsVariantId",
 			_getWinnerSegmentsExperienceId(layout, segmentsExperienceId)
 		);
-	}
-
-	private String _getRunSegmentsExperimenttURL(
-		Group group, HttpServletRequest httpServletRequest) {
-
-		return _getSegmentsExperimentActionURL(
-			"/segments_experiment/run_segments_experiment", group,
-			httpServletRequest);
 	}
 
 	private JSONArray _getSegmentsExperiencesJSONArray(
