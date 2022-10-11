@@ -100,12 +100,12 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 			resourceRequest);
 
 		try {
+			String backURL = ParamUtil.getString(resourceRequest, "backURL");
+			String redirect = ParamUtil.getString(resourceRequest, "redirect");
+
 			long plid = ParamUtil.getLong(resourceRequest, "plid");
 
 			Layout layout = _layoutLocalService.getLayout(plid);
-
-			String backURL = ParamUtil.getString(resourceRequest, "backURL");
-			String redirect = ParamUtil.getString(resourceRequest, "redirect");
 
 			long segmentsExperienceId = ParamUtil.getLong(
 				resourceRequest, "segmentsExperienceId");
