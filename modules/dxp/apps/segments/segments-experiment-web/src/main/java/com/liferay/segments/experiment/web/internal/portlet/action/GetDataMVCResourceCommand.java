@@ -392,8 +392,8 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 			_getSegmentsExperiencesJSONArray(layout, locale)
 		).put(
 			"segmentsExperiment",
-			_getSegmentsExperimentJSONObject(
-				layout, locale, segmentsExperienceId)
+			SegmentsExperimentUtil.toSegmentsExperimentJSONObject(
+			locale, _getSegmentsExperiment(layout, segmentsExperienceId))
 		).put(
 			"segmentsExperimentGoals",
 			_getSegmentsExperimentGoalsJSONArray(locale)
@@ -489,14 +489,6 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 		);
 
 		return segmentsExperimentGoalsJSONArray;
-	}
-
-	private JSONObject _getSegmentsExperimentJSONObject(
-			Layout layout, Locale locale, long segmentsExperienceId)
-		throws Exception {
-
-		return SegmentsExperimentUtil.toSegmentsExperimentJSONObject(
-			locale, _getSegmentsExperiment(layout, segmentsExperienceId));
 	}
 
 	private String _getSegmentsExperimentPortletNamespace() {
