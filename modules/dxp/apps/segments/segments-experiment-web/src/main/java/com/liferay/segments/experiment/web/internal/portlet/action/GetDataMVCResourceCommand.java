@@ -389,7 +389,30 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 				locale, _getSegmentsExperiment(layout, segmentsExperienceId))
 		).put(
 			"segmentsExperimentGoals",
-			_getSegmentsExperimentGoalsJSONArray(locale)
+			() -> {
+				JSONArray segmentsExperimentGoalsJSONArray =
+					JSONFactoryUtil.createJSONArray();
+
+				for (SegmentsExperimentConstants.Goal goal :
+						SegmentsExperimentConstants.Goal.values()) {
+
+					if (!ArrayUtil.contains(
+							_segmentsExperimentConfiguration.goalsEnabled(),
+							goal.name())) {
+
+						continue;
+					}
+
+					segmentsExperimentGoalsJSONArray.put(
+						JSONUtil.put(
+							"label", _language.get(locale, goal.getLabel())
+						).put(
+							"value", goal.getLabel()
+						));
+				}
+
+				return segmentsExperimentGoalsJSONArray;
+			}
 		).put(
 			"selectedSegmentsExperienceId", segmentsExperienceId
 		).put(
@@ -456,31 +479,6 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 		).setParameter(
 			"p_l_mode", Constants.VIEW
 		).buildString();
-	}
-
-	private JSONArray _getSegmentsExperimentGoalsJSONArray(Locale locale) {
-		JSONArray segmentsExperimentGoalsJSONArray =
-			JSONFactoryUtil.createJSONArray();
-
-		for (SegmentsExperimentConstants.Goal goal :
-				SegmentsExperimentConstants.Goal.values()) {
-
-			if (!ArrayUtil.contains(
-					_segmentsExperimentConfiguration.goalsEnabled(),
-					goal.name())) {
-
-				continue;
-			}
-
-			segmentsExperimentGoalsJSONArray.put(
-				JSONUtil.put(
-					"label", _language.get(locale, goal.getLabel())
-				).put(
-					"value", goal.getLabel()
-				));
-		}
-
-		return segmentsExperimentGoalsJSONArray;
 	}
 
 	private JSONArray _getSegmentsExperimentRelsJSONArray(
