@@ -34,7 +34,6 @@ import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
-import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
@@ -49,7 +48,6 @@ import com.liferay.segments.service.SegmentsExperimentRelService;
 import com.liferay.segments.service.SegmentsExperimentService;
 import com.liferay.staging.StagingGroupHelper;
 
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -289,28 +287,16 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 			Layout layout, Locale locale, long segmentsExperienceId)
 		throws Exception {
 
-		List<SegmentsExperiment> segmentsExperiments =
+		return JSONUtil.toJSONArray(
 			_segmentsExperimentService.getSegmentsExperiments(
 				segmentsExperienceId, _portal.getClassNameId(Layout.class),
 				layout.getPlid(),
 				SegmentsExperimentConstants.Status.
 					getNonexclusiveStatusValues(),
-				new SegmentsExperimentModifiedDateComparator());
-
-		JSONArray segmentsExperimentsJSONArray =
-			JSONFactoryUtil.createJSONArray();
-
-		if (ListUtil.isEmpty(segmentsExperiments)) {
-			return segmentsExperimentsJSONArray;
-		}
-
-		for (SegmentsExperiment segmentsExperiment : segmentsExperiments) {
-			segmentsExperimentsJSONArray.put(
+				new SegmentsExperimentModifiedDateComparator()),
+			segmentsExperiment ->
 				SegmentsExperimentUtil.toSegmentsExperimentJSONObject(
 					locale, segmentsExperiment));
-		}
-
-		return segmentsExperimentsJSONArray;
 	}
 
 	private long _getLiveGroupId(long groupId) throws Exception {
