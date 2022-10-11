@@ -38,7 +38,6 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
-import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.segments.constants.SegmentsExperimentConstants;
 import com.liferay.segments.constants.SegmentsPortletKeys;
 import com.liferay.segments.experiment.web.internal.configuration.SegmentsExperimentConfiguration;
@@ -57,7 +56,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-import java.util.ResourceBundle;
 import java.util.stream.Stream;
 
 import javax.portlet.PortletRequest;
@@ -466,13 +464,12 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 		JSONArray segmentsExperimentGoalsJSONArray =
 			JSONFactoryUtil.createJSONArray();
 
-		String[] goalsEnabled = _segmentsExperimentConfiguration.goalsEnabled();
-
 		Stream<SegmentsExperimentConstants.Goal> stream = Arrays.stream(
 			SegmentsExperimentConstants.Goal.values());
 
 		stream.filter(
-			goal -> ArrayUtil.contains(goalsEnabled, goal.name())
+			goal -> ArrayUtil.contains(
+				_segmentsExperimentConfiguration.goalsEnabled(), goal.name())
 		).forEach(
 			goal -> segmentsExperimentGoalsJSONArray.put(
 				JSONUtil.put(
