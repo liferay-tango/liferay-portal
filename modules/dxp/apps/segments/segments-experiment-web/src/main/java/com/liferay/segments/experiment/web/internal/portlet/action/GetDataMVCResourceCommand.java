@@ -139,21 +139,6 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 			SegmentsExperimentConstants.Status.getExclusiveStatusValues());
 	}
 
-	private String _getContentPageEditorActionURL(
-		String action, Group group, HttpServletRequest httpServletRequest) {
-
-		return HttpComponentsUtil.addParameter(
-			PortletURLBuilder.create(
-				_portal.getControlPanelPortletURL(
-					httpServletRequest, group,
-					ContentPageEditorPortletKeys.CONTENT_PAGE_EDITOR_PORTLET, 0,
-					0, PortletRequest.ACTION_PHASE)
-			).setActionName(
-				action
-			).buildString(),
-			"p_l_mode", Constants.EDIT);
-	}
-
 	private String _getContentPageEditorPortletNamespace() {
 		return _portal.getPortletNamespace(
 			ContentPageEditorPortletKeys.CONTENT_PAGE_EDITOR_PORTLET);
@@ -184,13 +169,31 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 					httpServletRequest)
 			).put(
 				"createSegmentsVariantURL",
-				HttpComponentsUtil.addParameter(
-					HttpComponentsUtil.addParameter(
+				() -> {
+					String url = PortletURLBuilder.create(
+						_portal.getControlPanelPortletURL(
+							httpServletRequest, group,
+							ContentPageEditorPortletKeys.
+								CONTENT_PAGE_EDITOR_PORTLET,
+							0, 0, PortletRequest.ACTION_PHASE)
+					).setActionName(
+						"/layout_content_page_editor/add_segments_experience"
+					).buildString();
+
+					url = HttpComponentsUtil.addParameter(
 						url,
-						_getContentPageEditorPortletNamespace() + "plid",
-						layout.getPlid()),
-					_getContentPageEditorPortletNamespace() + "groupId",
-					group.getGroupId())
+						_getContentPageEditorPortletNamespace() + "p_l_mode",
+						Constants.EDIT);
+					url = HttpComponentsUtil.addParameter(
+						url, _getContentPageEditorPortletNamespace() + "plid",
+						layout.getPlid());
+					url = HttpComponentsUtil.addParameter(
+						url,
+						_getContentPageEditorPortletNamespace() + "groupId",
+						group.getGroupId());
+
+					return url;
+				}
 			).put(
 				"deleteSegmentsExperimentURL",
 				_getSegmentsExperimentActionURL(
