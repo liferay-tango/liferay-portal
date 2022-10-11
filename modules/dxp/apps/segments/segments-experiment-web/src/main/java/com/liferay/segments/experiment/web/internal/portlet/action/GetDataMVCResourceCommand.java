@@ -466,9 +466,6 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 		JSONArray segmentsExperimentGoalsJSONArray =
 			JSONFactoryUtil.createJSONArray();
 
-		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-			"content.Language", locale, getClass());
-
 		String[] goalsEnabled = _segmentsExperimentConfiguration.goalsEnabled();
 
 		Stream<SegmentsExperimentConstants.Goal> stream = Arrays.stream(
@@ -479,7 +476,7 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 		).forEach(
 			goal -> segmentsExperimentGoalsJSONArray.put(
 				JSONUtil.put(
-					"label", _language.get(resourceBundle, goal.getLabel())
+					"label", _language.get(locale, goal.getLabel())
 				).put(
 					"value", goal.getLabel()
 				))
