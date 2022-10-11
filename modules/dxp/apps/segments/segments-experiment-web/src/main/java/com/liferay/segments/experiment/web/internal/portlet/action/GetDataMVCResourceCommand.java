@@ -43,9 +43,7 @@ import com.liferay.segments.constants.SegmentsPortletKeys;
 import com.liferay.segments.experiment.web.internal.configuration.SegmentsExperimentConfiguration;
 import com.liferay.segments.experiment.web.internal.util.SegmentsExperimentUtil;
 import com.liferay.segments.experiment.web.internal.util.comparator.SegmentsExperimentModifiedDateComparator;
-import com.liferay.segments.model.SegmentsExperience;
 import com.liferay.segments.model.SegmentsExperiment;
-import com.liferay.segments.model.SegmentsExperimentRel;
 import com.liferay.segments.service.SegmentsExperienceService;
 import com.liferay.segments.service.SegmentsExperimentRelService;
 import com.liferay.segments.service.SegmentsExperimentService;
@@ -417,34 +415,25 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 			Layout layout, Locale locale)
 		throws Exception {
 
-		List<SegmentsExperience> segmentsExperiences =
+		return JSONUtil.toJSONArray(
 			_segmentsExperienceService.getSegmentsExperiences(
 				layout.getGroupId(), _portal.getClassNameId(Layout.class),
-				layout.getPlid(), true);
-
-		JSONArray segmentsExperiencesJSONArray =
-			JSONFactoryUtil.createJSONArray();
-
-		for (SegmentsExperience segmentsExperience : segmentsExperiences) {
-			segmentsExperiencesJSONArray.put(
-				JSONUtil.put(
-					"name", segmentsExperience.getName(locale)
-				).put(
-					"segmentsExperienceId",
-					String.valueOf(segmentsExperience.getSegmentsExperienceId())
-				).put(
-					"segmentsExperiment",
-					SegmentsExperimentUtil.toSegmentsExperimentJSONObject(
-						locale,
-						_getActiveSegmentsExperimentOptional(
-							layout, segmentsExperience.getSegmentsExperienceId()
-						).orElse(
-							null
-						))
-				));
-		}
-
-		return segmentsExperiencesJSONArray;
+				layout.getPlid(), true),
+			segmentsExperience -> JSONUtil.put(
+				"name", segmentsExperience.getName(locale)
+			).put(
+				"segmentsExperienceId",
+				String.valueOf(segmentsExperience.getSegmentsExperienceId())
+			).put(
+				"segmentsExperiment",
+				SegmentsExperimentUtil.toSegmentsExperimentJSONObject(
+					locale,
+					_getActiveSegmentsExperimentOptional(
+						layout, segmentsExperience.getSegmentsExperienceId()
+					).orElse(
+						null
+					))
+			));
 	}
 
 	private SegmentsExperiment _getSegmentsExperiment(
@@ -487,19 +476,12 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 			return segmentsExperimentRelsJSONArray;
 		}
 
-		List<SegmentsExperimentRel> segmentsExperimentRels =
+		return JSONUtil.toJSONArray(
 			_segmentsExperimentRelService.getSegmentsExperimentRels(
-				segmentsExperiment.getSegmentsExperimentId());
-
-		for (SegmentsExperimentRel segmentsExperimentRel :
-				segmentsExperimentRels) {
-
-			segmentsExperimentRelsJSONArray.put(
+				segmentsExperiment.getSegmentsExperimentId()),
+			segmentsExperimentRel ->
 				SegmentsExperimentUtil.toSegmentsExperimentRelJSONObject(
 					locale, segmentsExperimentRel));
-		}
-
-		return segmentsExperimentRelsJSONArray;
 	}
 
 	private String _getWinnerSegmentsExperienceId(
