@@ -389,30 +389,22 @@ public class GetDataMVCResourceCommand extends BaseMVCResourceCommand {
 				locale, _getSegmentsExperiment(layout, segmentsExperienceId))
 		).put(
 			"segmentsExperimentGoals",
-			() -> {
-				JSONArray segmentsExperimentGoalsJSONArray =
-					JSONFactoryUtil.createJSONArray();
-
-				for (SegmentsExperimentConstants.Goal goal :
-						SegmentsExperimentConstants.Goal.values()) {
-
+			JSONUtil.toJSONArray(
+				SegmentsExperimentConstants.Goal.values(),
+				goal -> {
 					if (!ArrayUtil.contains(
 							_segmentsExperimentConfiguration.goalsEnabled(),
 							goal.name())) {
 
-						continue;
+						return null;
 					}
 
-					segmentsExperimentGoalsJSONArray.put(
-						JSONUtil.put(
-							"label", _language.get(locale, goal.getLabel())
-						).put(
-							"value", goal.getLabel()
-						));
-				}
-
-				return segmentsExperimentGoalsJSONArray;
-			}
+					return JSONUtil.put(
+						"label", _language.get(locale, goal.getLabel())
+					).put(
+						"value", goal.getLabel()
+					);
+				})
 		).put(
 			"selectedSegmentsExperienceId", segmentsExperienceId
 		).put(
