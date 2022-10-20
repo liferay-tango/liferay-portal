@@ -58,9 +58,6 @@ public class SegmentsExperimentServiceImpl
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		LayoutPermissionUtil.check(
-			getPermissionChecker(), classPK, ActionKeys.UPDATE);
-
 		return segmentsExperimentLocalService.addSegmentsExperiment(
 			segmentsExperienceId, classNameId, classPK, name, description, goal,
 			goalTarget, serviceContext);
@@ -101,9 +98,6 @@ public class SegmentsExperimentServiceImpl
 			long segmentsExperienceId, long classNameId, long classPK,
 			int[] statuses)
 		throws PortalException {
-
-		LayoutPermissionUtil.check(
-			getPermissionChecker(), classPK, ActionKeys.UPDATE);
 
 		return segmentsExperimentLocalService.fetchSegmentsExperiment(
 			segmentsExperienceId, classNameId, classPK, statuses);
