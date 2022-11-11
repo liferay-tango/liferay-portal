@@ -250,9 +250,14 @@ public class SegmentsExperimentSegmentsExperienceRequestProcessor
 				_segmentsExperienceLocalService.fetchSegmentsExperience(
 					groupId, segmentsExperienceKey, classNameId, classPK);
 
-			if (segmentsExperience != null) {
+			if ((segmentsExperience != null) &&
+				(classPK == segmentsExperience.getClassPK())) {
+
 				return segmentsExperience.getSegmentsExperienceId();
 			}
+
+			return _segmentsExperienceLocalService.
+				fetchDefaultSegmentsExperienceId(classPK);
 		}
 
 		return -1;
@@ -300,9 +305,14 @@ public class SegmentsExperimentSegmentsExperienceRequestProcessor
 				_segmentsExperienceLocalService.fetchSegmentsExperience(
 					selectedSegmentsExperienceId);
 
-			if (segmentsExperience != null) {
+			if ((segmentsExperience != null) &&
+				(themeDisplay.getPlid() == segmentsExperience.getClassPK())) {
+
 				return selectedSegmentsExperienceId;
 			}
+
+			return _segmentsExperienceLocalService.
+				fetchDefaultSegmentsExperienceId(themeDisplay.getPlid());
 		}
 
 		String selectedSegmentsExperienceKey = ParamUtil.getString(
