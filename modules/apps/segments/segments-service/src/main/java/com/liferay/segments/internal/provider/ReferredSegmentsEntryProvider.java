@@ -20,7 +20,6 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModel;
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -31,8 +30,13 @@ import com.liferay.segments.model.SegmentsEntry;
 import com.liferay.segments.odata.matcher.ODataMatcher;
 import com.liferay.segments.odata.retriever.ODataRetriever;
 import com.liferay.segments.provider.SegmentsEntryProvider;
+import com.liferay.segments.service.SegmentsEntryLocalService;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -90,21 +94,39 @@ public class ReferredSegmentsEntryProvider
 		boolean member = super.isMember(
 			className, classPK, context, segmentsEntry, segmentsEntryIds);
 
-		if (ArrayUtil.isEmpty(segmentsEntryIds) ||
-			Validator.isNull(referredFilterString) ||
+		if (Validator.isNull(referredFilterString) ||
 			(member && referredConjunction.equals(Criteria.Conjunction.OR)) ||
 			(!member && referredConjunction.equals(Criteria.Conjunction.AND))) {
 
 			return member;
 		}
 
-		Map<String, String> segmentsEntryMap = HashMapBuilder.put(
-			"segmentsEntryIds", StringUtil.merge(segmentsEntryIds, ",")
-		).build();
+		List<String> referredSegmentsEntryIds = _getReferredSegmentsEntryIds(
+			referredFilterString);
+
+		List<Long> userMemberSegmentsEntryIds = new ArrayList<>();
 
 		try {
+			for (String segmentEntryId : referredSegmentsEntryIds) {
+				SegmentsEntry segmentsEntry1 =
+					_segmentsEntryLocalService.getSegmentsEntry(
+						Long.valueOf(segmentEntryId));
+
+				if (super.isMember(
+						className, classPK, context, segmentsEntry1,
+						segmentsEntryIds)) {
+
+					userMemberSegmentsEntryIds.add(
+						segmentsEntry1.getSegmentsEntryId());
+				}
+			}
+
 			return _segmentsEntryODataMatcher.matches(
-				referredFilterString, segmentsEntryMap);
+				referredFilterString,
+				HashMapBuilder.put(
+					"segmentsEntryIds",
+					StringUtil.merge(userMemberSegmentsEntryIds, ",")
+				).build());
 		}
 		catch (PortalException portalException) {
 			_log.error(portalException);
@@ -113,8 +135,31 @@ public class ReferredSegmentsEntryProvider
 		return member;
 	}
 
+	private List<String> _getReferredSegmentsEntryIds(
+		String referredFilterString) {
+
+		List<String> segmentsEntryIds = new ArrayList<>();
+
+		Matcher matcher = _pattern.matcher(referredFilterString);
+
+		while (matcher.find()) {
+			String match = matcher.group();
+
+			match = match.replaceAll("'", "");
+
+			segmentsEntryIds.add(match);
+		}
+
+		return segmentsEntryIds;
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		ReferredSegmentsEntryProvider.class);
+
+	private static final Pattern _pattern = Pattern.compile("'(\\d+)'");
+
+	@Reference
+	private SegmentsEntryLocalService _segmentsEntryLocalService;
 
 	@Reference(
 		target = "(target.class.name=com.liferay.segments.model.SegmentsEntry)"

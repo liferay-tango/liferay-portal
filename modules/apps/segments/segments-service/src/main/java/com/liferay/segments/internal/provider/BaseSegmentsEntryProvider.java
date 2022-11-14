@@ -16,6 +16,7 @@ package com.liferay.segments.internal.provider;
 
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -26,6 +27,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.segments.context.Context;
 import com.liferay.segments.criteria.Criteria;
@@ -201,8 +203,21 @@ public abstract class BaseSegmentsEntryProvider
 				continue;
 			}
 
+			String filterString = criterion.getFilterString();
+
+			if (StringUtil.equalsIgnoreCase(
+					Criteria.Type.REFERRED.getValue(),
+					segmentsEntry.getSource()) &&
+				Criteria.Type.MODEL.equals(type) &&
+				StringUtil.equalsIgnoreCase(
+					Criteria.Type.REFERRED.getValue(),
+					criterion.getTypeValue())) {
+
+				filterString = StringPool.BLANK;
+			}
+
 			segmentsCriteriaContributor.contribute(
-				criteria, criterion.getFilterString(),
+				criteria, filterString,
 				Criteria.Conjunction.parse(criterion.getConjunction()));
 		}
 
@@ -247,9 +262,9 @@ public abstract class BaseSegmentsEntryProvider
 				return false;
 			}
 
-			boolean matchesContext = false;
-
 			if (Validator.isNotNull(contextFilterString)) {
+				boolean matchesContext = false;
+
 				try {
 					matchesContext = oDataMatcher.matches(
 						contextFilterString, context);
@@ -271,10 +286,6 @@ public abstract class BaseSegmentsEntryProvider
 
 					return false;
 				}
-			}
-
-			if (defaultUser) {
-				return matchesContext;
 			}
 		}
 
