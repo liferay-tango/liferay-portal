@@ -534,6 +534,7 @@ exports[`SegmentEdit renders with given values 1`] = `
                     <button
                       class="btn btn-unstyled"
                       data-testid="search-button"
+                      title="search-properties"
                       type="button"
                     >
                       <svg
