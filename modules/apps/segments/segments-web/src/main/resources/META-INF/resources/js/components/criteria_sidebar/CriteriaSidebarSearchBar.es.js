@@ -55,6 +55,11 @@ class CriteriaSidebarSearchBar extends Component {
 							onClick={
 								searchValue ? this._handleClear : undefined
 							}
+							title={
+								searchValue
+									? Liferay.Language.get('clear-search')
+									: Liferay.Language.get('search-properties')
+							}
 						>
 							<ClayIcon
 								symbol={searchValue ? 'times' : 'search'}
