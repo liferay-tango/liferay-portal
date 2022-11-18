@@ -35,6 +35,7 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.product.navigation.control.menu.ProductNavigationControlMenuEntry;
 import com.liferay.segments.constants.SegmentsEntryConstants;
+import com.liferay.segments.constants.SegmentsWebKeys;
 import com.liferay.segments.model.SegmentsExperience;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
 import com.liferay.segments.test.util.SegmentsTestUtil;
@@ -226,6 +227,12 @@ public class SegmentsExperienceSelectorDisplayContextTest {
 		mockHttpServletRequest.addParameter(
 			"segmentsExperienceId",
 			String.valueOf(selectedSegmentsExperienceId));
+
+		if (selectedSegmentsExperienceId != -1) {
+			mockHttpServletRequest.setAttribute(
+				SegmentsWebKeys.SEGMENTS_EXPERIENCE_IDS,
+				new long[] {selectedSegmentsExperienceId});
+		}
 
 		return _invokeMethod(
 			"getSegmentsExperienceSelectedJSONObject", mockHttpServletRequest);
