@@ -150,15 +150,13 @@ public class SegmentsExperienceServiceImpl
 			long groupId, long classNameId, long classPK, boolean active)
 		throws PortalException {
 
-		long publishedLayoutClassPK = _getPublishedLayoutClassPK(classPK);
-
-		if (_hasUpdateLayoutPermission(publishedLayoutClassPK)) {
+		if (_hasUpdateLayoutPermission(_getPublishedLayoutClassPK(classPK))) {
 			return segmentsExperiencePersistence.findByG_C_C_A(
-				groupId, classNameId, publishedLayoutClassPK, active);
+				groupId, classNameId, classPK, active);
 		}
 
 		return segmentsExperiencePersistence.filterFindByG_C_C_A(
-			groupId, classNameId, publishedLayoutClassPK, active);
+			groupId, classNameId, classPK, active);
 	}
 
 	@Override
@@ -168,16 +166,14 @@ public class SegmentsExperienceServiceImpl
 			OrderByComparator<SegmentsExperience> orderByComparator)
 		throws PortalException {
 
-		long publishedLayoutClassPK = _getPublishedLayoutClassPK(classPK);
-
-		if (_hasUpdateLayoutPermission(publishedLayoutClassPK)) {
+		if (_hasUpdateLayoutPermission(_getPublishedLayoutClassPK(classPK))) {
 			return segmentsExperiencePersistence.findByG_C_C_A(
-				groupId, classNameId, publishedLayoutClassPK, active, start,
-				end, orderByComparator);
+				groupId, classNameId, classPK, active, start, end,
+				orderByComparator);
 		}
 
 		return segmentsExperiencePersistence.filterFindByG_C_C_A(
-			groupId, classNameId, publishedLayoutClassPK, active, start, end,
+			groupId, classNameId, classPK, active, start, end,
 			orderByComparator);
 	}
 
@@ -186,15 +182,13 @@ public class SegmentsExperienceServiceImpl
 			long groupId, long classNameId, long classPK, boolean active)
 		throws PortalException {
 
-		long publishedLayoutClassPK = _getPublishedLayoutClassPK(classPK);
-
-		if (_hasUpdateLayoutPermission(publishedLayoutClassPK)) {
+		if (_hasUpdateLayoutPermission(_getPublishedLayoutClassPK(classPK))) {
 			return segmentsExperiencePersistence.countByG_C_C_A(
-				groupId, classNameId, publishedLayoutClassPK, active);
+				groupId, classNameId, classPK, active);
 		}
 
 		return segmentsExperiencePersistence.filterCountByG_C_C_A(
-			groupId, classNameId, publishedLayoutClassPK, active);
+			groupId, classNameId, classPK, active);
 	}
 
 	@Override
