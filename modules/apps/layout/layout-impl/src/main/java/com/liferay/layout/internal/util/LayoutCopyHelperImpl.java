@@ -34,6 +34,7 @@ import com.liferay.layout.util.structure.FragmentStyledLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.portal.kernel.comment.CommentManager;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -76,6 +77,8 @@ import com.liferay.segments.service.SegmentsExperienceLocalService;
 import com.liferay.sites.kernel.util.Sites;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -106,6 +109,18 @@ public class LayoutCopyHelperImpl implements LayoutCopyHelper {
 				sourceLayout.getGroupId(), _portal.getClassNameId(Layout.class),
 				sourceLayout.getPlid()),
 			SegmentsExperience.SEGMENTS_EXPERIENCE_ID_ACCESSOR);
+
+		if (sourceLayout.isDraftLayout() &&
+			(targetLayout.getPlid() == sourceLayout.getClassPK())) {
+
+			segmentsExperiencesIds.addAll(
+				ListUtil.toList(
+					_segmentsExperienceLocalService.getSegmentsExperiences(
+						sourceLayout.getGroupId(),
+						_portal.getClassNameId(Layout.class),
+						targetLayout.getPlid(), false),
+					SegmentsExperience.SEGMENTS_EXPERIENCE_ID_ACCESSOR));
+		}
 
 		return copyLayout(
 			ArrayUtil.toLongArray(segmentsExperiencesIds), sourceLayout,
@@ -345,6 +360,14 @@ public class LayoutCopyHelperImpl implements LayoutCopyHelper {
 
 		Map<Long, Long> segmentsExperienceIdsMap = _getSegmentsExperienceIds(
 			segmentsExperiencesIds, sourceLayout, targetLayout);
+
+		if ((sourceLayout.isDraftLayout() &&
+			 (targetLayout.getPlid() == sourceLayout.getClassPK())) ||
+			(targetLayout.isDraftLayout() &&
+			 (sourceLayout.getPlid() == targetLayout.getClassPK()))) {
+
+			_deleteTargetLayoutExperiences(sourceLayout, targetLayout);
+		}
 
 		for (Map.Entry<Long, Long> entry :
 				segmentsExperienceIdsMap.entrySet()) {
@@ -635,6 +658,42 @@ public class LayoutCopyHelperImpl implements LayoutCopyHelper {
 		}
 	}
 
+	private void _deleteTargetLayoutExperiences(
+			Layout sourceLayout, Layout targetLayout)
+		throws Exception {
+
+		List<SegmentsExperience> segmentsExperienceList =
+			_segmentsExperienceLocalService.getSegmentsExperiences(
+				targetLayout.getGroupId(), _portal.getClassNameId(Layout.class),
+				targetLayout.getPlid(), true);
+
+		for (SegmentsExperience targetSegmentsExperience :
+				segmentsExperienceList) {
+
+			if (!Objects.equals(
+					targetSegmentsExperience.getSegmentsExperienceKey(),
+					SegmentsExperienceConstants.KEY_DEFAULT)) {
+
+				try {
+					SegmentsExperience sourceSegmentsExperience =
+						_segmentsExperienceLocalService.fetchSegmentsExperience(
+							sourceLayout.getGroupId(),
+							targetSegmentsExperience.getSegmentsExperienceKey(),
+							_portal.getClassNameId(Layout.class),
+							sourceLayout.getPlid());
+
+					if (sourceSegmentsExperience == null) {
+						_segmentsExperienceLocalService.
+							deleteSegmentsExperience(targetSegmentsExperience);
+					}
+				}
+				catch (PortalException portalException) {
+					_log.error(portalException);
+				}
+			}
+		}
+	}
+
 	private List<String> _getLayoutPortletIds(
 		Layout layout, long[] segmentsExperiencesIds) {
 
@@ -661,34 +720,88 @@ public class LayoutCopyHelperImpl implements LayoutCopyHelper {
 
 		Map<Long, Long> segmentsExperienceIdsMap = new HashMap<>();
 
+		ServiceContext serviceContext =
+			ServiceContextThreadLocal.getServiceContext();
+
 		if (sourceLayout.isDraftLayout() || targetLayout.isDraftLayout()) {
+			List<SegmentsExperience> segmentsExperienceListHighPriority =
+				new ArrayList<>();
+			List<SegmentsExperience> segmentsExperienceListLowPriority =
+				new ArrayList<>();
+
 			for (long segmentsExperienceId : segmentsExperiencesIds) {
 				SegmentsExperience segmentsExperience =
 					_segmentsExperienceLocalService.fetchSegmentsExperience(
 						segmentsExperienceId);
 
-				if (Objects.equals(
-						segmentsExperience.getSegmentsExperienceKey(),
-						SegmentsExperienceConstants.KEY_DEFAULT)) {
+				if ((segmentsExperience != null) &&
+					!segmentsExperience.hasSegmentsExperiment()) {
 
-					segmentsExperienceIdsMap.put(
-						segmentsExperience.getSegmentsExperienceId(),
-						_segmentsExperienceLocalService.
-							fetchDefaultSegmentsExperienceId(
-								targetLayout.getPlid()));
-
-					continue;
+					if (segmentsExperience.getPriority() > 0) {
+						segmentsExperienceListHighPriority.add(
+							segmentsExperience);
+					}
+					else {
+						segmentsExperienceListLowPriority.add(
+							segmentsExperience);
+					}
 				}
+			}
+
+			Collections.sort(
+				segmentsExperienceListHighPriority,
+				new Comparator<SegmentsExperience>() {
+
+					@Override
+					public int compare(
+						SegmentsExperience segmentsExperience1,
+						SegmentsExperience segmentsExperience2) {
+
+						return Integer.compare(
+							segmentsExperience1.getPriority(),
+							segmentsExperience2.getPriority());
+					}
+
+				});
+
+			Collections.sort(
+				segmentsExperienceListLowPriority,
+				new Comparator<SegmentsExperience>() {
+
+					@Override
+					public int compare(
+						SegmentsExperience segmentsExperience1,
+						SegmentsExperience segmentsExperience2) {
+
+						return Integer.compare(
+							segmentsExperience2.getPriority(),
+							segmentsExperience1.getPriority());
+					}
+
+				});
+
+			for (SegmentsExperience sourceSegmentsExperience :
+					segmentsExperienceListHighPriority) {
 
 				segmentsExperienceIdsMap.put(
-					segmentsExperienceId, segmentsExperienceId);
+					sourceSegmentsExperience.getSegmentsExperienceId(),
+					_getTargetSegmentsExperienceId(
+						targetLayout, serviceContext,
+						sourceSegmentsExperience));
+			}
+
+			for (SegmentsExperience sourceSegmentsExperience :
+					segmentsExperienceListLowPriority) {
+
+				segmentsExperienceIdsMap.put(
+					sourceSegmentsExperience.getSegmentsExperienceId(),
+					_getTargetSegmentsExperienceId(
+						targetLayout, serviceContext,
+						sourceSegmentsExperience));
 			}
 
 			return segmentsExperienceIdsMap;
 		}
-
-		ServiceContext serviceContext =
-			ServiceContextThreadLocal.getServiceContext();
 
 		for (long segmentsExperienceId : segmentsExperiencesIds) {
 			SegmentsExperience segmentsExperience =
@@ -735,6 +848,55 @@ public class LayoutCopyHelperImpl implements LayoutCopyHelper {
 		}
 
 		return segmentsExperienceIdsMap;
+	}
+
+	private long _getTargetSegmentsExperienceId(
+		Layout targetLayout, ServiceContext serviceContext,
+		SegmentsExperience sourceSegmentsExperience) {
+
+		if (sourceSegmentsExperience.isActive()) {
+			SegmentsExperience targetSegmentsExperience =
+				_segmentsExperienceLocalService.fetchSegmentsExperience(
+					targetLayout.getGroupId(),
+					sourceSegmentsExperience.getSegmentsExperienceKey(),
+					_portal.getClassNameId(Layout.class),
+					targetLayout.getPlid());
+
+			if (targetSegmentsExperience == null) {
+				targetSegmentsExperience =
+					(SegmentsExperience)sourceSegmentsExperience.clone();
+
+				targetSegmentsExperience.setSegmentsExperienceId(
+					_counterLocalService.increment());
+				targetSegmentsExperience.setUuid(serviceContext.getUuid());
+				targetSegmentsExperience.setClassPK(targetLayout.getPlid());
+			}
+			else {
+				targetSegmentsExperience.setSegmentsEntryId(
+					sourceSegmentsExperience.getSegmentsEntryId());
+				targetSegmentsExperience.setName(
+					sourceSegmentsExperience.getName());
+			}
+
+			int priority = sourceSegmentsExperience.getPriority();
+
+			if (priority > 0) {
+				priority = _segmentsExperienceLocalService.getHighestPriority(
+					targetLayout.getGroupId(),
+					sourceSegmentsExperience.getClassNameId(),
+					targetLayout.getPlid());
+				priority = priority + 1;
+			}
+
+			targetSegmentsExperience.setPriority(priority);
+
+			_segmentsExperienceLocalService.updateSegmentsExperience(
+				targetSegmentsExperience);
+
+			return targetSegmentsExperience.getSegmentsExperienceId();
+		}
+
+		return sourceSegmentsExperience.getSegmentsExperienceId();
 	}
 
 	private boolean _hasLayoutClassedModelUsage(

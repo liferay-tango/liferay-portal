@@ -405,11 +405,25 @@ public class SegmentsExperienceLocalServiceWrapper
 	}
 
 	@Override
+	public int getHighestPriority(
+		long groupId, long classNameId, long classPK) {
+
+		return _segmentsExperienceLocalService.getHighestPriority(
+			groupId, classNameId, classPK);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 		getIndexableActionableDynamicQuery() {
 
 		return _segmentsExperienceLocalService.
 			getIndexableActionableDynamicQuery();
+	}
+
+	@Override
+	public int getLowestPriority(long groupId, long classNameId, long classPK) {
+		return _segmentsExperienceLocalService.getLowestPriority(
+			groupId, classNameId, classPK);
 	}
 
 	/**

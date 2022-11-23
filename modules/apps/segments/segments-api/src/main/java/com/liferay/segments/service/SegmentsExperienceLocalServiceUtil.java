@@ -356,11 +356,23 @@ public class SegmentsExperienceLocalServiceUtil {
 		return getService().getExportActionableDynamicQuery(portletDataContext);
 	}
 
+	public static int getHighestPriority(
+		long groupId, long classNameId, long classPK) {
+
+		return getService().getHighestPriority(groupId, classNameId, classPK);
+	}
+
 	public static
 		com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 			getIndexableActionableDynamicQuery() {
 
 		return getService().getIndexableActionableDynamicQuery();
+	}
+
+	public static int getLowestPriority(
+		long groupId, long classNameId, long classPK) {
+
+		return getService().getLowestPriority(groupId, classNameId, classPK);
 	}
 
 	/**

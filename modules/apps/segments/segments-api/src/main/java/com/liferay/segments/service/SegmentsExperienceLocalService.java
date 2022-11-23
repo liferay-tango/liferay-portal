@@ -298,7 +298,13 @@ public interface SegmentsExperienceLocalService
 		PortletDataContext portletDataContext);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getHighestPriority(long groupId, long classNameId, long classPK);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getLowestPriority(long groupId, long classNameId, long classPK);
 
 	/**
 	 * Returns the OSGi service identifier.

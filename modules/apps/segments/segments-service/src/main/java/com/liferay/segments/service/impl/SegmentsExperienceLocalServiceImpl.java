@@ -92,7 +92,7 @@ public class SegmentsExperienceLocalServiceImpl
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		int lowestPriority = _getLowestPriority(groupId, classNameId, classPK);
+		int lowestPriority = getLowestPriority(groupId, classNameId, classPK);
 
 		return addSegmentsExperience(
 			userId, groupId, segmentsEntryId, classNameId, classPK, nameMap,
@@ -186,8 +186,7 @@ public class SegmentsExperienceLocalServiceImpl
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		int highestPriority = _getHighestPriority(
-			groupId, classNameId, classPK);
+		int highestPriority = getHighestPriority(groupId, classNameId, classPK);
 
 		return addSegmentsExperience(
 			userId, groupId, segmentsEntryId, classNameId, classPK, nameMap,
@@ -342,6 +341,34 @@ public class SegmentsExperienceLocalServiceImpl
 
 		return segmentsExperiencePersistence.fetchByG_SEK_C_C(
 			groupId, segmentsExperienceKey, classNameId, classPK);
+	}
+
+	@Override
+	public int getHighestPriority(
+		long groupId, long classNameId, long classPK) {
+
+		SegmentsExperience segmentsExperience =
+			segmentsExperiencePersistence.fetchByG_C_C_First(
+				groupId, classNameId, classPK, null);
+
+		if (segmentsExperience == null) {
+			return 0;
+		}
+
+		return segmentsExperience.getPriority();
+	}
+
+	@Override
+	public int getLowestPriority(long groupId, long classNameId, long classPK) {
+		SegmentsExperience segmentsExperience =
+			segmentsExperiencePersistence.fetchByG_C_C_Last(
+				groupId, classNameId, classPK, null);
+
+		if (segmentsExperience == null) {
+			return 0;
+		}
+
+		return segmentsExperience.getPriority();
 	}
 
 	@Override
@@ -602,34 +629,6 @@ public class SegmentsExperienceLocalServiceImpl
 
 		_segmentsExperimentRelPersistence.removeBySegmentsExperimentId(
 			segmentsExperiment.getSegmentsExperimentId());
-	}
-
-	private int _getHighestPriority(
-		long groupId, long classNameId, long classPK) {
-
-		SegmentsExperience segmentsExperience =
-			segmentsExperiencePersistence.fetchByG_C_C_First(
-				groupId, classNameId, classPK, null);
-
-		if (segmentsExperience == null) {
-			return 0;
-		}
-
-		return segmentsExperience.getPriority();
-	}
-
-	private int _getLowestPriority(
-		long groupId, long classNameId, long classPK) {
-
-		SegmentsExperience segmentsExperience =
-			segmentsExperiencePersistence.fetchByG_C_C_Last(
-				groupId, classNameId, classPK, null);
-
-		if (segmentsExperience == null) {
-			return 0;
-		}
-
-		return segmentsExperience.getPriority();
 	}
 
 	private void _releaseSegmentExperiencesPriority(
