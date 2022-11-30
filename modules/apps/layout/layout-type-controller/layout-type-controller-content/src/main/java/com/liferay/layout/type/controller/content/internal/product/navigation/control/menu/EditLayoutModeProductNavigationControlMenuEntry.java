@@ -44,6 +44,8 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.product.navigation.control.menu.BaseProductNavigationControlMenuEntry;
 import com.liferay.product.navigation.control.menu.ProductNavigationControlMenuEntry;
 import com.liferay.product.navigation.control.menu.constants.ProductNavigationControlMenuCategoryKeys;
+import com.liferay.segments.model.SegmentsExperience;
+import com.liferay.segments.service.SegmentsExperienceLocalService;
 import com.liferay.sites.kernel.util.Sites;
 import com.liferay.staging.StagingGroupHelper;
 
@@ -212,6 +214,50 @@ public class EditLayoutModeProductNavigationControlMenuEntry
 		return false;
 	}
 
+	private long _getDraftSegmentsExperienceId(
+			Layout layout, long segmentsExperienceId)
+		throws PortalException {
+
+		long draftSegmentsExperienceId = -1;
+
+		if (segmentsExperienceId != -1) {
+			try {
+				Layout draftLayout = _layoutLocalService.fetchDraftLayout(
+					layout.getPlid());
+
+				if (draftLayout != null) {
+					SegmentsExperience publishedSegmentsExperience =
+						_segmentsExperienceLocalService.getSegmentsExperience(
+							segmentsExperienceId);
+
+					if (publishedSegmentsExperience.isActive()) {
+						SegmentsExperience draftSegmentsExperience =
+							_segmentsExperienceLocalService.
+								getSegmentsExperience(
+									publishedSegmentsExperience.getGroupId(),
+									publishedSegmentsExperience.
+										getSegmentsExperienceKey(),
+									_portal.getClassNameId(Layout.class),
+									draftLayout.getPlid());
+
+						draftSegmentsExperienceId =
+							draftSegmentsExperience.getSegmentsExperienceId();
+					}
+					else {
+						draftSegmentsExperienceId = segmentsExperienceId;
+					}
+				}
+			}
+			catch (PortalException portalException) {
+				if (_log.isDebugEnabled()) {
+					_log.error(portalException);
+				}
+			}
+		}
+
+		return draftSegmentsExperienceId;
+	}
+
 	private String _getRedirect(
 			HttpServletRequest httpServletRequest, String fullLayoutURL,
 			Layout layout, ThemeDisplay themeDisplay)
@@ -227,9 +273,12 @@ public class EditLayoutModeProductNavigationControlMenuEntry
 		long segmentsExperienceId = ParamUtil.getLong(
 			httpServletRequest, "segmentsExperienceId", -1);
 
-		if (segmentsExperienceId != -1) {
+		long draftSegmentsExperienceId = _getDraftSegmentsExperienceId(
+			layout, segmentsExperienceId);
+
+		if (draftSegmentsExperienceId != -1) {
 			redirect = HttpComponentsUtil.setParameter(
-				redirect, "segmentsExperienceId", segmentsExperienceId);
+				redirect, "segmentsExperienceId", draftSegmentsExperienceId);
 		}
 
 		return redirect;
@@ -258,6 +307,9 @@ public class EditLayoutModeProductNavigationControlMenuEntry
 
 	@Reference
 	private Portal _portal;
+
+	@Reference
+	private SegmentsExperienceLocalService _segmentsExperienceLocalService;
 
 	@Reference
 	private Sites _sites;
