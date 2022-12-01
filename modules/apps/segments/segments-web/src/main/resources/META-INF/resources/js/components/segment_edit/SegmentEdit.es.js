@@ -493,7 +493,7 @@ class SegmentEdit extends Component {
 					value={values.active}
 				/>
 
-				{noSegments && (
+				{noSegments && Liferay.FeatureFlags['LPS-166954'] && (
 					<div className="mt-10 taglib-empty-result-message">
 						<div className="taglib-empty-result-message-header"></div>
 
@@ -510,6 +510,7 @@ class SegmentEdit extends Component {
 
 							<ClayButton
 								displayType="secondary"
+								onClick={this._redirect}
 								small
 								type="button"
 							>
