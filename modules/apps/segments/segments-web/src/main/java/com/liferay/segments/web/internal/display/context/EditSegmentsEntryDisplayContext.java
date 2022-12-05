@@ -37,11 +37,13 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -49,6 +51,7 @@ import com.liferay.portal.odata.filter.FilterParser;
 import com.liferay.portal.odata.filter.FilterParserProvider;
 import com.liferay.portal.odata.filter.expression.BinaryExpression;
 import com.liferay.portal.odata.filter.expression.Expression;
+import com.liferay.portal.odata.filter.expression.ExpressionVisitException;
 import com.liferay.segments.configuration.provider.SegmentsConfigurationProvider;
 import com.liferay.segments.criteria.Criteria;
 import com.liferay.segments.criteria.contributor.SegmentsCriteriaContributor;
@@ -374,25 +377,40 @@ public class EditSegmentsEntryDisplayContext {
 		FilterParser filterParser = _filterParserProvider.provide(
 			segmentsCriteriaContributor.getEntityModel());
 
-		Expression expression = filterParser.parse(criterionFilterString);
+		try {
+			Expression expression = filterParser.parse(criterionFilterString);
 
-		JSONObject jsonObject = (JSONObject)expression.accept(
-			new ExpressionVisitorImpl(
-				1, segmentsCriteriaContributor.getEntityModel()));
+			JSONObject jsonObject = (JSONObject)expression.accept(
+				new ExpressionVisitorImpl(
+					1, segmentsCriteriaContributor.getEntityModel()));
 
-		if (Validator.isNull(jsonObject.getString("groupId"))) {
-			jsonObject = JSONUtil.put(
-				"conjunctionName",
-				StringUtil.toLowerCase(
-					String.valueOf(BinaryExpression.Operation.AND))
-			).put(
-				"groupId", "group_0"
-			).put(
-				"items", JSONUtil.putAll(jsonObject)
-			);
+			if (Validator.isNull(jsonObject.getString("groupId"))) {
+				jsonObject = JSONUtil.put(
+					"conjunctionName",
+					StringUtil.toLowerCase(
+						String.valueOf(BinaryExpression.Operation.AND))
+				).put(
+					"groupId", "group_0"
+				).put(
+					"items", JSONUtil.putAll(jsonObject)
+				);
+			}
+
+			return jsonObject;
+		}
+		catch (ExpressionVisitException expressionVisitException) {
+			if (_log.isDebugEnabled()) {
+				_log.error(expressionVisitException);
+			}
+
+			if (!GetterUtil.getBoolean(
+					PropsUtil.get("feature.flag.LPS-166954"))) {
+
+				throw expressionVisitException;
+			}
 		}
 
-		return jsonObject;
+		return JSONUtil.put("invalidSegmentError", StringPool.TRUE);
 	}
 
 	private JSONObject _getInitialSegmentsNameJSONObject() throws Exception {
