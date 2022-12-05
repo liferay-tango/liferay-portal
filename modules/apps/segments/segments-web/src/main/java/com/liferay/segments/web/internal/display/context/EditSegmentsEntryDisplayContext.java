@@ -34,11 +34,13 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -348,37 +350,60 @@ public class EditSegmentsEntryDisplayContext {
 		FilterParser filterParser = _filterParserProvider.provide(
 			segmentsCriteriaContributor.getEntityModel());
 
-		try {
-			Expression expression = filterParser.parse(criterionFilterString);
+		if (GetterUtil.getBoolean(PropsUtil.get("feature.flag.LPS-166954"))) {
+			try {
+				Expression expression = filterParser.parse(
+					criterionFilterString);
 
-			JSONObject jsonObject = (JSONObject)expression.accept(
-				new ExpressionVisitorImpl(
-					1, segmentsCriteriaContributor.getEntityModel()));
+				JSONObject jsonObject = (JSONObject)expression.accept(
+					new ExpressionVisitorImpl(
+						1, segmentsCriteriaContributor.getEntityModel()));
 
-			if (Validator.isNull(jsonObject.getString("groupId"))) {
-				jsonObject = JSONUtil.put(
-					"conjunctionName",
-					StringUtil.toLowerCase(
-						String.valueOf(BinaryExpression.Operation.AND))
-				).put(
-					"groupId", "group_0"
-				).put(
-					"items", JSONUtil.putAll(jsonObject)
-				);
+				if (Validator.isNull(jsonObject.getString("groupId"))) {
+					jsonObject = JSONUtil.put(
+						"conjunctionName",
+						StringUtil.toLowerCase(
+							String.valueOf(BinaryExpression.Operation.AND))
+					).put(
+						"groupId", "group_0"
+					).put(
+						"items", JSONUtil.putAll(jsonObject)
+					);
+				}
+
+				return jsonObject;
+			}
+			catch (Exception exception) {
+				if (_log.isDebugEnabled()) {
+					_log.error(exception);
+				}
 			}
 
-			return jsonObject;
-		}
-		catch (Exception exception) {
-			if (_log.isDebugEnabled()) {
-				_log.error(exception);
-			}
+			return JSONFactoryUtil.createJSONObject(
+				HashMapBuilder.put(
+					"error", StringPool.TRUE
+				).build());
 		}
 
-		return JSONFactoryUtil.createJSONObject(
-			HashMapBuilder.put(
-				"error", StringPool.TRUE
-			).build());
+		Expression expression = filterParser.parse(criterionFilterString);
+
+		JSONObject jsonObject = (JSONObject)expression.accept(
+			new ExpressionVisitorImpl(
+				1, segmentsCriteriaContributor.getEntityModel()));
+
+		if (Validator.isNull(jsonObject.getString("groupId"))) {
+			jsonObject = JSONUtil.put(
+				"conjunctionName",
+				StringUtil.toLowerCase(
+					String.valueOf(BinaryExpression.Operation.AND))
+			).put(
+				"groupId", "group_0"
+			).put(
+				"items", JSONUtil.putAll(jsonObject)
+			);
+		}
+
+		return jsonObject;
 	}
 
 	private JSONObject _getInitialSegmentsNameJSONObject() throws Exception {
