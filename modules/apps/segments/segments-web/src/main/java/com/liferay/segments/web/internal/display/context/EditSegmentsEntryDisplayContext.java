@@ -348,25 +348,37 @@ public class EditSegmentsEntryDisplayContext {
 		FilterParser filterParser = _filterParserProvider.provide(
 			segmentsCriteriaContributor.getEntityModel());
 
-		Expression expression = filterParser.parse(criterionFilterString);
+		try {
+			Expression expression = filterParser.parse(criterionFilterString);
 
-		JSONObject jsonObject = (JSONObject)expression.accept(
-			new ExpressionVisitorImpl(
-				1, segmentsCriteriaContributor.getEntityModel()));
+			JSONObject jsonObject = (JSONObject)expression.accept(
+				new ExpressionVisitorImpl(
+					1, segmentsCriteriaContributor.getEntityModel()));
 
-		if (Validator.isNull(jsonObject.getString("groupId"))) {
-			jsonObject = JSONUtil.put(
-				"conjunctionName",
-				StringUtil.toLowerCase(
-					String.valueOf(BinaryExpression.Operation.AND))
-			).put(
-				"groupId", "group_0"
-			).put(
-				"items", JSONUtil.putAll(jsonObject)
-			);
+			if (Validator.isNull(jsonObject.getString("groupId"))) {
+				jsonObject = JSONUtil.put(
+					"conjunctionName",
+					StringUtil.toLowerCase(
+						String.valueOf(BinaryExpression.Operation.AND))
+				).put(
+					"groupId", "group_0"
+				).put(
+					"items", JSONUtil.putAll(jsonObject)
+				);
+			}
+
+			return jsonObject;
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.error(exception);
+			}
 		}
 
-		return jsonObject;
+		return JSONFactoryUtil.createJSONObject(
+			HashMapBuilder.put(
+				"error", StringPool.TRUE
+			).build());
 	}
 
 	private JSONObject _getInitialSegmentsNameJSONObject() throws Exception {
