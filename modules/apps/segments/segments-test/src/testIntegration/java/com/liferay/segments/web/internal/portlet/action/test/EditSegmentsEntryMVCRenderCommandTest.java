@@ -15,6 +15,12 @@
 package com.liferay.segments.web.internal.portlet.action.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.expando.kernel.model.ExpandoColumn;
+import com.liferay.expando.kernel.model.ExpandoColumnConstants;
+import com.liferay.expando.kernel.model.ExpandoTable;
+import com.liferay.expando.kernel.service.ExpandoColumnLocalService;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -33,15 +39,21 @@ import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.odata.filter.expression.ExpressionVisitException;
+import com.liferay.portal.odata.normalizer.Normalizer;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.portlet.expando.util.test.ExpandoTestUtil;
 import com.liferay.segments.criteria.Criteria;
 import com.liferay.segments.criteria.CriteriaSerializer;
 import com.liferay.segments.criteria.contributor.SegmentsCriteriaContributor;
@@ -81,6 +93,45 @@ public class EditSegmentsEntryMVCRenderCommandTest {
 	@Before
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
+	}
+
+	@Test(expected = ExpressionVisitException.class)
+	public void testGetDataWithErrorMessage() throws Exception {
+		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
+			_getMockLiferayPortletRenderRequests();
+
+		MockLiferayPortletRenderResponse mockLiferayPortletRenderResponse =
+			new MockLiferayPortletRenderResponse();
+
+		mockLiferayPortletRenderRequest.setAttribute(
+			WebKeys.USER, TestPropsValues.getUser());
+
+		_expandoTable = ExpandoTestUtil.addTable(
+			PortalUtil.getClassNameId(User.class), "CUSTOM_FIELDS");
+
+		ExpandoColumn expandoColumn = _addExpandoColumn(
+			_expandoTable, RandomTestUtil.randomString(),
+			ExpandoColumnConstants.BOOLEAN,
+			ExpandoColumnConstants.INDEX_TYPE_KEYWORD);
+
+		SegmentsEntry segmentsEntry = _addSegmentEntry(
+			String.format(
+				"(customField/%s eq %s)", _encodeName(expandoColumn),
+				StringPool.TRUE));
+
+		_expandoColumnLocalService.deleteColumn(expandoColumn);
+
+		mockLiferayPortletRenderRequest.setParameter(
+			"segmentsEntryId",
+			String.valueOf(segmentsEntry.getSegmentsEntryId()));
+
+		_mvcRenderCommand.render(
+			mockLiferayPortletRenderRequest, mockLiferayPortletRenderResponse);
+
+		ReflectionTestUtil.invoke(
+			mockLiferayPortletRenderRequest.getAttribute(
+				"EDIT_SEGMENTS_ENTRY_DISPLAY_CONTEXT"),
+			"getData", new Class<?>[0]);
 	}
 
 	@Test
@@ -219,6 +270,25 @@ public class EditSegmentsEntryMVCRenderCommandTest {
 		Assert.assertNull(props.get("siteItemSelectorURL"));
 	}
 
+	private ExpandoColumn _addExpandoColumn(
+			ExpandoTable expandoTable, String columnName, int columnType,
+			int indexType)
+		throws Exception {
+
+		ExpandoColumn expandoColumn = ExpandoTestUtil.addColumn(
+			expandoTable, columnName, columnType);
+
+		UnicodeProperties unicodeProperties =
+			expandoColumn.getTypeSettingsProperties();
+
+		unicodeProperties.setProperty(
+			ExpandoColumnConstants.INDEX_TYPE, String.valueOf(indexType));
+
+		expandoColumn.setTypeSettingsProperties(unicodeProperties);
+
+		return _expandoColumnLocalService.updateExpandoColumn(expandoColumn);
+	}
+
 	private SegmentsEntry _addSegmentEntry(String filterString)
 		throws Exception {
 
@@ -230,6 +300,13 @@ public class EditSegmentsEntryMVCRenderCommandTest {
 		return SegmentsTestUtil.addSegmentsEntry(
 			_group.getGroupId(), CriteriaSerializer.serialize(criteria),
 			User.class.getName());
+	}
+
+	private String _encodeName(ExpandoColumn expandoColumn) {
+		return StringBundler.concat(
+			StringPool.UNDERLINE, expandoColumn.getColumnId(),
+			StringPool.UNDERLINE,
+			Normalizer.normalizeIdentifier(expandoColumn.getName()));
 	}
 
 	private MockLiferayPortletRenderRequest
@@ -264,6 +341,12 @@ public class EditSegmentsEntryMVCRenderCommandTest {
 
 	@Inject
 	private static CompanyLocalService _companyLocalService;
+
+	@Inject
+	private static ExpandoColumnLocalService _expandoColumnLocalService;
+
+	@DeleteAfterTestRun
+	private ExpandoTable _expandoTable;
 
 	@DeleteAfterTestRun
 	private Group _group;
