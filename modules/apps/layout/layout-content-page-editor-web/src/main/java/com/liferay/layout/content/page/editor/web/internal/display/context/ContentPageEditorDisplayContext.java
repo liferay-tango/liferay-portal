@@ -592,14 +592,7 @@ public class ContentPageEditorDisplayContext {
 			).put(
 				"portletNamespace", getPortletNamespace()
 			).put(
-				"publishURL",
-				() -> {
-					if (_isSegmentsExperimentVariant()) {
-						return getSaveVariantSegmentsExperienceURL();
-					}
-
-					return getPublishURL();
-				}
+				"publishURL", getPublishURL()
 			).put(
 				"redirectURL", _getRedirect()
 			).put(
@@ -611,6 +604,9 @@ public class ContentPageEditorDisplayContext {
 				getFragmentEntryActionURL(
 					"/layout_content_page_editor" +
 						"/restore_collection_display_config")
+			).put(
+				"saveVariantSegmentsExperienceURL",
+				getSaveVariantSegmentsExperienceURL()
 			).put(
 				"searchContainerPageMaxDelta",
 				PropsValues.SEARCH_CONTAINER_PAGE_MAX_DELTA
