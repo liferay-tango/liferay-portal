@@ -299,6 +299,16 @@ public class ExpressionVisitorImpl implements ExpressionVisitor<Expression> {
 				uriResources);
 	}
 
+	private NavigationPropertyExpression.Type _getType(
+		UriResource uriResource) {
+
+		if (uriResource instanceof UriResourceCount) {
+			return NavigationPropertyExpression.Type.COUNT;
+		}
+
+		return NavigationPropertyExpression.Type.SIMPLE;
+	}
+
 	private final Map<BinaryOperatorKind, BinaryExpression.Operation>
 		_binaryExpressionOperations = HashMapBuilder.put(
 			BinaryOperatorKind.AND, BinaryExpression.Operation.AND
@@ -317,15 +327,5 @@ public class ExpressionVisitorImpl implements ExpressionVisitor<Expression> {
 		).put(
 			BinaryOperatorKind.OR, BinaryExpression.Operation.OR
 		).build();
-
-	private NavigationPropertyExpression.Type _getType(
-		UriResource uriResource) {
-
-		if (uriResource instanceof UriResourceCount) {
-			return NavigationPropertyExpression.Type.COUNT;
-		}
-
-		return NavigationPropertyExpression.Type.SIMPLE;
-	}
 
 }
