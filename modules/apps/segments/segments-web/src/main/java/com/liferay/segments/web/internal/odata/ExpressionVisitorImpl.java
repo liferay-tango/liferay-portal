@@ -88,8 +88,10 @@ public class ExpressionVisitorImpl implements ExpressionVisitor<Object> {
 			return _getOperationJSONObject(
 				String.valueOf(operation), left, right);
 		}
-		else if (Objects.equals(BinaryExpression.Operation.SUB, operation)) {
-			return _sub(left, right);
+		else if (Objects.equals(BinaryExpression.Operation.ADD, operation) ||
+				 Objects.equals(BinaryExpression.Operation.SUB, operation)) {
+
+			return _addOrSub(operation, left, right);
 		}
 
 		throw new UnsupportedOperationException(
@@ -294,6 +296,52 @@ public class ExpressionVisitorImpl implements ExpressionVisitor<Object> {
 
 	}
 
+	private Object _addOrSub(
+			BinaryExpression.Operation operation, Object left, Object right)
+		throws ExpressionVisitException {
+
+		if ((left instanceof MethodType || left instanceof String) &&
+			(right instanceof Duration)) {
+
+			try {
+				Date date = null;
+
+				if (Objects.equals(MethodType.NOW, left)) {
+					date = _date;
+				}
+				else {
+					date = ISO8601Utils.parse(
+						String.valueOf(left), new ParsePosition(0));
+				}
+
+				Duration duration = (Duration)right;
+
+				Instant instant = date.toInstant();
+
+				if (Objects.equals(operation, BinaryExpression.Operation.ADD)) {
+					instant = instant.plusMillis(duration.toMillis());
+				}
+				else {
+					instant = instant.minusMillis(duration.toMillis());
+				}
+
+				return ISO8601Utils.format(Date.from(instant));
+			}
+			catch (ParseException parseException) {
+				throw new ExpressionVisitException(
+					"Invalid date format,only a date with ISO 8601 format is " +
+						"supported as a left operator:" +
+							parseException.getMessage());
+			}
+		}
+
+		throw new UnsupportedOperationException(
+			StringBundler.concat(
+				"Unsupported types in _getSubOperationObject with  Arithmetic ",
+				"Operator SUB with left type", left.getClass(),
+				"and right type", right.getClass()));
+	}
+
 	private JSONObject _getConjunctionJSONObject(
 		BinaryExpression.Operation operation, JSONObject leftJSONObject,
 		JSONObject rightJSONObject) {
@@ -387,46 +435,6 @@ public class ExpressionVisitorImpl implements ExpressionVisitor<Object> {
 		}
 
 		return String.valueOf(object);
-	}
-
-	private Object _sub(Object left, Object right)
-		throws ExpressionVisitException {
-
-		if ((left instanceof MethodType || left instanceof String) &&
-			(right instanceof Duration)) {
-
-			try {
-				Date date = null;
-
-				if (Objects.equals(MethodType.NOW, left)) {
-					date = _date;
-				}
-				else {
-					date = ISO8601Utils.parse(
-						String.valueOf(left), new ParsePosition(0));
-				}
-
-				Duration duration = (Duration)right;
-
-				Instant instant = date.toInstant();
-
-				instant = instant.minusMillis(duration.toMillis());
-
-				return ISO8601Utils.format(Date.from(instant));
-			}
-			catch (ParseException parseException) {
-				throw new ExpressionVisitException(
-					"Invalid date format,only a date with ISO 8601 format is " +
-						"supported as a left operator:" +
-							parseException.getMessage());
-			}
-		}
-
-		throw new UnsupportedOperationException(
-			StringBundler.concat(
-				"Unsupported types in _getSubOperationObject with  Arithmetic ",
-				"Operator SUB with left type", left.getClass(),
-				"and right type", right.getClass()));
 	}
 
 	private final Date _date = new Date();
