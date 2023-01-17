@@ -74,6 +74,49 @@ public class ExpressionVisitorImplTest {
 	}
 
 	@Test
+	public void testVisitBinaryExpressionOperationAdd()
+		throws ExpressionVisitException, ParseException {
+
+		Duration duration = Duration.ofDays(1);
+
+		Date initialDate = new Date();
+
+		Instant initialInstant = initialDate.toInstant();
+
+		initialInstant = initialInstant.plusMillis(duration.toMillis());
+
+		Date date = ISO8601Utils.parse(
+			(String)_expressionVisitorImpl.visitBinaryExpressionOperation(
+				BinaryExpression.Operation.ADD,
+				ExpressionVisitorImpl.MethodType.NOW, duration),
+			new ParsePosition(0));
+
+		Instant instant = Instant.ofEpochMilli(date.getTime());
+
+		Date finalDate = new Date();
+
+		Instant finalInstant = finalDate.toInstant();
+
+		finalInstant = finalInstant.plusMillis(duration.toMillis());
+
+		Assert.assertTrue(
+			instant.getEpochSecond() >= initialInstant.getEpochSecond());
+		Assert.assertTrue(
+			instant.getEpochSecond() <= finalInstant.getEpochSecond());
+	}
+
+	@Test
+	public void testVisitBinaryExpressionOperationAddwithDate()
+		throws ExpressionVisitException {
+
+		Assert.assertEquals(
+			"2022-12-29T23:00:00Z",
+			_expressionVisitorImpl.visitBinaryExpressionOperation(
+				BinaryExpression.Operation.ADD, "2022-12-28T23:00:00.000Z",
+				Duration.ofDays(1)));
+	}
+
+	@Test
 	public void testVisitBinaryExpressionOperationSub()
 		throws ExpressionVisitException, ParseException {
 
