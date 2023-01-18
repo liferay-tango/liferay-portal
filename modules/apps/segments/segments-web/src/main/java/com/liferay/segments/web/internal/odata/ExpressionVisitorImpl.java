@@ -80,13 +80,15 @@ public class ExpressionVisitorImpl implements ExpressionVisitor<Object> {
 		}
 		else if (Objects.equals(BinaryExpression.Operation.EQ, operation) ||
 				 Objects.equals(BinaryExpression.Operation.GE, operation) ||
-				 Objects.equals(BinaryExpression.Operation.GT, operation) ||
 				 Objects.equals(BinaryExpression.Operation.LE, operation) ||
 				 Objects.equals(BinaryExpression.Operation.LT, operation) ||
 				 Objects.equals(BinaryExpression.Operation.NE, operation)) {
 
 			return _getOperationJSONObject(
 				String.valueOf(operation), left, right);
+		}
+		else if (Objects.equals(BinaryExpression.Operation.GT, operation)) {
+			return _getGTOperationJSONObject(left, right);
 		}
 		else if (Objects.equals(BinaryExpression.Operation.SUB, operation)) {
 			return _sub(left, right);
@@ -294,6 +296,51 @@ public class ExpressionVisitorImpl implements ExpressionVisitor<Object> {
 
 	}
 
+	public enum TimeModifier {
+
+		AFTER("after"), BEFORE("before"), BETWEEN("between"), EVER("ever"),
+		ON("on"), SINCE("since");
+
+		public String getValue() {
+			return _value;
+		}
+
+		@Override
+		public String toString() {
+			return _value;
+		}
+
+		private TimeModifier(String value) {
+			_value = value;
+		}
+
+		private final String _value;
+
+	}
+
+	public enum TimeRange {
+
+		LAST_7_DAYS("last7days"), LAST_24_HOURS("last24hours"),
+		LAST_28_DAYS("last28days"), LAST_30_DAYS("last30days"),
+		LAST_90_DAYS("last90days"), YESTERDAY("yesterday");
+
+		public String getValue() {
+			return _value;
+		}
+
+		@Override
+		public String toString() {
+			return _value;
+		}
+
+		private TimeRange(String value) {
+			_value = value;
+		}
+
+		private final String _value;
+
+	}
+
 	private JSONObject _getConjunctionJSONObject(
 		BinaryExpression.Operation operation, JSONObject leftJSONObject,
 		JSONObject rightJSONObject) {
@@ -350,6 +397,29 @@ public class ExpressionVisitorImpl implements ExpressionVisitor<Object> {
 		}
 	}
 
+	private JSONObject _getGTOperationJSONObject(
+		Object object, Object fieldValue) {
+
+		if (fieldValue instanceof TimeRange) {
+			return JSONUtil.put(
+				"operatorName", TimeModifier.SINCE.getValue()
+			).put(
+				"propertyName", _getPropertyName(object)
+			).put(
+				"value", fieldValue.toString()
+			);
+		}
+
+		return JSONUtil.put(
+			"operatorName",
+			StringUtil.lowerCase(BinaryExpression.Operation.GT.toString())
+		).put(
+			"propertyName", _getPropertyName(object)
+		).put(
+			"value", fieldValue
+		);
+	}
+
 	private JSONObject _getOperationJSONObject(
 		String operatorName, Object object, List<Object> fieldValues) {
 
@@ -396,17 +466,39 @@ public class ExpressionVisitorImpl implements ExpressionVisitor<Object> {
 			(right instanceof Duration)) {
 
 			try {
-				Date date = null;
+				Duration duration = (Duration)right;
 
 				if (Objects.equals(MethodType.NOW, left)) {
-					date = _date;
-				}
-				else {
-					date = ISO8601Utils.parse(
-						String.valueOf(left), new ParsePosition(0));
+					long days = duration.toDays();
+
+					if (days == 1) {
+						return TimeRange.LAST_24_HOURS;
+					}
+					else if (days == 2) {
+						return TimeRange.YESTERDAY;
+					}
+					else if (days == 7) {
+						return TimeRange.LAST_7_DAYS;
+					}
+					else if (days == 28) {
+						return TimeRange.LAST_28_DAYS;
+					}
+					else if (days == 30) {
+						return TimeRange.LAST_30_DAYS;
+					}
+					else if (days == 90) {
+						return TimeRange.LAST_90_DAYS;
+					}
+
+					throw new UnsupportedOperationException(
+						StringBundler.concat(
+							"Unsupported duration in _getSubOperationObject ",
+							"with Arithmetic Operator SUB with left NOW ",
+							"method and right Duration type"));
 				}
 
-				Duration duration = (Duration)right;
+				Date date = ISO8601Utils.parse(
+					String.valueOf(left), new ParsePosition(0));
 
 				Instant instant = date.toInstant();
 
@@ -429,7 +521,6 @@ public class ExpressionVisitorImpl implements ExpressionVisitor<Object> {
 				"and right type", right.getClass()));
 	}
 
-	private final Date _date = new Date();
 	private final EntityModel _entityModel;
 	private int _groupCount;
 
