@@ -14,14 +14,13 @@
 
 package com.liferay.segments.web.internal.odata;
 
-import com.fasterxml.jackson.databind.util.ISO8601Utils;
-
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.odata.entity.ComplexEntityField;
+import com.liferay.portal.odata.entity.DateTimeEntityField;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.odata.entity.IntegerEntityField;
@@ -40,15 +39,10 @@ import com.liferay.portal.odata.filter.expression.PropertyExpression;
 import com.liferay.portal.odata.filter.expression.UnaryExpression;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
-import java.text.ParseException;
-import java.text.ParsePosition;
-
 import java.time.Duration;
-import java.time.Instant;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -74,38 +68,6 @@ public class ExpressionVisitorImplTest {
 	}
 
 	@Test
-	public void testVisitBinaryExpressionOperationSub()
-		throws ExpressionVisitException, ParseException {
-
-		Duration duration = Duration.ofDays(1);
-
-		Date initialDate = new Date();
-
-		Instant initialInstant = initialDate.toInstant();
-
-		initialInstant = initialInstant.minusMillis(duration.toMillis());
-
-		Date date = ISO8601Utils.parse(
-			(String)_expressionVisitorImpl.visitBinaryExpressionOperation(
-				BinaryExpression.Operation.SUB,
-				ExpressionVisitorImpl.MethodType.NOW, duration),
-			new ParsePosition(0));
-
-		Instant instant = Instant.ofEpochMilli(date.getTime());
-
-		Date finalDate = new Date();
-
-		Instant finalInstant = finalDate.toInstant();
-
-		finalInstant = finalInstant.minusMillis(duration.toMillis());
-
-		Assert.assertTrue(
-			instant.getEpochSecond() >= initialInstant.getEpochSecond());
-		Assert.assertTrue(
-			instant.getEpochSecond() <= finalInstant.getEpochSecond());
-	}
-
-	@Test
 	public void testVisitBinaryExpressionOperationSubwithDate()
 		throws ExpressionVisitException {
 
@@ -114,6 +76,21 @@ public class ExpressionVisitorImplTest {
 			_expressionVisitorImpl.visitBinaryExpressionOperation(
 				BinaryExpression.Operation.SUB, "2022-12-28T23:00:00.000Z",
 				Duration.ofDays(1)));
+	}
+
+	@Test
+	public void testVisitBinaryExpressionOperationSubwithNow()
+		throws ExpressionVisitException {
+
+		ExpressionVisitorImpl.TimeRange timeRange =
+			(ExpressionVisitorImpl.TimeRange)
+				_expressionVisitorImpl.visitBinaryExpressionOperation(
+					BinaryExpression.Operation.SUB,
+					ExpressionVisitorImpl.MethodType.NOW, Duration.ofDays(1));
+
+		Assert.assertEquals(
+			ExpressionVisitorImpl.TimeRange.LAST_24_HOURS.getValue(),
+			timeRange.getValue());
 	}
 
 	@Test
@@ -302,6 +279,31 @@ public class ExpressionVisitorImplTest {
 				"propertyName", "title"
 			).put(
 				"value", "title1"
+			).toString(),
+			jsonObject.toString());
+	}
+
+	@Test
+	public void testVisitBinaryExpressionOperationWithGTAndTimeRange()
+		throws ExpressionVisitException {
+
+		Map<String, EntityField> entityFieldsMap =
+			_entityModel.getEntityFieldsMap();
+
+		JSONObject jsonObject =
+			(JSONObject)_expressionVisitorImpl.visitBinaryExpressionOperation(
+				BinaryExpression.Operation.GT, entityFieldsMap.get("dateTime"),
+				ExpressionVisitorImpl.TimeRange.LAST_24_HOURS);
+
+		Assert.assertEquals(
+			JSONUtil.put(
+				"operatorName",
+				ExpressionVisitorImpl.TimeModifier.SINCE.getValue()
+			).put(
+				"propertyName", "dateTime"
+			).put(
+				"value",
+				ExpressionVisitorImpl.TimeRange.LAST_24_HOURS.getValue()
 			).toString(),
 			jsonObject.toString());
 	}
@@ -578,6 +580,8 @@ public class ExpressionVisitorImplTest {
 				"id", locale -> "id");
 			EntityField stringEntityField = new StringEntityField(
 				"title", locale -> "title");
+			EntityField dateTimeEntityField = new DateTimeEntityField(
+				"dateTime", locale -> "dateTime", locale -> "dateTime");
 
 			return HashMapBuilder.put(
 				complexEntityField.getName(), complexEntityField
@@ -585,6 +589,8 @@ public class ExpressionVisitorImplTest {
 				integerEntityField.getName(), integerEntityField
 			).put(
 				stringEntityField.getName(), stringEntityField
+			).put(
+				dateTimeEntityField.getName(), dateTimeEntityField
 			).build();
 		}
 
