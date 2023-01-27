@@ -142,4 +142,4 @@ public class EventSegmentsCriteriaContributor
 	@Reference
 	private Portal _portal;
 
-	}
+}
