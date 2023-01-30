@@ -19,14 +19,20 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
+import com.liferay.portal.kernel.cache.MultiVMPool;
+import com.liferay.portal.kernel.cache.PortalCache;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.settings.SettingsFactoryUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -71,6 +77,13 @@ public class IndividualSegmentsCheckerTest {
 	@Before
 	public void setUp() throws Exception {
 		_user = TestPropsValues.getUser();
+
+		Company company = _companyLocalService.getCompany(
+			TestPropsValues.getCompanyId());
+
+		_serviceContext = ServiceContextTestUtil.getServiceContext(
+			company.getCompanyId(), company.getGroupId(),
+			TestPropsValues.getUserId());
 
 		Bundle bundle = FrameworkUtil.getBundle(
 			IndividualSegmentsCheckerTest.class);
@@ -216,7 +229,95 @@ public class IndividualSegmentsCheckerTest {
 		}
 	}
 
+	@Test
+	public void testCheckIndividualSegmentsOfIndividualPK() throws Exception {
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						AnalyticsConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"liferayAnalyticsDataSourceId", "123456789"
+						).put(
+							"liferayAnalyticsEnableAllGroupIds", true
+						).put(
+							"liferayAnalyticsFaroBackendSecuritySignature",
+							RandomTestUtil.randomString()
+						).put(
+							"liferayAnalyticsFaroBackendURL",
+							RandomTestUtil.randomString()
+						).build(),
+						SettingsFactoryUtil.getSettingsFactory())) {
+
+			Object asahFaroBackendClient = ReflectionTestUtil.getFieldValue(
+				_individualSegmentsChecker, "_asahFaroBackendClient");
+
+			String segmentEntryKey = "12345";
+
+			SegmentsEntry segmentsEntry =
+				_segmentsEntryLocalService.addSegmentsEntry(
+					segmentEntryKey,
+					HashMapBuilder.put(
+						LocaleUtil.getDefault(), RandomTestUtil.randomString()
+					).build(),
+					null, true, null, User.class.getName(), _serviceContext);
+
+			ReflectionTestUtil.setFieldValue(
+				asahFaroBackendClient, "_http",
+				MockHttpUtil.geHttp(
+					HashMapBuilder.
+						<String, UnsafeSupplier<String, Exception>>put(
+							"/api/1.0/individuals",
+							() -> JSONUtil.put(
+								"_embedded",
+								JSONUtil.put(
+									"individuals",
+									JSONUtil.putAll(
+										JSONUtil.put(
+											"individualSegmentIds",
+											JSONUtil.putAll(segmentEntryKey))))
+							).put(
+								"page",
+								JSONUtil.put(
+									"number", 0
+								).put(
+									"size", 100
+								).put(
+									"totalElements", 1
+								).put(
+									"totalPages", 1
+								)
+							).put(
+								"total", 0
+							).toString()
+						).build()));
+
+			ReflectionTestUtil.invoke(
+				_individualSegmentsChecker, "checkIndividualSegments",
+				new Class<?>[] {long.class, String.class}, _user.getCompanyId(),
+				String.valueOf(_user.getUserId()));
+
+			PortalCache<String, long[]> portalCache =
+				(PortalCache<String, long[]>)_multiVMPool.getPortalCache(
+					"com.liferay.segments.asah.connector.internal.cache." +
+						"AsahSegmentsEntryCache");
+
+			long[] segmentsEntryIds = portalCache.get(
+				"segments-" + _user.getUserId());
+
+			Assert.assertArrayEquals(
+				new long[] {segmentsEntry.getSegmentsEntryId()},
+				segmentsEntryIds);
+		}
+	}
+
+	@Inject
+	private static CompanyLocalService _companyLocalService;
+
 	private Object _individualSegmentsChecker;
+
+	@Inject
+	private MultiVMPool _multiVMPool;
 
 	@Inject
 	private SegmentsEntryLocalService _segmentsEntryLocalService;
@@ -224,6 +325,7 @@ public class IndividualSegmentsCheckerTest {
 	@Inject
 	private SegmentsEntryRelLocalService _segmentsEntryRelLocalService;
 
+	private ServiceContext _serviceContext;
 	private ServiceTracker<Object, Object> _serviceTracker;
 	private User _user;
 
