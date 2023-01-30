@@ -422,7 +422,8 @@ public class SegmentsDisplayContext {
 
 		if (Objects.equals(
 				segmentsEntry.getSource(),
-				SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND)) {
+				SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND) &&
+			(segmentsEntry.getCriteria() == null)) {
 
 			String asahFaroURL = _prefsProps.getString(
 				segmentsEntry.getCompanyId(), "liferayAnalyticsURL");
