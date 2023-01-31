@@ -25,9 +25,11 @@ import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.odata.entity.EntityModel;
+import com.liferay.segments.asah.connector.internal.criteria.mapper.SegmentsCriteriaJSONObjectMapperImpl;
 import com.liferay.segments.asah.connector.internal.odata.entity.EventEntityModel;
 import com.liferay.segments.criteria.Criteria;
 import com.liferay.segments.criteria.contributor.SegmentsCriteriaContributor;
+import com.liferay.segments.criteria.mapper.SegmentsCriteriaJSONObjectMapper;
 import com.liferay.segments.field.Field;
 
 import java.util.Collections;
@@ -57,6 +59,15 @@ public class EventSegmentsCriteriaContributor
 	implements SegmentsCriteriaContributor {
 
 	public static final String KEY = "event";
+
+	@Override
+	public JSONObject getCriteriaJSONObject(Criteria criteria)
+		throws Exception {
+		SegmentsCriteriaJSONObjectMapper segmentsCriteriaJSONObjectMapper =
+			new SegmentsCriteriaJSONObjectMapperImpl();
+
+		return segmentsCriteriaJSONObjectMapper.toJSONObject(criteria, this);
+	}
 
 	@Override
 	public EntityModel getEntityModel() {
@@ -117,10 +128,6 @@ public class EventSegmentsCriteriaContributor
 		return Criteria.Type.ANALYTICS;
 	}
 
-	@Override
-	public JSONObject toJSONObject(Criteria criteria) throws Exception {
-		return null;
-	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		EventSegmentsCriteriaContributor.class);

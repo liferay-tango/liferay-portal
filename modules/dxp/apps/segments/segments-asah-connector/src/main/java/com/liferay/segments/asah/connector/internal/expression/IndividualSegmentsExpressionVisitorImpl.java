@@ -29,6 +29,21 @@ public class IndividualSegmentsExpressionVisitorImpl
 	extends IndividualSegmentsExpressionBaseVisitor<Criteria> {
 
 	@Override
+	public Criteria visitAndExpression(
+		@NotNull IndividualSegmentsExpressionParser.AndExpressionContext
+			andExpressionContext) {
+
+		Criteria criteria = visitChildren(
+			(RuleNode)andExpressionContext.getChild(0));
+
+		criteria.mergeCriteria(
+			visitChildren((RuleNode)andExpressionContext.getChild(2)),
+			Criteria.Conjunction.AND);
+
+		return criteria;
+	}
+
+	@Override
 	public Criteria visitChildren(@NotNull RuleNode node) {
 		Criteria result = defaultResult();
 
@@ -48,37 +63,19 @@ public class IndividualSegmentsExpressionVisitorImpl
 	}
 
 	@Override
-	public Criteria visitAndExpression(
-		@NotNull IndividualSegmentsExpressionParser.AndExpressionContext
-			andExpressionContext) {
-
-		Criteria criteria = visitChildren(
-			(RuleNode) andExpressionContext.getChild(0));
-
-		criteria.mergeCriteria(
-			visitChildren(
-				(RuleNode) andExpressionContext.getChild(2)),
-				Criteria.Conjunction.AND);
-
-		return criteria;
-	}
-
-	@Override
 	public Criteria visitOrExpression(
 		@NotNull IndividualSegmentsExpressionParser.OrExpressionContext
 			orExpressionContext) {
 
 		Criteria criteria = visitChildren(
-			(RuleNode) orExpressionContext.getChild(0));
+			(RuleNode)orExpressionContext.getChild(0));
 
 		criteria.mergeCriteria(
-			visitChildren(
-				(RuleNode) orExpressionContext.getChild(2)),
+			visitChildren((RuleNode)orExpressionContext.getChild(2)),
 			Criteria.Conjunction.OR);
 
 		return criteria;
 	}
-
 
 	@Override
 	public Criteria visitToFilterByCountExpression(
