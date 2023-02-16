@@ -23,6 +23,9 @@ import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermi
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionFactory;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionLogic;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.segments.constants.SegmentsConstants;
 import com.liferay.segments.constants.SegmentsEntryConstants;
 import com.liferay.segments.constants.SegmentsPortletKeys;
@@ -76,7 +79,10 @@ public class SegmentsEntryModelResourcePermissionWrapper
 
 			if (actionId.equals(ActionKeys.UPDATE) &&
 				SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND.equals(
-					segmentsEntry.getSource())) {
+					segmentsEntry.getSource()) &&
+				(!GetterUtil.getBoolean(
+					PropsUtil.get("feature.flag.LPS-172194")) ||
+				 (Validator.isNull(segmentsEntry.getCriteria())))) {
 
 				return false;
 			}
