@@ -27,7 +27,7 @@
 </tr>
 <tr>
 	<td>ANY_LABELED_N</td>
-	<td>xpath=(//*[normalize-space(text())='${key_label}']/following-sibling::textarea)[${key_indexNumber}]</td>
+	<td>xpath=(//*[normalize-space(text())='${key_label}']/following-sibling::textarea)[${key_indexNumber}] | //*[contains(@class,"ddm-field-container")]//*[@class='ddm-field'][${key_indexNumber}]//label[contains(.,'${key_label}')]/../..//textarea</td>
 	<td></td>
 </tr>
 <tr>
