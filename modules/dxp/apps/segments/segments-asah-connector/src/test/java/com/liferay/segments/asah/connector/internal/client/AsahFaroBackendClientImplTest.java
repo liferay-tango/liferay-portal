@@ -457,6 +457,99 @@ public class AsahFaroBackendClientImplTest {
 			RandomTestUtil.randomLong(), new Experiment());
 	}
 
+	@Test
+	public void testUpdateIndividualSegment() throws Exception {
+		String individualSegmentId = String.valueOf(
+			RandomTestUtil.randomLong());
+		String name = RandomTestUtil.randomString();
+		String filter = "(demographics/birthDate/value lt '2023-02-17')";
+
+		AsahFaroBackendClient asahFaroBackendClient =
+			new AsahFaroBackendClientImpl(
+				_analyticsSettingsManager,
+				_getHttp(
+					Collections.singletonMap(
+						"/" + individualSegmentId, StringPool.BLANK)));
+
+		IndividualSegment individualSegment = new IndividualSegment();
+
+		individualSegment.setId(individualSegmentId);
+		individualSegment.setName(name);
+		individualSegment.setFilter(filter);
+
+		asahFaroBackendClient.updateIndividualSegment(
+			RandomTestUtil.randomLong(), individualSegment);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testUpdateIndividualSegmentWithoutFilter() throws Exception {
+		String individualSegmentId = String.valueOf(
+			RandomTestUtil.randomLong());
+		String filter = "(demographics/birthDate/value lt '2023-02-17')";
+
+		AsahFaroBackendClient asahFaroBackendClient =
+			new AsahFaroBackendClientImpl(
+				_analyticsSettingsManager,
+				_getHttp(
+					Collections.singletonMap(
+						"/" + individualSegmentId, StringPool.BLANK)));
+
+		IndividualSegment individualSegment = new IndividualSegment();
+
+		individualSegment.setId(null);
+		individualSegment.setFilter(filter);
+
+		asahFaroBackendClient.updateIndividualSegment(
+			RandomTestUtil.randomLong(), individualSegment);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testUpdateIndividualSegmentWithoutIndividualSegmentId()
+		throws Exception {
+
+		String individualSegmentId = String.valueOf(
+			RandomTestUtil.randomLong());
+		String name = RandomTestUtil.randomString();
+		String filter = "(demographics/birthDate/value lt '2023-02-17')";
+
+		AsahFaroBackendClient asahFaroBackendClient =
+			new AsahFaroBackendClientImpl(
+				_analyticsSettingsManager,
+				_getHttp(
+					Collections.singletonMap(
+						"/" + individualSegmentId, StringPool.BLANK)));
+
+		IndividualSegment individualSegment = new IndividualSegment();
+
+		individualSegment.setName(name);
+		individualSegment.setFilter(filter);
+
+		asahFaroBackendClient.updateIndividualSegment(
+			RandomTestUtil.randomLong(), individualSegment);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testUpdateIndividualSegmentWithoutName() throws Exception {
+		String individualSegmentId = String.valueOf(
+			RandomTestUtil.randomLong());
+		String name = RandomTestUtil.randomString();
+
+		AsahFaroBackendClient asahFaroBackendClient =
+			new AsahFaroBackendClientImpl(
+				_analyticsSettingsManager,
+				_getHttp(
+					Collections.singletonMap(
+						"/" + individualSegmentId, StringPool.BLANK)));
+
+		IndividualSegment individualSegment = new IndividualSegment();
+
+		individualSegment.setId(individualSegmentId);
+		individualSegment.setName(name);
+
+		asahFaroBackendClient.updateIndividualSegment(
+			RandomTestUtil.randomLong(), individualSegment);
+	}
+
 	private Http _getHttp(Map<String, String> mockRequest) throws Exception {
 		Http http = Mockito.mock(Http.class);
 
