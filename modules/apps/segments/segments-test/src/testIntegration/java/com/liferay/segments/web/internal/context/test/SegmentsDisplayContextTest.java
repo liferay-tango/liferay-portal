@@ -45,6 +45,7 @@ import com.liferay.portal.kernel.test.portlet.MockLiferayPortletURL;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -62,6 +63,7 @@ import com.liferay.roles.admin.role.type.contributor.provider.RoleTypeContributo
 import com.liferay.segments.configuration.SegmentsCompanyConfiguration;
 import com.liferay.segments.configuration.SegmentsConfiguration;
 import com.liferay.segments.constants.SegmentsActionKeys;
+import com.liferay.segments.constants.SegmentsEntryConstants;
 import com.liferay.segments.constants.SegmentsPortletKeys;
 import com.liferay.segments.model.SegmentsEntry;
 import com.liferay.segments.test.util.SegmentsTestUtil;
@@ -333,6 +335,63 @@ public class SegmentsDisplayContextTest {
 				_company.getGroupId(), _user.getUserId()));
 
 		Assert.assertEquals("Global", _getScopeName(segmentsEntry));
+	}
+
+	@Test
+	public void testGetSegmentsEntryURL() throws Exception {
+		SegmentsEntry segmentsEntry = SegmentsTestUtil.addSegmentsEntry(
+			ServiceContextTestUtil.getServiceContext(
+				_company.getGroupId(), _user.getUserId()));
+
+		String segmentsEntryURL = _getSegmentsEntryURL(segmentsEntry);
+
+		Assert.assertTrue(
+			segmentsEntryURL.contains(
+				"segmentsEntryId=" + segmentsEntry.getSegmentsEntryId()));
+	}
+
+	@Test
+	public void testGetSegmentsEntryURLTarget() throws Exception {
+		SegmentsEntry segmentsEntry = SegmentsTestUtil.addSegmentsEntry(
+			ServiceContextTestUtil.getServiceContext(
+				_company.getGroupId(), _user.getUserId()));
+
+		Assert.assertEquals("_self", _getSegmentsEntryURLTarget(segmentsEntry));
+	}
+
+	@Test
+	public void testGetSegmentsEntryURLTargetWithAsahFaroBackendSource()
+		throws Exception {
+
+		SegmentsEntry segmentsEntry = SegmentsTestUtil.addSegmentsEntry(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), null,
+			SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND,
+			RandomTestUtil.randomString(),
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), _user.getUserId()));
+
+		Assert.assertEquals(
+			"_blank", _getSegmentsEntryURLTarget(segmentsEntry));
+	}
+
+	@Test
+	public void testGetSegmentsEntryURLWithAsahFaroBackendSource()
+		throws Exception {
+
+		SegmentsEntry segmentsEntry = SegmentsTestUtil.addSegmentsEntry(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), null,
+			SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND,
+			RandomTestUtil.randomString(),
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), _user.getUserId()));
+
+		String segmentsEntryURL = _getSegmentsEntryURL(segmentsEntry);
+
+		Assert.assertTrue(
+			segmentsEntryURL.endsWith(
+				"/contacts/segments/" + segmentsEntry.getSegmentsEntryKey()));
 	}
 
 	@Test
@@ -709,6 +768,32 @@ public class SegmentsDisplayContextTest {
 			mockLiferayPortletRenderRequest.getAttribute(
 				"SEGMENTS_DISPLAY_CONTEXT"),
 			"getScopeName", new Class<?>[] {SegmentsEntry.class},
+			segmentsEntry);
+	}
+
+	private String _getSegmentsEntryURL(SegmentsEntry segmentsEntry)
+		throws Exception {
+
+		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
+			_renderPortlet();
+
+		return ReflectionTestUtil.invoke(
+			mockLiferayPortletRenderRequest.getAttribute(
+				"SEGMENTS_DISPLAY_CONTEXT"),
+			"getSegmentsEntryURL", new Class<?>[] {SegmentsEntry.class},
+			segmentsEntry);
+	}
+
+	private String _getSegmentsEntryURLTarget(SegmentsEntry segmentsEntry)
+		throws Exception {
+
+		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
+			_renderPortlet();
+
+		return ReflectionTestUtil.invoke(
+			mockLiferayPortletRenderRequest.getAttribute(
+				"SEGMENTS_DISPLAY_CONTEXT"),
+			"getSegmentsEntryURLTarget", new Class<?>[] {SegmentsEntry.class},
 			segmentsEntry);
 	}
 
