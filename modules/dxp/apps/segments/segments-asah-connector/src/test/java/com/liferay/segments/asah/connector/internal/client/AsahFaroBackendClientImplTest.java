@@ -262,6 +262,36 @@ public class AsahFaroBackendClientImplTest {
 	}
 
 	@Test
+	public void testGetIndividualSegment() throws Exception {
+		String individualSegmentId = String.valueOf(
+			RandomTestUtil.randomLong());
+		String name = RandomTestUtil.randomString();
+		String filter = "(demographics/birthDate/value lt '2023-02-17')";
+
+		AsahFaroBackendClient asahFaroBackendClient =
+			new AsahFaroBackendClientImpl(
+				_analyticsSettingsManager,
+				_getHttp(
+					Collections.singletonMap(
+						"/" + individualSegmentId,
+						JSONUtil.put(
+							"filter", filter
+						).put(
+							"id", individualSegmentId
+						).put(
+							"name", name
+						).toString())));
+
+		IndividualSegment individualSegment =
+			asahFaroBackendClient.getIndividualSegment(
+				RandomTestUtil.randomLong(), individualSegmentId);
+
+		Assert.assertEquals(individualSegmentId, individualSegment.getId());
+		Assert.assertEquals(name, individualSegment.getName());
+		Assert.assertEquals(filter, individualSegment.getFilter());
+	}
+
+	@Test
 	public void testGetIndividualSegmentResults() throws Exception {
 		AsahFaroBackendClient asahFaroBackendClient =
 			new AsahFaroBackendClientImpl(
@@ -310,6 +340,33 @@ public class AsahFaroBackendClientImplTest {
 
 		Assert.assertEquals("1234567", individualSegment.getId());
 		Assert.assertEquals("Test segment", individualSegment.getName());
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testGetIndividualSegmentWithoutIndividualSegmentId()
+		throws Exception {
+
+		String individualSegmentId = String.valueOf(
+			RandomTestUtil.randomLong());
+		String name = RandomTestUtil.randomString();
+		String filter = "(demographics/birthDate/value lt '2023-02-17')";
+
+		AsahFaroBackendClient asahFaroBackendClient =
+			new AsahFaroBackendClientImpl(
+				_analyticsSettingsManager,
+				_getHttp(
+					Collections.singletonMap(
+						"/" + individualSegmentId,
+						JSONUtil.put(
+							"filter", filter
+						).put(
+							"id", individualSegmentId
+						).put(
+							"name", name
+						).toString())));
+
+		asahFaroBackendClient.getIndividualSegment(
+			RandomTestUtil.randomLong(), null);
 	}
 
 	@Test
