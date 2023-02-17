@@ -133,4 +133,14 @@ public interface AsahFaroBackendClient {
 	public void updateExperimentDXPVariants(
 		long companyId, String experimentId, DXPVariants dxpVariants);
 
+	/**
+	 * Update a {@link IndividualSegment}.
+	 *
+	 * @param  companyId the company ID
+	 * @param  individualSegment individualSegment to be updated
+	 * @review
+	 */
+	public void updateIndividualSegment(
+		long companyId, IndividualSegment individualSegment);
+
 }

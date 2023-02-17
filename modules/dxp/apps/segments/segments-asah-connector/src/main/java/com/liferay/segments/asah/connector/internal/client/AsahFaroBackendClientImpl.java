@@ -289,6 +289,41 @@ public class AsahFaroBackendClientImpl implements AsahFaroBackendClient {
 		}
 	}
 
+	@Override
+	public void updateIndividualSegment(
+		long companyId, IndividualSegment individualSegment) {
+
+		if (individualSegment == null) {
+			throw new IllegalArgumentException("IndividualSegment is null");
+		}
+
+		if (Validator.isNull(individualSegment.getId())) {
+			throw new IllegalArgumentException("IndividualSegment ID is null");
+		}
+
+		if (Validator.isNull(individualSegment.getName())) {
+			throw new IllegalArgumentException("Experiment NAME is null");
+		}
+
+		if (Validator.isNull(individualSegment.getFilter())) {
+			throw new IllegalArgumentException("Experiment FILTER is null");
+		}
+
+		try {
+			_put(
+				companyId,
+				StringUtil.replace(
+					_PATH_INDIVIDUAL_SEGMENTS_SEGMENT, "{individualSegmentId}",
+					individualSegment.getId()),
+				individualSegment);
+		}
+		catch (Exception exception) {
+			throw new NestableRuntimeException(
+				"Unable to handle JSON response: " + exception.getMessage(),
+				exception);
+		}
+	}
+
 	private String _delete(long companyId, String path) throws Exception {
 		return _invoke(
 			_getHttpOptions(
@@ -503,6 +538,9 @@ public class AsahFaroBackendClientImpl implements AsahFaroBackendClient {
 
 	private static final String _PATH_INDIVIDUAL_SEGMENTS_INDIVIDUALS =
 		_PATH_INDIVIDUAL_SEGMENTS + "/{id}/individuals";
+
+	private static final String _PATH_INDIVIDUAL_SEGMENTS_SEGMENT =
+		_PATH_INDIVIDUAL_SEGMENTS + "/{individualSegmentId}";
 
 	private static final String _PATH_INDIVIDUALS = "api/1.0/individuals";
 
