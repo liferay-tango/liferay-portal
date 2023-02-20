@@ -154,11 +154,11 @@ export const SUPPORTED_OPERATORS = [
 export const SUPPORTED_EVENT_OPERATORS = [
 	{
 		label: Liferay.Language.get('at-least'),
-		name: GT,
+		name: GE,
 	},
 	{
 		label: Liferay.Language.get('at-most'),
-		name: LT,
+		name: LE,
 	},
 	{
 		label: Liferay.Language.get('has'),
@@ -201,7 +201,7 @@ export const SUPPORTED_PROPERTY_TYPES = {
 	[DOUBLE]: [EQ, GE, GT, LE, LT, NOT_EQ],
 	[EVENT]: {
 		DATE: [BETWEEN, EQ, EVER, GT, LT],
-		INTEGER: [GT, LT],
+		INTEGER: [GE, LE],
 		NOT: [HAS, NOT_HAS],
 		SINCE: [
 			last7Days,
