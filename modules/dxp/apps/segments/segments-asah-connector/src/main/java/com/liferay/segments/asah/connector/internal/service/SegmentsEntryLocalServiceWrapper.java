@@ -37,16 +37,18 @@ import com.liferay.segments.constants.SegmentsEntryConstants;
 import com.liferay.segments.criteria.Criteria;
 import com.liferay.segments.criteria.CriteriaSerializer;
 import com.liferay.segments.model.SegmentsEntry;
-import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Reference;
 
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
+
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CommonTokenStream;
+
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Mikel Lorza
@@ -59,55 +61,53 @@ public class SegmentsEntryLocalServiceWrapper
 	public SegmentsEntry recalculateSegmentsEntry(long segmentsEntryId)
 		throws PortalException {
 
-		SegmentsEntry segmentsEntry = super.getSegmentsEntry(segmentsEntryId);
+		SegmentsEntry segmentsEntry = super.recalculateSegmentsEntry(
+			segmentsEntryId);
 
 		try {
-			if (GetterUtil.getBoolean(
-					PropsUtil.get("feature.flag.LPS-172194")) &&
-				_analyticsSettingsManager.isAnalyticsEnabled(
-					segmentsEntry.getCompanyId()) &&
-				SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND.equals(
+			if (!GetterUtil.getBoolean(
+					PropsUtil.get("feature.flag.LPS-172194")) ||
+				!_analyticsSettingsManager.isAnalyticsEnabled(
+					segmentsEntry.getCompanyId()) ||
+				!SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND.equals(
 					segmentsEntry.getSource())) {
 
-				IndividualSegment individualSegment =
-					_asahFaroBackendClient.getIndividualSegment(
-						segmentsEntry.getCompanyId(),
-						segmentsEntry.getSegmentsEntryKey());
-
-				IndividualSegmentsExpressionParser
-					individualSegmentsExpressionParser =
-						new IndividualSegmentsExpressionParser(
-							new CommonTokenStream(
-								new IndividualSegmentsExpressionLexer(
-									new ANTLRInputStream(
-										individualSegment.getFilter()))));
-
-				IndividualSegmentsExpressionParser.ExpressionContext
-					expressionContext =
-						individualSegmentsExpressionParser.expression();
-
-				Criteria criteria = expressionContext.accept(
-					new IndividualSegmentsExpressionVisitorImpl());
-
-				ServiceContext serviceContext = _getServiceContext(
-					segmentsEntry.getCompanyId());
-
-				Map<Locale, String> nameMap = Collections.singletonMap(
-					_portal.getSiteDefaultLocale(
-						serviceContext.getScopeGroupId()),
-					individualSegment.getName());
-
-				return updateSegmentsEntry(
-					segmentsEntry.getSegmentsEntryId(),
-					individualSegment.getId(), nameMap, null, true,
-					_serialize(criteria), serviceContext);
+				return segmentsEntry;
 			}
 		}
 		catch (Exception exception) {
 			_log.error(exception);
+
+			return segmentsEntry;
 		}
 
-		return segmentsEntry;
+		IndividualSegment individualSegment =
+			_asahFaroBackendClient.getIndividualSegment(
+				segmentsEntry.getCompanyId(),
+				segmentsEntry.getSegmentsEntryKey());
+
+		IndividualSegmentsExpressionParser individualSegmentsExpressionParser =
+			new IndividualSegmentsExpressionParser(
+				new CommonTokenStream(
+					new IndividualSegmentsExpressionLexer(
+						new ANTLRInputStream(individualSegment.getFilter()))));
+
+		IndividualSegmentsExpressionParser.ExpressionContext expressionContext =
+			individualSegmentsExpressionParser.expression();
+
+		Criteria criteria = expressionContext.accept(
+			new IndividualSegmentsExpressionVisitorImpl());
+
+		ServiceContext serviceContext = _getServiceContext(
+			segmentsEntry.getCompanyId());
+
+		Map<Locale, String> nameMap = Collections.singletonMap(
+			_portal.getSiteDefaultLocale(serviceContext.getScopeGroupId()),
+			individualSegment.getName());
+
+		return updateSegmentsEntry(
+			segmentsEntry.getSegmentsEntryId(), individualSegment.getId(),
+			nameMap, null, true, _serialize(criteria), serviceContext);
 	}
 
 	@Activate
