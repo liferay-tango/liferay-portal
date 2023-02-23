@@ -56,7 +56,7 @@ public class SegmentsEntryLocalServiceWrapper
 	extends com.liferay.segments.service.SegmentsEntryLocalServiceWrapper {
 
 	@Override
-	public SegmentsEntry getSegmentsEntry(long segmentsEntryId)
+	public SegmentsEntry recalculateSegmentsEntry(long segmentsEntryId)
 		throws PortalException {
 
 		SegmentsEntry segmentsEntry = super.getSegmentsEntry(segmentsEntryId);
@@ -97,7 +97,7 @@ public class SegmentsEntryLocalServiceWrapper
 						serviceContext.getScopeGroupId()),
 					individualSegment.getName());
 
-				return super.updateSegmentsEntry(
+				return updateSegmentsEntry(
 					segmentsEntry.getSegmentsEntryId(),
 					individualSegment.getId(), nameMap, null, true,
 					_serialize(criteria), serviceContext);
