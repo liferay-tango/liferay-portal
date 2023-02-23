@@ -95,10 +95,12 @@ import com.liferay.segments.service.SegmentsEntryServiceUtil;
 import com.liferay.staging.StagingGroupHelper;
 import com.liferay.staging.StagingGroupHelperUtil;
 
+import javax.portlet.PortletRequest;
+import javax.portlet.PortletResponse;
+import javax.portlet.PortletURL;
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-
 import java.text.Collator;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -109,12 +111,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletResponse;
-import javax.portlet.PortletURL;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Pavel Savinov
@@ -1190,6 +1186,9 @@ public class EditAssetListDisplayContext {
 	private JSONArray _getAssetListEntrySegmentsEntryRelJSONArray() {
 		List<AssetListEntrySegmentsEntryRel> assetListEntrySegmentsEntryRels =
 			getAssetListEntrySegmentsEntryRels();
+
+		assetListEntrySegmentsEntryRels = new ArrayList<>(
+			assetListEntrySegmentsEntryRels);
 
 		Collections.sort(
 			new ArrayList<>(assetListEntrySegmentsEntryRels),
