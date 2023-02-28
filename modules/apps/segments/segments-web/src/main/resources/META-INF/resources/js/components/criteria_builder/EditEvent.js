@@ -87,7 +87,7 @@ class EditEvent extends Component {
 						)}`}
 						className="criterion-input form-control operator-input"
 						disabled={disabledInput}
-						onChange={onInputChange('operatorName')}
+						onChange={onInputChange('operatorNot')}
 						options={notOperators.map(({label, name}) => ({
 							label,
 							value: name,
