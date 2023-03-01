@@ -16,8 +16,11 @@ package com.liferay.segments.asah.connector.internal.criteria.contributor;
 
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.ItemSelectorCriterion;
-import com.liferay.item.selector.criteria.FileEntryItemSelectorReturnType;
-import com.liferay.item.selector.criteria.file.criterion.FileItemSelectorCriterion;
+import com.liferay.item.selector.ItemSelectorReturnType;
+import com.liferay.item.selector.criteria.InfoItemItemSelectorReturnType;
+import com.liferay.item.selector.criteria.UUIDItemSelectorReturnType;
+import com.liferay.item.selector.criteria.info.item.criterion.InfoItemItemSelectorCriterion;
+import com.liferay.layout.item.selector.criterion.LayoutItemSelectorCriterion;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
@@ -25,6 +28,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.odata.entity.EntityModel;
@@ -36,6 +40,7 @@ import com.liferay.segments.criteria.mapper.SegmentsCriteriaJSONObjectMapper;
 import com.liferay.segments.field.Field;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.portlet.PortletRequest;
@@ -86,11 +91,13 @@ public class EventSegmentsCriteriaContributor
 				"commentPosted",
 				_language.get(
 					_portal.getLocale(portletRequest), "commented-on-blog"),
-				"event"),
+				"event", null,
+				_getSelectEntity(portletRequest, AssetType.BLOGS_ENTRY)),
 			new Field(
 				"blogViewed",
 				_language.get(_portal.getLocale(portletRequest), "viewed-blog"),
-				"event"),
+				"event", null,
+				_getSelectEntity(portletRequest, AssetType.BLOGS_ENTRY)),
 			new Field(
 				"documentDownloaded",
 				_language.get(
@@ -103,7 +110,8 @@ public class EventSegmentsCriteriaContributor
 				_language.get(
 					_portal.getLocale(portletRequest),
 					"viewed-document-and-media"),
-				"event"),
+				"event", null,
+				_getSelectEntity(portletRequest, AssetType.FILE_ENTRY)),
 			new Field(
 				"formSubmitted",
 				_language.get(
@@ -116,12 +124,14 @@ public class EventSegmentsCriteriaContributor
 			new Field(
 				"pageViewed",
 				_language.get(_portal.getLocale(portletRequest), "viewed-page"),
-				"event"),
+				"event", null,
+				_getSelectEntity(portletRequest, AssetType.LAYOUT)),
 			new Field(
 				"webContentViewed",
 				_language.get(
 					_portal.getLocale(portletRequest), "viewed-web-content"),
-				"event"));
+				"event", null,
+				_getSelectEntity(portletRequest, AssetType.JOURNAL_ARTICLE)));
 	}
 
 	@Override
@@ -161,14 +171,59 @@ public class EventSegmentsCriteriaContributor
 		try {
 			ItemSelectorCriterion itemSelectorCriterion;
 
-			if (assetType == AssetType.FILE_ENTRY) {
-				itemSelectorCriterion = new FileItemSelectorCriterion();
+			if (assetType == AssetType.BLOGS_ENTRY) {
+				InfoItemItemSelectorCriterion infoItemItemSelectorCriterion =
+					new InfoItemItemSelectorCriterion();
 
-				itemSelectorCriterion.setDesiredItemSelectorReturnTypes(
-					new FileEntryItemSelectorReturnType());
+				infoItemItemSelectorCriterion.setDesiredItemSelectorReturnTypes(
+					new InfoItemItemSelectorReturnType());
+				infoItemItemSelectorCriterion.setItemType(
+					"com.liferay.blogs.model.BlogsEntry");
+				infoItemItemSelectorCriterion.setMultiSelection(true);
+
+				itemSelectorCriterion = infoItemItemSelectorCriterion;
+			}
+			else if (assetType == AssetType.FILE_ENTRY) {
+				InfoItemItemSelectorCriterion infoItemItemSelectorCriterion =
+					new InfoItemItemSelectorCriterion();
+
+				infoItemItemSelectorCriterion.setDesiredItemSelectorReturnTypes(
+					new InfoItemItemSelectorReturnType());
+				infoItemItemSelectorCriterion.setItemType(
+					FileEntry.class.getName());
+				infoItemItemSelectorCriterion.setMultiSelection(true);
+
+				itemSelectorCriterion = infoItemItemSelectorCriterion;
+			}
+			else if (assetType == AssetType.JOURNAL_ARTICLE) {
+				InfoItemItemSelectorCriterion infoItemItemSelectorCriterion =
+					new InfoItemItemSelectorCriterion();
+
+				infoItemItemSelectorCriterion.setDesiredItemSelectorReturnTypes(
+					new InfoItemItemSelectorReturnType());
+				infoItemItemSelectorCriterion.setItemType(
+					"com.liferay.journal.model.JournalArticle");
+				infoItemItemSelectorCriterion.setMultiSelection(true);
+
+				itemSelectorCriterion = infoItemItemSelectorCriterion;
+			}
+			else if (assetType == AssetType.LAYOUT) {
+				LayoutItemSelectorCriterion layoutItemSelectorCriterion =
+					new LayoutItemSelectorCriterion();
+
+				layoutItemSelectorCriterion.setShowHiddenPages(true);
+				layoutItemSelectorCriterion.setShowPrivatePages(true);
+				layoutItemSelectorCriterion.setShowPublicPages(true);
+				layoutItemSelectorCriterion.setDesiredItemSelectorReturnTypes(
+					Collections.<ItemSelectorReturnType>singletonList(
+						new UUIDItemSelectorReturnType()));
+				layoutItemSelectorCriterion.setMultiSelection(true);
+
+				itemSelectorCriterion = layoutItemSelectorCriterion;
 			}
 			else {
-				throw new IllegalArgumentException("assetType is null");
+				throw new IllegalArgumentException(
+					"Invalid assetType:" + assetType);
 			}
 
 			return new Field.SelectEntity(
