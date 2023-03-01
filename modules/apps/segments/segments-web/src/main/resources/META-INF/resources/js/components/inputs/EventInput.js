@@ -22,15 +22,17 @@ import {
 	SUPPORTED_PROPERTY_TYPES,
 } from '../../utils/constants.es';
 import {getSupportedOperatorsFromEvent} from '../../utils/utils.es';
-import IntegerInput from './IntegerInput.es';
-import SelectEntityInput from './SelectEntityInput.es';
+import IntegerInput from '../inputs/IntegerInput.es';
+import SelectEntityInput from '../inputs/SelectEntityInput.es';
 
 class EventInput extends Component {
 	static propTypes = {
+		connectDragSource: PropTypes.func,
 		criterion: PropTypes.object.isRequired,
 		error: PropTypes.bool,
 		onChange: PropTypes.func.isRequired,
-		renderEmptyValuesErrors: PropTypes.bool,
+		onInputChange: PropTypes.func.isRequired,
+		renderEmptyValuesErrors: PropTypes.string,
 		selectedOperator: PropTypes.object,
 		selectedProperty: PropTypes.object.isRequired,
 	};
@@ -85,8 +87,9 @@ class EventInput extends Component {
 							'select-has-operator-option'
 						)}`}
 						className="criterion-input form-control operator-input"
+						data-testid="select-has-operator"
 						disabled={disabledInput}
-						onChange={onInputChange('operatorName')}
+						onChange={onInputChange('operatorNot')}
 						options={notOperators.map(({label, name}) => ({
 							label,
 							value: name,
@@ -114,6 +117,7 @@ class EventInput extends Component {
 							'select-count-operator-option'
 						)}`}
 						className="criterion-input form-control operator-input"
+						data-testid="integer-operator"
 						disabled={disabledInput}
 						onChange={onInputChange('operatorName')}
 						options={integerOperators.map(({label, name}) => ({

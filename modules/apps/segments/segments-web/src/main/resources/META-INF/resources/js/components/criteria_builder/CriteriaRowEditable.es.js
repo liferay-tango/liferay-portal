@@ -36,7 +36,6 @@ import EventInput from '../inputs/EventInput';
 import IntegerInput from '../inputs/IntegerInput.es';
 import SelectEntityInput from '../inputs/SelectEntityInput.es';
 import StringInput from '../inputs/StringInput.es';
-import EditEvent from './EditEvent';
 
 class CriteriaRowEditable extends Component {
 	static propTypes = {
@@ -115,28 +114,6 @@ class CriteriaRowEditable extends Component {
 				...value,
 			});
 		}
-	};
-
-	_renderEditableEventProperty = ({
-		criterion,
-		error,
-		propertyLabel,
-		renderEmptyValuesErrors,
-		selectedProperty,
-		value,
-	}) => {
-		return (
-			<EditEvent
-				criterion={criterion}
-				error={error}
-				onChange={this._handleTypedInputChange}
-				onInputChange={this._handleInputChange}
-				propertyLabel={propertyLabel}
-				renderEmptyValuesErrors={renderEmptyValuesErrors}
-				selectedProperty={selectedProperty}
-				value={value}
-			></EditEvent>
-		);
 	};
 
 	_renderEditableProperty = ({
