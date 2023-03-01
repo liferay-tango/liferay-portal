@@ -15,6 +15,7 @@
 package com.liferay.segments.asah.connector.internal.criteria.contributor;
 
 import com.liferay.item.selector.ItemSelector;
+import com.liferay.item.selector.ItemSelectorCriterion;
 import com.liferay.item.selector.criteria.FileEntryItemSelectorReturnType;
 import com.liferay.item.selector.criteria.file.criterion.FileItemSelectorCriterion;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
@@ -95,7 +96,8 @@ public class EventSegmentsCriteriaContributor
 				_language.get(
 					_portal.getLocale(portletRequest),
 					"downloaded-document-and-media"),
-				"event", null, _getSelectEntity(portletRequest)),
+				"event", null,
+				_getSelectEntity(portletRequest, AssetType.FILE_ENTRY)),
 			new Field(
 				"documentPreviewed",
 				_language.get(
@@ -153,13 +155,21 @@ public class EventSegmentsCriteriaContributor
 		}
 	}
 
-	private Field.SelectEntity _getSelectEntity(PortletRequest portletRequest) {
-		try {
-			FileItemSelectorCriterion fileItemSelectorCriterion =
-				new FileItemSelectorCriterion();
+	private Field.SelectEntity _getSelectEntity(
+		PortletRequest portletRequest, AssetType assetType) {
 
-			fileItemSelectorCriterion.setDesiredItemSelectorReturnTypes(
-				new FileEntryItemSelectorReturnType());
+		try {
+			ItemSelectorCriterion itemSelectorCriterion;
+
+			if (assetType == AssetType.FILE_ENTRY) {
+				itemSelectorCriterion = new FileItemSelectorCriterion();
+
+				itemSelectorCriterion.setDesiredItemSelectorReturnTypes(
+					new FileEntryItemSelectorReturnType());
+			}
+			else {
+				throw new IllegalArgumentException("assetType is null");
+			}
 
 			return new Field.SelectEntity(
 				"selectEntity", "Select",
@@ -167,7 +177,7 @@ public class EventSegmentsCriteriaContributor
 					_itemSelector.getItemSelectorURL(
 						RequestBackedPortletURLFactoryUtil.create(
 							portletRequest),
-						"selectEntity", fileItemSelectorCriterion)
+						"selectEntity", itemSelectorCriterion)
 				).buildString(),
 				true);
 		}
@@ -202,5 +212,11 @@ public class EventSegmentsCriteriaContributor
 
 	private volatile ServiceRegistration<SegmentsCriteriaContributor>
 		_serviceRegistration;
+
+	private static enum AssetType {
+
+		BLOGS_ENTRY, DDM_FORM, FILE_ENTRY, JOURNAL_ARTICLE, LAYOUT
+
+	}
 
 }
