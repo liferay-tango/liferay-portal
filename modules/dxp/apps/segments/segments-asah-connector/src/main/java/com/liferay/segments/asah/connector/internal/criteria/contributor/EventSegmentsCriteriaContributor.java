@@ -14,6 +14,7 @@
 
 package com.liferay.segments.asah.connector.internal.criteria.contributor;
 
+import com.liferay.dynamic.data.mapping.kernel.DDMForm;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.ItemSelectorCriterion;
 import com.liferay.item.selector.ItemSelectorReturnType;
@@ -26,11 +27,15 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.security.permission.ResourceActions;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.segments.asah.connector.internal.criteria.mapper.SegmentsCriteriaJSONObjectMapperImpl;
 import com.liferay.segments.asah.connector.internal.odata.entity.EventEntityModel;
@@ -171,38 +176,17 @@ public class EventSegmentsCriteriaContributor
 		try {
 			ItemSelectorCriterion itemSelectorCriterion;
 
-			if (assetType == AssetType.BLOGS_ENTRY) {
+			if ((assetType == AssetType.BLOGS_ENTRY) ||
+				(assetType == AssetType.FILE_ENTRY) ||
+				(assetType == AssetType.JOURNAL_ARTICLE)) {
+
 				InfoItemItemSelectorCriterion infoItemItemSelectorCriterion =
 					new InfoItemItemSelectorCriterion();
 
 				infoItemItemSelectorCriterion.setDesiredItemSelectorReturnTypes(
 					new InfoItemItemSelectorReturnType());
 				infoItemItemSelectorCriterion.setItemType(
-					"com.liferay.blogs.model.BlogsEntry");
-				infoItemItemSelectorCriterion.setMultiSelection(true);
-
-				itemSelectorCriterion = infoItemItemSelectorCriterion;
-			}
-			else if (assetType == AssetType.FILE_ENTRY) {
-				InfoItemItemSelectorCriterion infoItemItemSelectorCriterion =
-					new InfoItemItemSelectorCriterion();
-
-				infoItemItemSelectorCriterion.setDesiredItemSelectorReturnTypes(
-					new InfoItemItemSelectorReturnType());
-				infoItemItemSelectorCriterion.setItemType(
-					FileEntry.class.getName());
-				infoItemItemSelectorCriterion.setMultiSelection(true);
-
-				itemSelectorCriterion = infoItemItemSelectorCriterion;
-			}
-			else if (assetType == AssetType.JOURNAL_ARTICLE) {
-				InfoItemItemSelectorCriterion infoItemItemSelectorCriterion =
-					new InfoItemItemSelectorCriterion();
-
-				infoItemItemSelectorCriterion.setDesiredItemSelectorReturnTypes(
-					new InfoItemItemSelectorReturnType());
-				infoItemItemSelectorCriterion.setItemType(
-					"com.liferay.journal.model.JournalArticle");
+					assetType.getClassName());
 				infoItemItemSelectorCriterion.setMultiSelection(true);
 
 				itemSelectorCriterion = infoItemItemSelectorCriterion;
@@ -226,8 +210,16 @@ public class EventSegmentsCriteriaContributor
 					"Invalid assetType:" + assetType);
 			}
 
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)portletRequest.getAttribute(
+					WebKeys.THEME_DISPLAY);
+
+			String title = _resourceActions.getModelResource(
+				themeDisplay.getLocale(), assetType.getClassName());
+
 			return new Field.SelectEntity(
-				"selectEntity", "Select",
+				"selectEntity",
+				_language.format(themeDisplay.getLocale(), "select-x", title),
 				PortletURLBuilder.create(
 					_itemSelector.getItemSelectorURL(
 						RequestBackedPortletURLFactoryUtil.create(
@@ -265,12 +257,29 @@ public class EventSegmentsCriteriaContributor
 	@Reference
 	private Portal _portal;
 
+	@Reference
+	private ResourceActions _resourceActions;
+
 	private volatile ServiceRegistration<SegmentsCriteriaContributor>
 		_serviceRegistration;
 
 	private static enum AssetType {
 
-		BLOGS_ENTRY, DDM_FORM, FILE_ENTRY, JOURNAL_ARTICLE, LAYOUT
+		BLOGS_ENTRY("com.liferay.blogs.model.BlogsEntry"),
+		DDM_FORM(DDMForm.class.getName()),
+		FILE_ENTRY(FileEntry.class.getName()),
+		JOURNAL_ARTICLE("com.liferay.journal.model.JournalArticle"),
+		LAYOUT(Layout.class.getName());
+
+		public String getClassName() {
+			return _className;
+		}
+
+		private AssetType(String className) {
+			_className = className;
+		}
+
+		private final String _className;
 
 	}
 
