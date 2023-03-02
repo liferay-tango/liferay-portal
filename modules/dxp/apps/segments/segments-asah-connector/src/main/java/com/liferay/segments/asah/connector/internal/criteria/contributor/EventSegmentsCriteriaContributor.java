@@ -16,6 +16,7 @@ package com.liferay.segments.asah.connector.internal.criteria.contributor;
 
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.criteria.FileEntryItemSelectorReturnType;
+import com.liferay.item.selector.criteria.UUIDItemSelectorReturnType;
 import com.liferay.item.selector.criteria.file.criterion.FileItemSelectorCriterion;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -159,7 +160,7 @@ public class EventSegmentsCriteriaContributor
 				new FileItemSelectorCriterion();
 
 			fileItemSelectorCriterion.setDesiredItemSelectorReturnTypes(
-				new FileEntryItemSelectorReturnType());
+				new UUIDItemSelectorReturnType());
 
 			return new Field.SelectEntity(
 				"selectEntity", "Select",
