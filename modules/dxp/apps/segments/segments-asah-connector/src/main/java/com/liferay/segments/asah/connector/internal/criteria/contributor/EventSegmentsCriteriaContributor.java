@@ -121,11 +121,13 @@ public class EventSegmentsCriteriaContributor
 				"formSubmitted",
 				_language.get(
 					_portal.getLocale(portletRequest), "submitted-form"),
-				"event"),
+				"event", null,
+				_getSelectEntity(portletRequest, AssetType.DDM_FORM)),
 			new Field(
 				"formViewed",
 				_language.get(_portal.getLocale(portletRequest), "viewed-form"),
-				"event"),
+				"event", null,
+				_getSelectEntity(portletRequest, AssetType.DDM_FORM)),
 			new Field(
 				"pageViewed",
 				_language.get(_portal.getLocale(portletRequest), "viewed-page"),
@@ -178,7 +180,8 @@ public class EventSegmentsCriteriaContributor
 
 			if ((assetType == AssetType.BLOGS_ENTRY) ||
 				(assetType == AssetType.FILE_ENTRY) ||
-				(assetType == AssetType.JOURNAL_ARTICLE)) {
+				(assetType == AssetType.JOURNAL_ARTICLE) ||
+				(assetType == AssetType.DDM_FORM)) {
 
 				InfoItemItemSelectorCriterion infoItemItemSelectorCriterion =
 					new InfoItemItemSelectorCriterion();
@@ -266,7 +269,7 @@ public class EventSegmentsCriteriaContributor
 	private static enum AssetType {
 
 		BLOGS_ENTRY("com.liferay.blogs.model.BlogsEntry"),
-		DDM_FORM(DDMForm.class.getName()),
+		DDM_FORM("com.liferay.dynamic.data.mapping.model.DDMFormInstance"),
 		FILE_ENTRY(FileEntry.class.getName()),
 		JOURNAL_ARTICLE("com.liferay.journal.model.JournalArticle"),
 		LAYOUT(Layout.class.getName());
