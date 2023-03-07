@@ -62,7 +62,8 @@ public class SegmentsContextVocabularyCompanyConfigurationModelListener
 
 		if (_isDefined(
 				String.valueOf(properties.get("assetVocabularyName")),
-				String.valueOf(properties.get("companyId")), entityFieldName)) {
+				String.valueOf(properties.get("companyId")), entityFieldName,
+				pid)) {
 
 			throw new DuplicatedSegmentsContextVocabularyConfigurationModelListenerException(
 				ResourceBundleUtil.getString(
@@ -86,18 +87,17 @@ public class SegmentsContextVocabularyCompanyConfigurationModelListener
 
 	private boolean _isDefined(
 		String assetVocabularyName, String companyId,
-		Configuration configuration, String entityFieldName) {
+		Configuration configuration, String entityFieldName, String pid) {
 
 		Dictionary<String, Object> properties = configuration.getProperties();
 
-		if ((Objects.equals(
-				assetVocabularyName, properties.get("assetVocabularyName")) &&
-			 Objects.equals(
-				 entityFieldName, properties.get("entityFieldName"))) ||
+		if (Objects.equals(
+				entityFieldName, properties.get("entityFieldName")) &&
+			!Objects.equals(pid, configuration.getPid()) &&
 			(Objects.equals(
-				companyId, String.valueOf(properties.get("companyId"))) &&
+				companyId, String.valueOf(properties.get("companyId"))) ||
 			 Objects.equals(
-				 entityFieldName, properties.get("entityFieldName")))) {
+				 assetVocabularyName, properties.get("assetVocabularyName")))) {
 
 			return true;
 		}
@@ -107,7 +107,7 @@ public class SegmentsContextVocabularyCompanyConfigurationModelListener
 
 	private boolean _isDefined(
 			String assetVocabularyName, String companyId,
-			String entityFieldName)
+			String entityFieldName, String pid)
 		throws ConfigurationModelListenerException {
 
 		try {
@@ -125,7 +125,7 @@ public class SegmentsContextVocabularyCompanyConfigurationModelListener
 			).anyMatch(
 				configuration -> _isDefined(
 					assetVocabularyName, companyId, configuration,
-					entityFieldName)
+					entityFieldName, pid)
 			);
 		}
 		catch (Exception exception) {
