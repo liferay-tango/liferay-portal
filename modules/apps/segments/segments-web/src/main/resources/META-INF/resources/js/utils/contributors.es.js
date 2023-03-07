@@ -12,7 +12,7 @@
  * details.
  */
 
-import {buildEventQueryString} from './ac-grammar.es';
+import {buildEventQueryString} from './ac-grammar';
 import {
 	CONJUNCTIONS,
 	PROPERTY_GROUPS,

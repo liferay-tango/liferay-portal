@@ -12,7 +12,7 @@
  * details.
  */
 
-import * as ACGrammarUtil from '../../../src/main/resources/META-INF/resources/js/utils/ac-grammar.es';
+import * as ACGrammarUtil from '../../../src/main/resources/META-INF/resources/js/utils/ac-grammar';
 
 function testConversionToQueryString(criterion, testQuery) {
 	const translatedString = ACGrammarUtil.buildEventQueryString(criterion);
