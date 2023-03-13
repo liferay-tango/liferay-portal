@@ -14,12 +14,14 @@
 
 package com.liferay.source.formatter.check;
 
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TextFormatter;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.source.formatter.check.util.SourceUtil;
 import com.liferay.source.formatter.parser.JavaTerm;
 import com.liferay.source.formatter.util.FileUtil;
@@ -39,7 +41,6 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -59,8 +60,9 @@ public class JavaServiceObjectCheck extends BaseJavaTermCheck {
 
 	@Override
 	protected String doProcess(
-		String fileName, String absolutePath, JavaTerm javaTerm,
-		String fileContent) {
+			String fileName, String absolutePath, JavaTerm javaTerm,
+			String fileContent)
+		throws IOException {
 
 		List<String> importNames = getImportNames(javaTerm);
 
@@ -81,7 +83,8 @@ public class JavaServiceObjectCheck extends BaseJavaTermCheck {
 	}
 
 	private String _formatGetterMethodCalls(
-		String content, String fileContent, List<String> importNames) {
+			String content, String fileContent, List<String> importNames)
+		throws IOException {
 
 		Matcher matcher = _getterCallPattern.matcher(content);
 
@@ -110,10 +113,12 @@ public class JavaServiceObjectCheck extends BaseJavaTermCheck {
 	}
 
 	private String _formatSetterMethodCalls(
-		String content, String fileContent, List<String> importNames) {
+			String content, String fileContent, List<String> importNames)
+		throws IOException {
 
 		Matcher matcher1 = _setterCallsPattern.matcher(content);
 
+		outerLoop:
 		while (matcher1.find()) {
 			String setterCallsCodeBlock = matcher1.group();
 
@@ -145,28 +150,41 @@ public class JavaServiceObjectCheck extends BaseJavaTermCheck {
 					continue;
 				}
 
-				Element serviceXMLElement = _getServiceXMLElement(packageName);
+				String tablesSQLFileLocation = _getTablesSQLFileLocation(
+					packageName);
 
-				if (serviceXMLElement != null) {
-					int index1 = _getColumnIndex(
-						serviceXMLElement, variableTypeName,
-						previousSetterObjectName);
-					int index2 = _getColumnIndex(
-						serviceXMLElement, variableTypeName, setterObjectName);
+				if (Validator.isNull(tablesSQLFileLocation)) {
+					continue outerLoop;
+				}
 
-					if ((index2 != -1) && (index1 > index2)) {
-						int x = matcher2.start();
+				File file = new File(tablesSQLFileLocation);
 
-						int y = content.lastIndexOf(previousMatch, x);
+				if (!file.exists()) {
+					continue outerLoop;
+				}
 
-						content = StringUtil.replaceFirst(
-							content, match, previousMatch,
-							matcher1.start() + x);
+				String tablesSQLContent = FileUtil.read(file);
 
-						return StringUtil.replaceFirst(
-							content, previousMatch, match,
-							matcher1.start() + y);
-					}
+				if (tablesSQLContent == null) {
+					continue outerLoop;
+				}
+
+				int index1 = _getColumnIndex(
+					tablesSQLContent, variableTypeName,
+					previousSetterObjectName);
+				int index2 = _getColumnIndex(
+					tablesSQLContent, variableTypeName, setterObjectName);
+
+				if ((index2 != -1) && (index1 > index2)) {
+					int x = matcher2.start();
+
+					int y = content.lastIndexOf(previousMatch, x);
+
+					content = StringUtil.replaceFirst(
+						content, match, previousMatch, matcher1.start() + x);
+
+					return StringUtil.replaceFirst(
+						content, previousMatch, match, matcher1.start() + y);
 				}
 
 				previousMatch = match;
@@ -179,28 +197,22 @@ public class JavaServiceObjectCheck extends BaseJavaTermCheck {
 	}
 
 	private int _getColumnIndex(
-		Element serviceXMLElement, String entityName, String columnName) {
+		String tablesSQLContent, String tableName, String columnName) {
 
-		for (Element entityElement :
-				(List<Element>)serviceXMLElement.elements("entity")) {
+		String tableSQL = _getTableSQL(tablesSQLContent, tableName);
 
-			if (!entityName.equals(entityElement.attributeValue("name"))) {
-				continue;
-			}
+		if (tableSQL == null) {
+			return -1;
+		}
 
-			int i = 0;
+		Pattern pattern = Pattern.compile(
+			StringBundler.concat(
+				"(?i)\n\\s*", columnName, "_?\\s+([\\w\\(\\)]+)[\\s,]"));
 
-			for (Element columnElement :
-					(List<Element>)entityElement.elements("column")) {
+		Matcher matcher = pattern.matcher(tableSQL);
 
-				if (StringUtil.equalsIgnoreCase(
-						columnName, columnElement.attributeValue("name"))) {
-
-					return i;
-				}
-
-				i++;
-			}
+		if (matcher.find()) {
+			return matcher.start();
 		}
 
 		return -1;
@@ -221,17 +233,35 @@ public class JavaServiceObjectCheck extends BaseJavaTermCheck {
 		return StringPool.BLANK;
 	}
 
-	private Element _getServiceXMLElement(String packageName) {
-		if (_serviceXMLElementsMap != null) {
-			return _serviceXMLElementsMap.get(packageName);
+	private String _getTableSQL(String tablesSQLContent, String tableName) {
+		Pattern pattern = Pattern.compile("create table " + tableName + "_? ");
+
+		Matcher matcher = pattern.matcher(tablesSQLContent);
+
+		if (!matcher.find()) {
+			return null;
 		}
 
-		_serviceXMLElementsMap = new HashMap<>();
+		int x = tablesSQLContent.indexOf(");", matcher.start());
+
+		if (x == -1) {
+			return null;
+		}
+
+		return tablesSQLContent.substring(matcher.start(), x + 1);
+	}
+
+	private String _getTablesSQLFileLocation(String packageName) {
+		if (_tablesSQLFileLocationMap != null) {
+			return _tablesSQLFileLocationMap.get(packageName);
+		}
+
+		_tablesSQLFileLocationMap = new HashMap<>();
 
 		try {
-			_populateServiceXMLElements("modules/apps", 6);
-			_populateServiceXMLElements("modules/dxp/apps", 6);
-			_populateServiceXMLElements("portal-impl/src/com/liferay", 4);
+			_populateTablesSQLFileLocations("modules/apps", 6);
+			_populateTablesSQLFileLocations("modules/dxp/apps", 6);
+			_populateTablesSQLFileLocations("portal-impl/src/com/liferay", 4);
 		}
 		catch (DocumentException | IOException exception) {
 			if (_log.isDebugEnabled()) {
@@ -241,46 +271,58 @@ public class JavaServiceObjectCheck extends BaseJavaTermCheck {
 			return null;
 		}
 
-		return _serviceXMLElementsMap.get(packageName);
+		return _tablesSQLFileLocationMap.get(packageName);
 	}
 
 	private boolean _isBooleanColumn(
-		String variableTypeName, String getterObjectName,
-		List<String> importNames) {
+			String variableTypeName, String getterObjectName,
+			List<String> importNames)
+		throws IOException {
 
-		Element serviceXMLElement = _getServiceXMLElement(
+		String tablesSQLFileLocation = _getTablesSQLFileLocation(
 			_getPackageName(variableTypeName, importNames));
 
-		if (serviceXMLElement == null) {
+		if (tablesSQLFileLocation == null) {
 			return false;
 		}
 
-		for (Element entityElement :
-				(List<Element>)serviceXMLElement.elements("entity")) {
+		File file = new File(tablesSQLFileLocation);
 
-			if (!variableTypeName.equals(
-					entityElement.attributeValue("name"))) {
+		if (!file.exists()) {
+			return false;
+		}
 
-				continue;
-			}
+		String tablesSQLContent = FileUtil.read(file);
 
-			for (Element columnElement :
-					(List<Element>)entityElement.elements("column")) {
+		return _isBooleanColumn(
+			tablesSQLContent, variableTypeName, getterObjectName);
+	}
 
-				if (getterObjectName.equals(
-						columnElement.attributeValue("name")) &&
-					Objects.equals(
-						columnElement.attributeValue("type"), "boolean")) {
+	private boolean _isBooleanColumn(
+		String tablesSQLContent, String tableName, String columnName) {
 
-					return true;
-				}
-			}
+		String tableSQL = _getTableSQL(tablesSQLContent, tableName);
+
+		if (tableSQL == null) {
+			return false;
+		}
+
+		Pattern pattern = Pattern.compile(
+			StringBundler.concat(
+				"\n\\s*", columnName, "_?\\s+([\\w\\(\\)]+)[\\s,]"));
+
+		Matcher matcher = pattern.matcher(tableSQL);
+
+		if (matcher.find() &&
+			StringUtil.startsWith(matcher.group(1), "BOOLEAN")) {
+
+			return true;
 		}
 
 		return false;
 	}
 
-	private void _populateServiceXMLElements(String dirName, int maxDepth)
+	private void _populateTablesSQLFileLocations(String dirName, int maxDepth)
 		throws DocumentException, IOException {
 
 		File directory = getFile(dirName, getMaxDirLevel());
@@ -331,10 +373,28 @@ public class JavaServiceObjectCheck extends BaseJavaTermCheck {
 				packagePath = serviceXMLElement.attributeValue("package-path");
 			}
 
-			if (packagePath != null) {
-				_serviceXMLElementsMap.put(
-					packagePath + ".model", serviceXMLElement);
+			if (packagePath == null) {
+				continue;
 			}
+
+			String serviceXMLFilePath = serviceXMLFile.getAbsolutePath();
+			String tablesSQLFilePath = "";
+
+			if (dirName.startsWith("portal-impl/")) {
+				tablesSQLFilePath =
+					SourceUtil.getRootDirName(serviceXMLFilePath) +
+						"/sql/portal-tables.sql";
+			}
+			else {
+				int x = serviceXMLFilePath.lastIndexOf("/");
+
+				tablesSQLFilePath =
+					serviceXMLFilePath.substring(0, x) +
+						"/src/main/resources/META-INF/sql/tables.sql";
+			}
+
+			_tablesSQLFileLocationMap.put(
+				packagePath + ".model", tablesSQLFilePath);
 		}
 	}
 
@@ -355,6 +415,6 @@ public class JavaServiceObjectCheck extends BaseJavaTermCheck {
 		"(^[ \t]*\\w+\\.\\s*set[A-Z]\\w*\\([^;]+;\n)+",
 		Pattern.DOTALL | Pattern.MULTILINE);
 
-	private Map<String, Element> _serviceXMLElementsMap;
+	private Map<String, String> _tablesSQLFileLocationMap;
 
 }

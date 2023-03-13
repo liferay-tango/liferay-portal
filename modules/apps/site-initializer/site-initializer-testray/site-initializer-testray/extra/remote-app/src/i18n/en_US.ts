@@ -133,7 +133,7 @@ export default {
 	'current-subcomponents': 'Current Sub Components',
 	'current-teams': 'Current Teams',
 	'database': 'Database',
-	'date-created': 'Date  Created',
+	'date-created': 'Date Created',
 	'date-last-modified': 'Date Last Modified',
 	'date-modified': 'Date Modified',
 	'dates': 'Dates',
@@ -179,6 +179,8 @@ export default {
 	'export-csv': 'Export CSV',
 	'failed': 'Failed',
 	'filter-results': 'Filter Results',
+	'filters-pinned-successfully': 'Filters pinned successfully.',
+	'filters-unpinned-successfully': 'Filters unpinned successfully.',
 	'first-name': 'First Name',
 	'git-hash': 'Git Hash',
 	'github-compare-urls': 'GitHub Compare URLs',
@@ -272,6 +274,7 @@ export default {
 	'please-select-at-least-two-subtasks-to-merge':
 		'Please select at least two subtasks to merge.',
 	'please-select-one-or-more-roles': 'Please, select one or more roles.',
+	'preparing-your-task': 'Preparing your task ...',
 	'priority': 'Priority',
 	'processing': 'Processing',
 	'product-version': 'Product Version',
@@ -284,6 +287,7 @@ export default {
 	'projects': 'Projects',
 	'promote': 'Promote',
 	'reanalyze': 'Reanalyze',
+	'refresh': 'Refresh',
 	'remaining-estimated': 'Remaining Estimated',
 	'remove': 'Remove',
 	'reopen-test': 'Reopen Test',
@@ -370,6 +374,7 @@ export default {
 	'test-history': 'Test History',
 	'test-lead-should-only-have-access-to-builds-test-plans-test-suites-and-test-cases-.-this-role-will-be-responsible-for-creating-builds-and-for-creating-test-plans-test-runs-the-people-assigned-to-these-would-be-our-current-product-leads':
 		'Test Lead should only have access to Builds, Test Plans, Test Suites and Test Cases. This role will be responsible for creating Builds and for creating Test Plans/Test Runs. The people assigned to these would be our current product leads.',
+	'test-type': 'Test Type',
 	'testers-carry-permissions-to-analyze-test-results-by-workflowing-results-or-collaborating-on-tasks':
 		'Testers carry permissions to analyze test results by workflowing results or collaborating on tasks',
 	'testflow': 'TestFlow',
@@ -418,7 +423,7 @@ export default {
 	'user-groups': 'User Groups',
 	'user-information': 'User Information',
 	'users': 'Users',
-	'view-associete-build': 'View Associete Build',
+	'view-associated-build': 'View Associated Build',
 	'view-case': 'View Case',
 	'view-in-jira': 'View in JIRA',
 	'view-page': 'View Page',
@@ -442,6 +447,8 @@ export default {
 		'You do not have permissions to access this app. Contact the app administrator to request the access.',
 	'you-must-have-at-least-one-column-selected':
 		'You must have at least one column selected',
+	'you-must-select-one-or-more-filters-before-pinning':
+		'You must select one or more filters before pinning.',
 	'your-request-completed-successfully':
 		'Your request completed successfully',
 };

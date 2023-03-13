@@ -14,12 +14,12 @@
 
 package com.liferay.content.dashboard.document.library.internal.item.filter;
 
-import com.liferay.content.dashboard.document.library.internal.item.selector.file.extension.criterio.ContentDashboardFileExtensionItemSelectorCriterion;
 import com.liferay.content.dashboard.item.filter.ContentDashboardItemFilter;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemBuilder;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.criteria.UUIDItemSelectorReturnType;
+import com.liferay.item.selector.criteria.file.criterion.FileExtensionItemSelectorCriterion;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
@@ -129,11 +129,11 @@ public class FileExtensionContentDashboardItemFilter
 			RequestBackedPortletURLFactory requestBackedPortletURLFactory =
 				RequestBackedPortletURLFactoryUtil.create(portletRequest);
 
-			ContentDashboardFileExtensionItemSelectorCriterion
-				contentDashboardFileExtensionItemSelectorCriterion =
-					new ContentDashboardFileExtensionItemSelectorCriterion();
+			FileExtensionItemSelectorCriterion
+				fileExtensionItemSelectorCriterion =
+					new FileExtensionItemSelectorCriterion();
 
-			contentDashboardFileExtensionItemSelectorCriterion.
+			fileExtensionItemSelectorCriterion.
 				setDesiredItemSelectorReturnTypes(
 					Collections.singletonList(
 						new UUIDItemSelectorReturnType()));
@@ -146,7 +146,7 @@ public class FileExtensionContentDashboardItemFilter
 				_itemSelector.getItemSelectorURL(
 					requestBackedPortletURLFactory,
 					portletResponse.getNamespace() + "selectedFileExtension",
-					contentDashboardFileExtensionItemSelectorCriterion)
+					fileExtensionItemSelectorCriterion)
 			).setParameter(
 				"checkedFileExtensions",
 				() -> {

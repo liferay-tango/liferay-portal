@@ -41,7 +41,6 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.dao.search.SearchPaginationUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.PortalPreferences;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
@@ -118,8 +117,8 @@ public class DLItemSelectorViewDisplayContext<T extends ItemSelectorCriterion> {
 		_stagingGroupHelper = stagingGroupHelper;
 
 		_portalPreferences = PortletPreferencesFactoryUtil.getPortalPreferences(
-			_httpServletRequest);
-		_themeDisplay = (ThemeDisplay)_httpServletRequest.getAttribute(
+			httpServletRequest);
+		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 	}
 
@@ -391,7 +390,12 @@ public class DLItemSelectorViewDisplayContext<T extends ItemSelectorCriterion> {
 	private Long _getFileEntryTypeId(String fileEntryTypeKey) {
 		DLFileEntryType dlFileEntryType =
 			_dlFileEntryTypeLocalService.fetchFileEntryType(
+				GetterUtil.getLong(fileEntryTypeKey, -1));
+
+		if (dlFileEntryType == null) {
+			dlFileEntryType = _dlFileEntryTypeLocalService.fetchFileEntryType(
 				_themeDisplay.getScopeGroupId(), fileEntryTypeKey);
+		}
 
 		if (dlFileEntryType == null) {
 			dlFileEntryType = _dlFileEntryTypeLocalService.fetchFileEntryType(
@@ -549,22 +553,10 @@ public class DLItemSelectorViewDisplayContext<T extends ItemSelectorCriterion> {
 			return _groupId;
 		}
 
-		long groupId = _themeDisplay.getScopeGroupId();
+		_groupId = _stagingGroupHelper.getStagedPortletGroupId(
+			_themeDisplay.getScopeGroupId(), DLPortletKeys.DOCUMENT_LIBRARY);
 
-		if (_stagingGroupHelper.isStagingGroup(groupId) &&
-			!_stagingGroupHelper.isStagedPortlet(
-				groupId, DLPortletKeys.DOCUMENT_LIBRARY)) {
-
-			Group group = _stagingGroupHelper.fetchLiveGroup(groupId);
-
-			if (group != null) {
-				groupId = group.getGroupId();
-			}
-		}
-
-		_groupId = groupId;
-
-		return groupId;
+		return _groupId;
 	}
 
 	private int[] _getStartAndEnd() {

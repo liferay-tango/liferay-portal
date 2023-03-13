@@ -451,8 +451,8 @@ definition {
 		}
 
 		AssertClick(
-			locator1 = "Button#SUBMIT_FOR_PUBLICATION",
-			value1 = "Submit for Publication");
+			locator1 = "Button#SUBMIT_FOR_WORKFLOW",
+			value1 = "Submit for Workflow");
 
 		Alert.viewSuccessMessage();
 	}
@@ -534,6 +534,7 @@ definition {
 				}
 				else if (isSet(imageFileName)) {
 					ItemSelector.selectDMImage(
+						dmFolderName = ${dmFolderName},
 						imageFileName = ${webContentImage},
 						navTab = ${navTab});
 				}
@@ -822,7 +823,7 @@ definition {
 			webContentContent = ${webContentContent},
 			webContentTitle = ${webContentTitle});
 
-		Button.clickSubmitForPublication();
+		Button.clickSubmitForWorkflow();
 
 		Alert.viewSuccessMessage();
 	}
@@ -835,8 +836,8 @@ definition {
 			webContentTitle = ${webContentTitle});
 
 		AssertClick(
-			locator1 = "Button#SUBMIT_FOR_PUBLICATION",
-			value1 = "Submit for Publication");
+			locator1 = "Button#SUBMIT_FOR_WORKFLOW",
+			value1 = "Submit for Workflow");
 
 		SelectFrame();
 

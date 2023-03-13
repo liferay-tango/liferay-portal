@@ -151,8 +151,7 @@ public class DefaultObjectEntryManagerImpl
 					groupId, dtoConverterContext.getUserId(), objectDefinition,
 					objectEntry, 0L, dtoConverterContext.getLocale()),
 				_createServiceContext(
-					objectEntry.getProperties(),
-					dtoConverterContext.getUserId()));
+					objectEntry, dtoConverterContext.getUserId()));
 
 		if (FeatureFlagManagerUtil.isEnabled("LPS-153117")) {
 			_addOrUpdateNestedObjectEntries(
@@ -193,7 +192,7 @@ public class DefaultObjectEntryManagerImpl
 		long groupId = getGroupId(objectDefinition, scopeKey);
 
 		ServiceContext serviceContext = _createServiceContext(
-			objectEntry.getProperties(), dtoConverterContext.getUserId());
+			objectEntry, dtoConverterContext.getUserId());
 
 		serviceContext.setCompanyId(companyId);
 
@@ -659,7 +658,7 @@ public class DefaultObjectEntryManagerImpl
 				serviceBuilderObjectEntry.getObjectEntryId(),
 				dtoConverterContext.getLocale()),
 			_createServiceContext(
-				objectEntry.getProperties(), dtoConverterContext.getUserId()));
+				objectEntry, dtoConverterContext.getUserId()));
 
 		if (FeatureFlagManagerUtil.isEnabled("LPS-153117")) {
 			_addOrUpdateNestedObjectEntries(
@@ -764,18 +763,26 @@ public class DefaultObjectEntryManagerImpl
 	}
 
 	private ServiceContext _createServiceContext(
-		Map<String, Object> properties, long userId) {
+		ObjectEntry objectEntry, long userId) {
 
 		ServiceContext serviceContext = new ServiceContext();
 
 		serviceContext.setAddGroupPermissions(true);
 		serviceContext.setAddGuestPermissions(true);
 
+		Map<String, Object> properties = objectEntry.getProperties();
+
 		if (properties.get("categoryIds") != null) {
 			serviceContext.setAssetCategoryIds(
 				ListUtil.toLongArray(
 					(List<String>)properties.get("categoryIds"),
 					Long::parseLong));
+		}
+
+		if (Validator.isNotNull(objectEntry.getKeywords()) &&
+			FeatureFlagManagerUtil.isEnabled("LPS-176651")) {
+
+			serviceContext.setAssetTagNames(objectEntry.getKeywords());
 		}
 
 		if (properties.get("tagNames") != null) {
@@ -1075,8 +1082,7 @@ public class DefaultObjectEntryManagerImpl
 		throws Exception {
 
 		return DTOConverterUtil.toDTO(
-			baseModel, _dtoConverterRegistry,
-			systemObjectDefinitionMetadata.getJaxRsApplicationDescriptor(),
+			baseModel, _dtoConverterRegistry, systemObjectDefinitionMetadata,
 			_userLocalService.getUser(serviceBuilderObjectEntry.getUserId()));
 	}
 

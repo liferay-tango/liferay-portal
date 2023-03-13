@@ -14,6 +14,8 @@
 
 package com.liferay.object.rest.internal.dto.v1_0.converter;
 
+import com.liferay.asset.kernel.model.AssetTag;
+import com.liferay.asset.kernel.service.AssetTagLocalService;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
@@ -55,6 +57,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -152,10 +155,6 @@ public class ObjectEntryDTOConverter
 
 		if (objectDefinition.isSystem()) {
 			if (FeatureFlagManagerUtil.isEnabled("LPS-172094")) {
-				value = _objectEntryLocalService.getSystemModelAttributes(
-					objectDefinition, primaryKey);
-			}
-			else {
 				SystemObjectDefinitionMetadata systemObjectDefinitionMetadata =
 					_systemObjectDefinitionMetadataRegistry.
 						getSystemObjectDefinitionMetadata(
@@ -167,10 +166,12 @@ public class ObjectEntryDTOConverter
 							systemObjectDefinitionMetadata.
 								getExternalReferenceCode(primaryKey),
 							objectDefinition.getCompanyId()),
-					_dtoConverterRegistry,
-					systemObjectDefinitionMetadata.
-						getJaxRsApplicationDescriptor(),
+					_dtoConverterRegistry, systemObjectDefinitionMetadata,
 					dtoConverterContext.getUser());
+			}
+			else {
+				value = _objectEntryLocalService.getSystemModelAttributes(
+					objectDefinition, primaryKey);
 			}
 		}
 		else {
@@ -366,6 +367,15 @@ public class ObjectEntryDTOConverter
 				dateModified = objectEntry.getModifiedDate();
 				externalReferenceCode = objectEntry.getExternalReferenceCode();
 				id = objectEntry.getObjectEntryId();
+
+				if (FeatureFlagManagerUtil.isEnabled("LPS-176651")) {
+					keywords = ListUtil.toArray(
+						_assetTagLocalService.getTags(
+							objectDefinition.getClassName(),
+							objectEntry.getObjectEntryId()),
+						AssetTag.NAME_ACCESSOR);
+				}
+
 				properties = _toProperties(
 					dtoConverterContext, nestedFieldsDepth, objectDefinition,
 					objectEntry);
@@ -609,6 +619,9 @@ public class ObjectEntryDTOConverter
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		ObjectEntryDTOConverter.class);
+
+	@Reference
+	private AssetTagLocalService _assetTagLocalService;
 
 	@Reference
 	private DLAppService _dlAppService;

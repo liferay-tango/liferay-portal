@@ -75,4 +75,36 @@ public class SetUtilTest {
 		Assert.assertEquals(set, new HashSet<String>(Arrays.asList("c")));
 	}
 
+	@Test
+	public void testRandomElement() {
+		Assert.assertNull(SetUtil.randomElement(null));
+		Assert.assertEquals("a", SetUtil.randomElement(SetUtil.fromArray("a")));
+
+		boolean foundA = false;
+		boolean foundB = false;
+		boolean foundC = false;
+
+		for (int i = 0; i < 100; i++) {
+			String string = SetUtil.randomElement(
+				SetUtil.fromArray("a", "b", "c"));
+
+			if (string.equals("a")) {
+				foundA = true;
+			}
+			else if (string.equals("b")) {
+				foundB = true;
+			}
+			else if (string.equals("c")) {
+				foundC = true;
+			}
+			else {
+				throw new IllegalStateException("Invalid string: " + string);
+			}
+
+			if (foundA && foundB && foundC) {
+				break;
+			}
+		}
+	}
+
 }

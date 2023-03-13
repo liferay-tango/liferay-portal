@@ -22,8 +22,8 @@ import {
 	SUPPORTED_PROPERTY_TYPES,
 } from '../../utils/constants';
 import {getSupportedOperatorsFromEvent} from '../../utils/utils.es';
-import IntegerInput from './IntegerInput';
-import SelectEntityInput from './SelectEntityInput.es';
+import IntegerInput from './IntegerInput.es';
+import SelectEventEntityInput from './SelectEventEntityInput.es';
 
 class EventInput extends Component {
 	static propTypes = {
@@ -99,7 +99,7 @@ class EventInput extends Component {
 						<b>{propertyLabel}</b>
 					</span>
 
-					<SelectEntityInput
+					<SelectEventEntityInput
 						disabled={disabledInput}
 						displayValue={criterion.assetId}
 						onChange={onChange}

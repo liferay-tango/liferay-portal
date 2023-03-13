@@ -80,6 +80,9 @@ function create_angular_app {
 
 	cd ${CUSTOM_ELEMENT_NAME}
 
+	rm -f README.md
+	rm -fr .vscode
+
 	#
 	# Add support for custom elements and disable tests.
 	#

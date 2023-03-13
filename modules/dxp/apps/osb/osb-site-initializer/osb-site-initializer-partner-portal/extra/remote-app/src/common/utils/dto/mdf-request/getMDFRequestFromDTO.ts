@@ -19,6 +19,7 @@ export function getMDFRequestFromDTO(mdfRequest: MDFRequestDTO): MDFRequest {
 			mdfRequest.mdfReqToActs?.map((activityItem) => {
 				const {
 					actToBgts,
+					activityStatus,
 					endDate,
 					id,
 					mdfRequestAmount,
@@ -44,6 +45,7 @@ export function getMDFRequestFromDTO(mdfRequest: MDFRequestDTO): MDFRequest {
 						),
 						leadGenerated: String(activityItem.leadGenerated),
 					},
+					activityStatus,
 					budgets: actToBgts || [],
 					endDate: endDate?.split('T')[0],
 					id,

@@ -14,9 +14,9 @@
 
 package com.liferay.content.dashboard.document.library.internal.item.selector;
 
-import com.liferay.content.dashboard.document.library.internal.item.selector.file.extension.criterio.ContentDashboardFileExtensionItemSelectorCriterion;
 import com.liferay.item.selector.BaseItemSelectorCriterionHandler;
 import com.liferay.item.selector.ItemSelectorCriterionHandler;
+import com.liferay.item.selector.criteria.file.criterion.FileExtensionItemSelectorCriterion;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -29,13 +29,13 @@ import org.osgi.service.component.annotations.Deactivate;
 @Component(service = ItemSelectorCriterionHandler.class)
 public class ContentDashboardFileExtensionItemSelectorCriterionHandler
 	extends BaseItemSelectorCriterionHandler
-		<ContentDashboardFileExtensionItemSelectorCriterion> {
+		<FileExtensionItemSelectorCriterion> {
 
 	@Override
-	public Class<ContentDashboardFileExtensionItemSelectorCriterion>
+	public Class<FileExtensionItemSelectorCriterion>
 		getItemSelectorCriterionClass() {
 
-		return ContentDashboardFileExtensionItemSelectorCriterion.class;
+		return FileExtensionItemSelectorCriterion.class;
 	}
 
 	@Activate

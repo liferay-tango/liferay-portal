@@ -16,12 +16,12 @@ package com.liferay.content.dashboard.document.library.internal.item.selector;
 
 import com.liferay.content.dashboard.document.library.internal.item.display.context.ContentDashboardFileExtensionItemSelectorViewDisplayContext;
 import com.liferay.content.dashboard.document.library.internal.item.provider.FileExtensionGroupsProvider;
-import com.liferay.content.dashboard.document.library.internal.item.selector.file.extension.criterio.ContentDashboardFileExtensionItemSelectorCriterion;
 import com.liferay.document.library.display.context.DLMimeTypeDisplayContext;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.item.selector.ItemSelectorReturnType;
 import com.liferay.item.selector.ItemSelectorView;
 import com.liferay.item.selector.criteria.UUIDItemSelectorReturnType;
+import com.liferay.item.selector.criteria.file.criterion.FileExtensionItemSelectorCriterion;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
@@ -75,14 +75,13 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 	service = ItemSelectorView.class
 )
 public class ContentDashboardFileExtensionItemSelectorView
-	implements ItemSelectorView
-		<ContentDashboardFileExtensionItemSelectorCriterion> {
+	implements ItemSelectorView<FileExtensionItemSelectorCriterion> {
 
 	@Override
-	public Class<ContentDashboardFileExtensionItemSelectorCriterion>
+	public Class<FileExtensionItemSelectorCriterion>
 		getItemSelectorCriterionClass() {
 
-		return ContentDashboardFileExtensionItemSelectorCriterion.class;
+		return FileExtensionItemSelectorCriterion.class;
 	}
 
 	@Override
@@ -101,8 +100,8 @@ public class ContentDashboardFileExtensionItemSelectorView
 	@Override
 	public void renderHTML(
 			ServletRequest servletRequest, ServletResponse servletResponse,
-			ContentDashboardFileExtensionItemSelectorCriterion
-				contentDashboardFileExtensionItemSelectorCriterion,
+			FileExtensionItemSelectorCriterion
+				fileExtensionItemSelectorCriterion,
 			PortletURL portletURL, String itemSelectedEventName, boolean search)
 		throws IOException, ServletException {
 

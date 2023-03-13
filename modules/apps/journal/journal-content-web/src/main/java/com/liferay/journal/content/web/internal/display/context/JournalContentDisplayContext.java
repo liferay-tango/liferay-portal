@@ -406,21 +406,11 @@ public class JournalContentDisplayContext {
 	}
 
 	public long getGroupId() {
-		long groupId = _themeDisplay.getScopeGroupId();
-
 		StagingGroupHelper stagingGroupHelper =
 			StagingGroupHelperUtil.getStagingGroupHelper();
 
-		if (stagingGroupHelper.isLocalStagingGroup(groupId) &&
-			!stagingGroupHelper.isStagedPortlet(
-				groupId, JournalPortletKeys.JOURNAL)) {
-
-			Group scopeGroup = _themeDisplay.getScopeGroup();
-
-			groupId = scopeGroup.getLiveGroupId();
-		}
-
-		return groupId;
+		return stagingGroupHelper.getStagedPortletGroupId(
+			_themeDisplay.getScopeGroupId(), JournalPortletKeys.JOURNAL);
 	}
 
 	public PortletURL getItemSelectorURL() {
@@ -444,7 +434,8 @@ public class JournalContentDisplayContext {
 		itemSelectorCriterion.setStatus(WorkflowConstants.STATUS_ANY);
 
 		return _itemSelector.getItemSelectorURL(
-			requestBackedPortletURLFactory,
+			requestBackedPortletURLFactory, _getGroup(),
+			_themeDisplay.getScopeGroupId(),
 			liferayRenderResponse.getNamespace() + "selectedItem",
 			itemSelectorCriterion);
 	}
@@ -1041,6 +1032,14 @@ public class JournalContentDisplayContext {
 		return DDMTemplateLocalServiceUtil.fetchTemplate(
 			article.getGroupId(), _ddmStructureClassNameId, ddmTemplateKey,
 			true);
+	}
+
+	private Group _getGroup() {
+		StagingGroupHelper stagingGroupHelper =
+			StagingGroupHelperUtil.getStagingGroupHelper();
+
+		return stagingGroupHelper.getStagedPortletGroup(
+			_themeDisplay.getScopeGroup(), JournalPortletKeys.JOURNAL);
 	}
 
 	private static final boolean _STAGING_LIVE_GROUP_LOCKING_ENABLED =

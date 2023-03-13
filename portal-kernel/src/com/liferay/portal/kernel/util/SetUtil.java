@@ -16,6 +16,7 @@ package com.liferay.portal.kernel.util;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.io.unsync.UnsyncBufferedReader;
+import com.liferay.portal.kernel.security.RandomUtil;
 
 import java.io.File;
 import java.io.FileReader;
@@ -261,6 +262,22 @@ public class SetUtil {
 
 	public static boolean isNotEmpty(Set<?> set) {
 		return !isEmpty(set);
+	}
+
+	public static <T> T randomElement(Set<T> set) {
+		if (isEmpty(set)) {
+			return null;
+		}
+
+		int index = RandomUtil.nextInt(set.size());
+
+		Iterator<T> iterator = set.iterator();
+
+		for (int i = 0; i < index; i++) {
+			iterator.next();
+		}
+
+		return iterator.next();
 	}
 
 	public static <T> Set<T> symmetricDifference(
