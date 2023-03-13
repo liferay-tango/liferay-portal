@@ -24,7 +24,7 @@ import {
 	SUPPORTED_EVENT_OPERATORS,
 	SUPPORTED_PROPERTY_TYPES,
 } from '../../utils/constants';
-import {unescapeSingleQuotes} from '../../utils/odata.es';
+import {unescapeSingleQuotes} from '../../utils/odata';
 import {
 	dateToInternationalHuman,
 	getSupportedOperatorsFromEvent,

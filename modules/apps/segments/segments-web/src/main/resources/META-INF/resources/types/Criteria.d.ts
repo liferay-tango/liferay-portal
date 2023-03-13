@@ -12,17 +12,24 @@
  * details.
  */
 
-import {DateValue} from "./Date";
+import type {Conjunction, PropertyType} from "../js/utils/constants";
+
+export interface Property {
+	label: string;
+	name: string;
+	type: PropertyType;
+}
 
 export interface CriteriaItem {
-	assetId: string,
-	day: { operatorName: string; value: DateValue },
+	displayValue?: string;
 	operatorName: string;
-	operatorNot: boolean;
 	propertyName: string;
+	type?: PropertyType;
 	value: string;
 }
 
 export interface Criteria {
-	items: CriteriaItem[];
+	conjunctionName: Conjunction;
+	groupId: string,
+	items: Array<Criteria | CriteriaItem>;
 }

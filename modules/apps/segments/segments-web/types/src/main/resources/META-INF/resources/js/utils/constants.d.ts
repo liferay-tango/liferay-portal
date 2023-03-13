@@ -16,6 +16,7 @@ export declare const CONJUNCTIONS: {
 	readonly AND: 'and';
 	readonly OR: 'or';
 };
+export declare type Conjunction = typeof CONJUNCTIONS[keyof typeof CONJUNCTIONS];
 export declare const FUNCTIONAL_OPERATORS: {
 	readonly CONTAINS: 'contains';
 };
@@ -61,6 +62,7 @@ export declare const PROPERTY_TYPES: {
 	readonly INTEGER: 'integer';
 	readonly STRING: 'string';
 };
+export declare type PropertyType = typeof PROPERTY_TYPES[keyof typeof PROPERTY_TYPES];
 export declare const PROPERTY_GROUPS: {
 	readonly EVENT: 'event';
 };
