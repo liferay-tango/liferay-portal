@@ -32,7 +32,7 @@ import {
 	getSupportedOperatorsFromEvent,
 	getSupportedOperatorsFromType,
 	objectToFormData,
-} from '../../utils/utils.es';
+} from '../../utils/utils';
 import CriteriaRowEditable from './CriteriaRowEditable.es';
 import CriteriaRowReadable from './CriteriaRowReadable.es';
 

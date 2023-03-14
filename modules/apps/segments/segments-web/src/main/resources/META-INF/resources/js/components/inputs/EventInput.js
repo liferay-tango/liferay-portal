@@ -26,7 +26,7 @@ import {
 	SUPPORTED_EVENT_OPERATORS,
 	SUPPORTED_PROPERTY_TYPES,
 } from '../../utils/constants';
-import {getSupportedOperatorsFromEvent} from '../../utils/utils.es';
+import {getSupportedOperatorsFromEvent} from '../../utils/utils';
 import DateTimeInput from './DateTimeInput';
 import IntegerInput from './IntegerInput';
 import SelectEventEntityInput from './SelectEventEntityInput.es';

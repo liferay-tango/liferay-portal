@@ -28,7 +28,7 @@ import {unescapeSingleQuotes} from '../../utils/odata';
 import {
 	dateToInternationalHuman,
 	getSupportedOperatorsFromEvent,
-} from '../../utils/utils.es';
+} from '../../utils/utils';
 
 class CriteriaRowReadable extends Component {
 	static propTypes = {
