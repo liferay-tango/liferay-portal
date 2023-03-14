@@ -83,6 +83,8 @@ export const PROPERTY_GROUPS = {
 	EVENT: 'event',
 } as const;
 
+export type PropertyKey = typeof PROPERTY_GROUPS[keyof typeof PROPERTY_GROUPS];
+
 /**
  * Constants for CriteriaBuilder component.
  */
