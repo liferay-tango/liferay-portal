@@ -12,54 +12,54 @@
  * details.
  */
 
+import {Property} from '../../types/Criteria';
 import {buildEventQueryString} from './ac-grammar';
 import {
 	CONJUNCTIONS,
+	Conjunction,
 	PROPERTY_GROUPS,
+	PropertyKey,
 	SUPPORTED_CONJUNCTIONS,
 } from './constants';
 import {buildQueryString} from './odata';
 
+interface BaseContributor {
+	conjunctionId: Conjunction;
+	conjunctionInputId: string;
+	criteriaMap: Record<string, unknown>;
+	entityName: string;
+	inputId: string;
+	modelLabel: string;
+	properties: Property[];
+	query: string;
+}
+
+interface EventContributor extends BaseContributor {
+	initialQuery?: Parameters<typeof buildEventQueryString>[0];
+	propertyKey: typeof PROPERTY_GROUPS.EVENT;
+}
+
+interface UnknownContributor extends BaseContributor {
+	initialQuery?: Parameters<typeof buildQueryString>[0][0];
+	propertyKey: unknown;
+}
+
+type Contributor = EventContributor | UnknownContributor;
+
+interface PropertyGroup {
+	entityName: string;
+	name: string;
+	properties: Property[];
+	propertyKey: string;
+}
+
 /**
- * Produces a list of Contributors
- * from a list of initialContributors
- * and a list of propertyGroups
- *
- * @export
- * @param {Object[]} initialContributors
- * @param {string} initialContributors[].conjunctionId
- * @param {string} initialContributors[].conjunctionInputId
- * @param {Object} initialContributors[].criteriaMap
- * @param {string} initialContributors[].entityName
- * @param {string} initialContributors[].inputId
- * @param {string} initialContributors[].modelLabel
- * @param {Array} initialContributors[].properties
- * @param {string} initialContributors[].propertyKey
- * @param {string} initialContributors[].query
- *
- * @param {Object[]} propertyGroups
- * @param {string} propertyGroups[].entityName
- * @param {string} propertyGroups[].name
- * @param {Array} propertyGroups[].properties
- * @param {string} propertyGroups[].propertyKey
- *
- * @typedef {{
- *   conjunctionId: string,
- *   conjunctionInputId: string,
- *   criteriaMap: Object,
- *   entityName: string,
- *   inputId: string,
- *   modelLabel: string,
- *   properties: Array,
- *   propertyKey: string,
- *   query: string
- * }} Contributor
- *
- * @return {Contributor[]} contributors
+ * Produces a list of Contributors from a list of initialContributors and a list
+ * of propertyGroups.
  */
 export function initialContributorsToContributors(
-	initialContributors,
-	propertyGroups
+	initialContributors: Contributor[],
+	propertyGroups: PropertyGroup[]
 ) {
 	const DEFAULT_CONTRIBUTOR = {conjunctionId: CONJUNCTIONS.AND};
 	const {conjunctionId: initialConjunction} =
@@ -72,16 +72,24 @@ export function initialContributorsToContributors(
 				(propertyGroup) =>
 					initialContributor.propertyKey === propertyGroup.propertyKey
 			);
+
 		let query = '';
+
 		if (initialContributor.initialQuery) {
 			query =
 				initialContributor.propertyKey === PROPERTY_GROUPS.EVENT
-					? buildEventQueryString(initialContributor.initialQuery)
+					? buildEventQueryString(
+							(initialContributor as EventContributor)
+								.initialQuery!
+					  )
 					: buildQueryString(
-							[initialContributor.initialQuery],
+							[
+								(initialContributor as UnknownContributor)
+									.initialQuery!,
+							],
 							initialContributor.conjunctionId ||
 								initialConjunction,
-							propertyGroup && propertyGroup.properties
+							propertyGroup ? propertyGroup.properties : []
 					  );
 		}
 
@@ -101,16 +109,16 @@ export function initialContributorsToContributors(
 }
 
 /**
- * Applies a criteria change to a contributor from a list
- * in both the criteriaMap and query properties
- *
- * @export
- * @param {Contributor[]} contributors
- * @param {{ propertyKey: string, criteriaChange: Array }} change - Contains the criteria change and an identifier to locate the right contributor
- *
- * @return {Contributor[]} contributors
+ * Applies a criteria change to a contributor from a list in both the
+ * criteriaMap and query properties.
  */
-export function applyCriteriaChangeToContributors(contributors, change) {
+export function applyCriteriaChangeToContributors(
+	contributors: Contributor[],
+	change: {
+		criteriaChange: Contributor['initialQuery'];
+		propertyKey: PropertyKey;
+	}
+) {
 	return contributors.map((contributor) => {
 		const {conjunctionId, properties, propertyKey} = contributor;
 
@@ -120,9 +128,13 @@ export function applyCriteriaChangeToContributors(contributors, change) {
 					criteriaMap: change.criteriaChange,
 					query:
 						propertyKey === PROPERTY_GROUPS.EVENT
-							? buildEventQueryString(change.criteriaChange)
+							? buildEventQueryString(
+									(change.criteriaChange as EventContributor['initialQuery'])!
+							  )
 							: buildQueryString(
-									[change.criteriaChange],
+									[
+										(change.criteriaChange as UnknownContributor['initialQuery'])!,
+									],
 									conjunctionId,
 									properties
 							  ),
@@ -132,15 +144,11 @@ export function applyCriteriaChangeToContributors(contributors, change) {
 }
 
 /**
- * Applies a conjunction change to the whole array of contributors
- *
- * @export
- * @param {Contributor[]} contributors
- * @return {Contributor[]} contributors
+ * Applies a conjunction change to the whole array of contributors.
  */
 export function applyConjunctionChangeToContributor(
-	contributors,
-	conjunctionName
+	contributors: Contributor[],
+	conjunctionName: Conjunction
 ) {
 	const conjunctionIndex = SUPPORTED_CONJUNCTIONS.findIndex(
 		(item) => item.name === conjunctionName

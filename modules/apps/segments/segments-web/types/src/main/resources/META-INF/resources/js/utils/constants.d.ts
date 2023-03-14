@@ -66,6 +66,7 @@ export declare type PropertyType = typeof PROPERTY_TYPES[keyof typeof PROPERTY_T
 export declare const PROPERTY_GROUPS: {
 	readonly EVENT: 'event';
 };
+export declare type PropertyKey = typeof PROPERTY_GROUPS[keyof typeof PROPERTY_GROUPS];
 export declare const SUPPORTED_CONJUNCTIONS: readonly [
 	{
 		readonly label: string;
