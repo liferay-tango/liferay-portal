@@ -13,6 +13,7 @@
  */
 
 import type {Conjunction, PropertyType} from "../js/utils/constants";
+import type {DateValue} from "./Date";
 
 export interface Property {
 	label: string;
@@ -21,8 +22,11 @@ export interface Property {
 }
 
 export interface CriteriaItem {
+	assetId?: string;
+	day?: {operatorName: string; value: DateValue};
 	displayValue?: string;
 	operatorName: string;
+	operatorNot?: boolean;
 	propertyName: string;
 	type?: PropertyType;
 	value: string;

@@ -39,19 +39,7 @@ function buildDateQueryString(day: {operatorName: string; value: DateValue}) {
  * and formatting the query differently for certain types like collection.
  * @returns An AC grammar query string built from the criteria object.
  */
-function buildEventQueryString(
-	criteria:
-		| {
-				items: Array<
-					CriteriaItem & {
-						assetId: string;
-						day?: {operatorName: string; value: DateValue};
-						operatorNot?: boolean;
-					}
-				>;
-		  }
-		| undefined
-) {
+function buildEventQueryString(criteria: {items: CriteriaItem[]} | undefined) {
 	if (!criteria) {
 		return '';
 	}

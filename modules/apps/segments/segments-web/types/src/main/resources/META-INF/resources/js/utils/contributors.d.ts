@@ -56,16 +56,7 @@ export declare function initialContributorsToContributors(
 		| import('../../types/Criteria').CriteriaItem
 		| import('../../types/Criteria').Criteria
 		| {
-				items: (import('../../types/Criteria').CriteriaItem & {
-					assetId: string;
-					day?:
-						| {
-								operatorName: string;
-								value: import('../../types/Date').DateValue;
-						  }
-						| undefined;
-					operatorNot?: boolean | undefined;
-				})[];
+				items: import('../../types/Criteria').CriteriaItem[];
 		  }
 		| null;
 	entityName: string | undefined;
@@ -94,32 +85,14 @@ export declare function applyCriteriaChangeToContributors(
 				| import('../../types/Criteria').CriteriaItem
 				| import('../../types/Criteria').Criteria
 				| {
-						items: (import('../../types/Criteria').CriteriaItem & {
-							assetId: string;
-							day?:
-								| {
-										operatorName: string;
-										value: import('../../types/Date').DateValue;
-								  }
-								| undefined;
-							operatorNot?: boolean | undefined;
-						})[];
+						items: import('../../types/Criteria').CriteriaItem[];
 				  }
 				| null
 				| undefined;
 			query: string;
 			initialQuery?:
 				| {
-						items: (import('../../types/Criteria').CriteriaItem & {
-							assetId: string;
-							day?:
-								| {
-										operatorName: string;
-										value: import('../../types/Date').DateValue;
-								  }
-								| undefined;
-							operatorNot?: boolean | undefined;
-						})[];
+						items: import('../../types/Criteria').CriteriaItem[];
 				  }
 				| undefined;
 			propertyKey: 'event';
@@ -135,16 +108,7 @@ export declare function applyCriteriaChangeToContributors(
 				| import('../../types/Criteria').CriteriaItem
 				| import('../../types/Criteria').Criteria
 				| {
-						items: (import('../../types/Criteria').CriteriaItem & {
-							assetId: string;
-							day?:
-								| {
-										operatorName: string;
-										value: import('../../types/Date').DateValue;
-								  }
-								| undefined;
-							operatorNot?: boolean | undefined;
-						})[];
+						items: import('../../types/Criteria').CriteriaItem[];
 				  }
 				| null
 				| undefined;
