@@ -13,7 +13,6 @@
  */
 
 import {CriteriaItem} from '../../types/Criteria';
-import {DateValue} from '../../types/Date';
 
 /**
  * Recursively traverses the criteria object to build an Ac Grammar filter query
@@ -24,16 +23,7 @@ import {DateValue} from '../../types/Date';
 declare function buildEventQueryString(
 	criteria:
 		| {
-				items: Array<
-					CriteriaItem & {
-						assetId: string;
-						day?: {
-							operatorName: string;
-							value: DateValue;
-						};
-						operatorNot?: boolean;
-					}
-				>;
+				items: CriteriaItem[];
 		  }
 		| undefined
 ): string;
