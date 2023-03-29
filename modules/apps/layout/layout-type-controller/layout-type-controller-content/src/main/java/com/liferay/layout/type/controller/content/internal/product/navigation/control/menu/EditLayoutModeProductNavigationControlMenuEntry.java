@@ -123,7 +123,8 @@ public class EditLayoutModeProductNavigationControlMenuEntry
 					Collections.emptyMap(), layout.getMasterLayoutPlid(),
 					serviceContext);
 
-				draftLayout = _layoutCopyHelper.copyLayout(layout, draftLayout);
+				draftLayout = _layoutCopyHelper.copyLayoutContent(
+					layout, draftLayout);
 
 				_layoutLocalService.updateStatus(
 					draftLayout.getUserId(), draftLayout.getPlid(),
