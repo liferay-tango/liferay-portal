@@ -422,3 +422,8 @@ aac64eb61586393faa97f59c58ef2cb4afe49858^..fd9b68e5bc94da652f6bf2ac63f3cfd0f6bdd
 # Bundle Version 1.0.91
 #
 fd9b68e5bc94da652f6bf2ac63f3cfd0f6bddc0f^..7dda46aa260acd42a18cef66ac20a8e1a31c1241=LPD-59008
+
+#
+# Bundle Version 1.0.93
+#
+7dda46aa260acd42a18cef66ac20a8e1a31c1241^..0466ff42e279db995a9aebeb3763403607a917df=LPD-60926 LPD-61087
