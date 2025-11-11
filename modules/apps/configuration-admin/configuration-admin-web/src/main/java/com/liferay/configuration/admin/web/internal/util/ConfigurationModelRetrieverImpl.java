@@ -5,6 +5,8 @@
 
 package com.liferay.configuration.admin.web.internal.util;
 
+import com.liferay.configuration.admin.util.ConfigurationFilterStringUtil;
+import com.liferay.configuration.admin.util.ConfigurationPidUtil;
 import com.liferay.configuration.admin.web.internal.display.context.ConfigurationScopeDisplayContext;
 import com.liferay.configuration.admin.web.internal.model.ConfigurationModel;
 import com.liferay.petra.string.StringBundler;
@@ -376,14 +378,14 @@ public class ConfigurationModelRetrieverImpl
 	private String _getScopedPidFilterString(
 		String pid, ExtendedObjectClassDefinition.Scope scope) {
 
-		String unscopedPId = ConfigurationPIDUtil.getUnscopedPid(pid);
+		String rawPid = ConfigurationPidUtil.getRawPid(pid);
 
 		String filterString = StringBundler.concat(
 			StringPool.OPEN_PARENTHESIS, StringPool.PIPE,
 			_getPropertyFilterString(
-				ConfigurationAdmin.SERVICE_FACTORYPID, unscopedPId),
+				ConfigurationAdmin.SERVICE_FACTORYPID, rawPid),
 			_getPropertyFilterString(
-				ConfigurationAdmin.SERVICE_FACTORYPID, unscopedPId + ".scoped"),
+				ConfigurationAdmin.SERVICE_FACTORYPID, rawPid + ".scoped"),
 			StringPool.CLOSE_PARENTHESIS);
 
 		if (pid.contains("~")) {
@@ -396,34 +398,24 @@ public class ConfigurationModelRetrieverImpl
 		if (scope.equals(ExtendedObjectClassDefinition.Scope.COMPANY)) {
 			return StringBundler.concat(
 				StringPool.OPEN_PARENTHESIS, StringPool.AMPERSAND, filterString,
-				"(|(",
-				ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey(),
-				"=*)(dxp.lxc.liferay.com.virtualInstanceId=*))(!(",
-				ExtendedObjectClassDefinition.Scope.GROUP.getPropertyKey(),
-				"=*))(!(siteExternalReferenceCode=*))(!(",
-				ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE.
-					getPropertyKey(),
-				"=*)))");
+				ConfigurationFilterStringUtil.getCompanyScopedFilterString(
+					null, null),
+				StringPool.CLOSE_PARENTHESIS);
 		}
 
 		if (scope.equals(ExtendedObjectClassDefinition.Scope.GROUP)) {
 			return StringBundler.concat(
 				StringPool.OPEN_PARENTHESIS, StringPool.AMPERSAND, filterString,
-				"(|(",
-				ExtendedObjectClassDefinition.Scope.GROUP.getPropertyKey(),
-				"=*)(siteExternalReferenceCode=*))(!(",
-				ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE.
-					getPropertyKey(),
-				"=*)))");
+				ConfigurationFilterStringUtil.getGroupScopedFilterString(
+					null, null),
+				StringPool.CLOSE_PARENTHESIS);
 		}
 
 		return StringBundler.concat(
 			StringPool.OPEN_PARENTHESIS, StringPool.AMPERSAND, filterString,
-			"(|(", ExtendedObjectClassDefinition.Scope.GROUP.getPropertyKey(),
-			"=*)(siteExternalReferenceCode=*))(",
-			ExtendedObjectClassDefinition.Scope.PORTLET_INSTANCE.
-				getPropertyKey(),
-			"=*))");
+			ConfigurationFilterStringUtil.getPortletScopedFilterString(
+				null, null, null),
+			StringPool.CLOSE_PARENTHESIS);
 	}
 
 	private String _getSystemPidFilterString(String pid) {
@@ -439,20 +431,15 @@ public class ConfigurationModelRetrieverImpl
 				StringPool.OPEN_PARENTHESIS, StringPool.AMPERSAND,
 				_getPropertyFilterString(
 					ConfigurationAdmin.SERVICE_FACTORYPID,
-					ConfigurationPIDUtil.getUnscopedPid(pid)),
+					ConfigurationPidUtil.getRawPid(pid)),
 				_getPropertyFilterString(Constants.SERVICE_PID, pid),
 				StringPool.CLOSE_PARENTHESIS);
 		}
 
 		return StringBundler.concat(
 			StringPool.OPEN_PARENTHESIS, StringPool.AMPERSAND, filterString,
-			"(|(!(",
-			ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey(),
-			"=*))(",
-			ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey(),
-			"=0))(!(dxp.lxc.liferay.com.virtualInstanceId=*))(!(",
-			ExtendedObjectClassDefinition.Scope.GROUP.getPropertyKey(),
-			"=*))(!(siteExternalReferenceCode=*)))");
+			ConfigurationFilterStringUtil.getSystemScopedFilterString(),
+			StringPool.CLOSE_PARENTHESIS);
 	}
 
 	private BundleContext _bundleContext;
